@@ -6,6 +6,8 @@ import { EmptyState } from "@/components/molecules/EmptyState";
 import { OrderSummary } from "@/components/molecules/OrderSummary";
 import { CartLineItem, type CartLineView } from "@/components/organisms/CartLineItem";
 import { getProduct, maxQuantity } from "@/demo/engine/catalog";
+import { demoData } from "@/demo/engine/source";
+import { useDemoVersion } from "@/stores/admin";
 import { missingForFreeShipping, type QuotedLine } from "@/demo/engine/pricing";
 import { formatARS } from "@/lib/money";
 import { useCart } from "@/stores/cart";
@@ -20,12 +22,13 @@ export function toLineView(q: QuotedLine): CartLineView | null {
   if (!product || !variant) return null;
   return {
     id: q.line.id, slug: product.slug, name: product.name, variantLabel: variant.label, art: product.art, tint: variant.colorHex,
-    unitPrice: q.unitPrice, lineTotal: q.lineTotal, quantity: q.line.quantity, maxQuantity: maxQuantity(variant), personalization: q.line.personalization,
+    unitPrice: q.unitPrice, lineTotal: q.lineTotal, quantity: q.line.quantity, maxQuantity: maxQuantity(variant), personalization: q.line.personalization, zone: demoData().textZones[product.art],
   };
 }
 
 export function CartView() {
   const hydrated = useHydrated();
+  useDemoVersion();
   const { quote, couponCheck, isRegistered } = useCartQuote();
   const setQuantity = useCart((s) => s.setQuantity);
   const remove = useCart((s) => s.remove);

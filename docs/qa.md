@@ -19,6 +19,23 @@
 | Contraste AA de los tokens | cálculo WCAG (ver `tono-visual.md`) | ✅ |
 | Reglas: precio, cupones, envío gratis, total ≥ 0, misiones, stock, validaciones | `tests/unit` (Vitest) | ✅ |
 
+## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
+| Verificación | Estado |
+|---|---|
+| 13 rutas del panel abren directo y al refrescar bajo subpath, con la señal de demo y sin "acreditado" | ✅ |
+| Sin desborde horizontal a 375 px (el chequeo compara contra el ancho del viewport configurado) | ✅ |
+| Cambiar stock a 0 → la ficha muestra "Sin stock" y bloquea el agregado; pausar productos oculta la categoría vacía | ✅ |
+| Aprobar comprobante pide confirmación y deja auditoría; rechazar exige motivo; nada dice "pago acreditado" | ✅ |
+| Comprobante subido en la tienda → "Comprobante en revisión" en el panel, nunca "Pagado" | ✅ |
+| Cupón creado en el panel funciona en el carrito; misión creada aparece en la cuenta demo | ✅ |
+| Reiniciar demo vuelve a los fixtures | ✅ |
+| Teclado: diálogo de confirmación abre con Enter, cierra con Escape, se opera con Tab | ✅ |
+| Movimiento reducido en el panel | ✅ |
+| Transiciones de pedido válidas/ inválidas (spec 5.2) y acciones del store | ✅ unit |
+
+Nota: con emulación móvil, Chrome agranda el viewport de layout si algo desborda. El chequeo anterior
+(`scrollWidth - innerWidth`) podía dar falso negativo; ahora se compara contra el ancho configurado.
+
 ## Revisión manual sugerida antes de mostrar
 - Recorrer en un celular real (iOS Safari y Android Chrome), en especial arrastrar la foto en el velador.
 - Lector de pantalla (VoiceOver/TalkBack) en personalizador y checkout.
@@ -33,3 +50,5 @@
 - **`npm audit`**: 5 avisos *high* en `braces` vía `eslint-config-next` (solo herramienta de lint en desarrollo; no llega al sitio publicado). El "fix" propuesto baja a `eslint-config-next@14` y rompe Next 16; se deja hasta que Next publique la actualización.
 - **Accesibilidad**: no hay auditoría automática con axe todavía (se evitó sumar dependencia); revisión manual recomendada.
 - El prefetch del router de Next hace `HEAD` al mismo origen; es lectura y no envía datos.
+- **Panel demo abierto**: cualquiera con el link puede abrirlo y "editar" su propia copia local. No hay datos reales ni persistencia compartida; no es un panel seguro.
+- **Datos del panel por navegador**: lo que Velmar cambie en su celular no lo ve otra persona; cada navegador arranca de los fixtures.

@@ -11,17 +11,17 @@ const petColors = [
 export const fonts = ["Redondeada", "Clásica", "Manuscrita"] as const;
 
 export const nameTemplate: PersonalizationTemplate = {
-  kind: "TEXT", maxChars: 10, fonts: [...fonts], colors: petColors, surcharge: 0,
+  id: "t-nombre", name: "Nombre impreso", kind: "TEXT", maxChars: 10, fonts: [...fonts], colors: petColors, surcharge: 0,
 };
 
 export const engravingTemplate: PersonalizationTemplate = {
-  kind: "TEXT", maxChars: 14, fonts: [...fonts], colors: [{ name: "Grabado natural", hex: "#6b4a2b" }, { name: "Negro", hex: "#1f1f1f" }], surcharge: 2500,
+  id: "t-grabado", name: "Grabado láser", kind: "TEXT", maxChars: 14, fonts: [...fonts], colors: [{ name: "Grabado natural", hex: "#6b4a2b" }, { name: "Negro", hex: "#1f1f1f" }], surcharge: 2500,
 };
 
-export const photoLampTemplate: PersonalizationTemplate = { kind: "PHOTO", surcharge: 0 };
+export const photoLampTemplate: PersonalizationTemplate = { id: "t-foto", name: "Foto en velador", kind: "PHOTO", mask: "arch", surcharge: 0 };
 
 export const referenceTemplate: PersonalizationTemplate = {
-  kind: "PHOTO_REFERENCE",
+  id: "t-referencia", name: "Pintado desde referencia", kind: "PHOTO_REFERENCE",
   surcharge: 0,
   notesPlaceholder: "Contanos pose, ropa, fondo y colores que querés que respetemos.",
 };
@@ -35,7 +35,7 @@ export interface TextZone {
   cover?: string;
 }
 
-export const textZones: Partial<Record<string, TextZone>> = {
+export const textZones: Record<string, TextZone> = {
   "bowl-dog": { x: 125, y: 252, w: 150, h: 36 },
   collar: { x: 118, y: 273, w: 164, h: 38, cover: "#ffffff" },
   "nfc-tag": { x: 132, y: 178, w: 136, h: 44, cover: "#3d4a2a" },
@@ -48,3 +48,5 @@ export const FONT_FAMILIES: Record<string, string> = {
   Clásica: "Georgia, 'Times New Roman', serif",
   Manuscrita: "Caveat, 'Segoe Script', cursive",
 };
+
+export const baseTemplates: PersonalizationTemplate[] = [nameTemplate, engravingTemplate, photoLampTemplate, referenceTemplate];

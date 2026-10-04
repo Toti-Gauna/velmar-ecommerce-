@@ -1,7 +1,23 @@
-import type { CarouselSlide, Coupon, Mission, ShippingZone } from "../types";
+import type { CarouselSlide, Coupon, Mission, PaymentMethod, ShippingZone } from "../types";
+
+export interface DemoSettings {
+  transferDiscountPct: number;
+  freeShippingFrom: number;
+  pendingTransferHours: number;
+  transferAlias: string;
+  transferCbu: string;
+  transferHolder: string;
+  nationalTaxRate: number;
+  enabledMethods: PaymentMethod[];
+  /** null = no confirmado: el CTA abre WhatsApp sin destinatario. */
+  whatsappNumber: string | null;
+  brandColors: { primary: string; accent: string; background: string };
+  legalName: string | null;
+  cuit: string | null;
+}
 
 /** Ajustes de cobro de MUESTRA. Ningún dato bancario real. */
-export const demoSettings = {
+export const demoSettings: DemoSettings = {
   transferDiscountPct: 10,
   freeShippingFrom: 120000,
   pendingTransferHours: 48,
@@ -9,19 +25,29 @@ export const demoSettings = {
   transferCbu: "0000000000000000000000",
   transferHolder: "Titular de muestra",
   nationalTaxRate: 0.21,
-} as const;
+  enabledMethods: ["CHECKOUT_PRO", "BANK_TRANSFER", "QR_MANUAL"],
+  whatsappNumber: null,
+  brandColors: { primary: "#3d4a2a", accent: "#ede0c6", background: "#fbf8f2" },
+  legalName: null,
+  cuit: null,
+};
+
+export const homeCta = {
+  title: "Crear mi producto personalizado",
+  text: "Texto, foto o foto de referencia. Mirá cómo queda y aprobalo antes de pagar.",
+};
 
 export const coupons: Coupon[] = [
-  { code: "BIENVENIDA10", type: "PERCENT", value: 10, description: "10% en tu primera compra" },
-  { code: "FERIA2000", type: "FIXED", value: 2000, minSubtotal: 20000, description: "$2.000 desde $20.000 (cupón de feria)" },
-  { code: "ENVIOGRATIS", type: "FREE_SHIPPING", value: 0, onlyRegistered: true, description: "Envío gratis, solo con cuenta" },
-  { code: "INVIERNO", type: "PERCENT", value: 15, endsAt: "2026-08-31", description: "Cupón vencido de ejemplo" },
+  { code: "BIENVENIDA10", type: "PERCENT", value: 10, description: "10% en tu primera compra", active: true, usedCount: 23 },
+  { code: "FERIA2000", type: "FIXED", value: 2000, minSubtotal: 20000, description: "$2.000 desde $20.000 (cupón de feria)", active: true, maxUses: 50, usedCount: 12 },
+  { code: "ENVIOGRATIS", type: "FREE_SHIPPING", value: 0, onlyRegistered: true, description: "Envío gratis, solo con cuenta", active: true, usedCount: 7 },
+  { code: "INVIERNO", type: "PERCENT", value: 15, endsAt: "2026-08-31", description: "Cupón vencido de ejemplo", active: true, maxUses: 100, usedCount: 41 },
 ];
 
 export const missions: Mission[] = [
-  { id: "m-dos-productos", title: "Comprá 2 productos", description: "En uno o varios pedidos pagados.", type: "UNITS_COUNT", threshold: 2, reward: "Llavero NFC de regalo" },
-  { id: "m-primera", title: "Primera compra con cuenta", description: "Tu primer pedido pagado con cuenta.", type: "ORDERS_COUNT", threshold: 1, reward: "Grabado de nombre gratis en la próxima" },
-  { id: "m-gasto", title: "Sumá $100.000", description: "Acumulado en pedidos pagados.", type: "SPEND_TOTAL", threshold: 100000, reward: "Comedero de regalo" },
+  { id: "m-dos-productos", title: "Comprá 2 productos", description: "En uno o varios pedidos pagados.", type: "UNITS_COUNT", threshold: 2, reward: "Llavero NFC de regalo", active: true, nextMissionId: "m-gasto", completedCount: 14 },
+  { id: "m-primera", title: "Primera compra con cuenta", description: "Tu primer pedido pagado con cuenta.", type: "ORDERS_COUNT", threshold: 1, reward: "Grabado de nombre gratis en la próxima", active: true, nextMissionId: null, completedCount: 31 },
+  { id: "m-gasto", title: "Sumá $100.000", description: "Acumulado en pedidos pagados.", type: "SPEND_TOTAL", threshold: 100000, reward: "Comedero de regalo", active: true, nextMissionId: null, completedCount: 4 },
 ];
 
 /** Progreso de muestra de la cuenta demo, antes del pedido actual. */

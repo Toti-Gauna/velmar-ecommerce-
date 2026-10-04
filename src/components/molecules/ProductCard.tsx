@@ -2,10 +2,13 @@ import Link from "next/link";
 import type { ArtKey } from "@/demo/types";
 import { Badge } from "@/components/atoms/Badge";
 import { Price } from "@/components/atoms/Price";
-import { ProductArt } from "@/components/illustrations/ProductArt";
+import { ProductVisual } from "@/components/illustrations/ProductVisual";
 
 export interface ProductCardData {
   slug: string;
+  href: string;
+  photoUrl?: string;
+  alt: string;
   name: string;
   short: string;
   art: ArtKey;
@@ -21,14 +24,14 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <article className="group relative flex flex-col gap-2">
       <div className="relative overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
-        <ProductArt art={product.art} tint={product.tint} label={product.name} className="aspect-square transition-transform duration-300 group-hover:scale-[1.03]" />
+        <ProductVisual art={product.art} tint={product.tint} photoUrl={product.photoUrl} label={product.alt} className="aspect-square transition-transform duration-300 group-hover:scale-[1.03]" />
         <div className="absolute left-2 top-2 flex flex-wrap gap-1">
           {product.isNew && <Badge tone="brand">Nuevo</Badge>}
           {product.personalizable && <Badge>Personalizable</Badge>}
         </div>
       </div>
       <h3 className="text-[15px] font-bold leading-snug text-ink">
-        <Link href={`/p/${product.slug}/`} className="after:absolute after:inset-0 focus-visible:outline-none">
+        <Link href={product.href} className="after:absolute after:inset-0 focus-visible:outline-none">
           {product.name}
         </Link>
       </h3>

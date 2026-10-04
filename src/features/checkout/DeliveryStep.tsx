@@ -7,7 +7,7 @@ import { Button } from "@/components/atoms/Button";
 import { Field, Input } from "@/components/atoms/Field";
 import { OptionCard } from "@/components/atoms/OptionCard";
 import { isLocalPostalCode } from "@/demo/engine/shipping";
-import { shippingZones } from "@/demo/fixtures/commerce";
+import { useDemoData } from "@/stores/admin";
 import type { FulfillmentType } from "@/demo/types";
 import { formatARS } from "@/lib/money";
 import { useCheckout } from "@/stores/checkout";
@@ -26,6 +26,8 @@ export function DeliveryStep({ onNext, onBack, freeShipping }: { onNext: () => v
   const { fulfillment, address, patch } = useCheckout();
   const [choice, setChoice] = useState<FulfillmentType | null>(fulfillment);
   const [missing, setMissing] = useState(false);
+  const allZones = useDemoData((d) => d.zones);
+  const zones = allZones.filter((z) => z.active !== false);
   const form = useForm<AddressInput>({ resolver: zodResolver(addressSchema), defaultValues: address });
   const errors = form.formState.errors;
 
@@ -42,7 +44,7 @@ export function DeliveryStep({ onNext, onBack, freeShipping }: { onNext: () => v
     <form noValidate onSubmit={choice && choice !== "PICKUP" ? form.handleSubmit(submit) : (e) => { e.preventDefault(); submit(); }} className="flex flex-col gap-5">
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-1 font-bold">¿Cómo lo recibís?</legend>
-        {shippingZones.map((z) => {
+        {zones.map((z) => {
           const Icon = ICONS[z.type];
           const price = z.price === 0 ? "Gratis" : freeShipping ? "Gratis" : z.price === null ? "A cotizar" : formatARS(z.price);
           return (

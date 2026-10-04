@@ -3,6 +3,7 @@
 Demo frontend **clickeable de punta a punta** de la tienda de Velmar (Mar del Plata), para mostrar antes de la seña.
 **No procesa pagos, no crea pedidos reales y no llama a servicios externos.** Precios, stock y textos son de muestra.
 
+- Panel de demostración en `/admin-demo/` (datos ficticios, sin login a propósito): ver [`docs/panel-demo.md`](docs/panel-demo.md).
 - Stack: Next.js 16 (App Router, export estático) · React 19 · TypeScript estricto · Tailwind CSS 4 · Zustand · React Hook Form + Zod · react-konva · Lucide.
 - Publicación: GitHub Pages vía `.github/workflows/pages.yml`.
 

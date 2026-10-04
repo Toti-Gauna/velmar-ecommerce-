@@ -7,9 +7,6 @@ import { brand, brandCssVariables } from "@/config/brand";
 import { site } from "@/config/site";
 import { SITE_URL } from "@/lib/base-path";
 import { ClientShell } from "@/components/organisms/ClientShell";
-import { DemoBanner } from "@/components/organisms/DemoBanner";
-import { Footer } from "@/components/organisms/Footer";
-import { Header } from "@/components/organisms/Header";
 import { Splash, splashScript } from "@/components/organisms/Splash";
 
 export const metadata: Metadata = {
@@ -46,10 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary">
           Saltar al contenido
         </a>
-        <DemoBanner />
-        <Header />
-        <main id="contenido" className="mx-auto w-full max-w-6xl px-4 pb-8 pt-5 sm:pt-8">{children}</main>
-        <Footer />
+        {children}
         <ClientShell />
       </body>
     </html>

@@ -11,6 +11,7 @@ import { availability, isPurchasable, unitPrice } from "@/demo/engine/catalog";
 import { validateText } from "@/demo/engine/personalization";
 import type { Product } from "@/demo/types";
 import { formatARS } from "@/lib/money";
+import { useDemoData } from "@/stores/admin";
 import { useCart } from "@/stores/cart";
 import { useToasts } from "@/stores/toast";
 import { useVariantSelection } from "../product/useVariantSelection";
@@ -22,8 +23,9 @@ import { ReferenceEditor } from "./ReferenceEditor";
 
 const STEPS = ["Opción", "Personalizar", "Revisar y aprobar"];
 
-export function Personalizer({ product }: { product: Product }) {
-  const tmpl = product.personalization!;
+export function Personalizer({ product: initial }: { product: Product }) {
+  const product = useDemoData((d) => d.products.find((p) => p.slug === initial.slug)) ?? initial;
+  const tmpl = product.personalization ?? initial.personalization!;
   const router = useRouter();
   const sel = useVariantSelection(product, useSearchParams().get("variante"));
   const [step, setStep] = useState(0);
@@ -87,8 +89,8 @@ export function Personalizer({ product }: { product: Product }) {
             </div>
           </div>
         )}
-        {step === 1 && tmpl.kind === "TEXT" && <TextEditor product={product} tint={sel.variant.colorHex} draft={text} onChange={setText} touched={touched} />}
-        {step === 1 && tmpl.kind === "PHOTO" && <PhotoEditor draft={photo} onChange={setPhoto} stageRef={stageRef} />}
+        {step === 1 && tmpl.kind === "TEXT" && <TextEditor product={product} template={tmpl} tint={sel.variant.colorHex} draft={text} onChange={setText} touched={touched} />}
+        {step === 1 && tmpl.kind === "PHOTO" && <PhotoEditor draft={photo} onChange={setPhoto} stageRef={stageRef} mask={tmpl.mask ?? "arch"} />}
         {step === 1 && tmpl.kind === "PHOTO_REFERENCE" && <ReferenceEditor product={product} draft={ref.draft} onFile={ref.onFile} onNotes={ref.setNotes} />}
         {step === 2 && <ReviewStep product={product} variant={sel.variant} price={price} text={text} photoPreview={photoPreview} reference={ref.draft} approved={approved} onApprove={setApproved} />}
       </div>

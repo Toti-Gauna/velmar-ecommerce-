@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Crosshair } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { Skeleton } from "@/components/atoms/Skeleton";
+import type { PhotoMask } from "@/demo/types";
 import { PhotoInput } from "./PhotoInput";
 
 const PhotoStage = dynamic(() => import("@/components/organisms/PhotoStage"), {
@@ -18,6 +19,7 @@ export interface PhotoDraft {
 }
 
 interface Props {
+  mask: PhotoMask;
   draft: PhotoDraft;
   onChange: (d: PhotoDraft) => void;
   stageRef: RefObject<Konva.Stage | null>;
@@ -25,7 +27,7 @@ interface Props {
 
 const STEP = 12;
 
-export function PhotoEditor({ draft, onChange, stageRef }: Props) {
+export function PhotoEditor({ draft, onChange, stageRef, mask }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(320);
   useEffect(() => {
@@ -41,7 +43,7 @@ export function PhotoEditor({ draft, onChange, stageRef }: Props) {
     <div className="grid gap-5 md:grid-cols-2">
       <div ref={box} className="w-full max-w-[420px] overflow-hidden rounded-[var(--radius-card)] bg-accent">
         {draft.url ? (
-          <PhotoStage imageUrl={draft.url} zoom={draft.zoom} offset={draft.offset} onOffsetChange={(offset) => onChange({ ...draft, offset })} width={width} stageRef={stageRef} />
+          <PhotoStage mask={mask} imageUrl={draft.url} zoom={draft.zoom} offset={draft.offset} onOffsetChange={(offset) => onChange({ ...draft, offset })} width={width} stageRef={stageRef} />
         ) : (
           <div className="grid aspect-[1/1.15] place-items-center p-6 text-center text-sm text-muted">Subí una foto para ver la vista previa en el velador.</div>
         )}

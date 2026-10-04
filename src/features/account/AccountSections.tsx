@@ -5,7 +5,8 @@ import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
 import { MissionProgress } from "@/components/molecules/MissionProgress";
 import { formatMissionValue, previewMission } from "@/demo/engine/missions";
-import { demoAccountProgress, missions } from "@/demo/fixtures/commerce";
+import { demoAccountProgress } from "@/demo/fixtures/commerce";
+import { useDemoData } from "@/stores/admin";
 import { formatARS } from "@/lib/money";
 import type { DemoOrder } from "@/stores/checkout";
 
@@ -30,6 +31,8 @@ export function OrdersSection({ lastOrder }: { lastOrder: DemoOrder | null }) {
 }
 
 export function MissionsSection() {
+  const all = useDemoData((d) => d.missions);
+  const missions = all.filter((m) => m.active !== false);
   return (
     <div className="grid gap-3 md:grid-cols-3">
       {missions.map((m) => {

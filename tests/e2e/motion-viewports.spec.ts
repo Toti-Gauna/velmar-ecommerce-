@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { horizontalOverflow } from "./helpers";
 
 test.describe("movimiento reducido", () => {
   test("sin splash ni animaciones largas", async ({ page }) => {
@@ -21,10 +22,10 @@ test("el splash no bloquea clics y se va en menos de 1 s", async ({ page }) => {
 for (const width of [375, 768, 1440]) {
   test(`capturas a ${width}px`, async ({ page }, info) => {
     await page.setViewportSize({ width, height: 900 });
-    for (const path of ["", "p/comedero-perro-globo/", "crear/collar-con-nombre/", "checkout/"]) {
+    for (const path of ["", "p/comedero-perro-globo/", "crear/collar-con-nombre/", "checkout/", "admin-demo/", "admin-demo/pedidos/detalle/?codigo=VEL-000123", "admin-demo/pagos/", "admin-demo/productos/editar/?id=comedero-perro-globo"]) {
       await page.goto(path);
       await page.waitForTimeout(950);
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const overflow = await horizontalOverflow(page);
       expect(overflow, `${path} a ${width}px`).toBeLessThanOrEqual(0);
       await page.screenshot({ path: info.outputPath(`${width}-${path.replace(/\W+/g, "_") || "home"}.png`), fullPage: true });
     }

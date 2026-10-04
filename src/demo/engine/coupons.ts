@@ -1,5 +1,5 @@
-import { coupons } from "../fixtures/commerce";
 import type { Coupon } from "../types";
+import { demoData } from "./source";
 
 export type CouponCheck = { ok: true; coupon: Coupon } | { ok: false; message: string };
 
@@ -10,8 +10,12 @@ export function normalizeCode(code: string): string {
 export function validateCoupon(rawCode: string, ctx: { subtotal: number; isRegistered: boolean; now: Date }): CouponCheck {
   const code = normalizeCode(rawCode);
   if (!code) return { ok: false, message: "Ingresá un código." };
-  const coupon = coupons.find((c) => c.code === code);
+  const coupon = demoData().coupons.find((c) => c.code === code);
   if (!coupon) return { ok: false, message: `El cupón ${code} no existe. Revisá cómo lo escribiste.` };
+  if (coupon.active === false) return { ok: false, message: `El cupón ${code} está pausado por el momento.` };
+  if (coupon.maxUses !== undefined && (coupon.usedCount ?? 0) >= coupon.maxUses) {
+    return { ok: false, message: `El cupón ${code} ya alcanzó su límite de usos.` };
+  }
   if (coupon.endsAt && ctx.now > new Date(`${coupon.endsAt}T23:59:59`)) {
     return { ok: false, message: `El cupón ${code} venció. Probá con otro.` };
   }

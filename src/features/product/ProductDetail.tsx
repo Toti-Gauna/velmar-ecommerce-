@@ -9,17 +9,19 @@ import { FaqList } from "@/components/molecules/FaqList";
 import { QuantityStepper } from "@/components/molecules/QuantityStepper";
 import { VariantPicker } from "@/components/molecules/VariantPicker";
 import { ProductGallery } from "@/components/organisms/ProductGallery";
-import { availability, isPurchasable, maxQuantity, unitPrice } from "@/demo/engine/catalog";
-import { demoSettings } from "@/demo/fixtures/commerce";
+import { availability, isPurchasable, maxQuantity, personalizeHref, unitPrice } from "@/demo/engine/catalog";
 import type { Product } from "@/demo/types";
 import { withoutNationalTaxes } from "@/lib/money";
+import { useDemoData } from "@/stores/admin";
 import { useCart } from "@/stores/cart";
 import { useToasts } from "@/stores/toast";
 import { useVariantSelection } from "./useVariantSelection";
 
 const KIND_LABEL = { TEXT: "texto, fuente y color", PHOTO: "tu foto con encuadre y zoom", PHOTO_REFERENCE: "tu foto de referencia y notas" };
 
-export function ProductDetail({ product }: { product: Product }) {
+export function ProductDetail({ product: initial }: { product: Product }) {
+  const product = useDemoData((d) => d.products.find((p) => p.slug === initial.slug)) ?? initial;
+  const settings = useDemoData((d) => d.settings);
   const sel = useVariantSelection(product);
   const [qty, setQty] = useState(1);
   const add = useCart((s) => s.add);
@@ -28,7 +30,8 @@ export function ProductDetail({ product }: { product: Product }) {
   const avail = availability(product, sel.variant);
   const max = maxQuantity(sel.variant);
   const quantity = Math.min(qty, Math.max(1, max));
-  const canBuy = isPurchasable(sel.variant, quantity);
+  const inactive = product.active === false;
+  const canBuy = !inactive && isPurchasable(sel.variant, quantity);
   const tmpl = product.personalization;
 
   const addToCart = () => {
@@ -37,7 +40,7 @@ export function ProductDetail({ product }: { product: Product }) {
   };
 
   const cta = tmpl ? (
-    <ButtonLink href={`/crear/${product.slug}/?variante=${sel.variant.id}`} size="lg" className="w-full" aria-disabled={!canBuy} tabIndex={canBuy ? undefined : -1}>
+    <ButtonLink href={personalizeHref(product.slug, sel.variant.id)} size="lg" className="w-full" aria-disabled={!canBuy} tabIndex={canBuy ? undefined : -1}>
       <Sparkles size={18} aria-hidden="true" /> Personalizar<span className="max-sm:sr-only"> y ver vista previa</span>
     </ButtonLink>
   ) : (
@@ -46,7 +49,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
   return (
     <div className="grid gap-8 md:grid-cols-2 md:gap-10">
-      <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} />
+      <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} photoUrl={product.photoDataUrl} alt={product.imageAlt} />
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap gap-1.5">
@@ -57,14 +60,18 @@ export function ProductDetail({ product }: { product: Product }) {
           <p className="text-muted">{product.description}</p>
         </div>
         <div className="flex flex-col gap-1">
-          <Price amount={price} withoutTaxes={withoutNationalTaxes(price, demoSettings.nationalTaxRate)} size="lg" />
+          <Price amount={price} withoutTaxes={withoutNationalTaxes(price, settings.nationalTaxRate)} size="lg" />
           {tmpl && tmpl.surcharge > 0 && <p className="text-sm text-muted">+ ${tmpl.surcharge.toLocaleString("es-AR")} por personalización</p>}
-          <p className="text-sm font-semibold text-success">{demoSettings.transferDiscountPct}% off pagando con transferencia o QR</p>
+          <p className="text-sm font-semibold text-success">{settings.transferDiscountPct}% off pagando con transferencia o QR</p>
           <p className="text-xs text-muted">Precio de muestra para la demo.</p>
         </div>
         {sel.colorOptions.length > 0 && <VariantPicker legend="Color" options={sel.colorOptions} value={sel.color} onChange={sel.chooseColor} swatches />}
         {sel.sizeOptions.length > 0 && <VariantPicker legend="Opción" options={sel.sizeOptions} value={sel.size} onChange={sel.chooseSize} />}
-        <AvailabilityNote availability={avail} />
+        {inactive ? (
+          <p role="status" className="rounded-2xl bg-warning-soft p-3 text-sm font-bold text-warning">Este producto está pausado desde el panel demo y no se puede comprar.</p>
+        ) : (
+          <AvailabilityNote availability={avail} />
+        )}
         {!tmpl && <QuantityStepper label="Cantidad" value={quantity} max={Math.max(1, max)} onChange={setQty} />}
         <div className="hidden md:block">{cta}</div>
         <section aria-labelledby="faq">

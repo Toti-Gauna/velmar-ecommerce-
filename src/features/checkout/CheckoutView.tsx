@@ -8,6 +8,7 @@ import { StepIndicator } from "@/components/molecules/StepIndicator";
 import { missingForFreeShipping, totalsOf } from "@/demo/engine/pricing";
 import { DEMO_ORDER_CODE, DEMO_TRACKING_TOKEN } from "@/demo/fixtures/commerce";
 import { useAccount } from "@/stores/account";
+import { useAdmin } from "@/stores/admin";
 import { useCart } from "@/stores/cart";
 import { useCheckout } from "@/stores/checkout";
 import { useHydrated } from "@/stores/hydration";
@@ -46,10 +47,12 @@ export function CheckoutView() {
   }
 
   const confirm = () => {
-    checkout.placeOrder({
+    const order = {
       code: DEMO_ORDER_CODE, token: DEMO_TRACKING_TOKEN, createdAt: new Date().toISOString(), contact: checkout.contact,
       fulfillment: checkout.fulfillment!, paymentMethod: checkout.paymentMethod!, lines, quote: totalsOf(quote), asAccount: isAccount,
-    });
+    };
+    checkout.placeOrder(order);
+    useAdmin.getState().syncShopOrder(order); // aparece en el panel demo de este navegador
     clearCart();
     router.push("/checkout/confirmacion/");
   };

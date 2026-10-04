@@ -1,9 +1,9 @@
 "use client";
-import { useMemo } from "react";
 import { ButtonLink } from "@/components/atoms/Button";
 import { EmptyState } from "@/components/molecules/EmptyState";
-import { ProductGrid, type ProductCardData } from "@/components/molecules/ProductCard";
-import { getProduct, sortProducts, type SortKey } from "@/demo/engine/catalog";
+import { ProductGrid } from "@/components/molecules/ProductCard";
+import { productsInCategory, sortProducts, type SortKey } from "@/demo/engine/catalog";
+import { useDemoVersion } from "@/stores/admin";
 import { useAccount } from "@/stores/account";
 import { useHydrated } from "@/stores/hydration";
 import { toCard } from "./mappers";
@@ -15,16 +15,14 @@ const SORTS: { value: SortKey; label: string }[] = [
   { value: "new", label: "Nuevos primero" },
 ];
 
-export function CategoryProducts({ slugs, initial }: { slugs: string[]; initial: ProductCardData[] }) {
+export function CategoryProducts({ categorySlug, hadProducts }: { categorySlug: string; hadProducts: boolean }) {
+  useDemoVersion();
   const hydrated = useHydrated();
   const storedSort = useAccount((s) => s.sort);
   const setSort = useAccount((s) => s.setSort);
   const sort = hydrated ? storedSort : "relevance";
-  const cards = useMemo(() => {
-    const list = slugs.flatMap((s) => getProduct(s) ?? []);
-    return sortProducts(list, sort).map(toCard);
-  }, [slugs, sort]);
-  if (initial.length === 0) {
+  const cards = sortProducts(productsInCategory(categorySlug), sort).map(toCard);
+  if (cards.length === 0 || !hadProducts) {
     return <EmptyState title="Todavía no hay productos acá" action={<ButtonLink href="/categorias/">Ver otras categorías</ButtonLink>}>Estamos preparando piezas nuevas.</EmptyState>;
   }
   return (

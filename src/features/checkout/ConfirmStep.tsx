@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
-import { shippingZones } from "@/demo/fixtures/commerce";
+import { useDemoData } from "@/stores/admin";
 import { useCheckout } from "@/stores/checkout";
 
 const PAY_LABEL = { CHECKOUT_PRO: "Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "QR (muestra)" };
@@ -10,7 +10,7 @@ const PAY_LABEL = { CHECKOUT_PRO: "Mercado Pago (muestra)", BANK_TRANSFER: "Tran
 export function ConfirmStep({ onBack, onConfirm, onEdit }: { onBack: () => void; onConfirm: () => void; onEdit: (step: number) => void }) {
   const { contact, address, fulfillment, paymentMethod, acceptedTerms, patch } = useCheckout();
   const [error, setError] = useState(false);
-  const zone = shippingZones.find((z) => z.type === fulfillment);
+  const zone = useDemoData((d) => d.zones.find((z) => z.type === fulfillment));
   const rows = [
     { step: 0, label: "Datos", value: `${contact.name} · ${contact.email} · ${contact.phone}` },
     { step: 1, label: "Entrega", value: `${zone?.name ?? "—"}${fulfillment !== "PICKUP" ? ` · ${address.street} ${address.number}, ${address.city} (${address.postalCode})` : ""}` },

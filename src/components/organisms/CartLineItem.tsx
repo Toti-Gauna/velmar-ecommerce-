@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import type { LinePersonalization } from "@/demo/engine/cart-types";
 import type { ArtKey } from "@/demo/types";
+import type { TextZone } from "@/demo/fixtures/templates";
 import { formatARS } from "@/lib/money";
 import { QuantityStepper } from "@/components/molecules/QuantityStepper";
 import { LineThumb } from "./LineThumb";
@@ -18,6 +19,8 @@ export interface CartLineView {
   quantity: number;
   maxQuantity: number;
   personalization?: LinePersonalization;
+  zone?: TextZone;
+  photoUrl?: string;
 }
 
 const KIND = { TEXT: "Texto", PHOTO: "Con tu foto", PHOTO_REFERENCE: "Desde foto de referencia" };
@@ -26,7 +29,7 @@ export function CartLineItem({ line, onQuantity, onRemove }: { line: CartLineVie
   const p = line.personalization;
   return (
     <li className="animate-fade-up flex gap-3 rounded-2xl border border-line bg-surface p-3 sm:gap-4 sm:p-4">
-      <div className="w-24 shrink-0 sm:w-28"><LineThumb art={line.art} tint={line.tint} name={line.name} personalization={p} /></div>
+      <div className="w-24 shrink-0 sm:w-28"><LineThumb art={line.art} tint={line.tint} name={line.name} personalization={p} zone={line.zone} /></div>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <Link href={`/p/${line.slug}/`} className="font-bold leading-snug hover:underline">{line.name}</Link>
         <p className="text-sm text-muted">{line.variantLabel}</p>

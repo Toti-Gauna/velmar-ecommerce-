@@ -1,8 +1,8 @@
-import { demoSettings, shippingZones } from "../fixtures/commerce";
 import type { Coupon, FulfillmentType, PaymentMethod } from "../types";
 import type { CartLine } from "./cart-types";
 import { getProduct, unitPrice } from "./catalog";
 import { couponDiscount } from "./coupons";
+import { demoData } from "./source";
 
 /**
  * Cotización VISUAL de la demo. En producción el servidor recalcula todo al confirmar
@@ -46,20 +46,21 @@ export function quoteLines(lines: CartLine[]): QuotedLine[] {
 
 export function shippingFor(fulfillment: FulfillmentType | null | undefined): number | null {
   if (!fulfillment) return null;
-  return shippingZones.find((z) => z.type === fulfillment)?.price ?? null;
+  return demoData().zones.find((z) => z.type === fulfillment)?.price ?? null;
 }
 
 export function quoteCart(lines: CartLine[], options: QuoteOptions = {}): Quote {
   const quoted = quoteLines(lines);
   const subtotal = quoted.reduce((sum, q) => sum + q.lineTotal, 0);
   const personalizationTotal = quoted.reduce((sum, q) => sum + q.surcharge, 0);
+  const settings = demoData().settings;
   const coupon = options.coupon ?? null;
   const discount = couponDiscount(coupon, subtotal);
   const manual = options.paymentMethod === "BANK_TRANSFER" || options.paymentMethod === "QR_MANUAL";
-  const transferDiscount = manual ? Math.round(((subtotal - discount) * demoSettings.transferDiscountPct) / 100) : 0;
+  const transferDiscount = manual ? Math.round(((subtotal - discount) * settings.transferDiscountPct) / 100) : 0;
   const baseShipping = shippingFor(options.fulfillment);
   const freeShippingApplied =
-    baseShipping !== null && baseShipping > 0 && (coupon?.type === "FREE_SHIPPING" || subtotal >= demoSettings.freeShippingFrom);
+    baseShipping !== null && baseShipping > 0 && (coupon?.type === "FREE_SHIPPING" || subtotal >= settings.freeShippingFrom);
   const shippingCost = baseShipping === null ? null : freeShippingApplied ? 0 : baseShipping;
   const total = Math.max(0, subtotal - discount - transferDiscount + (shippingCost ?? 0));
   return {
@@ -76,7 +77,7 @@ export function quoteCart(lines: CartLine[], options: QuoteOptions = {}): Quote 
 }
 
 export function missingForFreeShipping(subtotal: number): number {
-  return Math.max(0, demoSettings.freeShippingFrom - subtotal);
+  return Math.max(0, demoData().settings.freeShippingFrom - subtotal);
 }
 
 export function totalsOf(quote: Quote): Omit<Quote, "lines"> {

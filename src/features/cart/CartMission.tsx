@@ -1,11 +1,14 @@
 "use client";
 import { MissionProgress } from "@/components/molecules/MissionProgress";
 import { formatMissionValue, previewMission } from "@/demo/engine/missions";
-import { demoAccountProgress, missions } from "@/demo/fixtures/commerce";
+import { demoAccountProgress } from "@/demo/fixtures/commerce";
+import { useDemoData } from "@/stores/admin";
 
 /** Progreso ILUSTRATIVO de la misión "Comprá 2 productos" con el carrito actual. */
 export function CartMission({ units, total, isRegistered }: { units: number; total: number; isRegistered: boolean }) {
-  const mission = missions[0]!;
+  const missions = useDemoData((d) => d.missions);
+  const mission = missions.find((m) => m.active !== false && m.type === "UNITS_COUNT") ?? missions.find((m) => m.active !== false);
+  if (!mission) return null;
   const current = isRegistered ? (demoAccountProgress[mission.id] ?? 0) : 0;
   const p = previewMission(mission, current, { units, total });
   const label = `${formatMissionValue(mission, p.after)} / ${mission.threshold}`;

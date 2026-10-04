@@ -47,7 +47,7 @@ export function TrackingView() {
         {stateId === "pending" && (
           <section aria-labelledby="comprobante" className="flex flex-col gap-3 rounded-[var(--radius-card)] border border-line bg-surface p-5">
             <h2 id="comprobante" className="font-extrabold">Falta el comprobante</h2>
-            <ProofUpload />
+            <ProofUpload orderCode={order?.code} />
           </section>
         )}
       </div>

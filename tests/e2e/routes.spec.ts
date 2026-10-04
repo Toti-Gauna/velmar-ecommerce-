@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { horizontalOverflow } from "./helpers";
 
 // Rutas relativas (sin "/" inicial) para respetar el basePath del baseURL.
 const ROUTES = [
@@ -29,7 +30,7 @@ test.describe("rutas directas y refresh bajo el subpath", () => {
       await expect(target).toBeVisible();
       await page.reload();
       await expect(target).toBeVisible();
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const overflow = await horizontalOverflow(page);
       expect(overflow, "sin scroll horizontal a 375 px").toBeLessThanOrEqual(0);
     });
   }
