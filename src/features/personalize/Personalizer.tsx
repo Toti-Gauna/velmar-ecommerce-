@@ -3,11 +3,12 @@ import type Konva from "konva";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/atoms/Button";
-import { AvailabilityNote } from "@/components/molecules/AvailabilityNote";
+import { QuantityStepper } from "@/components/molecules/QuantityStepper";
+import { StockMeter } from "@/components/molecules/StockMeter";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { StepIndicator } from "@/components/molecules/StepIndicator";
 import { VariantPicker } from "@/components/molecules/VariantPicker";
-import { availability, isPurchasable, unitPrice } from "@/demo/engine/catalog";
+import { availability, isPurchasable, maxQuantity, unitPrice } from "@/demo/engine/catalog";
 import { validateText } from "@/demo/engine/personalization";
 import type { Product } from "@/demo/types";
 import { formatARS } from "@/lib/money";
@@ -27,7 +28,9 @@ export function Personalizer({ product: initial }: { product: Product }) {
   const product = useDemoData((d) => d.products.find((p) => p.slug === initial.slug)) ?? initial;
   const tmpl = product.personalization ?? initial.personalization!;
   const router = useRouter();
-  const sel = useVariantSelection(product, useSearchParams().get("variante"));
+  const params = useSearchParams();
+  const sel = useVariantSelection(product, params.get("variante"));
+  const [qty, setQty] = useState(Math.max(1, Math.min(10, Number(params.get("cantidad")) || 1)));
   const [step, setStep] = useState(0);
   const [touched, setTouched] = useState(false);
   const firstColor = tmpl.colors?.[0];
@@ -61,7 +64,7 @@ export function Personalizer({ product: initial }: { product: Product }) {
 
   const addToCart = () => {
     add({
-      productSlug: product.slug, variantId: sel.variant.id, quantity: 1,
+      productSlug: product.slug, variantId: sel.variant.id, quantity: Math.min(qty, Math.max(1, maxQuantity(sel.variant))),
       personalization: {
         kind: tmpl.kind, approvedAt: new Date().toISOString(),
         ...(tmpl.kind === "TEXT" && { text: text.text, font: text.font, color: text.color, colorName: text.colorName }),
@@ -84,8 +87,9 @@ export function Personalizer({ product: initial }: { product: Product }) {
             <div className="flex flex-col gap-5">
             {sel.colorOptions.length > 0 && <VariantPicker legend="Color" options={sel.colorOptions} value={sel.color} onChange={sel.chooseColor} swatches />}
             {sel.sizeOptions.length > 0 && <VariantPicker legend="Opción" options={sel.sizeOptions} value={sel.size} onChange={sel.chooseSize} />}
-            <AvailabilityNote availability={availability(product, sel.variant)} />
-            <p className="text-lg font-extrabold">{formatARS(price)}</p>
+            <StockMeter availability={availability(product, sel.variant)} />
+            <div className="flex items-center gap-3"><span className="text-sm font-bold">Cantidad</span><QuantityStepper label="Cantidad" value={Math.min(qty, Math.max(1, maxQuantity(sel.variant)))} max={Math.max(1, maxQuantity(sel.variant))} onChange={setQty} /></div>
+            <p className="text-2xl font-extrabold tabular-nums">{formatARS(price * qty)}{qty > 1 && <span className="ml-2 text-sm font-semibold text-muted">({qty} × {formatARS(price)}, mismo diseño)</span>}</p>
             </div>
           </div>
         )}

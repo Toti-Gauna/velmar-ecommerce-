@@ -44,7 +44,7 @@ export const textZones: Record<string, TextZone> = {
 };
 
 export const FONT_FAMILIES: Record<string, string> = {
-  Redondeada: "'Nunito Variable', ui-rounded, system-ui, sans-serif",
+  Redondeada: "'Manrope Variable', ui-rounded, system-ui, sans-serif",
   Clásica: "Georgia, 'Times New Roman', serif",
   Manuscrita: "Caveat, 'Segoe Script', cursive",
 };

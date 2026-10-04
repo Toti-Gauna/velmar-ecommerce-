@@ -14,7 +14,7 @@ export default function AdminDemoLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <AdminBanner />
-      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] gap-4 px-4 pb-16 pt-4 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-8 lg:pt-6">
+      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] gap-4 px-4 pb-16 pt-4 lg:grid-cols-[264px_minmax(0,1fr)] lg:gap-10 lg:pt-8">
         <AdminNav />
         <main id="contenido" className="min-w-0">
           <AdminGate>{children}</AdminGate>

@@ -18,7 +18,7 @@ import { useDemoSave } from "./useDemoSave";
 import { VariantsEditor } from "./VariantsEditor";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
-  return <section className="flex flex-col gap-3 rounded-[var(--radius-card)] border border-line bg-surface p-4"><h2 className="font-extrabold">{title}</h2>{children}</section>;
+  return <section className="flex flex-col gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4"><h2 className="font-extrabold">{title}</h2>{children}</section>;
 }
 
 function problems(p: Product): string[] {

@@ -39,7 +39,7 @@ export function ProductsList() {
       {list.length === 0 ? <EmptyState title="Sin resultados">Probá con otro nombre.</EmptyState> : (
         <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {list.map((p) => (
-            <li key={p.slug} className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-3">
+            <li key={p.slug} className="flex flex-col gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3">
               <div className="flex gap-3">
                 <ProductVisual art={p.art} photoUrl={p.photoDataUrl} tint={p.variants[0]?.colorHex} label={p.imageAlt || p.name} showBadge={false} className="aspect-square w-20 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">

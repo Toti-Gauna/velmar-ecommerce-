@@ -5,7 +5,7 @@ import { ProductArt, type ProductArtProps } from "./ProductArt";
 export function ProductVisual({ photoUrl, ...art }: ProductArtProps & { photoUrl?: string }) {
   if (!photoUrl) return <ProductArt {...art} />;
   return (
-    <div className={cn("relative overflow-hidden bg-accent", art.className)}>
+    <div className={cn(/\babsolute\b/.test(art.className ?? "") ? "" : "relative", "overflow-hidden bg-accent", art.className)}>
       {/* eslint-disable-next-line @next/next/no-img-element -- data URL local del panel demo */}
       <img src={photoUrl} alt={art.label} className="h-full w-full object-cover" />
       {art.showBadge !== false && (

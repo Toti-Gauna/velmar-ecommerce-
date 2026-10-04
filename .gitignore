@@ -156,3 +156,4 @@ playwright-report/
 test-results/
 .env*
 !.env.example
+tests/e2e/zz-*.spec.ts

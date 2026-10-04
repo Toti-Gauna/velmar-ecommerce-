@@ -2,7 +2,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export const inputClass =
-  "w-full min-h-11 rounded-xl border border-line bg-surface px-3.5 text-base text-ink placeholder:text-muted/70 focus:border-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 aria-[invalid=true]:border-danger";
+  "w-full min-h-12 rounded-2xl border border-ink/12 bg-surface px-4 text-base text-ink shadow-[inset_0_1px_2px_rgb(28_32_22/0.04)] transition-colors placeholder:text-muted/60 hover:border-ink/25 focus:border-primary focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/12 aria-[invalid=true]:border-danger";
 
 interface FieldProps {
   id: string;

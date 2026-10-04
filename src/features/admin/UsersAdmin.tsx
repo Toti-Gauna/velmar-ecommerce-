@@ -28,7 +28,7 @@ export function UsersAdmin() {
       <ul className="grid gap-3 lg:grid-cols-2">
         {list.map((u) => (
           <li key={u.id}>
-            <details className="group rounded-2xl border border-line bg-surface">
+            <details className="group rounded-3xl bg-surface shadow-[var(--shadow-card)]">
               <summary className="flex min-h-14 cursor-pointer list-none flex-wrap items-center gap-2 p-4 [&::-webkit-details-marker]:hidden">
                 <span className="font-extrabold">{u.name}</span>
                 {u.blocked && <Badge tone="danger"><ShieldOff size={12} aria-hidden="true" /> Bloqueado (visual)</Badge>}

@@ -18,13 +18,13 @@
 ## Implementado (demostrable)
 | Sección | Qué se puede hacer |
 |---|---|
-| Inicio | Pedidos por estado, comprobantes por revisar, ventas de muestra (hoy / 7 / 30 días + gráfico con tabla), últimos pedidos, reclamos. Fecha de referencia fija: 4/10/2026 |
+| Inicio | KPIs con variación contra la semana anterior y sparkline (ventas 7 días, ticket promedio, pedidos, comprobantes por revisar), embudo de pedidos por estado (cada etapa abre la lista filtrada), gráfico con tabla, productos más vendidos, rendimiento del club (misiones y ruleta), actividad reciente, últimos pedidos y reclamos. Fecha de referencia fija: 4/10/2026 |
 | Pedidos | Buscar por código o cliente, filtrar por estado y fechas; detalle con productos, variante, personalización aprobada, comprobante de muestra, historial, notas internas, fecha comprometida y cambio de estado **solo por transiciones válidas** (spec 5.2) |
 | Pagos manuales | Cola de transferencia/QR: aprobar (con confirmación) o rechazar **con motivo obligatorio**. Comprobante subido → "en revisión", nunca pagado. Auditoría de muestra |
 | Productos | Crear (queda pausado), editar nombre/descripción/categoría/precio ilustrativo/plazo/destacado/nuevo/activo, ilustración o foto local + alt, variantes con color/tamaño/recargo/stock (−1 = a pedido), medidas de envío y plantilla |
 | Categorías y personalización | Ordenar, destacar; plantillas de texto (máx. caracteres, tipografías, colores, recargo), foto (máscara arco/círculo/rectángulo) y referencia (texto de ayuda); zona de texto con vista previa en vivo |
 | Misiones | Crear, editar, encadenar, activar/pausar, completados de muestra y simulador de progreso con premio de ejemplo al llegar al umbral. Sin referidos |
-| Cupones | Crear (porcentaje, monto, envío gratis, mínimo, usos, vencimiento, solo con cuenta), pausar, usos simulados. Funcionan en el carrito demo |
+| Cupones | Crear (porcentaje, monto, envío gratis, mínimo, usos, vencimiento, solo con cuenta), pausar, usos simulados. Funcionan en el carrito demo. **Ruleta**: editar premios, pesos (con probabilidad resultante) y días de vigencia; los cupones ganados figuran con la etiqueta "Ruleta" |
 | Usuarios | Buscar perfiles ficticios; compras, misiones, premios, bloqueo visual. Sin contraseñas ni datos de pago |
 | Reclamos | Pendientes/cerrados; marcar en curso, resolver o rechazar con motivo. Los arrepentimientos enviados desde la tienda demo llegan acá |
 | Contenido | Carrusel (orden, visibilidad, textos, destino), textos de inicio y preguntas frecuentes |

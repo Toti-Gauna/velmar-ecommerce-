@@ -1,6 +1,7 @@
 import type { DemoData } from "../engine/source";
 import type { DemoSettings } from "../fixtures/commerce";
 import type { TextZone } from "../fixtures/templates";
+import type { WheelConfig } from "../fixtures/wheel";
 import type { CarouselSlide, Coupon, Faq, Mission, PersonalizationTemplate, Product, ShippingZone } from "../types";
 import { auditEntry, type AdminData } from "./defaults";
 import type { ClaimStatus } from "./types";
@@ -17,6 +18,8 @@ export interface DataActions {
   saveTextZone: (art: string, zone: TextZone) => void;
   saveMission: (mission: Mission) => void;
   saveCoupon: (coupon: Coupon, previousCode?: string) => void;
+  saveWheel: (wheel: WheelConfig) => void;
+  addPrizeCoupon: (coupon: Coupon) => void;
   saveSettings: (patch: Partial<DemoSettings>) => void;
   saveZone: (zone: ShippingZone) => void;
   saveSlides: (slides: CarouselSlide[]) => void;
@@ -62,6 +65,8 @@ export function createDataActions(set: Set): DataActions {
     saveTextZone: (art, zone) => edit("Zona de texto", art, (d) => ({ textZones: { ...d.textZones, [art]: zone } })),
     saveMission: (m) => edit("Misión guardada", m.title, (d) => ({ missions: upsert(d.missions, m, (x) => x.id === m.id) })),
     saveCoupon: (c, prev) => edit("Cupón guardado", c.code, (d) => ({ coupons: upsert(d.coupons, c, (x) => x.code === (prev ?? c.code)) })),
+    saveWheel: (wheel) => edit("Ruleta de cupones actualizada", "Ruleta", () => ({ wheel })),
+    addPrizeCoupon: (c) => edit("Premio de ruleta emitido", c.code, (d) => ({ coupons: [...d.coupons.filter((x) => x.code !== c.code), c] })),
     saveSettings: (patch) => edit("Ajustes guardados", Object.keys(patch).join(", "), (d) => ({ settings: { ...d.settings, ...patch } })),
     saveZone: (z) => edit("Zona de envío", z.name, (d) => ({ zones: upsert(d.zones, z, (x) => x.id === z.id) })),
     saveSlides: (slides) => edit("Carrusel actualizado", "Inicio", (d) => ({ content: { ...d.content, slides } })),

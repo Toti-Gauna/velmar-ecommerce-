@@ -35,7 +35,7 @@ export function ClaimsAdmin() {
       {list.length === 0 && <EmptyState title={open ? "No hay reclamos pendientes" : "Todavía no hay reclamos cerrados"} />}
       <ul className="flex flex-col gap-3">
         {list.map((c) => (
-          <li key={c.id} className="animate-fade-up flex flex-col gap-2 rounded-2xl border border-line bg-surface p-4 text-sm">
+          <li key={c.id} className="animate-fade-up flex flex-col gap-2 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4 text-sm">
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-extrabold">{c.code}</span><Badge>{TYPE[c.type]}</Badge><Badge tone={STATUS[c.status].tone}>{STATUS[c.status].label}</Badge>
               {c.fromShop && <span className="text-xs font-bold text-warning">desde la tienda demo</span>}

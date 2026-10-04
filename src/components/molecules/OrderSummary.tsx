@@ -11,7 +11,7 @@ export interface SummaryRow {
 
 export function OrderSummary({ rows, total, totalNote, children }: { rows: SummaryRow[]; total: number; totalNote?: ReactNode; children?: ReactNode }) {
   return (
-    <section aria-label="Resumen" className="rounded-[var(--radius-card)] border border-line bg-surface p-4 sm:p-5">
+    <section aria-label="Resumen" className="rounded-3xl bg-surface p-5 shadow-[var(--shadow-card)] sm:p-6">
       <dl className="flex flex-col gap-2 text-sm">
         {rows.map((r, i) => (
           <div key={i} className="flex justify-between gap-3">
@@ -22,8 +22,8 @@ export function OrderSummary({ rows, total, totalNote, children }: { rows: Summa
           </div>
         ))}
         <div className="mt-2 flex items-end justify-between border-t border-line pt-3">
-          <dt className="text-base font-extrabold">Total</dt>
-          <dd className="text-2xl font-extrabold tabular-nums">{formatARS(total)}</dd>
+          <dt className="font-display text-2xl">Total</dt>
+          <dd className="text-3xl font-extrabold tabular-nums tracking-tight">{formatARS(total)}</dd>
         </div>
       </dl>
       {totalNote && <p className="mt-1 text-xs text-muted">{totalNote}</p>}

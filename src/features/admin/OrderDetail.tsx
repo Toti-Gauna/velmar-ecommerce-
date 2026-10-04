@@ -18,7 +18,7 @@ import { ProofReview } from "./ProofReview";
 import { useDemoSave } from "./useDemoSave";
 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
-  return <section className="rounded-[var(--radius-card)] border border-line bg-surface p-4"><h2 className="mb-3 font-extrabold">{title}</h2>{children}</section>;
+  return <section className="rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4"><h2 className="mb-3 font-extrabold">{title}</h2>{children}</section>;
 }
 
 export function OrderDetail() {

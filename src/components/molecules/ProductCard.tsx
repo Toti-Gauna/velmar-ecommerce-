@@ -1,8 +1,12 @@
+"use client";
 import Link from "next/link";
-import type { ArtKey } from "@/demo/types";
-import { Badge } from "@/components/atoms/Badge";
-import { Price } from "@/components/atoms/Price";
+import { Plus, Sparkles } from "lucide-react";
+import type { ArtKey, ArtView } from "@/demo/types";
+import { getProduct } from "@/demo/engine/catalog";
 import { ProductVisual } from "@/components/illustrations/ProductVisual";
+import { ProductArt } from "@/components/illustrations/ProductArt";
+import { useQuickAdd } from "@/features/cart/useQuickAdd";
+import { formatARS } from "@/lib/money";
 
 export interface ProductCardData {
   slug: string;
@@ -12,43 +16,67 @@ export interface ProductCardData {
   name: string;
   short: string;
   art: ArtKey;
+  secondView?: ArtView;
   tint?: string;
+  colors: string[];
   fromPrice: number;
   hasRange: boolean;
   isNew: boolean;
   madeToOrder: boolean;
   personalizable: boolean;
+  stockNote: string;
 }
 
-export function ProductCard({ product }: { product: ProductCardData }) {
+export function ProductCard({ product, priority }: { product: ProductCardData; priority?: boolean }) {
+  const quickAdd = useQuickAdd();
+  const full = getProduct(product.slug);
   return (
-    <article className="group relative flex flex-col gap-2">
-      <div className="relative overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
-        <ProductVisual art={product.art} tint={product.tint} photoUrl={product.photoUrl} label={product.alt} className="aspect-square transition-transform duration-300 group-hover:scale-[1.03]" />
-        <div className="absolute left-2 top-2 flex flex-wrap gap-1">
-          {product.isNew && <Badge tone="brand">Nuevo</Badge>}
-          {product.personalizable && <Badge>Personalizable</Badge>}
+    <article className="group relative flex flex-col gap-3">
+      <div className="relative overflow-hidden rounded-[var(--radius-card)] bg-accent shadow-[var(--shadow-card)] transition-shadow duration-500 group-hover:shadow-[var(--shadow-lift)]">
+        <ProductVisual art={product.art} tint={product.tint} photoUrl={product.photoUrl} label={product.alt}
+          className="aspect-[4/5] transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]" />
+        {product.secondView && !product.photoUrl && (
+          <ProductArt art={product.art} view={product.secondView} tint={product.tint} label="" showBadge={false}
+            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 [&>svg]:h-full [&>svg]:object-cover" />
+        )}
+        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+          {product.isNew && <span className="rounded-full bg-night px-2.5 py-1 text-[11px] font-bold text-[#f6f1e8]">Nuevo</span>}
+          {product.personalizable && <span className="rounded-full bg-[#fffdf8]/90 px-2.5 py-1 text-[11px] font-bold text-ink backdrop-blur">Personalizable</span>}
         </div>
+        {full && (
+          <button type="button" onClick={() => quickAdd(full)} aria-label={product.personalizable ? `Personalizar ${product.name}` : `Agregar ${product.name} al carrito`}
+            className="absolute bottom-3 right-3 z-10 flex h-11 items-center gap-2 rounded-full bg-[#fffdf8] px-3.5 text-sm font-bold text-ink shadow-[var(--shadow-card)] transition-all duration-300 hover:bg-primary hover:text-on-primary lg:translate-y-3 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:focus-visible:translate-y-0 lg:focus-visible:opacity-100">
+            {product.personalizable ? <Sparkles size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
+            <span className="max-lg:sr-only">{product.personalizable ? "Personalizar" : "Agregar"}</span>
+          </button>
+        )}
       </div>
-      <h3 className="text-[15px] font-bold leading-snug text-ink">
-        <Link href={product.href} className="after:absolute after:inset-0 focus-visible:outline-none">
-          {product.name}
-        </Link>
-      </h3>
-      <p className="-mt-1 line-clamp-1 text-sm text-muted">{product.short}</p>
-      <div className="flex flex-col gap-0.5">
-        <Price amount={product.fromPrice} prefix={product.hasRange ? "desde" : undefined} size="sm" />
-        {product.madeToOrder && <span className="text-xs font-semibold text-muted">Hecho a pedido</span>}
+      <div className="flex items-start justify-between gap-3 px-1">
+        <div className="min-w-0">
+          <h3 className="text-[15px] font-bold leading-snug text-ink">
+            <Link href={product.href} prefetch={priority} className="after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none">{product.name}</Link>
+          </h3>
+          <p className="mt-0.5 line-clamp-1 text-sm text-muted">{product.stockNote}</p>
+        </div>
+        <p className="shrink-0 text-right text-[15px] font-extrabold tabular-nums">
+          {product.hasRange && <span className="block text-[11px] font-semibold text-muted">desde</span>}
+          {formatARS(product.fromPrice)}
+        </p>
       </div>
+      {product.colors.length > 1 && (
+        <p className="flex gap-1.5 px-1" aria-label={`${product.colors.length} colores`}>
+          {product.colors.slice(0, 5).map((c) => <span key={c} aria-hidden="true" className="h-3.5 w-3.5 rounded-full border border-black/10" style={{ background: c }} />)}
+        </p>
+      )}
     </article>
   );
 }
 
 export function ProductGrid({ products }: { products: ProductCardData[] }) {
   return (
-    <ul className="grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-5 md:grid-cols-3 lg:grid-cols-4">
-      {products.map((p) => (
-        <li key={p.slug} className="animate-fade-up">
+    <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4">
+      {products.map((p, i) => (
+        <li key={p.slug} className="animate-fade-up" style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }}>
           <ProductCard product={p} />
         </li>
       ))}

@@ -35,7 +35,7 @@ export function useHydrated(): boolean {
 export function resetDemo(): void {
   useCart.getState().clear();
   useCheckout.getState().reset();
-  useAccount.setState({ user: null, usedRewards: [], sort: "relevance" });
+  useAccount.setState({ user: null, usedRewards: [], sort: "relevance", wheelPrize: null });
   useAdmin.getState().resetAdmin();
   clearDemoStorage();
 }

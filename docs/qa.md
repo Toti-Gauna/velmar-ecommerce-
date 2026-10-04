@@ -17,7 +17,11 @@
 | Movimiento reducido: sin splash, animaciones a 1 ms | `motion-viewports.spec.ts` | ✅ |
 | Splash no bloquea clics y desaparece en < 1 s | idem | ✅ |
 | Contraste AA de los tokens | cálculo WCAG (ver `tono-visual.md`) | ✅ |
-| Reglas: precio, cupones, envío gratis, total ≥ 0, misiones, stock, validaciones | `tests/unit` (Vitest) | ✅ |
+| Reglas: precio, cupones, envío gratis, total ≥ 0, misiones, stock, validaciones, recomendaciones, ruleta | `tests/unit` (Vitest) | ✅ |
+| Ruleta con movimiento reducido → cupón `RULETA…` → se aplica en el carrito → aparece en el panel | `gamification.spec.ts` | ✅ |
+| Ficha: "Completá el set", medidor de stock y cantidad que pasa al personalizador (`cantidad=2`) | idem | ✅ |
+| Menú móvil y drawer del carrito: abren, atrapan el foco y cierran con Escape | idem | ✅ |
+| Sin desborde a 375 px con el carrito lleno (recomendaciones desplazables) | idem | ✅ |
 
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
@@ -35,6 +39,8 @@
 
 Nota: con emulación móvil, Chrome agranda el viewport de layout si algo desborda. El chequeo anterior
 (`scrollWidth - innerWidth`) podía dar falso negativo; ahora se compara contra el ancho configurado.
+Regla aprendida: toda grilla que contenga un carril desplazable usa `grid-cols-[minmax(0,1fr)]` de base; sin eso
+el carril estira la columna y desborda solo en el celular (lo detectó el test de carrito lleno).
 
 ## Revisión manual sugerida antes de mostrar
 - Recorrer en un celular real (iOS Safari y Android Chrome), en especial arrastrar la foto en el velador.
@@ -48,6 +54,8 @@ Nota: con emulación móvil, Chrome agranda el viewport de layout si algo desbor
 - **Personalizador de foto**: la máscara del velador es genérica; la real sale de la plantilla de cada producto.
 - **localStorage**: en modo privado o con cuota llena la demo sigue funcionando en memoria, pero no recuerda entre recargas.
 - **`npm audit`**: 5 avisos *high* en `braces` vía `eslint-config-next` (solo herramienta de lint en desarrollo; no llega al sitio publicado). El "fix" propuesto baja a `eslint-config-next@14` y rompe Next 16; se deja hasta que Next publique la actualización.
+- **Ruleta**: el "un giro por navegador" vive en localStorage; borrarlo permite volver a girar. Es aceptable en la demo; en producción el límite es por cuenta y lo valida el servidor.
+- **Peso del bundle**: `motion` agrega JavaScript a la tienda; se carga en la tienda, no bloquea el splash ni el primer render (CSS).
 - **Accesibilidad**: no hay auditoría automática con axe todavía (se evitó sumar dependencia); revisión manual recomendada.
 - El prefetch del router de Next hace `HEAD` al mismo origen; es lectura y no envía datos.
 - **Panel demo abierto**: cualquiera con el link puede abrirlo y "editar" su propia copia local. No hay datos reales ni persistencia compartida; no es un panel seguro.

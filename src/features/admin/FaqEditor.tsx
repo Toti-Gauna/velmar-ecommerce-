@@ -16,7 +16,7 @@ export function FaqEditor({ initial }: { initial: Faq[] }) {
   return (
     <form className="flex flex-col gap-3" onSubmit={(e) => { e.preventDefault(); save("Preguntas guardadas", () => saveFaqs(faqs.filter((f) => f.q.trim() && f.a.trim()))); }}>
       {faqs.map((f, i) => (
-        <fieldset key={i} className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-3">
+        <fieldset key={i} className="flex flex-col gap-2 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3">
           <legend className="px-1 text-sm font-extrabold">Pregunta {i + 1}</legend>
           <label className="flex flex-col gap-1 text-sm font-bold">Pregunta<Input value={f.q} onChange={(e) => patch(i, { q: e.target.value })} /></label>
           <label className="flex flex-col gap-1 text-sm font-bold">Respuesta<Textarea value={f.a} onChange={(e) => patch(i, { a: e.target.value })} className="min-h-20" /></label>

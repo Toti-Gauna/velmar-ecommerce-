@@ -4,7 +4,7 @@ import { guardNetwork } from "./helpers";
 test("flujo móvil completo hasta la confirmación de demostración", async ({ page }) => {
   const assertNoExternal = guardNetwork(page);
   await page.goto("");
-  await expect(page.getByText("Demo de venta.")).toBeVisible();
+  await expect(page.getByRole("note").filter({ hasText: "No se cobra nada" })).toBeVisible();
 
   // Búsqueda tolerante a errores
   await page.goto("buscar/?q=comedro");
@@ -13,7 +13,7 @@ test("flujo móvil completo hasta la confirmación de demostración", async ({ p
 
   // Ficha → personalizar con texto
   await expect(page.getByRole("heading", { level: 1, name: "Comedero perro globo" })).toBeVisible();
-  await page.getByText("Celeste", { exact: true }).first().click();
+  await page.getByTitle("Celeste").first().click();
   await page.getByRole("link", { name: /Personalizar y ver vista previa/ }).last().click();
   await page.getByRole("button", { name: "Siguiente: personalizar" }).click();
   await page.getByLabel("Texto", { exact: true }).fill("Toby 🐶");
@@ -30,10 +30,10 @@ test("flujo móvil completo hasta la confirmación de demostración", async ({ p
   await expect(page).toHaveURL(/carrito\/$/);
   await expect(page.getByText("✓ Vista previa aprobada")).toBeVisible();
   await page.getByLabel("Cupón de descuento").fill("invierno");
-  await page.getByRole("button", { name: "Aplicar" }).click();
+  await page.getByLabel("Cupón de descuento").press("Enter");
   await expect(page.getByRole("alert").filter({ hasText: "venció" })).toBeVisible();
   await page.getByLabel("Cupón de descuento").fill("bienvenida10");
-  await page.getByRole("button", { name: "Aplicar" }).click();
+  await page.getByLabel("Cupón de descuento").press("Enter");
   await expect(page.getByText(/BIENVENIDA10: 10%/)).toBeVisible();
   await expect(page.getByRole("progressbar", { name: /Comprá 2 productos/ })).toBeVisible();
   await page.getByRole("link", { name: "Continuar al checkout" }).click();
@@ -55,7 +55,7 @@ test("flujo móvil completo hasta la confirmación de demostración", async ({ p
   await page.getByRole("button", { name: "Revisar pedido" }).click();
   await page.getByRole("button", { name: "Confirmar pedido de demostración" }).click();
   await expect(page.getByText("Para continuar, aceptá los términos.")).toBeVisible();
-  await page.getByText(/Acepto los/).click();
+  await page.getByRole("checkbox", { name: /Acepto los/ }).check();
   await page.getByRole("button", { name: "Confirmar pedido de demostración" }).click();
 
   // Confirmación rotulada como demo; nunca "acreditado"
@@ -84,8 +84,10 @@ test("checkout con cuenta demo, retiro y Mercado Pago simulado", async ({ page }
   const assertNoExternal = guardNetwork(page);
   await page.goto("p/vela-caniche/");
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
-  await expect(page.getByRole("status").filter({ hasText: "Agregado al carrito" })).toBeVisible();
-  await page.getByRole("button", { name: "Sumar uno" }).click();
+  await expect(page.getByRole("dialog", { name: "Carrito" }).getByText("Agregaste Vela caniche")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Carrito" })).toBeHidden();
+  await page.getByRole("button", { name: "Sumar uno" }).first().click();
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   await page.goto("checkout/");
   await page.getByRole("button", { name: "Ingresar con cuenta demo" }).click();
@@ -94,7 +96,7 @@ test("checkout con cuenta demo, retiro y Mercado Pago simulado", async ({ page }
   await page.getByRole("button", { name: "Continuar al pago" }).click();
   await page.getByText("Mercado Pago", { exact: true }).click();
   await page.getByRole("button", { name: "Revisar pedido" }).click();
-  await page.getByText(/Acepto los/).click();
+  await page.getByRole("checkbox", { name: /Acepto los/ }).check();
   await page.getByRole("button", { name: "Confirmar pedido de demostración" }).click();
   await expect(page.getByRole("progressbar", { name: /Comprá 2 productos/ })).toBeVisible();
   await expect(page.getByText("¡Con este pedido completás la misión!")).toBeVisible();

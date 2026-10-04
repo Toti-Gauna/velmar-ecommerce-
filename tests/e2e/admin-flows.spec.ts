@@ -11,6 +11,7 @@ async function confirmDialog(page: Page, button: string) {
 test("cambiar stock y pausar en el panel se refleja en la tienda; el reset vuelve a fixtures", async ({ page }) => {
   const assertNoExternal = guardNetwork(page);
   await page.goto("admin-demo/productos/editar/?id=vela-caniche");
+  await expect(page.getByRole("heading", { name: /Editar: Vela caniche/ })).toBeVisible();
   for (const s of await page.locator("details").filter({ hasText: /Vainilla|Lavanda/ }).all()) await s.locator("summary").click();
   const stock = page.getByLabel("Stock (unidades)");
   await stock.nth(0).fill("0");
@@ -70,7 +71,7 @@ test("un comprobante subido en la tienda queda en revisión en el panel, nunca p
   await page.getByRole("button", { name: "Continuar al pago" }).click();
   await page.getByText("Transferencia bancaria").click();
   await page.getByRole("button", { name: "Revisar pedido" }).click();
-  await page.getByText(/Acepto los/).click();
+  await page.getByRole("checkbox", { name: /Acepto los/ }).check();
   await page.getByRole("button", { name: "Confirmar pedido de demostración" }).click();
   await page.getByLabel("Subir comprobante (demo)").setInputFiles({ name: "transferencia.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF demo") });
   await page.goto("admin-demo/pagos/");
@@ -105,7 +106,7 @@ test("cupón y misión creados en el panel funcionan en la tienda", async ({ pag
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   await page.goto("carrito/");
   await page.getByLabel("Cupón de descuento").fill("feria15");
-  await page.getByRole("button", { name: "Aplicar" }).click();
+  await page.getByLabel("Cupón de descuento").press("Enter");
   await expect(page.getByText(/FERIA15/)).toBeVisible();
   await expect(page.getByText("Cupón", { exact: true })).toBeVisible();
 });
@@ -130,5 +131,5 @@ test("movimiento reducido en el panel", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("admin-demo/");
   await expect(page.locator("#velmar-splash")).toBeHidden();
-  await expect(page.getByRole("heading", { level: 1, name: /Inicio/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: /Buen día/ })).toBeVisible();
 });

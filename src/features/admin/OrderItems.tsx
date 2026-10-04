@@ -18,7 +18,7 @@ export function OrderItems({ lines }: { lines: CartLine[] }) {
         const p = line.personalization;
         if (!product) return null;
         return (
-          <li key={line.id} className="flex gap-3 rounded-2xl border border-line bg-surface p-3">
+          <li key={line.id} className="flex gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3">
             <div className="w-20 shrink-0"><LineThumb art={product.art} tint={variant?.colorHex} name={product.name} personalization={p} zone={demoData().textZones[product.art]} /></div>
             <div className="min-w-0 flex-1 text-sm">
               <p className="font-bold">{line.quantity} × {product.name}</p>

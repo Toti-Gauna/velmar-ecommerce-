@@ -12,7 +12,7 @@ import { useDemoSave } from "./useDemoSave";
 
 export function SettingsForm({ title, children, onSave, error }: { title: string; children: ReactNode; onSave: () => void; error?: string | null }) {
   return (
-    <form noValidate className="flex flex-col gap-3 rounded-[var(--radius-card)] border border-line bg-surface p-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
+    <form noValidate className="flex flex-col gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
       <h2 className="font-extrabold">{title}</h2>
       {children}
       {error && <p role="alert" className="text-sm font-semibold text-danger">{error}</p>}

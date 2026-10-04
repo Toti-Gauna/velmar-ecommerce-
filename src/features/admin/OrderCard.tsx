@@ -14,7 +14,7 @@ export const fulfillmentLabel = (f: AdminOrder["fulfillment"]) => SHIP[f];
 /** Pedido como tarjeta táctil (la tabla del panel se convierte en tarjetas en el celular). */
 export function OrderCard({ order }: { order: AdminOrder }) {
   return (
-    <Link href={`/admin-demo/pedidos/detalle/?codigo=${order.code}`} className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 hover:border-primary">
+    <Link href={`/admin-demo/pedidos/detalle/?codigo=${order.code}`} className="flex items-center gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4 hover:border-primary">
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-extrabold">{order.code}</span>

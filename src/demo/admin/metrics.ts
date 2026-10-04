@@ -21,7 +21,26 @@ export function salesSummary(orders: AdminOrder[], today: string) {
     const from = toDayKey(new Date(base - (n - 1) * 86_400_000).toISOString());
     return paid.filter((o) => toDayKey(o.createdAt) >= from && toDayKey(o.createdAt) <= today).reduce((s, o) => s + o.total, 0);
   };
-  return { days, today: sumSince(1), week: sumSince(7), month: sumSince(30) };
+  const prevFrom = toDayKey(new Date(base - 13 * 86_400_000).toISOString());
+  const prevTo = toDayKey(new Date(base - 7 * 86_400_000).toISOString());
+  const prevWeek = paid.filter((o) => toDayKey(o.createdAt) >= prevFrom && toDayKey(o.createdAt) <= prevTo).reduce((s, o) => s + o.total, 0);
+  const avgTicket = paid.length ? Math.round(paid.reduce((s, o) => s + o.total, 0) / paid.length) : 0;
+  return { days, today: sumSince(1), week: sumSince(7), month: sumSince(30), prevWeek, avgTicket, paidCount: paid.length };
+}
+
+/** Variación porcentual (null si no hay base de comparación). */
+export function delta(current: number, previous: number): number | null {
+  return previous > 0 ? Math.round(((current - previous) / previous) * 100) : null;
+}
+
+/** Productos más pedidos (unidades) entre pedidos no cancelados. */
+export function topProducts(orders: AdminOrder[], n = 5): { slug: string; units: number }[] {
+  const units = new Map<string, number>();
+  for (const o of orders) {
+    if (o.status === "CANCELLED") continue;
+    for (const l of o.lines) units.set(l.productSlug, (units.get(l.productSlug) ?? 0) + l.quantity);
+  }
+  return [...units].map(([slug, u]) => ({ slug, units: u })).sort((a, b) => b.units - a.units || a.slug.localeCompare(b.slug)).slice(0, n);
 }
 
 export function countByStatus(orders: AdminOrder[]): Record<OrderStatus, number> {

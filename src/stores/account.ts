@@ -9,6 +9,9 @@ interface AccountState {
   user: { name: string; email: string } | null;
   usedRewards: string[];
   sort: SortKey;
+  /** Premio de la ruleta (un giro por navegador en la demo). */
+  wheelPrize: { code: string; label: string; at: string } | null;
+  setWheelPrize: (prize: { code: string; label: string; at: string }) => void;
   login: (user: { name: string; email: string }) => void;
   logout: () => void;
   markRewardUsed: (id: string) => void;
@@ -21,6 +24,8 @@ export const useAccount = create<AccountState>()(
       user: null,
       usedRewards: [],
       sort: "relevance",
+      wheelPrize: null,
+      setWheelPrize: (wheelPrize) => set({ wheelPrize }),
       login: (user) => set({ user }),
       logout: () => set({ user: null }),
       markRewardUsed: (id) => set((s) => ({ usedRewards: [...new Set([...s.usedRewards, id])] })),
