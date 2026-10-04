@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Camera, ImagePlus, Type } from "lucide-react";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { PageHeader } from "@/components/templates/PageHeader";
-import { fromPrice, personalizableProducts } from "@/demo/engine/catalog";
+import { fromPrice, personalizableProducts, productHref } from "@/demo/engine/catalog";
 import type { PersonalizationKind } from "@/demo/types";
 import { formatARS } from "@/lib/money";
 
@@ -35,7 +35,7 @@ export default function CreatePage() {
             <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
               {list.filter((p) => p.personalization?.kind === kind).map((p) => (
                 <li key={p.slug}>
-                  <Link href={`/crear/${p.slug}/`} className="group flex flex-col gap-2 rounded-2xl bg-surface p-2 shadow-[var(--shadow-card)] hover:ring-2 hover:ring-primary">
+                  <Link href={productHref(p.slug)} className="group flex flex-col gap-2 rounded-2xl bg-surface p-2 shadow-[var(--shadow-card)] hover:ring-2 hover:ring-primary">
                     <ProductArt art={p.art} tint={p.variants[0]?.colorHex} label={p.name} className="aspect-square rounded-xl" />
                     <span className="px-1 text-sm font-bold leading-tight">{p.name}</span>
                     <span className="px-1 pb-1 text-sm text-muted">desde {formatARS(fromPrice(p))}</span>

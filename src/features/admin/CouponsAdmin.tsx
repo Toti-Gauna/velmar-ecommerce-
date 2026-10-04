@@ -1,4 +1,5 @@
 "use client";
+import { Pagination } from "@/components/molecules/Pagination";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/atoms/Badge";
@@ -10,6 +11,7 @@ import { formatDate } from "@/lib/date";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { AdminPageHeader } from "./AdminPageHeader";
+import { usePaged } from "./usePaged";
 import { CouponForm } from "./CouponForm";
 import { useDemoSave } from "./useDemoSave";
 import { WheelAdmin } from "./WheelAdmin";
@@ -21,6 +23,8 @@ function valueLabel(c: Coupon): string {
 export function CouponsAdmin() {
   const coupons = useAdmin((s) => s.data.coupons);
   const saveCoupon = useAdmin((s) => s.saveCoupon);
+  // Los más nuevos primero (los cupones ganados en la ruleta se agregan al final).
+  const paged = usePaged([...coupons].reverse(), 6);
   const save = useDemoSave();
   const [creating, setCreating] = useState(false);
   return (
@@ -30,7 +34,7 @@ export function CouponsAdmin() {
       </AdminPageHeader>
       {creating && <div className="mb-4"><CouponForm onDone={() => setCreating(false)} /></div>}
       <ul className="grid gap-3 md:grid-cols-2">
-        {coupons.map((c) => {
+        {paged.items.map((c) => {
           const used = c.usedCount ?? 0;
           const expired = Boolean(c.endsAt && c.endsAt < DEMO_TODAY);
           const pct = c.maxUses ? Math.min(100, Math.round((used / c.maxUses) * 100)) : null;
@@ -56,6 +60,7 @@ export function CouponsAdmin() {
           );
         })}
       </ul>
+      <Pagination {...paged} noun="cupones" onPage={paged.setPage} />
       <section aria-labelledby="ruleta-admin" className="mt-10">
         <h2 id="ruleta-admin" className="font-display mb-4 text-3xl">Ruleta de cupones</h2>
         <WheelAdmin />

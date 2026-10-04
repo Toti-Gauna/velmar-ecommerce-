@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/atoms/Skeleton";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { useDemoData } from "@/stores/admin";
 import { useHydrated } from "@/stores/hydration";
-import { Personalizer } from "../personalize/Personalizer";
 import { ProductDetail } from "./ProductDetail";
 
 /** Producto creado desde el panel demo: no tiene página estática propia, se resuelve en el navegador. */
@@ -17,10 +16,5 @@ export function PanelProductView({ mode }: { mode: "detail" | "personalize" }) {
   if (!product || (mode === "personalize" && !product.personalization)) {
     return <EmptyState title="Producto no encontrado en esta demo" action={<ButtonLink href="/">Ir a la tienda</ButtonLink>}>Puede que se haya reiniciado la demo o que el producto se creó en otro navegador.</EmptyState>;
   }
-  return mode === "detail" ? <ProductDetail product={product} /> : (
-    <>
-      <h1 className="mb-6 text-3xl font-extrabold">Personalizá: {product.name}</h1>
-      <Personalizer product={product} />
-    </>
-  );
+  return <ProductDetail product={product} />;
 }

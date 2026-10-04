@@ -4,11 +4,13 @@ import { useState } from "react";
 import { Badge } from "@/components/atoms/Badge";
 import { ConfirmButton } from "@/components/molecules/ConfirmButton";
 import { EmptyState } from "@/components/molecules/EmptyState";
+import { Pagination } from "@/components/molecules/Pagination";
 import type { ClaimStatus, ClaimType } from "@/demo/admin/types";
 import { formatDateTime } from "@/lib/date";
 import { cn } from "@/lib/cn";
 import { useAdmin } from "@/stores/admin";
 import { AdminPageHeader } from "./AdminPageHeader";
+import { usePaged } from "./usePaged";
 import { useDemoSave } from "./useDemoSave";
 
 const TYPE: Record<ClaimType, string> = { WITHDRAWAL: "Arrepentimiento", RETURN: "Devolución", COMPLAINT: "Reclamo" };
@@ -22,6 +24,7 @@ export function ClaimsAdmin() {
   const save = useDemoSave();
   const [open, setOpen] = useState(true);
   const list = claims.filter((c) => (open ? c.status === "OPEN" || c.status === "IN_PROGRESS" : c.status === "RESOLVED" || c.status === "REJECTED"));
+  const paged = usePaged(list, 5, String(open));
   return (
     <>
       <AdminPageHeader title="Reclamos">Arrepentimientos, devoluciones y reclamos de ejemplo. Los enviados desde el botón de arrepentimiento de la tienda demo aparecen acá.</AdminPageHeader>
@@ -34,7 +37,7 @@ export function ClaimsAdmin() {
       </div>
       {list.length === 0 && <EmptyState title={open ? "No hay reclamos pendientes" : "Todavía no hay reclamos cerrados"} />}
       <ul className="flex flex-col gap-3">
-        {list.map((c) => (
+        {paged.items.map((c) => (
           <li key={c.id} className="animate-fade-up flex flex-col gap-2 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4 text-sm">
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-extrabold">{c.code}</span><Badge>{TYPE[c.type]}</Badge><Badge tone={STATUS[c.status].tone}>{STATUS[c.status].label}</Badge>
@@ -54,6 +57,7 @@ export function ClaimsAdmin() {
           </li>
         ))}
       </ul>
+      <Pagination {...paged} noun="reclamos" onPage={paged.setPage} />
     </>
   );
 }

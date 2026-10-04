@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Input } from "@/components/atoms/Field";
 import { Select } from "@/components/atoms/Select";
 import { EmptyState } from "@/components/molecules/EmptyState";
+import { Pagination } from "@/components/molecules/Pagination";
 import { StatusBadge } from "@/components/molecules/StatusBadge";
 import { filterOrders } from "@/demo/admin/metrics";
 import { ORDER_STATUSES, STATUS_LABEL, type OrderStatus } from "@/demo/engine/orders";
@@ -13,6 +14,7 @@ import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { AdminPageHeader } from "./AdminPageHeader";
 import { fulfillmentLabel, OrderCard, paymentLabel } from "./OrderCard";
+import { usePaged } from "./usePaged";
 
 export function OrdersList() {
   const orders = useAdmin((s) => s.orders);
@@ -20,6 +22,7 @@ export function OrdersList() {
   const [f, setF] = useState<{ q: string; status: OrderStatus | "ALL"; from: string; to: string }>({ q: "", status: initialStatus && ORDER_STATUSES.includes(initialStatus) ? initialStatus : "ALL", from: "", to: "" });
   const list = filterOrders(orders, f);
   const dirty = f.q || f.status !== "ALL" || f.from || f.to;
+  const paged = usePaged(list, 8, JSON.stringify(f));
   return (
     <>
       <AdminPageHeader title="Pedidos">Pedidos ficticios. Abrí uno para ver productos, personalización aprobada, comprobante, historial y notas.</AdminPageHeader>
@@ -40,13 +43,13 @@ export function OrdersList() {
       </div>
       {list.length === 0 ? <EmptyState title="Ningún pedido coincide">Probá con otro código, estado o rango de fechas.</EmptyState> : (
         <>
-          <ul className="flex flex-col gap-2 md:hidden">{list.map((o) => <li key={o.code}><OrderCard order={o} /></li>)}</ul>
+          <ul className="flex flex-col gap-2 md:hidden">{paged.items.map((o) => <li key={o.code}><OrderCard order={o} /></li>)}</ul>
           <table className="hidden w-full overflow-hidden rounded-3xl bg-surface shadow-[var(--shadow-card)] text-left text-sm md:table">
             <thead className="bg-accent/60 text-muted">
               <tr><th className="p-3">Código</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Entrega</th><th className="pr-3 text-right">Total (demo)</th></tr>
             </thead>
             <tbody>
-              {list.map((o) => (
+              {paged.items.map((o) => (
                 <tr key={o.code} className="border-t border-line hover:bg-accent/30">
                   <td className="p-3 font-extrabold"><Link href={`/admin-demo/pedidos/detalle/?codigo=${o.code}`} className="text-primary underline">{o.code}</Link></td>
                   <td>{o.customer.name}</td><td>{formatDateTime(o.createdAt)}</td><td><StatusBadge status={o.status} /></td>
@@ -56,6 +59,7 @@ export function OrdersList() {
               ))}
             </tbody>
           </table>
+          <Pagination {...paged} noun="pedidos" onPage={paged.setPage} />
         </>
       )}
     </>

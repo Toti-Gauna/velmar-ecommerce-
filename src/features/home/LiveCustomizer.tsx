@@ -1,5 +1,5 @@
 "use client";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { ButtonLink } from "@/components/atoms/Button";
 import { Reveal } from "@/components/motion/Reveal";
@@ -12,7 +12,7 @@ import { useDemoData } from "@/stores/admin";
 const COLORS = [{ name: "Verde oliva", hex: "#3a4527" }, { name: "Rosa", hex: "#d9667f" }, { name: "Celeste", hex: "#3f7fb5" }, { name: "Negro", hex: "#1f1f1f" }];
 
 /** Probador en vivo en el inicio: escribís y el collar cambia al instante. */
-export function LiveCustomizer() {
+export function LiveCustomizer({ eyebrow }: { eyebrow: string }) {
   const zone = useDemoData((d) => d.textZones.collar);
   const [text, setText] = useState("Lola");
   const [font, setFont] = useState<string>("Redondeada");
@@ -22,7 +22,7 @@ export function LiveCustomizer() {
     <section aria-labelledby="probalo" className="overflow-hidden rounded-[2.5rem] bg-surface shadow-[var(--shadow-card)]">
       <div className="grid items-center gap-8 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 lg:p-14">
         <Reveal>
-          <p className="eyebrow text-brass-ink">Probalo acá mismo</p>
+          <p className="eyebrow text-brass-ink">{eyebrow}</p>
           <h2 id="probalo" className="font-display mt-3 text-4xl leading-tight sm:text-5xl">Escribí el nombre. <span className="italic text-primary">Miralo al instante.</span></h2>
           <p className="mt-4 max-w-md text-muted">Así funciona el personalizador de cada producto: lo que ves es lo que aprobás.</p>
           <label htmlFor="live-name" className="mt-8 block text-sm font-bold">Nombre de tu mascota</label>
@@ -43,7 +43,10 @@ export function LiveCustomizer() {
               </button>
             ))}
           </div>
-          <ButtonLink href="/crear/collar-con-nombre/" size="lg" className="mt-8">Crear el mío <ArrowRight size={18} aria-hidden="true" className="transition-transform group-hover/btn:translate-x-1" /></ButtonLink>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <ButtonLink href="/crear/" size="lg" variant="dark"><Sparkles size={18} aria-hidden="true" className="text-brass" />Quiero mi producto personalizado</ButtonLink>
+            <ButtonLink href="/p/collar-con-nombre/#personalizar" size="lg" variant="secondary">Este collar <ArrowRight size={18} aria-hidden="true" className="transition-transform group-hover/btn:translate-x-1" /></ButtonLink>
+          </div>
         </Reveal>
         <div className="relative">
           <div aria-hidden="true" className="absolute -inset-6 rounded-full bg-[radial-gradient(closest-side,#efe3cb,transparent)]" />

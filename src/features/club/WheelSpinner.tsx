@@ -13,7 +13,15 @@ import { useToasts } from "@/stores/toast";
 import { WheelDisc } from "./WheelDisc";
 
 /** Ruleta de cupones. Demo: un giro por navegador; en producción el sorteo y el límite van en el servidor. */
-export function WheelSpinner({ onApplied }: { onApplied?: () => void }) {
+interface Props {
+  /** Dentro del flujo de pago: los botones continúan al checkout. */
+  checkout?: boolean;
+  onApplied?: () => void;
+  onSaved?: () => void;
+  onSkip?: () => void;
+}
+
+export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
   const wheel = useDemoData((d) => d.wheel);
   const coupons = useDemoData((d) => d.coupons);
   const addPrizeCoupon = useAdmin((s) => s.addPrizeCoupon);
@@ -46,7 +54,11 @@ export function WheelSpinner({ onApplied }: { onApplied?: () => void }) {
           <div className="h-full w-full rounded-full bg-night" />
         </div>
         <motion.div style={{ rotate }} className="absolute inset-0"><WheelDisc segments={wheel.segments} /></motion.div>
-        <div aria-hidden="true" className="absolute left-1/2 top-[-14px] z-10 h-0 w-0 -translate-x-1/2 border-x-[14px] border-t-[26px] border-x-transparent border-t-brass drop-shadow" />
+        <svg aria-hidden="true" viewBox="0 0 40 52" className="absolute left-1/2 top-[-22px] z-10 w-9 -translate-x-1/2 drop-shadow-[0_6px_8px_rgb(0_0_0/0.35)]">
+          <defs><linearGradient id="pin-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#f6e2b0" /><stop offset=".5" stopColor="#d2ad69" /><stop offset="1" stopColor="#8a6a2e" /></linearGradient></defs>
+          <path d="M20 50 4.5 22A16 16 0 1 1 35.5 22Z" fill="url(#pin-gold)" stroke="#1c2016" strokeWidth="1.5" />
+          <circle cx="20" cy="17" r="6" fill="#1c2016" />
+        </svg>
         <div aria-hidden="true" className="absolute inset-[38%] grid place-items-center rounded-full border-4 border-brass bg-night">
           <svg viewBox="0 0 48 44" className="h-1/2 w-1/2 text-brass"><path d="M8 22 24 8l16 14M8 36 24 22l16 14" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </div>
@@ -62,8 +74,11 @@ export function WheelSpinner({ onApplied }: { onApplied?: () => void }) {
               className="mx-auto mt-3 flex items-center gap-2 rounded-full border border-dashed border-brass-ink px-4 py-2 font-mono text-lg font-extrabold tracking-wider" aria-label={`Copiar código ${wheelPrize.code}`}>
               {wheelPrize.code} <Copy size={16} aria-hidden="true" />
             </button>
-            <Button className="mt-4 w-full" onClick={() => { setCoupon(wheelPrize.code); toast({ tone: "success", title: "Cupón listo en tu carrito", description: wheelPrize.code, action: { label: "Ver carrito", href: "/carrito/" } }); onApplied?.(); }}>
-              <ShoppingBag size={18} aria-hidden="true" /> Aplicar a mi carrito
+            <Button className="mt-4 w-full" onClick={() => { setCoupon(wheelPrize.code); toast({ tone: "success", title: "Cupón aplicado a tu carrito", description: wheelPrize.code }); onApplied?.(); }}>
+              <ShoppingBag size={18} aria-hidden="true" /> {checkout ? "Aplicar y continuar al pago" : "Aplicar a mi carrito"}
+            </Button>
+            <Button variant="ghost" className="mt-2 w-full" onClick={() => { toast({ tone: "info", title: "Guardado en Mis cupones", description: wheelPrize.code, action: { label: "Ver cupones", href: "/cupones/" } }); onSaved?.(); }}>
+              Guardar para más tarde
             </Button>
           </div>
         ) : (
@@ -71,6 +86,7 @@ export function WheelSpinner({ onApplied }: { onApplied?: () => void }) {
             <Button size="lg" onClick={spin} disabled={spinning || !wheel.active} className="w-full">
               <Gift size={18} aria-hidden="true" /> {spinning ? "Girando…" : wheel.active ? "Girar la ruleta" : "Ruleta pausada"}
             </Button>
+            {onSkip && <Button variant="ghost" className="mt-2 w-full" onClick={onSkip} disabled={spinning}>Continuar sin girar</Button>}
             <p className="mt-3 text-xs text-muted">Demo: un giro por navegador (se reinicia con “Reiniciar demo”). En producción, un giro por cuenta y sorteo en el servidor.</p>
           </>
         )}

@@ -8,6 +8,7 @@ import { Button } from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Field";
 import { Switch } from "@/components/atoms/Switch";
 import { EmptyState } from "@/components/molecules/EmptyState";
+import { Pagination } from "@/components/molecules/Pagination";
 import { ProductVisual } from "@/components/illustrations/ProductVisual";
 import { productHref } from "@/demo/engine/catalog";
 import { normalize } from "@/demo/engine/search";
@@ -15,6 +16,7 @@ import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { AdminPageHeader } from "./AdminPageHeader";
 import { useDemoSave } from "./useDemoSave";
+import { usePaged } from "./usePaged";
 
 function stockLabel(stock: number): string {
   return stock < 0 ? "a pedido" : stock === 0 ? "sin stock" : `${stock} u.`;
@@ -28,6 +30,7 @@ export function ProductsList() {
   const save = useDemoSave();
   const [q, setQ] = useState("");
   const list = products.filter((p) => !q || normalize(`${p.name} ${p.slug}`).includes(normalize(q)));
+  const paged = usePaged(list, 9, q);
   return (
     <>
       <AdminPageHeader title="Productos y stock" actions={
@@ -37,8 +40,9 @@ export function ProductsList() {
       }>Stock -1 = “a pedido” (sin límite). La tienda no maneja cupos de fabricación: eso lo decide Velmar.</AdminPageHeader>
       <label className="mb-4 flex max-w-md flex-col gap-1 text-sm font-bold">Buscar producto<Input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Comedero, velador…" /></label>
       {list.length === 0 ? <EmptyState title="Sin resultados">Probá con otro nombre.</EmptyState> : (
+        <>
         <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {list.map((p) => (
+          {paged.items.map((p) => (
             <li key={p.slug} className="flex flex-col gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3">
               <div className="flex gap-3">
                 <ProductVisual art={p.art} photoUrl={p.photoDataUrl} tint={p.variants[0]?.colorHex} label={p.imageAlt || p.name} showBadge={false} className="aspect-square w-20 shrink-0 rounded-xl" />
@@ -62,6 +66,8 @@ export function ProductsList() {
             </li>
           ))}
         </ul>
+        <Pagination {...paged} noun="productos" onPage={paged.setPage} />
+        </>
       )}
     </>
   );

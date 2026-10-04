@@ -11,32 +11,39 @@ test("flujo móvil completo hasta la confirmación de demostración", async ({ p
   await expect(page.getByRole("status").filter({ hasText: "resultados" })).toBeVisible();
   await page.getByRole("link", { name: "Comedero perro globo" }).click();
 
-  // Ficha → personalizar con texto
+  // Ficha todo en uno: color, texto con vista previa en vivo, aprobación y agregar
   await expect(page.getByRole("heading", { level: 1, name: "Comedero perro globo" })).toBeVisible();
   await page.getByTitle("Celeste").first().click();
-  await page.getByRole("link", { name: /Personalizar y ver vista previa/ }).last().click();
-  await page.getByRole("button", { name: "Siguiente: personalizar" }).click();
-  await page.getByLabel("Texto", { exact: true }).fill("Toby 🐶");
+  const text = page.getByLabel("Texto", { exact: true });
+  await text.fill("Toby 🐶");
   await expect(page.getByRole("alert").filter({ hasText: "emoji" })).toBeVisible();
-  await page.getByLabel("Texto", { exact: true }).fill("Ñoqui");
+  await text.fill("Ñoqui");
   await page.getByText("Manuscrita").click();
-  await page.getByRole("button", { name: "Ver vista previa final" }).click();
-  const add = page.getByRole("button", { name: "Agregar al carrito" });
-  await expect(add).toBeDisabled();
+  await expect(page.getByText("Vista previa en vivo")).toBeVisible();
+  const add = page.getByRole("button", { name: "Agregar al carrito" }).filter({ visible: true });
+  await add.click();
+  await expect(page.getByRole("alert").filter({ hasText: "Aprobá la vista previa" })).toBeVisible();
   await page.getByText("Así lo quiero.").click();
   await add.click();
+  const drawer = page.getByRole("dialog", { name: "Carrito" });
+  await expect(drawer.getByText("Agregaste Comedero perro globo")).toBeVisible();
+  await drawer.getByRole("link", { name: "Ver carrito completo" }).click();
 
   // Carrito: cupón vencido, cupón válido
   await expect(page).toHaveURL(/carrito\/$/);
-  await expect(page.getByText("✓ Vista previa aprobada")).toBeVisible();
-  await page.getByLabel("Cupón de descuento").fill("invierno");
-  await page.getByLabel("Cupón de descuento").press("Enter");
+  await expect(page.getByText("✓ Aprobada")).toBeVisible();
+  const code = page.getByLabel("¿Tenés un código?");
+  await code.fill("invierno");
+  await code.press("Enter");
   await expect(page.getByRole("alert").filter({ hasText: "venció" })).toBeVisible();
-  await page.getByLabel("Cupón de descuento").fill("bienvenida10");
-  await page.getByLabel("Cupón de descuento").press("Enter");
+  await code.fill("bienvenida10");
+  await code.press("Enter");
   await expect(page.getByText(/BIENVENIDA10: 10%/)).toBeVisible();
-  await expect(page.getByRole("progressbar", { name: /Comprá 2 productos/ })).toBeVisible();
-  await page.getByRole("link", { name: "Continuar al checkout" }).click();
+  await expect(page.locator("main").getByRole("progressbar", { name: /Comprá 2 productos/ })).toBeVisible();
+  // Al ir a pagar aparece la ruleta (todavía no se giró); se puede seguir sin girar
+  await page.getByRole("button", { name: "Continuar al checkout" }).click();
+  await page.getByRole("dialog", { name: "Ruleta de cupones" }).getByRole("button", { name: "Continuar sin girar" }).click();
+  await expect(page).toHaveURL(/checkout\/$/);
 
   // Checkout como invitado
   await page.getByRole("button", { name: "Continuar a la entrega" }).click();

@@ -1,7 +1,7 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
 import { Check, Trash2, Truck } from "lucide-react";
-import { ButtonLink } from "@/components/atoms/Button";
+import { Button, ButtonLink } from "@/components/atoms/Button";
 import { Sheet } from "@/components/motion/Sheet";
 import { QuantityStepper } from "@/components/molecules/QuantityStepper";
 import { LineThumb } from "@/components/organisms/LineThumb";
@@ -15,11 +15,13 @@ import { useUi } from "@/stores/ui";
 import { CartMissionNudge } from "./CartMissionNudge";
 import { MiniRecommendations } from "./MiniRecommendations";
 import { useCartQuote } from "./useCartQuote";
+import { useGoToCheckout } from "./useGoToCheckout";
 
 /** Carrito lateral: aparece al agregar, con progreso de envío gratis, misión y complementos. */
 export function CartDrawer() {
   const { cartOpen, closeCart, lastAdded } = useUi();
   const { quote } = useCartQuote();
+  const goToCheckout = useGoToCheckout();
   const lines = useCart((s) => s.lines);
   const { setQuantity, remove } = useCart();
   const missing = missingForFreeShipping(quote.subtotal);
@@ -76,7 +78,7 @@ export function CartDrawer() {
         <div className="border-t border-line bg-surface px-6 py-4">
           <div className="mb-3 flex items-end justify-between"><span className="text-sm text-muted">Subtotal (muestra)</span><span className="text-2xl font-extrabold tabular-nums">{formatARS(quote.subtotal)}</span></div>
           <div className="grid gap-2">
-            <ButtonLink href="/checkout/" onClick={closeCart} size="lg" className="w-full">Ir al checkout</ButtonLink>
+            <Button onClick={goToCheckout} size="lg" className="w-full">Ir al checkout</Button>
             <ButtonLink href="/carrito/" onClick={closeCart} variant="ghost" className="w-full">Ver carrito completo</ButtonLink>
           </div>
         </div>

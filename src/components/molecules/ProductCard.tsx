@@ -6,6 +6,7 @@ import { getProduct } from "@/demo/engine/catalog";
 import { ProductVisual } from "@/components/illustrations/ProductVisual";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { useQuickAdd } from "@/features/cart/useQuickAdd";
+import { cn } from "@/lib/cn";
 import { formatARS } from "@/lib/money";
 
 export interface ProductCardData {
@@ -51,17 +52,15 @@ export function ProductCard({ product, priority }: { product: ProductCardData; p
           </button>
         )}
       </div>
-      <div className="flex items-start justify-between gap-3 px-1">
-        <div className="min-w-0">
-          <h3 className="text-[15px] font-bold leading-snug text-ink">
-            <Link href={product.href} prefetch={priority} className="after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none">{product.name}</Link>
-          </h3>
-          <p className="mt-0.5 line-clamp-1 text-sm text-muted">{product.stockNote}</p>
-        </div>
-        <p className="shrink-0 text-right text-[15px] font-extrabold tabular-nums">
-          {product.hasRange && <span className="block text-[11px] font-semibold text-muted">desde</span>}
+      <div className="flex flex-col gap-1 px-1">
+        <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-ink">
+          <Link href={product.href} prefetch={priority} className="after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none">{product.name}</Link>
+        </h3>
+        <p className="text-lg font-extrabold tabular-nums leading-tight">
+          {product.hasRange && <span className="mr-1 text-xs font-semibold text-muted">desde</span>}
           {formatARS(product.fromPrice)}
         </p>
+        <p className={cn("line-clamp-1 text-[13px]", product.stockNote.startsWith("¡Últimas") ? "font-bold text-danger" : "text-muted")}>{product.stockNote}</p>
       </div>
       {product.colors.length > 1 && (
         <p className="flex gap-1.5 px-1" aria-label={`${product.colors.length} colores`}>

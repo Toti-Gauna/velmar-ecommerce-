@@ -5,7 +5,8 @@
 
 ## Cómo funciona
 - Rutas estáticas (export de Next) bajo `app/admin-demo/`, con layout propio: banner persistente, navegación lateral
-  en escritorio y chips desplazables en el celular. Detalles y edición usan query params
+  agrupada (Operación, Catálogo, Marketing, Clientes) en escritorio y **menú hamburguesa** con la sección actual en el celular.
+  Listas largas (pedidos, productos, usuarios, reclamos, cupones) con **paginado** que vuelve a la página 1 al filtrar. Detalles y edición usan query params
   (`/admin-demo/pedidos/detalle/?codigo=`, `/admin-demo/productos/editar/?id=`) para que funcionen con datos creados
   en la demo y al refrescar.
 - Estado: store Zustand `velmar-demo:admin` en localStorage **de este navegador**, sembrado desde fixtures

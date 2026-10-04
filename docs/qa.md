@@ -19,7 +19,11 @@
 | Contraste AA de los tokens | cálculo WCAG (ver `tono-visual.md`) | ✅ |
 | Reglas: precio, cupones, envío gratis, total ≥ 0, misiones, stock, validaciones, recomendaciones, ruleta | `tests/unit` (Vitest) | ✅ |
 | Ruleta con movimiento reducido → cupón `RULETA…` → se aplica en el carrito → aparece en el panel | `gamification.spec.ts` | ✅ |
-| Ficha: "Completá el set", medidor de stock y cantidad que pasa al personalizador (`cantidad=2`) | idem | ✅ |
+| Ficha todo en uno: "Comprar ahora" sin texto lleva el foco al campo; con aprobación va al checkout con la cantidad elegida | idem | ✅ |
+| Carrito: elegir cupón de "Mis cupones" sin escribir el código; ruleta al ir a pagar con "Guardar para más tarde"; ya girada va directo | idem | ✅ |
+| Buscador superpuesto: foco en el campo, resultados en vivo con error de tipeo, búsqueda reciente, Escape cierra | idem | ✅ |
+| Seguimiento: pedido arriba, "Ver 1 producto más" abre el modal, comprobante al elegir el estado pendiente | idem | ✅ |
+| Panel en el celular: menú hamburguesa y paginado de pedidos (se reinicia al filtrar) | `admin-flows.spec.ts` | ✅ |
 | Menú móvil y drawer del carrito: abren, atrapan el foco y cierran con Escape | idem | ✅ |
 | Sin desborde a 375 px con el carrito lleno (recomendaciones desplazables) | idem | ✅ |
 
@@ -39,7 +43,15 @@
 
 Nota: con emulación móvil, Chrome agranda el viewport de layout si algo desborda. El chequeo anterior
 (`scrollWidth - innerWidth`) podía dar falso negativo; ahora se compara contra el ancho configurado.
-Regla aprendida: toda grilla que contenga un carril desplazable usa `grid-cols-[minmax(0,1fr)]` de base; sin eso
+Reglas aprendidas en esta ronda:
+- Los modales (`Sheet`) se montan en `<body>` por portal: el header usa `backdrop-filter`, que convierte al ancestro en
+  contenedor de los `position: fixed` y dejaba el menú móvil recortado al alto del header.
+- `onClose` llega como función nueva en cada render; el efecto de foco del `Sheet` depende solo de `open` (si no, cada
+  tecla devolvía el foco al botón que abrió el modal).
+- La animación de entrada de página usa `animation-fill-mode: backwards`: con `both` quedaba un `transform` aplicado y las
+  barras fijas de compra no se pegaban al fondo de la pantalla.
+
+Regla aprendida antes: toda grilla que contenga un carril desplazable usa `grid-cols-[minmax(0,1fr)]` de base; sin eso
 el carril estira la columna y desborda solo en el celular (lo detectó el test de carrito lleno).
 
 ## Revisión manual sugerida antes de mostrar

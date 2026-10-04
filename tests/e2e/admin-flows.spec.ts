@@ -23,6 +23,7 @@ test("cambiar stock y pausar en el panel se refleja en la tienda; el reset vuelv
   await expect(page.getByRole("button", { name: "Agregar al carrito" }).first()).toBeDisabled();
 
   await page.goto("admin-demo/productos/");
+  await page.getByLabel("Buscar producto").fill("mdp");
   await page.getByRole("listitem").filter({ hasText: "Pieza “I ♥ MDP”" }).getByRole("switch").click();
   await page.goto("categorias/");
   await expect(page.getByRole("link", { name: /Souvenirs/ })).toHaveCount(0);
@@ -105,8 +106,8 @@ test("cupón y misión creados en el panel funcionan en la tienda", async ({ pag
   await page.goto("p/vela-caniche/");
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   await page.goto("carrito/");
-  await page.getByLabel("Cupón de descuento").fill("feria15");
-  await page.getByLabel("Cupón de descuento").press("Enter");
+  await page.getByLabel("¿Tenés un código?").fill("feria15");
+  await page.getByLabel("¿Tenés un código?").press("Enter");
   await expect(page.getByText(/FERIA15/)).toBeVisible();
   await expect(page.getByText("Cupón", { exact: true })).toBeVisible();
 });
@@ -132,4 +133,20 @@ test("movimiento reducido en el panel", async ({ page }) => {
   await page.goto("admin-demo/");
   await expect(page.locator("#velmar-splash")).toBeHidden();
   await expect(page.getByRole("heading", { level: 1, name: /Buen día/ })).toBeVisible();
+});
+
+test("celular: menú hamburguesa del panel y paginado de pedidos", async ({ page }) => {
+  await page.goto("admin-demo/");
+  await page.getByRole("button", { name: "Abrir menú del panel" }).click();
+  const menu = page.getByRole("dialog", { name: "Menú del panel" });
+  await expect(menu.getByText("Panel demo · datos ficticios")).toBeVisible();
+  await menu.getByRole("link", { name: "Pedidos" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Pedidos" })).toBeVisible();
+  await expect(menu).toBeHidden();
+  const pages = page.getByRole("navigation", { name: "Páginas de pedidos" });
+  await expect(pages).toContainText("1–8 de");
+  await pages.getByRole("button", { name: "Página 2" }).click();
+  await expect(pages).toContainText("9–");
+  await page.getByLabel("Código o cliente").fill("VEL-000123");
+  await expect(pages).toBeHidden();
 });

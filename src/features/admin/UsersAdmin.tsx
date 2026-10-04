@@ -6,11 +6,13 @@ import { Badge } from "@/components/atoms/Badge";
 import { Input } from "@/components/atoms/Field";
 import { ConfirmButton } from "@/components/molecules/ConfirmButton";
 import { EmptyState } from "@/components/molecules/EmptyState";
+import { Pagination } from "@/components/molecules/Pagination";
 import { normalize } from "@/demo/engine/search";
 import { formatDate } from "@/lib/date";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { AdminPageHeader } from "./AdminPageHeader";
+import { usePaged } from "./usePaged";
 import { useDemoSave } from "./useDemoSave";
 
 export function UsersAdmin() {
@@ -20,13 +22,14 @@ export function UsersAdmin() {
   const save = useDemoSave();
   const [q, setQ] = useState("");
   const list = users.filter((u) => !q || normalize(`${u.name} ${u.email}`).includes(normalize(q)));
+  const paged = usePaged(list, 6, q);
   return (
     <>
       <AdminPageHeader title="Usuarios">Perfiles ficticios. El panel nunca muestra contraseñas ni datos de pago (tarjetas las procesa Mercado Pago).</AdminPageHeader>
       <label className="mb-4 flex max-w-md flex-col gap-1 text-sm font-bold">Buscar por nombre o email<Input type="search" value={q} onChange={(e) => setQ(e.target.value)} /></label>
       {list.length === 0 && <EmptyState title="Ningún usuario coincide" />}
       <ul className="grid gap-3 lg:grid-cols-2">
-        {list.map((u) => (
+        {paged.items.map((u) => (
           <li key={u.id}>
             <details className="group rounded-3xl bg-surface shadow-[var(--shadow-card)]">
               <summary className="flex min-h-14 cursor-pointer list-none flex-wrap items-center gap-2 p-4 [&::-webkit-details-marker]:hidden">
@@ -56,6 +59,7 @@ export function UsersAdmin() {
           </li>
         ))}
       </ul>
+      <Pagination {...paged} noun="usuarios" onPage={paged.setPage} />
     </>
   );
 }

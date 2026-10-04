@@ -118,7 +118,8 @@
 .animate-pop { animation: pop 420ms var(--ease-out-expo); }
 .animate-toast { animation: toast-in 260ms var(--ease-out-expo) both; }
 .animate-rise { animation: rise 900ms var(--ease-out-expo) both; }
-.page-enter { animation: fade-up 480ms var(--ease-out-expo) both; }
+/* backwards (no both): al terminar no queda un transform que convierta a la página en contenedor de los `fixed`. */
+.page-enter { animation: fade-up 480ms var(--ease-out-expo) backwards; }
 .skeleton {
   background: linear-gradient(90deg, #ebe2d1 0%, #f6f0e5 50%, #ebe2d1 100%);
   background-size: 200% 100%;

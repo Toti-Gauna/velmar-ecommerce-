@@ -24,20 +24,75 @@ test("ruleta: gira (sin animación con movimiento reducido), emite un cupón y s
   assertNoExternal();
 });
 
-test("ficha: recomendaciones, medidor de stock y cantidad también en productos personalizables", async ({ page }) => {
+test("ficha todo en uno: stock, cantidad, personalización y comprar ahora", async ({ page }) => {
   await page.goto("p/chapita-nfc/");
   await expect(page.getByText(/En stock · 12 disponibles/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Completá el set/ })).toBeVisible();
   await page.getByRole("button", { name: "Sumar uno" }).first().click();
-  await page.getByRole("link", { name: /Personalizar y ver vista previa/ }).last().click();
-  await expect(page).toHaveURL(/cantidad=2/);
-  await page.getByRole("button", { name: "Siguiente: personalizar" }).click();
+  // Comprar sin escribir el texto lleva el foco al campo
+  await page.getByRole("button", { name: "Comprar ahora" }).filter({ visible: true }).click();
+  await expect(page.getByLabel("Texto", { exact: true })).toBeFocused();
   await page.getByLabel("Texto", { exact: true }).fill("Luna");
-  await page.getByRole("button", { name: "Ver vista previa final" }).click();
   await page.getByText("Así lo quiero.").click();
-  await page.getByRole("button", { name: "Agregar al carrito" }).click();
-  await expect(page).toHaveURL(/carrito\/$/);
-  await expect(page.getByRole("group", { name: /Cantidad de Chapita/ }).getByRole("status").or(page.getByRole("group", { name: /Cantidad de Chapita/ }).locator("output"))).toHaveText("2");
+  await page.getByRole("button", { name: "Comprar ahora" }).filter({ visible: true }).click();
+  await expect(page).toHaveURL(/checkout\/$/);
+  await page.goto("carrito/");
+  await expect(page.getByRole("group", { name: /Cantidad de Chapita/ }).locator("output")).toHaveText("2");
+  await expect(page.getByText(/“Luna”/)).toBeVisible();
+});
+
+test("carrito: elegir cupón sin escribir el código y ruleta al ir a pagar", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("p/vela-caniche/");
+  await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
+  await page.keyboard.press("Escape");
+  await page.goto("carrito/");
+  await page.getByRole("button", { name: /Elegir de mis cupones/ }).click();
+  const sheet = page.getByRole("dialog", { name: "Mis cupones" });
+  await expect(sheet.getByText("INVIERNO")).toBeVisible();
+  await expect(sheet.getByText("Vencido", { exact: true })).toBeVisible();
+  await sheet.getByRole("button", { name: "Aplicar cupón BIENVENIDA10" }).click();
+  await expect(sheet).toBeHidden();
+  await expect(page.getByText(/BIENVENIDA10: 10%/)).toBeVisible();
+  await page.getByRole("button", { name: "Ir a pagar" }).click();
+  const wheel = page.getByRole("dialog", { name: "Ruleta de cupones" });
+  await expect(wheel.getByText("Probá tu suerte")).toBeVisible();
+  await wheel.getByRole("button", { name: "Girar la ruleta" }).click();
+  await expect(wheel.getByText("¡Ganaste!")).toBeVisible();
+  await wheel.getByRole("button", { name: "Guardar para más tarde" }).click();
+  await expect(page).toHaveURL(/checkout\/$/);
+  // El premio quedó guardado en "Mis cupones"
+  await page.goto("cupones/");
+  await expect(page.getByText("Ganado en la ruleta")).toBeVisible();
+  // Ya giró: ir a pagar va directo al checkout
+  await page.goto("carrito/");
+  await page.getByRole("button", { name: "Ir a pagar" }).click();
+  await expect(page).toHaveURL(/checkout\/$/);
+});
+
+test("buscador superpuesto con resultados en vivo y búsquedas recientes", async ({ page }) => {
+  await page.goto("");
+  await page.getByRole("button", { name: "Buscar" }).click();
+  const dialog = page.getByRole("dialog", { name: "Buscar" });
+  await expect(dialog.getByRole("searchbox")).toBeFocused();
+  await page.keyboard.type("comedro");
+  await expect(dialog.getByRole("status")).toContainText("resultado");
+  await dialog.getByRole("link", { name: /Comedero perro globo/ }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Comedero perro globo" })).toBeVisible();
+  await page.getByRole("button", { name: "Buscar" }).click();
+  await expect(page.getByRole("dialog", { name: "Buscar" }).getByRole("button", { name: "comedro" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Buscar" })).toBeHidden();
+});
+
+test("seguimiento: el pedido arriba y el resto de productos en un modal", async ({ page }) => {
+  await page.goto("pedido/demo-velmar/");
+  await expect(page.getByRole("heading", { name: "Pedido de ejemplo" })).toBeVisible();
+  await page.getByRole("button", { name: /Ver 1 producto más/ }).click();
+  await expect(page.getByRole("dialog", { name: "Productos del pedido" }).getByText(/Chapita identificatoria NFC/)).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.getByText("Esperando comprobante").click();
+  await expect(page.getByRole("heading", { name: "Falta el comprobante" })).toBeVisible();
 });
 
 test("menú móvil y carrito lateral se operan con teclado", async ({ page }) => {
@@ -56,7 +111,7 @@ test("sin desborde horizontal a 375 px con productos en carrito, checkout y conf
   await page.goto("p/vela-caniche/");
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   await page.keyboard.press("Escape");
-  for (const path of ["carrito/", "checkout/", "p/vela-caniche/", "club/", "pedido/demo-velmar/"]) {
+  for (const path of ["", "carrito/", "checkout/", "p/vela-caniche/", "p/velador-con-foto/", "club/", "cupones/", "pedido/demo-velmar/"]) {
     await page.goto(path);
     await page.waitForTimeout(400);
     expect(await horizontalOverflow(page), path).toBeLessThanOrEqual(0);
