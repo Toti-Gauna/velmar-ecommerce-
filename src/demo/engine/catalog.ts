@@ -1,25 +1,40 @@
-import { categories } from "../fixtures/categories";
-import { products } from "../fixtures/products";
 import type { Category, Product, Variant } from "../types";
+import { demoData, STATIC_PRODUCT_SLUGS } from "./source";
 
 export type Availability = { kind: "made-to-order"; days?: number } | { kind: "in-stock"; units: number } | { kind: "out-of-stock" };
 export type SortKey = "relevance" | "price-asc" | "price-desc" | "new";
 
+/** Productos visibles en la tienda (los desactivados desde el panel se ocultan). */
+export function activeProducts(): Product[] {
+  return demoData().products.filter((p) => p.active !== false);
+}
+
+/** Incluye desactivados: el carrito y los pedidos pueden referenciarlos. */
 export function getProduct(slug: string): Product | undefined {
-  return products.find((p) => p.slug === slug);
+  return demoData().products.find((p) => p.slug === slug);
 }
 
 export function getCategory(slug: string): Category | undefined {
-  return categories.find((c) => c.slug === slug);
+  return demoData().categories.find((c) => c.slug === slug);
 }
 
 export function productsInCategory(slug: string): Product[] {
-  return products.filter((p) => p.categorySlug === slug);
+  return activeProducts().filter((p) => p.categorySlug === slug);
 }
 
-/** Categorías sin productos no aparecen. */
+/** Categorías sin productos activos no aparecen. Orden definido en el panel. */
 export function visibleCategories(): Category[] {
-  return categories.filter((c) => productsInCategory(c.slug).length > 0).sort((a, b) => a.sortOrder - b.sortOrder);
+  return demoData().categories.filter((c) => productsInCategory(c.slug).length > 0).sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+export function productHref(slug: string): string {
+  return STATIC_PRODUCT_SLUGS.has(slug) ? `/p/${slug}/` : `/p/demo/?slug=${encodeURIComponent(slug)}`;
+}
+
+export function personalizeHref(slug: string, variantId?: string): string {
+  const base = STATIC_PRODUCT_SLUGS.has(slug) ? `/crear/${slug}/` : `/crear/demo/?slug=${encodeURIComponent(slug)}`;
+  if (!variantId) return base;
+  return `${base}${base.includes("?") ? "&" : "?"}variante=${variantId}`;
 }
 
 export function featuredCategories(): Category[] {
@@ -27,19 +42,19 @@ export function featuredCategories(): Category[] {
 }
 
 export function bestSellers(limit = 4): Product[] {
-  return [...products].sort((a, b) => b.soldCount - a.soldCount).slice(0, limit);
+  return [...activeProducts()].sort((a, b) => b.soldCount - a.soldCount).slice(0, limit);
 }
 
 export function newArrivals(limit = 4): Product[] {
-  return products.filter((p) => p.isNew).slice(0, limit);
+  return activeProducts().filter((p) => p.isNew).slice(0, limit);
 }
 
 export function personalizableProducts(): Product[] {
-  return products.filter((p) => p.personalization);
+  return activeProducts().filter((p) => p.personalization);
 }
 
 export function fromPrice(product: Product): number {
-  return product.basePrice + Math.min(...product.variants.map((v) => v.priceDelta));
+  return product.basePrice + Math.min(0, ...product.variants.map((v) => v.priceDelta));
 }
 
 export function unitPrice(product: Product, variant: Variant, withPersonalization: boolean): number {

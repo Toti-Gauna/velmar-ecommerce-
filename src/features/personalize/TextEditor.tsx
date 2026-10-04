@@ -2,8 +2,9 @@
 import { Field, Input } from "@/components/atoms/Field";
 import { TextPreview } from "@/components/organisms/TextPreview";
 import { validateText } from "@/demo/engine/personalization";
-import { FONT_FAMILIES, textZones } from "@/demo/fixtures/templates";
-import type { Product } from "@/demo/types";
+import { FONT_FAMILIES } from "@/demo/fixtures/templates";
+import { useDemoData } from "@/stores/admin";
+import type { PersonalizationTemplate, Product } from "@/demo/types";
 import { cn } from "@/lib/cn";
 
 export interface TextDraft {
@@ -13,11 +14,13 @@ export interface TextDraft {
   colorName: string;
 }
 
-export function TextEditor({ product, tint, draft, onChange, touched }: { product: Product; tint?: string; draft: TextDraft; onChange: (d: TextDraft) => void; touched: boolean }) {
-  const tmpl = product.personalization!;
+interface Props { product: Product; template: PersonalizationTemplate; tint?: string; draft: TextDraft; onChange: (d: TextDraft) => void; touched: boolean }
+
+export function TextEditor({ product, template: tmpl, tint, draft, onChange, touched }: Props) {
+  const zones = useDemoData((d) => d.textZones);
   const max = tmpl.maxChars ?? 12;
   const error = draft.text || touched ? validateText(draft.text, max) : null;
-  const zone = textZones[product.art] ?? { x: 100, y: 180, w: 200, h: 40, cover: "#ffffff" };
+  const zone = zones[product.art] ?? { x: 100, y: 180, w: 200, h: 40, cover: "#ffffff" };
   return (
     <div className="grid gap-5 md:grid-cols-2">
       <TextPreview art={product.art} tint={tint} text={draft.text || "Tu texto"} fontFamily={FONT_FAMILIES[draft.font] ?? FONT_FAMILIES.Redondeada!} color={draft.color} zone={zone} label={`Vista previa de ${product.name}`} className="w-full max-w-[420px] overflow-hidden rounded-[var(--radius-card)]" />

@@ -2,13 +2,17 @@
 import { useState } from "react";
 import type { ArtKey, ArtView } from "@/demo/types";
 import { ProductArt } from "@/components/illustrations/ProductArt";
+import { ProductVisual } from "@/components/illustrations/ProductVisual";
 import { cn } from "@/lib/cn";
 
 const VIEW_LABEL: Record<ArtView, string> = { front: "Frente", detail: "Detalle", context: "En casa" };
 
-export function ProductGallery({ art, views, tint, name }: { art: ArtKey; views: ArtView[]; tint?: string; name: string }) {
+export function ProductGallery({ art, views, tint, name, photoUrl, alt }: { art: ArtKey; views: ArtView[]; tint?: string; name: string; photoUrl?: string; alt?: string }) {
   const [active, setActive] = useState(0);
   const view = views[active] ?? "front";
+  if (photoUrl) {
+    return <ProductVisual art={art} photoUrl={photoUrl} label={alt || name} className="aspect-square rounded-[var(--radius-card)] shadow-[var(--shadow-card)]" />;
+  }
   return (
     <div className="flex flex-col gap-3">
       <div className="overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">

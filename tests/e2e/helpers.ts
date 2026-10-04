@@ -11,6 +11,12 @@ export function guardNetwork(page: Page) {
   return () => expect(offenders, "la demo no debe llamar servicios externos ni enviar datos").toEqual([]);
 }
 
+/** Ancho de página que excede el viewport configurado (con emulación móvil Chrome agranda el layout, así que se compara contra el ancho pedido). */
+export async function horizontalOverflow(page: Page): Promise<number> {
+  const width = page.viewportSize()?.width ?? 375;
+  return page.evaluate((w) => document.documentElement.scrollWidth - w, width);
+}
+
 /** PNG sólido generado en memoria (no es una foto real). */
 export async function makePng(page: Page, color = "#c9a77a"): Promise<Buffer> {
   const dataUrl = await page.evaluate((c) => {

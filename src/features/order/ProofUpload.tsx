@@ -1,12 +1,17 @@
 "use client";
 import { FileCheck2, Upload } from "lucide-react";
 import { useId, useState } from "react";
+import { useAdmin } from "@/stores/admin";
 
 const ACCEPT = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 
-/** Comprobante de MUESTRA: el archivo no sale del navegador; solo se muestra el nombre. */
-export function ProofUpload() {
+/**
+ * Comprobante de MUESTRA: el archivo no sale del navegador; solo se registra el nombre.
+ * Si el pedido de demostración existe en el panel, queda "en revisión" (nunca pagado).
+ */
+export function ProofUpload({ orderCode }: { orderCode?: string }) {
   const id = useId();
+  const receiveProof = useAdmin((s) => s.receiveProof);
   const [file, setFile] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   if (file) {
@@ -31,6 +36,7 @@ export function ProofUpload() {
             if (f.size > 10 * 1024 * 1024) return setError("El comprobante supera los 10 MB.");
             setError(null);
             setFile(f.name);
+            if (orderCode) receiveProof(orderCode, f.name);
           }} />
       </label>
       <p id={`${id}-hint`} className="text-xs text-muted">Imagen o PDF hasta 10 MB. En la demo no se sube a ningún lado.</p>

@@ -42,6 +42,9 @@ export function Footer() {
             <p className="text-xs text-muted">
               Demo de venta preparada por Eclipse. Paleta y textos provisionales. <ResetDemoButton className="font-bold text-primary underline" />
             </p>
+            <p className="text-xs">
+              <Link href="/admin-demo/" className="font-semibold text-muted underline underline-offset-2 hover:text-primary">Ver panel demo</Link>
+            </p>
           </div>
         </div>
       </div>

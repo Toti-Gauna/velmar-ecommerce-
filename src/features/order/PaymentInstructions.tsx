@@ -3,7 +3,7 @@ import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import { SampleQr } from "@/components/molecules/SampleQr";
-import { demoSettings } from "@/demo/fixtures/commerce";
+import { useDemoData } from "@/stores/admin";
 import type { PaymentMethod } from "@/demo/types";
 import { formatARS } from "@/lib/money";
 import { ProofUpload } from "./ProofUpload";
@@ -32,8 +32,9 @@ function CheckoutProMock({ total }: { total: number }) {
 }
 
 function TransferData({ total, code }: { total: number; code: string }) {
+  const settings = useDemoData((d) => d.settings);
   const rows = [
-    ["Alias", demoSettings.transferAlias], ["CBU", demoSettings.transferCbu], ["Titular", demoSettings.transferHolder],
+    ["Alias", settings.transferAlias], ["CBU", settings.transferCbu], ["Titular", settings.transferHolder],
     ["Monto", formatARS(total)], ["Referencia", code],
   ];
   return (
@@ -45,6 +46,7 @@ function TransferData({ total, code }: { total: number; code: string }) {
 }
 
 export function PaymentInstructions({ method, total, code }: { method: PaymentMethod; total: number; code: string }) {
+  const hours = useDemoData((d) => d.settings.pendingTransferHours);
   if (method === "CHECKOUT_PRO") return <CheckoutProMock total={total} />;
   return (
     <div className="flex flex-col gap-4">
@@ -54,8 +56,8 @@ export function PaymentInstructions({ method, total, code }: { method: PaymentMe
           <p className="text-sm text-muted">Escaneás el QR de Velmar con tu billetera, pagás {formatARS(total)} con la referencia <strong>{code}</strong> y subís el comprobante. Velmar revisa el ingreso y aprueba el pedido a mano.</p>
         </div>
       )}
-      <p className="text-sm text-muted">Tenés {demoSettings.pendingTransferHours} h para subir el comprobante (en la tienda real, después se libera la reserva).</p>
-      <ProofUpload />
+      <p className="text-sm text-muted">Tenés {hours} h para subir el comprobante (en la tienda real, después se libera la reserva).</p>
+      <ProofUpload orderCode={code} />
     </div>
   );
 }

@@ -7,16 +7,17 @@ import { ProductGrid } from "@/components/molecules/ProductCard";
 import { SearchForm } from "@/components/molecules/SearchForm";
 import { bestSellers, featuredCategories } from "@/demo/engine/catalog";
 import { searchProducts, suggestTerm } from "@/demo/engine/search";
-import { categories } from "@/demo/fixtures/categories";
-import { products } from "@/demo/fixtures/products";
+import { activeProducts } from "@/demo/engine/catalog";
+import { useDemoVersion } from "@/stores/admin";
 import { toCard } from "./mappers";
 
 export function SearchView() {
   const params = useSearchParams();
   const router = useRouter();
   const [q, setQ] = useState(params.get("q") ?? "");
-  const results = useMemo(() => searchProducts(q, products, categories), [q]);
-  const suggestion = results.length === 0 ? suggestTerm(q, products) : null;
+  const data = useDemoVersion();
+  const results = useMemo(() => searchProducts(q, data.products.filter((p) => p.active !== false), data.categories), [q, data]);
+  const suggestion = results.length === 0 ? suggestTerm(q, activeProducts()) : null;
   const onSearch = (value: string) => {
     setQ(value);
     router.replace(`/buscar/?q=${encodeURIComponent(value)}`, { scroll: false });

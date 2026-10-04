@@ -1,7 +1,8 @@
 "use client";
 import { Price } from "@/components/atoms/Price";
 import { TextPreview } from "@/components/organisms/TextPreview";
-import { FONT_FAMILIES, textZones } from "@/demo/fixtures/templates";
+import { FONT_FAMILIES } from "@/demo/fixtures/templates";
+import { useDemoData } from "@/stores/admin";
 import type { Product, Variant } from "@/demo/types";
 import type { TextDraft } from "./TextEditor";
 
@@ -18,7 +19,7 @@ interface Props {
 
 export function ReviewStep({ product, variant, price, text, photoPreview, reference, approved, onApprove }: Props) {
   const kind = product.personalization!.kind;
-  const zone = textZones[product.art];
+  const zone = useDemoData((d) => d.textZones[product.art]);
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <div className="w-full max-w-[420px]">

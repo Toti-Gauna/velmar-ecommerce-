@@ -1,9 +1,14 @@
+"use client";
 import { MissionProgress } from "@/components/molecules/MissionProgress";
 import { SectionHeader } from "@/components/molecules/SectionHeader";
 import { formatMissionValue, previewMission } from "@/demo/engine/missions";
-import { demoAccountProgress, missions } from "@/demo/fixtures/commerce";
+import { demoAccountProgress } from "@/demo/fixtures/commerce";
+import { useDemoData } from "@/stores/admin";
 
 export function HomeMissions() {
+  const all = useDemoData((d) => d.missions);
+  const missions = all.filter((m) => m.active !== false).slice(0, 3);
+  if (missions.length === 0) return null;
   return (
     <section aria-labelledby="misiones">
       <SectionHeader id="misiones" title="Misiones vigentes" href="/cuenta/" linkLabel="Ver en mi cuenta">Con cuenta, cada compra pagada suma. Progreso de ejemplo.</SectionHeader>

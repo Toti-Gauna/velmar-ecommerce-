@@ -12,6 +12,9 @@
   Para indexarla: `DEMO_INDEXABLE=true` con aprobación de Velmar. Nota: en un sitio de proyecto (`usuario.github.io/repo`)
   `robots.txt` no está en la raíz del dominio, así que lo efectivo es la meta `noindex`.
 
+- Rutas: la tienda vive en el grupo `app/(shop)/` (mismas URLs) y el panel demo en `app/admin-demo/` con layout propio.
+  Productos creados en el panel usan `/p/demo/?slug=` y `/crear/demo/?slug=` (no tienen página estática propia).
+
 ## Workflow (`.github/workflows/pages.yml`)
 - PR: `npm ci` → lint → typecheck → unit → build → verificación del export → e2e Playwright móvil contra `out/` servido
   bajo el mismo subpath. No publica.

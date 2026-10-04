@@ -34,8 +34,14 @@ export interface Faq {
   a: string;
 }
 
+export type PhotoMask = "arch" | "circle" | "rounded";
+
 export interface PersonalizationTemplate {
+  id: string;
+  name: string;
   kind: PersonalizationKind;
+  /** Silueta que recorta la foto (solo PHOTO). */
+  mask?: PhotoMask;
   maxChars?: number;
   fonts?: string[];
   colors?: { name: string; hex: string }[];
@@ -60,6 +66,12 @@ export interface Product {
   isNew: boolean;
   soldCount: number;
   tags: string[];
+  /** false = oculto en la tienda (se edita desde el panel). Por defecto true. */
+  active?: boolean;
+  imageAlt?: string;
+  /** Foto cargada desde el panel demo (data URL, solo en este navegador). */
+  photoDataUrl?: string;
+  dims?: { lengthCm: number; widthCm: number; heightCm: number; weightG: number };
 }
 
 export interface Coupon {
@@ -70,6 +82,10 @@ export interface Coupon {
   onlyRegistered?: boolean;
   endsAt?: string;
   description: string;
+  active?: boolean;
+  maxUses?: number;
+  /** Usos simulados. */
+  usedCount?: number;
 }
 
 export interface Mission {
@@ -79,6 +95,11 @@ export interface Mission {
   type: "UNITS_COUNT" | "ORDERS_COUNT" | "SPEND_TOTAL";
   threshold: number;
   reward: string;
+  active?: boolean;
+  /** Misión siguiente de la cadena: el excedente pasa a esa misión (spec 5.6). */
+  nextMissionId?: string | null;
+  /** Clientes que la completaron (muestra). */
+  completedCount?: number;
 }
 
 export interface ShippingZone {
@@ -88,6 +109,7 @@ export interface ShippingZone {
   price: number | null;
   etaText: string;
   postalCodes?: string[];
+  active?: boolean;
 }
 
 export interface CarouselSlide {
@@ -97,4 +119,5 @@ export interface CarouselSlide {
   ctaLabel: string;
   ctaHref: string;
   art: ArtKey;
+  active?: boolean;
 }

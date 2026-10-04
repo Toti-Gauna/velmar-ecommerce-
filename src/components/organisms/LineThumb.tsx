@@ -1,13 +1,12 @@
 import type { LinePersonalization } from "@/demo/engine/cart-types";
-import { FONT_FAMILIES, textZones } from "@/demo/fixtures/templates";
+import { FONT_FAMILIES, type TextZone } from "@/demo/fixtures/templates";
 import type { ArtKey } from "@/demo/types";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { TextPreview } from "./TextPreview";
 
 /** Miniatura de un ítem: muestra exactamente la vista previa aprobada. */
-export function LineThumb({ art, tint, name, personalization }: { art: ArtKey; tint?: string; name: string; personalization?: LinePersonalization }) {
+export function LineThumb({ art, tint, name, personalization, zone }: { art: ArtKey; tint?: string; name: string; personalization?: LinePersonalization; zone?: TextZone }) {
   const p = personalization;
-  const zone = textZones[art];
   const image = p?.previewDataUrl ?? p?.referenceDataUrl;
   if (p?.kind === "TEXT" && p.text && zone) {
     return <TextPreview art={art} tint={tint} text={p.text} fontFamily={FONT_FAMILIES[p.font ?? "Redondeada"]!} color={p.color ?? "#3d4a2a"} zone={zone} label={`${name} con “${p.text}”`} className="overflow-hidden rounded-xl [&_span]:hidden" />;

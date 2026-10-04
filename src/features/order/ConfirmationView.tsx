@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { MessageCircle } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge";
 import { ButtonLink } from "@/components/atoms/Button";
@@ -7,7 +8,8 @@ import { EmptyState } from "@/components/molecules/EmptyState";
 import { MissionProgress } from "@/components/molecules/MissionProgress";
 import { OrderSummary } from "@/components/molecules/OrderSummary";
 import { previewMission } from "@/demo/engine/missions";
-import { demoAccountProgress, missions } from "@/demo/fixtures/commerce";
+import { demoAccountProgress } from "@/demo/fixtures/commerce";
+import { useAdmin, useDemoData } from "@/stores/admin";
 import { whatsappLink } from "@/lib/whatsapp";
 import { useCheckout } from "@/stores/checkout";
 import { useHydrated } from "@/stores/hydration";
@@ -20,9 +22,14 @@ const PAY_TITLE = { CHECKOUT_PRO: "Pagar con Mercado Pago (muestra)", BANK_TRANS
 export function ConfirmationView() {
   const hydrated = useHydrated();
   const order = useCheckout((s) => s.lastOrder);
+  const missions = useDemoData((d) => d.missions);
+  const syncShopOrder = useAdmin((s) => s.syncShopOrder);
+  useEffect(() => {
+    if (order) syncShopOrder(order);
+  }, [order, syncShopOrder]);
   if (!hydrated) return <Skeleton className="h-96 w-full" />;
   if (!order) return <EmptyState title="Todavía no hay un pedido de demostración" action={<ButtonLink href="/">Ir a la tienda</ButtonLink>}>Completá el checkout para ver esta pantalla.</EmptyState>;
-  const mission = missions[0]!;
+  const mission = missions.find((m) => m.active !== false) ?? missions[0]!;
   const preview = previewMission(mission, demoAccountProgress[mission.id] ?? 0, { units: order.quote.units, total: order.quote.total });
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">

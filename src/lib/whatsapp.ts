@@ -1,9 +1,11 @@
 import { brand } from "@/config/brand";
+import { demoData } from "@/demo/engine/source";
 
 /** Link de WhatsApp con texto prearmado. Sin número confirmado abre WhatsApp para elegir contacto. */
 export function whatsappLink(message: string): string {
   const text = encodeURIComponent(message);
-  return brand.whatsappNumber ? `https://wa.me/${brand.whatsappNumber}?text=${text}` : `https://wa.me/?text=${text}`;
+  const number = (demoData().settings.whatsappNumber ?? brand.whatsappNumber)?.replace(/\D/g, "");
+  return number ? `https://wa.me/${number}?text=${text}` : `https://wa.me/?text=${text}`;
 }
 
 export function whatsappMessage(context: { productName?: string; page?: string }): string {
