@@ -1,4 +1,5 @@
-import "@fontsource-variable/nunito";
+import "@fontsource-variable/manrope";
+import "@fontsource-variable/fraunces/opsz.css";
 import "@fontsource/caveat/600.css";
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
@@ -6,6 +7,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { brand, brandCssVariables } from "@/config/brand";
 import { site } from "@/config/site";
 import { SITE_URL } from "@/lib/base-path";
+import { MotionRoot } from "@/components/motion/MotionRoot";
 import { ClientShell } from "@/components/organisms/ClientShell";
 import { Splash, splashScript } from "@/components/organisms/Splash";
 
@@ -43,8 +45,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary">
           Saltar al contenido
         </a>
-        {children}
-        <ClientShell />
+        <MotionRoot>
+          {children}
+          <ClientShell />
+        </MotionRoot>
       </body>
     </html>
   );

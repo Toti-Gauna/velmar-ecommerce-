@@ -2,18 +2,20 @@ import Link from "next/link";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "dark" | "light";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-bold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 select-none";
+  "group/btn relative inline-flex items-center justify-center gap-2 rounded-full font-bold tracking-[-0.005em] transition-[background-color,color,box-shadow,transform] duration-200 ease-[var(--ease-out-expo)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45 select-none";
 const variants: Record<Variant, string> = {
-  primary: "bg-primary text-on-primary hover:bg-primary-hover",
-  secondary: "border-2 border-primary bg-surface text-primary hover:bg-accent",
-  ghost: "text-primary hover:bg-accent",
+  primary: "bg-primary text-on-primary shadow-[inset_0_1px_0_rgb(255_255_255/0.14),0_10px_24px_-12px_rgb(58_69_39/0.7)] hover:bg-primary-hover hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.14),0_16px_30px_-12px_rgb(58_69_39/0.75)]",
+  dark: "bg-night text-[#f6f1e8] shadow-[inset_0_1px_0_rgb(255_255_255/0.08)] hover:bg-night-2",
+  light: "bg-[#fffdf8] text-night hover:bg-white",
+  secondary: "border border-ink/15 bg-surface text-ink hover:border-ink/30 hover:bg-accent/40",
+  ghost: "text-primary hover:bg-accent/60",
   danger: "text-danger hover:bg-danger-soft",
 };
-const sizes: Record<Size, string> = { sm: "min-h-9 px-3 text-sm", md: "min-h-11 px-5 text-[15px]", lg: "min-h-13 px-6 text-base" };
+const sizes: Record<Size, string> = { sm: "min-h-10 px-4 text-sm", md: "min-h-12 px-6 text-[15px]", lg: "min-h-14 px-8 text-base" };
 
 export function buttonClass(variant: Variant = "primary", size: Size = "md", className?: string): string {
   return cn(base, variants[variant], sizes[size], className);

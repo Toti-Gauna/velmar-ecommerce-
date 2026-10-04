@@ -5,6 +5,9 @@
  * Paleta PROVISIONAL: derivada del logo (dos chevrones verde oliva sobre blanco)
  * y de las fotos de Instagram (madera clara). No es identidad final confirmada.
  */
+/** Tipografía display (títulos editoriales). */
+export const DISPLAY_FONT = "'Fraunces Variable', 'Iowan Old Style', Georgia, serif";
+
 export interface BrandConfig {
   name: string;
   tagline: string;
@@ -42,18 +45,18 @@ export const brand: BrandConfig = {
   cuit: null,
   paletteStatus: "provisional",
   colors: {
-    primary: "#3d4a2a",
-    primaryHover: "#2c361e",
-    onPrimary: "#ffffff",
-    accent: "#ede0c6",
-    wood: "#c9a77a",
-    background: "#fbf8f2",
-    surface: "#ffffff",
-    text: "#23251d",
-    muted: "#5b5e4f",
-    border: "#e4dccb",
+    primary: "#3a4527",
+    primaryHover: "#283019",
+    onPrimary: "#fffdf8",
+    accent: "#ece2cf",
+    wood: "#b98b5c",
+    background: "#f6f1e8",
+    surface: "#fffdf8",
+    text: "#1c2016",
+    muted: "#5d6050",
+    border: "#e2d8c4",
   },
-  fontFamily: "'Nunito Variable', ui-rounded, system-ui, sans-serif",
+  fontFamily: "'Manrope Variable', ui-sans-serif, system-ui, sans-serif",
 };
 
 /** Variables CSS que consumen los tokens de Tailwind (ver app/globals.css). */
@@ -71,5 +74,6 @@ export function brandCssVariables(config: BrandConfig = brand): Record<string, s
     "--brand-muted": c.muted,
     "--brand-border": c.border,
     "--brand-font": config.fontFamily,
+    "--brand-display": DISPLAY_FONT,
   };
 }

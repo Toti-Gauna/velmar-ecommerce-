@@ -27,7 +27,7 @@ export const demoSettings: DemoSettings = {
   nationalTaxRate: 0.21,
   enabledMethods: ["CHECKOUT_PRO", "BANK_TRANSFER", "QR_MANUAL"],
   whatsappNumber: null,
-  brandColors: { primary: "#3d4a2a", accent: "#ede0c6", background: "#fbf8f2" },
+  brandColors: { primary: "#3a4527", accent: "#ece2cf", background: "#f6f1e8" },
   legalName: null,
   cuit: null,
 };
