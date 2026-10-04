@@ -25,10 +25,10 @@ export function Breadcrumbs({ crumbs }: { crumbs: Crumb[] }) {
 
 export function PageHeader({ title, crumbs = [], children }: { title: string; crumbs?: Crumb[]; children?: ReactNode }) {
   return (
-    <div className="mb-6">
+    <div className="mb-10">
       {crumbs.length > 0 && <Breadcrumbs crumbs={crumbs} />}
-      <h1 className="text-3xl font-extrabold text-ink sm:text-4xl">{title}</h1>
-      {children && <div className="mt-2 max-w-2xl text-muted">{children}</div>}
+      <h1 className="font-display text-[clamp(2.4rem,5vw,4rem)] leading-[1.02] text-ink">{title}</h1>
+      {children && <div className="mt-4 max-w-2xl text-lg text-muted">{children}</div>}
     </div>
   );
 }

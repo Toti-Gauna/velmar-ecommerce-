@@ -1,23 +1,23 @@
 "use client";
-import { Sparkles } from "lucide-react";
+import { ShieldCheck, Sparkles, Undo2, Eye } from "lucide-react";
 import { useState } from "react";
-import { Badge } from "@/components/atoms/Badge";
 import { Button, ButtonLink } from "@/components/atoms/Button";
-import { Price } from "@/components/atoms/Price";
-import { AvailabilityNote } from "@/components/molecules/AvailabilityNote";
-import { FaqList } from "@/components/molecules/FaqList";
 import { QuantityStepper } from "@/components/molecules/QuantityStepper";
+import { StockMeter } from "@/components/molecules/StockMeter";
 import { VariantPicker } from "@/components/molecules/VariantPicker";
 import { ProductGallery } from "@/components/organisms/ProductGallery";
-import { availability, isPurchasable, maxQuantity, personalizeHref, unitPrice } from "@/demo/engine/catalog";
+import { availability, getCategory, isPurchasable, maxQuantity, personalizeHref, unitPrice } from "@/demo/engine/catalog";
 import type { Product } from "@/demo/types";
-import { withoutNationalTaxes } from "@/lib/money";
+import { formatARS, withoutNationalTaxes } from "@/lib/money";
 import { useDemoData } from "@/stores/admin";
 import { useCart } from "@/stores/cart";
-import { useToasts } from "@/stores/toast";
+import { useUi } from "@/stores/ui";
+import { DeliveryEstimate } from "./DeliveryEstimate";
+import { MissionChip } from "./MissionChip";
+import { ProductAccordions } from "./ProductAccordions";
 import { useVariantSelection } from "./useVariantSelection";
 
-const KIND_LABEL = { TEXT: "texto, fuente y color", PHOTO: "tu foto con encuadre y zoom", PHOTO_REFERENCE: "tu foto de referencia y notas" };
+const KIND_LABEL = { TEXT: "Personalizable con nombre", PHOTO: "Personalizable con tu foto", PHOTO_REFERENCE: "Pintado desde tu foto" };
 
 export function ProductDetail({ product: initial }: { product: Product }) {
   const product = useDemoData((d) => d.products.find((p) => p.slug === initial.slug)) ?? initial;
@@ -25,62 +25,72 @@ export function ProductDetail({ product: initial }: { product: Product }) {
   const sel = useVariantSelection(product);
   const [qty, setQty] = useState(1);
   const add = useCart((s) => s.add);
-  const toast = useToasts((s) => s.push);
-  const price = unitPrice(product, sel.variant, false);
+  const openCart = useUi((s) => s.openCart);
+  const tmpl = product.personalization;
+  const price = unitPrice(product, sel.variant, Boolean(tmpl));
   const avail = availability(product, sel.variant);
-  const max = maxQuantity(sel.variant);
-  const quantity = Math.min(qty, Math.max(1, max));
+  const max = Math.max(1, maxQuantity(sel.variant));
+  const quantity = Math.min(qty, max);
   const inactive = product.active === false;
   const canBuy = !inactive && isPurchasable(sel.variant, quantity);
-  const tmpl = product.personalization;
+  const transferPrice = Math.round(price * (1 - settings.transferDiscountPct / 100));
+  const category = getCategory(product.categorySlug);
 
   const addToCart = () => {
     add({ productSlug: product.slug, variantId: sel.variant.id, quantity });
-    toast({ tone: "success", title: "Agregado al carrito", description: `${quantity} × ${product.name} (${sel.variant.label})`, action: { label: "Ver carrito", href: "/carrito/" } });
+    openCart(product.slug);
   };
 
   const cta = tmpl ? (
-    <ButtonLink href={personalizeHref(product.slug, sel.variant.id)} size="lg" className="w-full" aria-disabled={!canBuy} tabIndex={canBuy ? undefined : -1}>
+    <ButtonLink href={`${personalizeHref(product.slug, sel.variant.id)}&cantidad=${quantity}`} size="lg" className="w-full" aria-disabled={!canBuy} tabIndex={canBuy ? undefined : -1}>
       <Sparkles size={18} aria-hidden="true" /> Personalizar<span className="max-sm:sr-only"> y ver vista previa</span>
     </ButtonLink>
   ) : (
-    <Button size="lg" className="w-full" disabled={!canBuy} onClick={addToCart}>Agregar al carrito</Button>
+    <Button size="lg" className="w-full" disabled={!canBuy} onClick={addToCart}>Agregar al carrito · {formatARS(price * quantity)}</Button>
   );
 
   return (
-    <div className="grid gap-8 md:grid-cols-2 md:gap-10">
-      <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} photoUrl={product.photoDataUrl} alt={product.imageAlt} />
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-wrap gap-1.5">
-            {product.isNew && <Badge tone="brand">Nuevo</Badge>}
-            {tmpl && <Badge>Personalizable: {KIND_LABEL[tmpl.kind]}</Badge>}
-          </div>
-          <h1 className="text-3xl font-extrabold leading-tight">{product.name}</h1>
-          <p className="text-muted">{product.description}</p>
+    <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+      <div className="lg:sticky lg:top-28 lg:self-start">
+        <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} photoUrl={product.photoDataUrl} alt={product.imageAlt} />
+      </div>
+      <div className="flex flex-col gap-6">
+        <div>
+          <p className="eyebrow text-brass-ink">{category?.name}{tmpl ? ` · ${KIND_LABEL[tmpl.kind]}` : ""}{product.isNew ? " · Nuevo" : ""}</p>
+          <h1 className="font-display mt-3 text-[clamp(2.2rem,4.5vw,3.6rem)] leading-[1.02]">{product.name}</h1>
+          <p className="mt-3 text-lg text-muted">{product.short}</p>
         </div>
-        <div className="flex flex-col gap-1">
-          <Price amount={price} withoutTaxes={withoutNationalTaxes(price, settings.nationalTaxRate)} size="lg" />
-          {tmpl && tmpl.surcharge > 0 && <p className="text-sm text-muted">+ ${tmpl.surcharge.toLocaleString("es-AR")} por personalización</p>}
-          <p className="text-sm font-semibold text-success">{settings.transferDiscountPct}% off pagando con transferencia o QR</p>
-          <p className="text-xs text-muted">Precio de muestra para la demo.</p>
+        <div className="flex flex-wrap items-end gap-x-4 gap-y-1">
+          <span className="text-4xl font-extrabold tabular-nums tracking-tight">{formatARS(price)}</span>
+          {settings.transferDiscountPct > 0 && (
+            <span className="mb-1 rounded-full bg-success-soft px-3 py-1 text-sm font-bold text-success">{formatARS(transferPrice)} con transferencia o QR</span>
+          )}
+          <span className="w-full text-xs text-muted">Precio sin impuestos nacionales: {formatARS(withoutNationalTaxes(price, settings.nationalTaxRate))} · precio de muestra{tmpl && tmpl.surcharge > 0 ? ` · incluye ${formatARS(tmpl.surcharge)} de personalización` : ""}</span>
         </div>
         {sel.colorOptions.length > 0 && <VariantPicker legend="Color" options={sel.colorOptions} value={sel.color} onChange={sel.chooseColor} swatches />}
         {sel.sizeOptions.length > 0 && <VariantPicker legend="Opción" options={sel.sizeOptions} value={sel.size} onChange={sel.chooseSize} />}
         {inactive ? (
           <p role="status" className="rounded-2xl bg-warning-soft p-3 text-sm font-bold text-warning">Este producto está pausado desde el panel demo y no se puede comprar.</p>
-        ) : (
-          <AvailabilityNote availability={avail} />
-        )}
-        {!tmpl && <QuantityStepper label="Cantidad" value={quantity} max={Math.max(1, max)} onChange={setQty} />}
-        <div className="hidden md:block">{cta}</div>
-        <section aria-labelledby="faq">
-          <h2 id="faq" className="mb-3 text-lg font-extrabold">Preguntas frecuentes</h2>
-          <FaqList faqs={product.faqs} />
-        </section>
+        ) : <StockMeter availability={avail} />}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-bold">Cantidad</span>
+            <QuantityStepper label="Cantidad" value={quantity} max={max} onChange={setQty} />
+          </div>
+          {sel.variant.stock > 0 && <span className="text-xs text-muted">Máximo {max} {max === 1 ? "unidad" : "unidades"}</span>}
+        </div>
+        <div className="hidden lg:block">{cta}</div>
+        <MissionChip units={quantity} />
+        <ul className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-muted">
+          {[{ icon: Eye, t: "Vista previa antes de pagar" }, { icon: ShieldCheck, t: "Pago con Mercado Pago, QR o transferencia" }, { icon: Undo2, t: "Botón de arrepentimiento" }].map(({ icon: Icon, t }) => (
+            <li key={t} className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-3"><Icon size={18} aria-hidden="true" className="text-primary" />{t}</li>
+          ))}
+        </ul>
+        <DeliveryEstimate makeDays={product.madeToOrderDays ?? 1} />
+        <ProductAccordions product={product} />
       </div>
-      <div className="fixed inset-x-0 bottom-0 z-20 flex items-center gap-3 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur md:hidden">
-        <Price amount={price} size="sm" className="shrink-0" />
+      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-surface/95 px-4 py-3 backdrop-blur lg:hidden">
+        <span className="shrink-0 text-lg font-extrabold tabular-nums">{formatARS(price * quantity)}</span>
         <div className="flex-1">{cta}</div>
       </div>
     </div>

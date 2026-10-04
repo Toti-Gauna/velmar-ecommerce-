@@ -68,8 +68,8 @@ export function ProductArt({ art, view = "front", tint, label, className, showBa
   const Art = ART[art];
   const transform = view === "detail" ? "translate(-140 -120) scale(1.7)" : view === "context" ? "translate(40 40) scale(0.8)" : undefined;
   return (
-    <div className={cn("relative overflow-hidden", className)}>
-      <svg viewBox="0 0 400 400" role="img" aria-label={`${label} (imagen ilustrativa)`} className="block h-full w-full">
+    <div className={cn(/\babsolute\b/.test(className ?? "") ? "" : "relative", "overflow-hidden", className)}>
+      <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${label} (imagen ilustrativa)`} className="block h-full w-full">
         {view === "context" ? <ContextScene /> : <Studio view={view} />}
         <g transform={transform}>
           <Art tint={tint} />

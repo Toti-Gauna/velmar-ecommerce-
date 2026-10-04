@@ -32,9 +32,16 @@ export const useAdmin = create<AdminState>()(
     }),
     {
       name: `${STORAGE_PREFIX}admin`,
-      version: 1,
+      version: 2,
       storage: demoStorage,
       skipHydration: true,
+      // Versiones viejas de la demo: se descartan y vuelven a los fixtures.
+      migrate: () => defaultAdminData(),
+      // Campos nuevos de `data` toman el valor por defecto si el estado guardado no los tiene.
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<AdminData>;
+        return { ...current, ...p, data: { ...current.data, ...(p.data ?? {}) } };
+      },
       partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit }),
     },
   ),

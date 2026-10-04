@@ -4,6 +4,7 @@ import { Footer } from "@/components/organisms/Footer";
 import { Header } from "@/components/organisms/Header";
 import { WhatsAppFab } from "@/components/organisms/WhatsAppFab";
 import { CartDrawer } from "@/features/cart/CartDrawer";
+import { WheelModal } from "@/features/club/WheelModal";
 
 export default function ShopLayout({ children }: { children: ReactNode }) {
   return (
@@ -14,6 +15,7 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
       <Footer />
       <WhatsAppFab />
       <CartDrawer />
+      <WheelModal />
     </>
   );
 }
