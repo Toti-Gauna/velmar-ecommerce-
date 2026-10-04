@@ -14,9 +14,9 @@ export interface SalesBar {
 export function SalesChart({ title, bars }: { title: string; bars: SalesBar[] }) {
   const max = Math.max(1, ...bars.map((b) => b.amount));
   return (
-    <figure className="rounded-2xl border border-line bg-surface p-4">
-      <figcaption className="mb-3 text-sm font-bold">{title}</figcaption>
-      <div className="relative flex h-40 items-end gap-0.5 border-b border-line">
+    <figure className="rounded-3xl bg-surface p-5 shadow-[var(--shadow-card)]">
+      <figcaption className="font-display mb-4 text-2xl">Ventas por día <span className="block text-sm font-sans text-muted">{title}</span></figcaption>
+      <div className="relative flex h-48 items-end gap-0.5 border-b border-line">
         {[0.5, 1].map((t) => <span key={t} aria-hidden="true" className="pointer-events-none absolute inset-x-0 border-t border-dashed border-line/70" style={{ bottom: `${t * 100}%` }} />)}
         {bars.map((b) => (
           <div key={b.key} tabIndex={0} role="img" aria-label={`${b.label}: ${formatARS(b.amount)}, ${b.orders} ${b.orders === 1 ? "pedido" : "pedidos"} (demo)`} className="group relative flex h-full flex-1 items-end justify-center outline-none">

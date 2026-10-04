@@ -14,8 +14,8 @@ export function OrderLines({ lines }: { lines: CartLine[] }) {
         const variant = product.variants.find((v) => v.id === q.line.variantId);
         const p = q.line.personalization;
         return (
-          <li key={q.line.id} className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3">
-            <div className="w-16 shrink-0"><LineThumb art={product.art} tint={variant?.colorHex} name={product.name} personalization={p} zone={demoData().textZones[product.art]} /></div>
+          <li key={q.line.id} className="flex items-center gap-4 rounded-3xl bg-surface p-3 shadow-[var(--shadow-card)]">
+            <div className="w-20 shrink-0"><LineThumb art={product.art} tint={variant?.colorHex} name={product.name} personalization={p} zone={demoData().textZones[product.art]} /></div>
             <div className="min-w-0 flex-1 text-sm">
               <p className="font-bold">{q.line.quantity} × {product.name}</p>
               <p className="text-muted">{variant?.label}{p?.text ? ` · “${p.text}”` : ""}{p ? " · vista previa aprobada" : ""}</p>

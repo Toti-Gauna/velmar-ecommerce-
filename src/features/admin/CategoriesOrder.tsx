@@ -15,7 +15,7 @@ export function CategoriesOrder() {
       {sorted.map((c, i) => {
         const count = products.filter((p) => p.categorySlug === c.slug && p.active !== false).length;
         return (
-          <li key={c.slug} className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface p-3">
+          <li key={c.slug} className="flex flex-wrap items-center gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3">
             <span className="w-6 text-center font-extrabold tabular-nums text-muted">{i + 1}</span>
             <div className="min-w-0 flex-1">
               <p className="font-bold">{c.name}</p>

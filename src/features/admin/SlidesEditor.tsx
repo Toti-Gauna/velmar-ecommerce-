@@ -21,7 +21,7 @@ export function SlidesEditor({ initial }: { initial: CarouselSlide[] }) {
   return (
     <form className="flex flex-col gap-3" onSubmit={(e) => { e.preventDefault(); save("Carrusel guardado", () => saveSlides(slides.filter((s) => s.title.trim()))); }}>
       {slides.map((s, i) => (
-        <fieldset key={s.id} className="grid gap-3 rounded-2xl border border-line bg-surface p-3 sm:grid-cols-2">
+        <fieldset key={s.id} className="grid gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3 sm:grid-cols-2">
           <legend className="px-1 text-sm font-extrabold">Diapositiva {i + 1}</legend>
           <label className="flex flex-col gap-1 text-sm font-bold">Título<Input value={s.title} onChange={(e) => patch(i, { title: e.target.value })} /></label>
           <label className="flex flex-col gap-1 text-sm font-bold">Bajada<Input value={s.subtitle} onChange={(e) => patch(i, { subtitle: e.target.value })} /></label>

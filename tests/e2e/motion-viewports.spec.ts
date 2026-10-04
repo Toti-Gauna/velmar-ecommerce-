@@ -6,7 +6,7 @@ test.describe("movimiento reducido", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("");
     await expect(page.locator("#velmar-splash")).toBeHidden();
-    const duration = await page.locator(".animate-fade-up").first().evaluate((el) => getComputedStyle(el).animationDuration);
+    const duration = await page.locator(".animate-rise").first().evaluate((el) => getComputedStyle(el).animationDuration);
     expect(["0.001s", "1ms"]).toContain(duration);
   });
 });
@@ -15,7 +15,7 @@ test("el splash no bloquea clics y se va en menos de 1 s", async ({ page }) => {
   await page.goto("");
   expect(await page.locator("#velmar-splash").evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
   await expect(page.locator("#velmar-splash")).toBeHidden({ timeout: 1000 });
-  await page.getByRole("link", { name: "Ver todo" }).first().click();
+  await page.getByRole("link", { name: "Ver la tienda" }).click();
   await expect(page).toHaveURL(/categorias\/$/);
 });
 

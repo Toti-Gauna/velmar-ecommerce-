@@ -14,7 +14,7 @@ function HomeCtaEditor() {
   const save = useDemoSave();
   const [d, setD] = useState(cta);
   return (
-    <form className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-3" onSubmit={(e) => { e.preventDefault(); save("Textos de inicio guardados", () => saveHomeCta(d)); }}>
+    <form className="flex flex-col gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3" onSubmit={(e) => { e.preventDefault(); save("Textos de inicio guardados", () => saveHomeCta(d)); }}>
       <label className="flex flex-col gap-1 text-sm font-bold">Título del bloque “Crear”<Input value={d.title} onChange={(e) => setD({ ...d, title: e.target.value })} /></label>
       <label className="flex flex-col gap-1 text-sm font-bold">Texto<Input value={d.text} onChange={(e) => setD({ ...d, text: e.target.value })} /></label>
       <Button type="submit" size="sm" className="self-start">Guardar textos</Button>

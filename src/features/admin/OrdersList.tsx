@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Input } from "@/components/atoms/Field";
 import { Select } from "@/components/atoms/Select";
@@ -15,13 +16,14 @@ import { fulfillmentLabel, OrderCard, paymentLabel } from "./OrderCard";
 
 export function OrdersList() {
   const orders = useAdmin((s) => s.orders);
-  const [f, setF] = useState<{ q: string; status: OrderStatus | "ALL"; from: string; to: string }>({ q: "", status: "ALL", from: "", to: "" });
+  const initialStatus = useSearchParams().get("estado") as OrderStatus | null;
+  const [f, setF] = useState<{ q: string; status: OrderStatus | "ALL"; from: string; to: string }>({ q: "", status: initialStatus && ORDER_STATUSES.includes(initialStatus) ? initialStatus : "ALL", from: "", to: "" });
   const list = filterOrders(orders, f);
   const dirty = f.q || f.status !== "ALL" || f.from || f.to;
   return (
     <>
       <AdminPageHeader title="Pedidos">Pedidos ficticios. Abrí uno para ver productos, personalización aprobada, comprobante, historial y notas.</AdminPageHeader>
-      <form role="search" onSubmit={(e) => e.preventDefault()} className="mb-4 grid gap-3 rounded-2xl border border-line bg-surface p-3 sm:grid-cols-2 lg:grid-cols-4">
+      <form role="search" onSubmit={(e) => e.preventDefault()} className="mb-4 grid gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3 sm:grid-cols-2 lg:grid-cols-4">
         <label className="flex flex-col gap-1 text-sm font-bold">Código o cliente<Input value={f.q} onChange={(e) => setF({ ...f, q: e.target.value })} placeholder="VEL-000123" /></label>
         <label className="flex flex-col gap-1 text-sm font-bold">Estado
           <Select value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as OrderStatus | "ALL" })}>
@@ -39,7 +41,7 @@ export function OrdersList() {
       {list.length === 0 ? <EmptyState title="Ningún pedido coincide">Probá con otro código, estado o rango de fechas.</EmptyState> : (
         <>
           <ul className="flex flex-col gap-2 md:hidden">{list.map((o) => <li key={o.code}><OrderCard order={o} /></li>)}</ul>
-          <table className="hidden w-full overflow-hidden rounded-2xl border border-line bg-surface text-left text-sm md:table">
+          <table className="hidden w-full overflow-hidden rounded-3xl bg-surface shadow-[var(--shadow-card)] text-left text-sm md:table">
             <thead className="bg-accent/60 text-muted">
               <tr><th className="p-3">Código</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Pago</th><th>Entrega</th><th className="pr-3 text-right">Total (demo)</th></tr>
             </thead>

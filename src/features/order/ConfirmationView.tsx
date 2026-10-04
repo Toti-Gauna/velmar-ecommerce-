@@ -1,6 +1,8 @@
 "use client";
 import { useEffect } from "react";
-import { MessageCircle } from "lucide-react";
+import { Check, MessageCircle } from "lucide-react";
+import { motion } from "motion/react";
+import { Celebration } from "@/components/molecules/Celebration";
 import { Badge } from "@/components/atoms/Badge";
 import { ButtonLink } from "@/components/atoms/Button";
 import { Skeleton } from "@/components/atoms/Skeleton";
@@ -32,15 +34,23 @@ export function ConfirmationView() {
   const mission = missions.find((m) => m.active !== false) ?? missions[0]!;
   const preview = previewMission(mission, demoAccountProgress[mission.id] ?? 0, { units: order.quote.units, total: order.quote.total });
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="flex flex-col gap-6">
-        <section className="animate-fade-up rounded-[var(--radius-card)] border-2 border-dashed border-warning bg-surface p-5">
-          <Badge tone="demo">PEDIDO DE DEMOSTRACIÓN · no es un pedido real</Badge>
-          <h2 className="mt-3 text-2xl font-extrabold">¡Gracias, {order.contact.name.split(" ")[0]}! Registramos tu pedido de demostración</h2>
-          <p className="mt-1 text-muted">Código <strong className="text-ink">{order.code}</strong> · Estado de muestra: <strong className="text-ink">pendiente de pago</strong>. No se cobró nada ni se envió ningún email.</p>
+        <section className="relative overflow-hidden rounded-[2.5rem] bg-night p-6 text-[#f6f1e8] sm:p-10">
+          <Celebration />
+          <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.15 }}
+            className="grid h-16 w-16 place-items-center rounded-full bg-brass text-night"><Check size={30} aria-hidden="true" /></motion.span>
+          <p className="mt-5"><Badge tone="demo">PEDIDO DE DEMOSTRACIÓN · no es un pedido real</Badge></p>
+          <h2 className="font-display animate-rise mt-4 text-4xl leading-tight sm:text-5xl">¡Gracias, {order.contact.name.split(" ")[0]}! Tu pedido de demostración está registrado</h2>
+          <p className="mt-3 text-[#cfc6b3]">Código <strong className="text-[#f6f1e8]">{order.code}</strong> · Estado de muestra: <strong className="text-[#f6f1e8]">pendiente de pago</strong>. No se cobró nada ni se envió ningún email.</p>
+          <ol className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
+            {["Pagás o subís el comprobante", "Velmar confirma y arranca el taller", "Seguís cada etapa con tu link"].map((t, i) => (
+              <li key={t} className="flex items-center gap-3 rounded-2xl bg-white/5 p-3"><span className="font-display grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/10 text-brass">{i + 1}</span>{t}</li>
+            ))}
+          </ol>
         </section>
         <section aria-labelledby="pago" className="flex flex-col gap-3">
-          <h2 id="pago" className="text-lg font-extrabold">{PAY_TITLE[order.paymentMethod]}</h2>
+          <h2 id="pago" className="font-display text-3xl">{PAY_TITLE[order.paymentMethod]}</h2>
           <PaymentInstructions method={order.paymentMethod} total={order.quote.total} code={order.code} />
         </section>
         {order.asAccount && (
@@ -49,7 +59,7 @@ export function ConfirmationView() {
             status={preview.completesNow ? "completes-now" : preview.alreadyComplete ? "complete" : "progress"}
             note="Ilustrativo: en la tienda real la misión avanza cuando el pago queda confirmado." />
         )}
-        <section aria-labelledby="items"><h2 id="items" className="mb-3 text-lg font-extrabold">Tu pedido</h2><OrderLines lines={order.lines} /></section>
+        <section aria-labelledby="items"><h2 id="items" className="font-display mb-3 text-3xl">Tu pedido</h2><OrderLines lines={order.lines} /></section>
       </div>
       <aside className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
         <OrderSummary rows={summaryRows(order.quote)} total={order.quote.total} totalNote="Montos de muestra." />

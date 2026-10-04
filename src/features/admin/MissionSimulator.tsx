@@ -19,7 +19,7 @@ export function MissionSimulator({ missions }: { missions: Mission[] }) {
   const next = mission.nextMissionId ? missions.find((m) => m.id === mission.nextMissionId) : undefined;
   const overflow = Math.max(0, v - mission.threshold);
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-4">
+    <div className="flex flex-col gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4">
       <label className="flex flex-col gap-1 text-sm font-bold">Misión<Select value={mission.id} onChange={(e) => { setId(e.target.value); setValue(0); }}>{missions.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}</Select></label>
       <label className="flex flex-col gap-1 text-sm font-bold">Progreso del cliente de ejemplo: {formatMissionValue(mission, v)}{v > mission.threshold ? ` (+${formatMissionValue({ ...mission, threshold: Infinity }, overflow)} de excedente)` : ""}
         <input type="range" min={0} max={max} step={mission.type === "SPEND_TOTAL" ? 1000 : 1} value={v} onChange={(e) => setValue(Number(e.target.value))} className="accent-[var(--color-primary)]" />

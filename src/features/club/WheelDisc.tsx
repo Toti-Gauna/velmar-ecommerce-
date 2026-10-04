@@ -20,13 +20,16 @@ export function WheelDisc({ segments }: { segments: WheelSegment[] }) {
       {segments.map((s, i) => {
         const [x1, y1] = pt(i * slice, r);
         const [x2, y2] = pt((i + 1) * slice, r);
-        const [tx, ty] = pt(i * slice + slice / 2, r * 0.64);
+        const mid = i * slice + slice / 2;
+        const [tx, ty] = pt(mid, r * 0.6);
+        const words = s.label.split(" ");
+        const lines = words.length > 1 ? [words.slice(0, Math.ceil(words.length / 2)).join(" "), words.slice(Math.ceil(words.length / 2)).join(" ")] : [s.label];
         return (
           <g key={s.id} opacity={s.active ? 1 : 0.35}>
             <path d={`M200 200 L${x1} ${y1} A${r} ${r} 0 0 1 ${x2} ${y2} Z`} fill={FILLS[i % FILLS.length]} stroke="#d2ad69" strokeWidth="1.5" />
-            <text x={tx} y={ty} fill={INK[i % INK.length]} fontSize="17" fontWeight="800" textAnchor="middle" dominantBaseline="central"
-              transform={`rotate(${i * slice + slice / 2} ${tx} ${ty})`} style={{ fontFamily: "var(--font-sans)" }}>
-              {s.label.length > 12 ? s.label.split(" ").slice(0, 2).join(" ") : s.label}
+            <text x={tx} y={ty} fill={INK[i % INK.length]} fontSize="15" fontWeight="800" textAnchor="middle" dominantBaseline="central"
+              transform={`rotate(${mid - 90} ${tx} ${ty})`} style={{ fontFamily: "var(--font-sans)" }}>
+              {lines.map((line, k) => <tspan key={k} x={tx} dy={k === 0 ? (lines.length > 1 ? "-0.55em" : "0") : "1.1em"}>{line}</tspan>)}
             </text>
           </g>
         );

@@ -14,7 +14,7 @@ export function Footer() {
   return (
     <footer className="mt-24 bg-night text-[#e9e2d3]">
       <div className="mx-auto max-w-7xl px-6 pb-28 pt-16">
-        <div className="grid gap-12 lg:grid-cols-[1.3fr_2fr]">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)]">
           <div className="flex flex-col gap-5">
             <Logo tone="light" />
             <p className="font-display max-w-sm text-3xl leading-tight text-[#f6f1e8]">Objetos hechos a mano, con nombre y con historia.</p>

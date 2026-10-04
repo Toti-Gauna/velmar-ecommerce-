@@ -52,7 +52,7 @@ export function CartView() {
   const missing = missingForFreeShipping(quote.subtotal);
   const threshold = demoData().settings.freeShippingFrom;
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
       <div className="flex flex-col gap-6">
         <div className="rounded-3xl bg-surface p-4 shadow-[var(--shadow-card)]">
           <p className="flex items-center gap-2 text-sm font-semibold"><Truck size={18} aria-hidden="true" className="text-primary" />{missing > 0 ? `Te faltan ${formatARS(missing)} para envío gratis.` : "¡Tenés envío gratis!"}</p>

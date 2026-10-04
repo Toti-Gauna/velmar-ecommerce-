@@ -14,7 +14,7 @@ export function MissionChip({ units }: { units: number }) {
   return (
     <Link href="/club/" className="flex items-center gap-3 rounded-2xl bg-night px-4 py-3 text-sm text-[#f6f1e8] hover:bg-night-2">
       <Gift size={18} aria-hidden="true" className="shrink-0 text-brass" />
-      <span className="flex-1">{p.after >= m.threshold ? <>Con esta compra completás <strong>“{m.title}”</strong> y ganás {m.reward.toLowerCase()}.</> : <>Suma {units} a <strong>“{m.title}”</strong> del Club Velmar.</>}</span>
+      <span className="flex-1">{p.after >= m.threshold ? <>Con esta compra completás <strong>“{m.title}”</strong> y ganás: {m.reward}.</> : <>Suma {units} a <strong>“{m.title}”</strong> del Club Velmar.</>}</span>
       <span className="text-xs text-brass">Ver Club</span>
     </Link>
   );

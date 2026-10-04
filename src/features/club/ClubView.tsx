@@ -38,7 +38,7 @@ export function ClubView() {
         )}
       </section>
       <section aria-labelledby="mis">
-        <Reveal><h2 id="mis" className="font-display text-4xl sm:text-5xl">Tus misiones {!user && <span className="text-base text-muted">(progreso en cero sin cuenta)</span>}</h2></Reveal>
+        <Reveal><h2 id="mis" className="font-display text-4xl sm:text-5xl">Tus misiones {!user && <span className="block font-sans text-base text-muted">Sin cuenta el progreso arranca en cero.</span>}</h2></Reveal>
         <ul className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {missions.map((m, i) => <Reveal as="li" key={m.id} delay={i * 0.08}><MissionCard mission={m} progress={user ? (demoAccountProgress[m.id] ?? 0) : 0} /></Reveal>)}
         </ul>

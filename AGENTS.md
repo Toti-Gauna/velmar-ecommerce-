@@ -29,4 +29,6 @@ Ante una duda de alcance: parar y preguntar a Ignacio, no decidir.
 - Antes de commitear: `npm run lint && npm run typecheck && npm test && npm run build`.
 - E2E: `PAGES_BASE_PATH=/velmar-ecommerce- npm run build && PAGES_BASE_PATH=/velmar-ecommerce- npm run e2e`.
 - Accesibilidad AA, foco visible, `prefers-reduced-motion`, sin animaciones permanentes ni audio.
+- Motion: `motion/react` solo en componentes cliente y dentro de `MotionRoot`; lo que se ve antes de hidratar (splash, hero) va en CSS. Ver `docs/tono-visual.md`.
+- Grillas con carriles desplazables: `grid-cols-[minmax(0,1fr)]` de base para no desbordar en 375 px.
 - Cada tarea declara archivos tocados, comportamiento, prueba ejecutada y decisiones abiertas.

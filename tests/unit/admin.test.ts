@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { defaultAdminData } from "@/demo/admin/defaults";
-import { countByStatus, filterOrders, salesSummary } from "@/demo/admin/metrics";
+import { countByStatus, delta, filterOrders, salesSummary, topProducts } from "@/demo/admin/metrics";
 import { availability, getProduct, visibleCategories } from "@/demo/engine/catalog";
 import { validateCoupon } from "@/demo/engine/coupons";
 import { defaultDemoData, setDemoData } from "@/demo/engine/source";
@@ -22,6 +22,15 @@ describe("métricas del panel demo", () => {
     expect(s.today).toBe(0);
     expect(s.week).toBeGreaterThan(0);
     expect(s.month).toBeGreaterThanOrEqual(s.week);
+  });
+  it("ticket promedio, variación semanal y top productos", () => {
+    const s = salesSummary(orders, DEMO_TODAY);
+    expect(s.avgTicket).toBeGreaterThan(0);
+    expect(delta(150, 100)).toBe(50);
+    expect(delta(10, 0)).toBeNull();
+    const top = topProducts(orders, 3);
+    expect(top).toHaveLength(3);
+    expect(top[0]!.units).toBeGreaterThanOrEqual(top[1]!.units);
   });
   it("filtra por código, estado y fecha", () => {
     expect(filterOrders(orders, { q: "000123", status: "ALL", from: "", to: "" }).map((o) => o.code)).toEqual(["VEL-000123"]);

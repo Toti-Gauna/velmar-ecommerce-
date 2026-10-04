@@ -41,7 +41,7 @@ export function PaymentsQueue() {
       <div aria-live="polite" className="flex flex-col gap-3">
         {list.length === 0 && <EmptyState title="Nada en esta lista">Cuando un comprador sube un comprobante, aparece en “Por revisar”.</EmptyState>}
         {list.map((o) => (
-          <article key={o.code} className="animate-fade-up flex flex-col gap-3 rounded-[var(--radius-card)] border border-line bg-surface p-4">
+          <article key={o.code} className="animate-fade-up flex flex-col gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4">
             <div className="flex flex-wrap items-center gap-2">
               <Link href={`/admin-demo/pedidos/detalle/?codigo=${o.code}`} className="font-extrabold text-primary underline">{o.code}</Link>
               <StatusBadge status={o.status} />
@@ -53,7 +53,7 @@ export function PaymentsQueue() {
       </div>
       <section aria-labelledby="auditoria" className="mt-8">
         <h2 id="auditoria" className="mb-3 text-lg font-extrabold">Auditoría de muestra</h2>
-        <ol className="flex flex-col divide-y divide-line rounded-2xl border border-line bg-surface text-sm">
+        <ol className="flex flex-col divide-y divide-line rounded-3xl bg-surface shadow-[var(--shadow-card)] text-sm">
           {audit.slice(0, 15).map((a) => (
             <li key={a.id} className="flex flex-wrap gap-x-3 p-3"><span className="font-bold">{a.action}</span><span className="text-muted">{a.entity}</span><span className="ml-auto text-xs text-muted">{a.actor} · {formatDateTime(a.at)}</span></li>
           ))}

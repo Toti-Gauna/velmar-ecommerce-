@@ -20,7 +20,7 @@ export function TemplateEditor({ template, usedBy }: { template: Personalization
   const [color, setColor] = useState({ name: "", hex: "#3d4a2a" });
   const set = (p: Partial<PersonalizationTemplate>) => setT((x) => ({ ...x, ...p }));
   return (
-    <form className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-4" onSubmit={(e) => { e.preventDefault(); save(`Plantilla “${t.name}” guardada`, () => saveTemplate(t)); }}>
+    <form className="flex flex-col gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4" onSubmit={(e) => { e.preventDefault(); save(`Plantilla “${t.name}” guardada`, () => saveTemplate(t)); }}>
       <div>
         <h3 className="font-extrabold">{t.name}</h3>
         <p className="text-xs text-muted">{KIND[t.kind]} · usada por {usedBy.length ? usedBy.join(", ") : "ningún producto"}</p>
