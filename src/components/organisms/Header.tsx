@@ -8,6 +8,7 @@ import { cn } from "@/lib/cn";
 import { useCart } from "@/stores/cart";
 import { useHydrated } from "@/stores/hydration";
 import { useUi } from "@/stores/ui";
+import { ThemeToggle } from "@/components/atoms/ThemeToggle";
 import { MobileMenu } from "./MobileMenu";
 import { ShopMenu } from "./ShopMenu";
 
@@ -47,6 +48,7 @@ export function Header() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-0.5">
+          <ThemeToggle className={cn(icon, "max-sm:hidden")} />
           <button type="button" onClick={() => setSearch(true)} aria-label="Buscar" className={icon}><Search size={21} aria-hidden="true" /></button>
           <Link href="/cuenta/" aria-label="Mi cuenta (demo)" className={cn(icon, "max-sm:hidden")}><UserRound size={21} aria-hidden="true" /></Link>
           <button type="button" onClick={() => openCart()} aria-label={`Carrito, ${count} ${count === 1 ? "producto" : "productos"}`} className={cn(icon, "relative")}>

@@ -93,8 +93,7 @@ test("checkout con cuenta demo, retiro y Mercado Pago simulado", async ({ page }
   await expect(page.getByRole("dialog", { name: "Carrito" }).getByText("Agregaste Vela caniche")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog", { name: "Carrito" })).toBeHidden();
-  await page.getByRole("button", { name: "Cantidad: 1 unidad" }).click();
-  await page.getByRole("option", { name: "2 unidades" }).click();
+  await page.getByLabel("Cantidad:").selectOption("2");
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   await page.goto("checkout/");
   await page.getByRole("button", { name: "Ingresar con cuenta demo" }).click();

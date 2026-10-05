@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ArrowUpRight, ChevronRight, CircleHelp, FlaskConical, Menu, RotateCcw } from "lucide-react";
 import { resetDemo } from "@/stores/hydration";
 import { useToasts } from "@/stores/toast";
+import { ThemeToggle } from "@/components/atoms/ThemeToggle";
 import { currentSection } from "./nav";
 
 /**
@@ -40,6 +41,7 @@ export function AdminTopbar({ onMenu, onHelp }: { onMenu: () => void; onHelp: ()
         <Link href="/" className="hidden h-10 items-center gap-1.5 rounded-full px-4 text-sm font-bold text-primary transition-colors hover:bg-accent/60 sm:flex">
           Ver tienda <ArrowUpRight size={15} aria-hidden="true" />
         </Link>
+        <ThemeToggle className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-muted hover:bg-accent/60 hover:text-ink" />
         <button type="button" onClick={onHelp} aria-label="Ver guía del panel" data-tour="help" className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-accent/60 hover:text-ink">
           <CircleHelp size={19} aria-hidden="true" />
         </button>
