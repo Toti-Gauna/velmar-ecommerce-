@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { AMBIENT } from "./ambient";
+import { SeasonFx } from "./backdrop/SeasonFx";
 import { AmbientField } from "./AmbientField";
 import { isImmersive } from "./palettes";
 import { skinOf } from "./skins";
@@ -37,6 +38,7 @@ export function ThemeStage() {
           <span key={i} className={`aurora-blob aurora-${i}`} style={{ background: `radial-gradient(closest-side, ${c}, transparent 72%)`, opacity: dark ? [0.55, 0.22, 0.6][i] : [0.32, 0.26, 0.2][i] }} />
         ))}
       </div>
+      <SeasonFx id={theme.id} />
       <div className="season-grain" />
       <AmbientField layers={AMBIENT[theme.id]} density={1} className="absolute inset-0" />
     </div>

@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 import type { AmbientLayer } from "./ambient";
 
 /** Pseudoaleatorio determinístico: el mismo HTML en servidor y navegador. */
-function rand(seed: number): number {
+export function rand(seed: number): number {
   const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
   return x - Math.floor(x);
 }
