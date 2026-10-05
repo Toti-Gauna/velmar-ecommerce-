@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
+import { DateInput } from "@/components/atoms/DateInput";
 import { Input } from "@/components/atoms/Field";
 import { Select } from "@/components/atoms/Select";
 import { Switch } from "@/components/atoms/Switch";
@@ -35,7 +36,7 @@ export function CouponForm({ onDone }: { onDone: () => void }) {
         {c.type !== "FREE_SHIPPING" && <NumberField id="cp-value" label="Valor" suffix={c.type === "PERCENT" ? "%" : "ARS"} value={c.value} onChange={(n) => set({ value: n })} />}
         <NumberField id="cp-min" label="Compra mínima" suffix="ARS" value={c.minSubtotal} onChange={(n) => set({ minSubtotal: n || undefined })} hint="0 = sin mínimo" />
         <NumberField id="cp-max" label="Usos totales" value={c.maxUses} onChange={(n) => set({ maxUses: n || undefined })} hint="0 = sin límite" />
-        <label className="flex flex-col gap-1 text-sm font-bold">Vence<Input type="date" value={c.endsAt ?? ""} onChange={(e) => set({ endsAt: e.target.value || undefined })} /></label>
+        <label className="flex min-w-0 flex-col gap-1 text-sm font-bold">Vence<DateInput value={c.endsAt ?? ""} onChange={(e) => set({ endsAt: e.target.value || undefined })} /></label>
         <label className="flex flex-col gap-1 text-sm font-bold sm:col-span-2">Descripción<Input value={c.description} onChange={(e) => set({ description: e.target.value })} placeholder="10% para clientes de la feria" /></label>
       </div>
       <Switch checked={c.onlyRegistered ?? false} onChange={(v) => set({ onlyRegistered: v })} label="Solo con cuenta" />

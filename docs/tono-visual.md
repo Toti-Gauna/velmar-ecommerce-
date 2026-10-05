@@ -46,6 +46,8 @@ Todos son **nativos** (`select`, `input type="date"`, `number`, `color`, `range`
 navegador abre su propia lista, calendario o rueda (accesible y familiar en el celular), con la estética de la tienda:
 mismos radios, bordes, foco y chevron, `accent-color` de marca y `color-scheme` claro/oscuro para que los selectores
 del sistema sigan el tema. La cantidad de la ficha también es un `select` nativo ("Cantidad: 1 unidad ⌄").
+Fechas: siempre con `DateInput`. En Safari de iPhone/iPad el `date` nativo ignora el alto, se desborda y vacío no
+muestra nada; ahí se le quita la apariencia del sistema, se dibuja el ícono de calendario y se muestra "dd/mm/aaaa".
 
 ## Motion
 - Librería: `motion` (`motion/react`), envuelta en `MotionRoot` con `reducedMotion="user"`. Se eligió porque da
