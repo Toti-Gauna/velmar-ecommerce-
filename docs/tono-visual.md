@@ -49,9 +49,20 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
 - **Fondo de la página**: aurora (tres manchas de luz de la temática que se desplazan lento), grano sutil y partículas,
   detrás de todo. Header y barra inferior pasan a vidrio tintado; las tarjetas de producto llevan filo y brillo del color.
 - **Pantalla de carga de temporada**: el script del `<head>` (`seasonScript.ts`) decide la temática antes de pintar y
-  marca `data-season`; el fondo toma los colores de la festividad y `ThemeSplashScene` suma la escena: Papá Noel con su
-  trineo cruzando la luna y arbolitos (Navidad), luna naranja, bruja en escoba, niebla y calabazas que brillan
-  (Halloween), fuegos artificiales y copas (Año Nuevo); el resto, sus decoraciones en órbita. Más el fondo animado.
+  marca `data-season`; el fondo toma los colores de la festividad y `ThemeSplashScene` monta **una escena distinta por
+  fecha** (motion graphics con `motion/react`, `src/features/themes/splash/`):
+  Navidad (cielo estrellado, colinas nevadas, Papá Noel con estela dorada), Halloween (luna con nubes, murciélagos que
+  salen de la luna, bruja, cementerio, calabazas), Año Nuevo (cuenta regresiva 3·2·1, fuegos en cadena, "¡Feliz año!"),
+  Black Friday (reflectores, marco dorado que se dibuja, etiqueta que se balancea), Hot Sale (llamas y el descuento que se
+  cuenta), San Valentín (corazón que se dibuja y late), Día de la Madre (flor que se abre y tulipanes), San Patricio
+  (arcoíris banda por banda y olla que lanza monedas), Pascuas (huevo que se rompe y salen orejitas), Día del Animal
+  (huellas que caminan), Día del Padre (constelación y estrella fugaz), Día del Amigo (anillos que se entrelazan y mate que
+  humea) y Día del Niño (globos y barrilete).
+- **Pantalla de carga Original**: rayos de luz, dos anillos dorados que se trazan, polvo de oro, piezas con brillo de
+  vidrio y un destello que recorre "Velmar" (CSS puro, se ve sin JS).
+- **Fondo con efecto propio** (`src/features/themes/backdrop/`): luces desenfocadas (Navidad, Niño), niebla (Halloween),
+  fuegos en loop (Año Nuevo), haces de luz (Black Friday), arcoíris (San Patricio), corazón que late (San Valentín),
+  burbujas (Pascuas), huellas (Animal), calor (Hot Sale), constelación (Padre), anillos (Amigo) y flor gigante (Madre).
 - **Fondos animados** (`ambient.ts`, `AmbientField`): nieve, murciélagos, papelitos, corazones, tréboles, chispas, globos…
   detrás del contenido, en el banner y en el splash. Solo `transform`/`opacity` y unidades del contenedor.
   **Excepción a "sin animaciones permanentes"** pedida por Ignacio: con "reducir movimiento" no se muestran y la cinta

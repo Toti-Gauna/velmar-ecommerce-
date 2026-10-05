@@ -13,19 +13,33 @@ const PIECES: { art: ArtKey; angle: number; tint?: string }[] = [
   { art: "collar", angle: 198 },
 ];
 
+/** Polvo dorado: posición (%), retraso (ms) y tamaño (px), fijos para que el HTML sea siempre igual. */
+const DUST: [number, number, number, number][] = Array.from({ length: 26 }, (_, i) => {
+  const r = (k: number) => { const x = Math.sin((i + 1) * 12.9898 * k + 78.233) * 43758.5453; return x - Math.floor(x); };
+  return [Math.round(r(1) * 100), Math.round(r(2) * 100), Math.round(400 + r(3) * 2600), Math.round(2 + r(4) * 3)];
+});
+
 /**
- * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: los chevrones
- * se trazan, aparece "Velmar", las piezas del taller entran en órbita una a una y
+ * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: anillos dorados que se trazan, polvo de oro y rayos de luz; los chevrones
+ * se trazan, aparece "Velmar", las piezas del taller entran en órbita una a una con brillo de vidrio, un destello recorre el nombre y
  * un telón la retira (sin barra de carga ni botón "Saltar", pedido de Ignacio). Durante una temática cambia de colores y suma su escena (ThemeSplashScene). Con "reducir movimiento" no se muestra.
  */
 export function Splash() {
   return (
     <div id="velmar-splash" role="presentation">
       <div aria-hidden="true" className="splash-glow" />
+      <div aria-hidden="true" className="splash-rays" />
+      <svg aria-hidden="true" viewBox="0 0 200 200" className="splash-ring">
+        <circle className="ring-a" cx="100" cy="100" r="92" />
+        <circle className="ring-b" cx="100" cy="100" r="78" />
+      </svg>
+      <div aria-hidden="true" className="splash-dust">
+        {DUST.map((d, i) => <span key={i} style={{ left: `${d[0]}%`, top: `${d[1]}%`, "--d": `${d[2]}ms`, "--s": `${d[3]}px` } as CSSProperties} />)}
+      </div>
       <div aria-hidden="true" className="splash-orbit">
         {PIECES.map((p, i) => (
           <span key={p.art} className="splash-piece" style={{ "--a": `${p.angle}deg`, "--i": i } as CSSProperties}>
-            <span className="splash-card"><ProductArt art={p.art} tint={p.tint} label="" showBadge={false} className="h-full w-full [&>svg]:h-full" /></span>
+            <span className="splash-card"><span className="splash-gloss" /><ProductArt art={p.art} tint={p.tint} label="" showBadge={false} className="h-full w-full [&>svg]:h-full" /></span>
           </span>
         ))}
       </div>
@@ -35,7 +49,10 @@ export function Splash() {
           <path className="chev" d="M8 22 24 8l16 14" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
           <path className="chev chev-2" d="M8 36 24 22l16 14" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <span className="word font-display mt-4 text-5xl text-[#f6f1e8] sm:text-7xl">{brand.name}</span>
+        <span className="relative mt-4">
+          <span className="word font-display block text-5xl text-[#f6f1e8] sm:text-7xl">{brand.name}</span>
+          <span className="word-sheen font-display absolute inset-0 text-5xl sm:text-7xl">{brand.name}</span>
+        </span>
       </div>
       <p aria-hidden="true" className="splash-city eyebrow">Objetos con alma · {brand.city}</p>
     </div>

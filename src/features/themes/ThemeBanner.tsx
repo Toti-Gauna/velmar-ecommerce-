@@ -5,6 +5,7 @@ import type { SeasonalTheme } from "@/demo/types";
 import type { ThemeOffer } from "@/demo/engine/themes";
 import { AMBIENT } from "./ambient";
 import { AmbientField } from "./AmbientField";
+import { SeasonFx } from "./backdrop/SeasonFx";
 import { skinOf } from "./skins";
 import { useThemeCoupon } from "./useThemeCoupon";
 
@@ -30,6 +31,7 @@ export function ThemeBanner({ theme, offer }: { theme: SeasonalTheme; offer: The
       className="relative flex min-h-[19rem] w-full flex-col justify-center overflow-hidden px-5 pb-12 pt-8 text-white sm:min-h-[26rem] sm:px-12 sm:py-12 lg:px-16"
       style={{ background: `radial-gradient(120% 140% at 85% 50%, ${skin.to}, ${skin.from} 70%)` }}>
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:radial-gradient(#fff_1px,transparent_1.5px)] [background-size:18px_18px]" />
+      <SeasonFx id={theme.id} />
       <AmbientField layers={AMBIENT[theme.id]} className="absolute inset-0" />
       {skin.decor.map((kind, i) => (
         <span key={`${kind}-${i}`} aria-hidden="true" className={`animate-fade-up pointer-events-none absolute ${SPOTS[i]}`} style={{ animationDelay: `${120 + i * 110}ms` }}>
