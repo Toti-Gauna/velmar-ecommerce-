@@ -9,7 +9,9 @@ test("probar temáticas: Halloween cambia cinta, logo, carrusel y ofertas; el cu
   await picker.getByRole("button", { name: "Probar Halloween" }).click();
   await expect(picker).toBeHidden();
 
+  // Elegir recarga la página (sale la pantalla de carga de temporada) y toda la tienda toma la paleta.
   await expect(page.locator("[data-theme-ribbon='halloween']")).toContainText("BOO20");
+  await expect(page.locator("html")).toHaveAttribute("data-season", "halloween");
   await expect(page.getByRole("heading", { name: "Truco o regalo" })).toBeVisible();
   const rail = page.locator("section").filter({ has: page.getByRole("heading", { name: /Ofertas de Halloween/ }) });
   await expect(rail.getByText("20% OFF").first()).toBeVisible();
@@ -20,13 +22,23 @@ test("probar temáticas: Halloween cambia cinta, logo, carrusel y ofertas; el cu
   // Se recuerda al recargar y se sale desde la cinta
   await page.reload();
   await expect(page.locator("[data-theme-ribbon='halloween']")).toBeVisible();
+  await page.getByRole("button", { name: "Pausar animaciones de la temática" }).click();
+  await expect(page.locator("html")).toHaveClass(/amb-paused/);
   await page.locator("[data-theme-ribbon]").getByRole("button", { name: "Salir" }).click();
   await expect(page.locator("[data-theme-ribbon='halloween']")).toHaveCount(0);
+
+  // "Original": la marca sin temática, aunque el panel tenga una puesta
+  await page.getByRole("button", { name: "Probar temáticas" }).click();
+  await page.getByRole("dialog", { name: "Probar temáticas" }).getByRole("button", { name: "Probar Original" }).click();
+  await expect(page.locator("[data-theme-ribbon]")).toHaveCount(0);
+  await expect(page.locator("html")).not.toHaveAttribute("data-season", /.+/);
   assertNoExternal();
 });
 
 test("el panel edita la temática y su modo; la tienda lo refleja", async ({ page }) => {
   await page.goto("admin-demo/tematicas/");
+  // Sin vista previa: manda el modo del panel.
+  await page.evaluate(() => localStorage.removeItem("velmar-demo:theme-preview"));
   await expect(page.getByRole("heading", { name: /Temáticas/ })).toBeVisible();
   await page.getByRole("button", { name: "Editar Navidad" }).click();
   const editor = page.getByRole("dialog", { name: "Editar Navidad" });

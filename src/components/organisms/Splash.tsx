@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { brand } from "@/config/brand";
 import type { ArtKey } from "@/demo/types";
+import { ThemeSplashScene } from "@/features/themes/ThemeSplashScene";
 
 /** Piezas que orbitan el logo (ángulo en grados alrededor del centro). */
 const PIECES: { art: ArtKey; angle: number; tint?: string }[] = [
@@ -15,7 +16,7 @@ const PIECES: { art: ArtKey; angle: number; tint?: string }[] = [
 /**
  * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: los chevrones
  * se trazan, aparece "Velmar", las piezas del taller entran en órbita una a una y
- * un telón la retira (sin barra de carga ni botón "Saltar", pedido de Ignacio). Con "reducir movimiento" no se muestra.
+ * un telón la retira (sin barra de carga ni botón "Saltar", pedido de Ignacio). Durante una temática cambia de colores y suma su escena (ThemeSplashScene). Con "reducir movimiento" no se muestra.
  */
 export function Splash() {
   return (
@@ -28,6 +29,7 @@ export function Splash() {
           </span>
         ))}
       </div>
+      <ThemeSplashScene />
       <div aria-hidden="true" className="relative z-10 flex flex-col items-center">
         <svg viewBox="0 0 48 44" className="h-14 w-14 text-brass sm:h-16 sm:w-16">
           <path className="chev" d="M8 22 24 8l16 14" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />

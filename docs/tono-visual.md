@@ -40,6 +40,19 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
   "Ofertas de …" con el precio con cupón (calculado en `src/demo/engine/themes.ts`). Entradas de una sola vez, sin
   animaciones permanentes; con "reducir movimiento" aparecen quietas.
 - "Probar temáticas" (botón flotante a la izquierda; WhatsApp queda a la derecha) cambia solo la vista de ese navegador.
+  Incluye **Automática** (la del cliente) y **Original** (Velmar sin temática). Elegir recarga la página a propósito:
+  vuelve a salir la pantalla de carga, ahora de temporada.
+- **Paleta de temporada** (`src/features/themes/palettes.ts`): cada temática pisa los tokens de marca en claro y oscuro con
+  `html[data-season]`. El contraste AA de cada par se prueba en `tests/unit/palettes.test.ts`. El panel no cambia.
+- **Pantalla de carga de temporada**: el script del `<head>` (`seasonScript.ts`) decide la temática antes de pintar y
+  marca `data-season`; el fondo toma los colores de la festividad y `ThemeSplashScene` suma la escena: Papá Noel con su
+  trineo cruzando la luna y arbolitos (Navidad), luna naranja, bruja en escoba, niebla y calabazas que brillan
+  (Halloween), fuegos artificiales y copas (Año Nuevo); el resto, sus decoraciones en órbita. Más el fondo animado.
+- **Fondos animados** (`ambient.ts`, `AmbientField`): nieve, murciélagos, papelitos, corazones, tréboles, chispas, globos…
+  detrás del contenido, en el banner y en el splash. Solo `transform`/`opacity` y unidades del contenedor.
+  **Excepción a "sin animaciones permanentes"** pedida por Ignacio: con "reducir movimiento" no se muestran y la cinta
+  tiene un botón para pausarlas (se recuerda en el navegador).
+- **Guirnalda** bajo el header: luces que titilan (Navidad, Año Nuevo, Halloween, Black Friday, Hot Sale) o banderines.
 
 ## Controles de formulario
 Todos son **nativos** (`select`, `input type="date"`, `number`, `color`, `range`, `checkbox`, `radio`, `file`): el

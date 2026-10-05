@@ -1,0 +1,72 @@
+/*
+ * Temáticas: fondos animados y pantalla de carga de temporada (pedido de Ignacio, fuera de la especificación).
+ * Solo transform/opacity; con "reducir movimiento" no se muestran, y la cinta tiene "Pausar animaciones".
+ */
+:root { --amb-snow: #9fb0c4; }
+html[data-theme="dark"] { --amb-snow: #ffffff; }
+
+.amb-field { container-type: size; contain: strict; }
+.amb {
+  position: absolute; left: var(--x); top: 0; width: var(--s); height: var(--s);
+  opacity: var(--o); will-change: transform, opacity;
+  animation-timing-function: linear; animation-iteration-count: infinite;
+}
+.amb-dot { display: block; height: 100%; border-radius: 9999px; box-shadow: 0 0 calc(var(--s) * 1.6) currentColor; }
+.amb-paper { display: block; height: 100%; width: 60%; border-radius: 2px; }
+.amb-fall { animation-name: amb-fall; }
+.amb-rise { animation-name: amb-rise; }
+.amb-drift { left: 0; top: var(--y); animation-name: amb-drift; }
+.amb-twinkle { top: var(--y); animation-name: amb-twinkle; animation-timing-function: ease-in-out; }
+@keyframes amb-fall {
+  from { transform: translate3d(0, -12cqh, 0) rotate(0deg); }
+  50% { transform: translate3d(calc(var(--dx) * 0.5), 50cqh, 0) rotate(calc(var(--rot) * 0.5)); }
+  to { transform: translate3d(var(--dx), 112cqh, 0) rotate(var(--rot)); }
+}
+@keyframes amb-rise {
+  from { transform: translate3d(0, 112cqh, 0) rotate(0deg); opacity: 0; }
+  10% { opacity: var(--o); }
+  90% { opacity: var(--o); }
+  to { transform: translate3d(var(--dx), -14cqh, 0) rotate(calc(var(--rot) * 0.1)); opacity: 0; }
+}
+@keyframes amb-drift {
+  from { transform: translate3d(-12cqw, 0, 0); }
+  25% { transform: translate3d(22cqw, -4cqh, 0); }
+  50% { transform: translate3d(50cqw, 3cqh, 0); }
+  75% { transform: translate3d(80cqw, -3cqh, 0); }
+  to { transform: translate3d(112cqw, 0, 0); }
+}
+@keyframes amb-twinkle { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: var(--o); transform: scale(1); } }
+
+/* Fondo de la página: detrás del contenido, con un halo del color de la temática arriba. */
+.season-backdrop { position: fixed; inset: 0; z-index: -1; }
+.garland-bulb { animation: bulb 2.1s ease-in-out infinite alternate; filter: drop-shadow(0 0 4px currentColor); }
+@keyframes bulb { from { opacity: 0.55; } to { opacity: 1; } }
+.amb-paused .garland-bulb,
+.amb-paused .amb, .amb-paused .scene-anim { animation-play-state: paused !important; }
+
+/* ---------- Pantalla de carga de temporada ---------- */
+html[data-season] #velmar-splash {
+  background: radial-gradient(120% 85% at 50% 35%, var(--sp-to, #262c1d) 0%, var(--sp-from, #1c2016) 58%, #050505 125%);
+}
+html[data-season] #velmar-splash > .splash-orbit, html[data-season] #velmar-splash .splash-city { display: none; }
+html[data-season] #velmar-splash .splash-glow { background: radial-gradient(closest-side, color-mix(in srgb, var(--sp-accent, #d2ad69) 30%, transparent), transparent); }
+html[data-season] #velmar-splash .chev { stroke: var(--sp-accent, #d2ad69); }
+#velmar-splash .season-scene { position: absolute; inset: 0; }
+#velmar-splash .season-tag { position: absolute; top: calc(9% + env(safe-area-inset-top)); color: var(--sp-accent); opacity: 0; animation: fade-up 700ms var(--ease-out-expo) 500ms both; }
+.scene-moon { position: absolute; border-radius: 9999px; opacity: 0; animation: moon-in 1.6s var(--ease-out-expo) 100ms both; }
+.scene-cross { position: absolute; animation: cross 4.6s cubic-bezier(0.45, 0.05, 0.4, 0.95) 600ms both; }
+.scene-burst { position: absolute; opacity: 0; animation: burst 1.6s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+.scene-pop { position: absolute; opacity: 0; animation: piece-in 800ms cubic-bezier(0.2, 1.4, 0.4, 1) both, scene-bob 2.6s ease-in-out 1.2s infinite alternate; }
+.scene-glow { animation: scene-glow 1.8s ease-in-out infinite alternate; }
+.scene-fog { position: absolute; inset-inline: -10%; bottom: -6%; height: 34%; filter: blur(18px); background: radial-gradient(50% 60% at 30% 70%, rgb(200 180 230 / 0.22), transparent), radial-gradient(45% 55% at 75% 75%, rgb(200 180 230 / 0.18), transparent); animation: fog 6s ease-in-out infinite alternate; }
+@keyframes moon-in { from { opacity: 0; transform: translateY(30px) scale(0.85); } to { opacity: 1; transform: none; } }
+@keyframes cross { from { transform: translate3d(-30vw, 6vh, 0) rotate(-6deg); } to { transform: translate3d(130vw, -10vh, 0) rotate(-12deg); } }
+@keyframes burst { 0% { opacity: 0; transform: scale(0.15); } 25% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+@keyframes scene-bob { to { translate: 0 -8px; } }
+@keyframes scene-glow { from { filter: drop-shadow(0 0 6px rgb(255 140 40 / 0.4)); } to { filter: drop-shadow(0 0 22px rgb(255 140 40 / 0.85)); } }
+@keyframes fog { to { transform: translateX(6%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .amb-field, .season-backdrop .amb-field { display: none; }
+  .garland-bulb { animation: none; }
+}

@@ -13,5 +13,5 @@ export function useCurrentTheme() {
   const hydrated = useHydrated();
   const previewId = useThemePreview((s) => s.previewId);
   const theme = hydrated ? currentTheme(new Date(), previewId) : null;
-  return { theme, offer: theme ? themeOffer(theme) : null, previewing: hydrated && previewId !== null };
+  return { theme, offer: theme ? themeOffer(theme) : null, previewing: hydrated && previewId !== null, ready: hydrated };
 }
