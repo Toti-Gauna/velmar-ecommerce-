@@ -29,6 +29,18 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
   Todos AA. Las bandas "noche" pasan a un negro más profundo con filo dorado sutil.
 - Los colores de marca editados en el panel aplican al modo claro; el oscuro usa su propia paleta.
 
+## Temáticas (05/10, pedido de Ignacio, fuera de la especificación)
+- Cada fecha comercial tiene su "piel" fija en `src/features/themes/skins.ts`: degradado oscuro o saturado con texto claro
+  (AA en modo claro y oscuro), un color de acento para el cupón y el botón, un sombrero para el logo y cinco decoraciones.
+- Decoraciones: SVG propios en `src/components/illustrations/seasonal/` (sombrero de bruja, calabaza, murciélago, fantasma,
+  gorro y árbol de Navidad, adorno, regalo, copo, copas, fuegos, gorro de fiesta, trébol, sombrero de duende, olla de oro,
+  corazón, carta, huevo, orejas de conejo, tulipán, patita, hueso, llama, etiqueta, bolsa, corbata, bigote, sombrero, mate,
+  globo y barrilete). Sin imágenes externas.
+- Dónde aparece: cinta debajo de la barra de demo, sombrero sobre el logo, **primera diapositiva del carrusel** y riel
+  "Ofertas de …" con el precio con cupón (calculado en `src/demo/engine/themes.ts`). Entradas de una sola vez, sin
+  animaciones permanentes; con "reducir movimiento" aparecen quietas.
+- "Probar temáticas" (botón flotante a la izquierda; WhatsApp queda a la derecha) cambia solo la vista de ese navegador.
+
 ## Controles de formulario
 Todos son **nativos** (`select`, `input type="date"`, `number`, `color`, `range`, `checkbox`, `radio`, `file`): el
 navegador abre su propia lista, calendario o rueda (accesible y familiar en el celular), con la estética de la tienda:

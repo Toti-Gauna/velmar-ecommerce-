@@ -16,3 +16,11 @@ export function formatDate(isoOrDay: string): string {
 export function toDayKey(iso: string): string {
   return dayKey.format(new Date(iso));
 }
+
+const dayMonth = new Intl.DateTimeFormat("es-AR", { day: "numeric", month: "short", timeZone: TZ });
+
+/** "19 oct. – 31 oct." para un rango AAAA-MM-DD (sin año: las temáticas se repiten cada año). */
+export function formatDayRange(from: string, to: string): string {
+  const f = (d: string) => dayMonth.format(new Date(`${d}T12:00:00-03:00`));
+  return `${f(from)} – ${f(to)}`;
+}

@@ -8,6 +8,7 @@ import { useAccount } from "@/stores/account";
 import { useDemoVersion } from "@/stores/admin";
 import { useCart } from "@/stores/cart";
 import { useToasts } from "@/stores/toast";
+import { useCurrentTheme } from "../themes/useCurrentTheme";
 import { useCartQuote } from "./useCartQuote";
 
 const STATUS_LABEL: Record<Exclude<WalletStatus, "available">, string> = {
@@ -21,7 +22,8 @@ export function CouponWallet({ onApplied, compact }: { onApplied?: () => void; c
   const wheelCode = useAccount((s) => s.wheelPrize?.code ?? null);
   const { couponCode, setCoupon } = useCart();
   const toast = useToasts((s) => s.push);
-  const items = walletCoupons({ subtotal: quote.subtotal, isRegistered, now: new Date(), wheelCode });
+  const { theme } = useCurrentTheme();
+  const items = walletCoupons({ subtotal: quote.subtotal, isRegistered, now: new Date(), wheelCode, themeId: theme?.id });
   return (
     <ul className={compact ? "flex flex-col gap-3" : "grid gap-4 md:grid-cols-2"}>
       {items.map(({ coupon, origin, status, message }) => {

@@ -47,6 +47,7 @@ export function CouponsAdmin() {
                 {expired && <Badge tone="danger">Vencido</Badge>}
                 {c.onlyRegistered && <Badge tone="neutral">Solo con cuenta</Badge>}
                 {c.code.startsWith("RULETA") && <Badge tone="brand">Ruleta</Badge>}
+                {c.themeId && <Badge tone="brand">Temática</Badge>}
               </div>
               <p className="text-sm text-muted">{c.description}{c.minSubtotal ? ` · mínimo ${formatARS(c.minSubtotal)}` : ""}{c.endsAt ? ` · vence ${formatDate(c.endsAt)}` : ""}</p>
               <p className="text-sm"><strong className="tabular-nums">{used}</strong>{c.maxUses ? ` de ${c.maxUses}` : ""} usos <span className="text-muted">(simulados)</span></p>

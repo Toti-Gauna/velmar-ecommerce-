@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { brand } from "@/config/brand";
 import { cn } from "@/lib/cn";
 
@@ -11,10 +12,14 @@ export function LogoMark({ className }: { className?: string }) {
   );
 }
 
-export function Logo({ className, tone = "dark" }: { className?: string; tone?: "dark" | "light" }) {
+/** `topper`: adorno que se apoya sobre la marca (el sombrero de la temática vigente). */
+export function Logo({ className, tone = "dark", topper }: { className?: string; tone?: "dark" | "light"; topper?: ReactNode }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
-      <LogoMark className={tone === "light" ? "text-brass" : undefined} />
+      <span className="relative">
+        <LogoMark className={tone === "light" ? "text-brass" : undefined} />
+        {topper && <span className="animate-pop pointer-events-none absolute -right-2.5 -top-4 h-6 w-6 rotate-[14deg] drop-shadow-[0_2px_2px_rgb(0_0_0/0.25)]">{topper}</span>}
+      </span>
       <span className={cn("font-display text-[1.6rem] leading-none", tone === "light" ? "text-[#f6f1e8]" : "text-ink")}>{brand.name}</span>
     </span>
   );

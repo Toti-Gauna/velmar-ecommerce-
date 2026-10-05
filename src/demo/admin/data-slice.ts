@@ -2,7 +2,7 @@ import type { DemoData } from "../engine/source";
 import type { DemoSettings } from "../fixtures/commerce";
 import type { TextZone } from "../fixtures/templates";
 import type { WheelConfig } from "../fixtures/wheel";
-import type { CarouselSlide, Coupon, Faq, Mission, PersonalizationTemplate, Product, ShippingZone } from "../types";
+import type { CarouselSlide, Coupon, Faq, Mission, PersonalizationTemplate, Product, SeasonalTheme, ShippingZone, ThemeSettings } from "../types";
 import { auditEntry, type AdminData } from "./defaults";
 import type { ClaimStatus } from "./types";
 
@@ -25,6 +25,8 @@ export interface DataActions {
   saveSlides: (slides: CarouselSlide[]) => void;
   saveHomeCta: (cta: DemoData["content"]["homeCta"]) => void;
   saveFaqs: (faqs: Faq[]) => void;
+  saveTheme: (theme: SeasonalTheme) => void;
+  saveThemeSettings: (patch: Partial<ThemeSettings>) => void;
   toggleUserBlocked: (id: string) => void;
   resolveClaim: (id: string, status: ClaimStatus, resolution: string) => void;
 }
@@ -72,6 +74,8 @@ export function createDataActions(set: Set): DataActions {
     saveSlides: (slides) => edit("Carrusel actualizado", "Inicio", (d) => ({ content: { ...d.content, slides } })),
     saveHomeCta: (homeCta) => edit("Textos de inicio", "Inicio", (d) => ({ content: { ...d.content, homeCta } })),
     saveFaqs: (faqs) => edit("Preguntas frecuentes", "Ayuda", (d) => ({ content: { ...d.content, faqs } })),
+    saveTheme: (t) => edit("Temática guardada", t.name, (d) => ({ themes: upsert(d.themes, t, (x) => x.id === t.id) })),
+    saveThemeSettings: (patch) => edit("Modo de temáticas", "Temáticas", (d) => ({ themeSettings: { ...d.themeSettings, ...patch } })),
     toggleUserBlocked: (id) =>
       set((s) => ({ users: s.users.map((u) => (u.id === id ? { ...u, blocked: !u.blocked } : u)), audit: [auditEntry("Bloqueo de usuario (visual)", id), ...s.audit] })),
     resolveClaim: (id, status, resolution) =>

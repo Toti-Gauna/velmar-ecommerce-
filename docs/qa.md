@@ -27,6 +27,8 @@
 | Guía del panel: aparece una vez, Siguiente / Anterior, no reaparece, se reabre con "?" | idem | ✅ |
 | Ficha: cantidad desplegable, diseño requerido antes de agregar, favoritos en "Mi cuenta" | `gamification.spec.ts` | ✅ |
 | Barra inferior de la tienda (Inicio, Categorías, Cupones, Mi cuenta) y botón de pausa del carrusel | idem | ✅ |
+| Temáticas: "Probar temáticas" cambia cinta, sombrero del logo, primera diapositiva y ofertas; "Usar código" lo deja en el carrito; se recuerda al recargar y se sale desde la cinta | `themes.spec.ts`, `tests/unit/themes.test.ts` | ✅ |
+| Temáticas en el panel: editar titular, modo fija/ninguna y ocultar el botón se refleja en la tienda | idem | ✅ |
 | Modo oscuro: se activa desde el menú, se recuerda al recargar y llega al panel | idem | ✅ |
 | Menú móvil y drawer del carrito: abren, atrapan el foco y cierran con Escape | idem | ✅ |
 | Sin desborde a 375 px con el carrito lleno (recomendaciones desplazables) | idem | ✅ |
@@ -86,4 +88,5 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
 - **Accesibilidad**: no hay auditoría automática con axe todavía (se evitó sumar dependencia); revisión manual recomendada.
 - El prefetch del router de Next hace `HEAD` al mismo origen; es lectura y no envía datos.
 - **Panel demo abierto**: cualquiera con el link puede abrirlo y "editar" su propia copia local. No hay datos reales ni persistencia compartida; no es un panel seguro.
+- **Temáticas**: fechas aproximadas (las móviles, como Pascuas o Día de la Madre, hay que ajustarlas cada año en el panel). El cupón de una temática se puede escribir a mano fuera de temporada; en producción el servidor validaría la vigencia.
 - **Datos del panel por navegador**: lo que Velmar cambie en su celular no lo ve otra persona; cada navegador arranca de los fixtures.

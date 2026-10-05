@@ -32,7 +32,7 @@ export const useAdmin = create<AdminState>()(
     }),
     {
       name: `${STORAGE_PREFIX}admin`,
-      version: 2,
+      version: 3,
       storage: demoStorage,
       skipHydration: true,
       // Versiones viejas de la demo: se descartan y vuelven a los fixtures.

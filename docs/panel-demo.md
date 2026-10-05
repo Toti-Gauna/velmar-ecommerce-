@@ -34,6 +34,7 @@
 | Cupones | Crear (porcentaje, monto, envío gratis, mínimo, usos, vencimiento, solo con cuenta), pausar, usos simulados. Funcionan en el carrito demo. **Ruleta**: editar premios, pesos (con probabilidad resultante) y días de vigencia; los cupones ganados figuran con la etiqueta "Ruleta" |
 | Usuarios | Buscar perfiles ficticios; compras, misiones, premios, bloqueo visual. Sin contraseñas ni datos de pago |
 | Reclamos | Pendientes/cerrados; marcar en curso, resolver o rechazar con motivo. Los arrepentimientos enviados desde la tienda demo llegan acá |
+| Temáticas | **Agregado pedido por Ignacio (fuera de la especificación).** 13 fechas comerciales (Día de la Madre, Halloween, Black Friday, Navidad, Año Nuevo, San Valentín, San Patricio, Pascuas, Día del Animal, Hot Sale, Día del Padre, del Amigo y del Niño). Modo automático por fecha, fija o ninguna; habilitar/deshabilitar; editar fechas (calendario nativo, se repiten cada año), titular, bajada, cinta, cupón de la oferta y productos en oferta; "Ver" la abre en la tienda; mostrar u ocultar el botón "Probar temáticas". Los cupones de temática figuran en Cupones con la etiqueta "Temática" |
 | Contenido | Carrusel (orden, visibilidad, textos, destino), textos de inicio y preguntas frecuentes |
 | Ajustes | Colores de marca (con chequeo de contraste AA), WhatsApp, alias/CBU/titular **de muestra**, QR con marca de agua (solo vista local), medios activos, descuento transferencia/QR, horas de reserva, zonas de envío y umbral de envío gratis |
 
