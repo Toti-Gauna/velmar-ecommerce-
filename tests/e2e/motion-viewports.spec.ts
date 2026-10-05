@@ -11,13 +11,13 @@ test.describe("movimiento reducido", () => {
   });
 });
 
-test("la pantalla de carga aparece en cada recarga, dura 5 s y se puede saltar", async ({ page }) => {
+test("la pantalla de carga aparece en cada recarga, dura 5 s y se cierra con Escape", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("");
   const splash = page.locator("#velmar-splash");
   await expect(splash).toBeVisible();
   await expect(splash.locator(".splash-piece")).toHaveCount(5);
-  await page.getByRole("button", { name: "Saltar la animación de inicio" }).click();
+  await page.keyboard.press("Escape");
   await expect(splash).toBeHidden();
   await page.getByRole("link", { name: "Ver todas" }).click();
   await expect(page).toHaveURL(/categorias\/$/);

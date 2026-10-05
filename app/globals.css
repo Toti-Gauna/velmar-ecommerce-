@@ -241,13 +241,6 @@ html[data-theme="dark"] .bg-night { box-shadow: inset 0 0 0 1px rgb(210 173 105 
 #velmar-splash .splash-progress { position: absolute; bottom: calc(14% + env(safe-area-inset-bottom)); width: min(220px, 50vw); height: 2px; border-radius: 2px; background: rgb(246 241 232 / 0.12); overflow: hidden; }
 #velmar-splash .splash-progress span { display: block; height: 100%; background: linear-gradient(90deg, #9a7434, #f3dca6, #d2ad69); transform-origin: left; transform: scaleX(0); animation: line 4.2s cubic-bezier(0.45, 0, 0.2, 1) 100ms both; }
 #velmar-splash .splash-city { position: absolute; bottom: calc(14% + env(safe-area-inset-bottom) - 2rem); color: rgb(216 207 189 / 0.7); opacity: 0; animation: fade-in 500ms ease-out 900ms both; }
-#velmar-splash .splash-skip {
-  position: absolute; top: calc(1rem + env(safe-area-inset-top)); right: 1rem; z-index: 2;
-  border-radius: 9999px; border: 1px solid rgb(246 241 232 / 0.2); padding: 0.5rem 1.1rem;
-  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; color: #f6f1e8; background: rgb(246 241 232 / 0.06);
-  opacity: 0; animation: fade-in 400ms ease-out 600ms both; cursor: pointer;
-}
-#velmar-splash .splash-skip:hover { background: rgb(246 241 232 / 0.14); }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @keyframes wipe { to { clip-path: inset(0 0 0 0); } }
 @keyframes line { to { transform: scaleX(1); } }

@@ -15,7 +15,7 @@
 | **La foto no sale del navegador**: ningún request no-GET/HEAD ni a otro origen en todo el flujo | `guardNetwork()` en los e2e | ✅ |
 | Ningún CTA aparenta cobrar: rótulos "demo/muestra", QR no escaneable, CBU ficticio, sin "acreditado" | asserts en e2e + revisión | ✅ |
 | Movimiento reducido: sin splash, animaciones a 1 ms | `motion-viewports.spec.ts` | ✅ |
-| Pantalla de carga en cada recarga, "Saltar" la cierra y se va sola a los 5 s | idem | ✅ |
+| Pantalla de carga en cada recarga, Escape la cierra y se va sola a los 5 s | idem | ✅ |
 | Contraste AA de los tokens | cálculo WCAG (ver `tono-visual.md`) | ✅ |
 | Reglas: precio, cupones, envío gratis, total ≥ 0, misiones, stock, validaciones, recomendaciones, ruleta | `tests/unit` (Vitest) | ✅ |
 | Ruleta con movimiento reducido → cupón `RULETA…` → se aplica en el carrito → aparece en el panel | `gamification.spec.ts` | ✅ |
