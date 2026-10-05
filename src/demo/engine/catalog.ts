@@ -31,10 +31,9 @@ export function productHref(slug: string): string {
   return STATIC_PRODUCT_SLUGS.has(slug) ? `/p/${slug}/` : `/p/demo/?slug=${encodeURIComponent(slug)}`;
 }
 
-export function personalizeHref(slug: string, variantId?: string): string {
-  const base = STATIC_PRODUCT_SLUGS.has(slug) ? `/crear/${slug}/` : `/crear/demo/?slug=${encodeURIComponent(slug)}`;
-  if (!variantId) return base;
-  return `${base}${base.includes("?") ? "&" : "?"}variante=${variantId}`;
+/** La personalización vive en la ficha: este enlace lleva directo a esa sección. */
+export function personalizeHref(slug: string): string {
+  return `${productHref(slug)}#personalizar`;
 }
 
 export function featuredCategories(): Category[] {

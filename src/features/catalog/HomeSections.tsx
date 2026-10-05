@@ -1,38 +1,41 @@
 "use client";
-import { ButtonLink } from "@/components/atoms/Button";
-import { Carousel } from "@/components/organisms/Carousel";
 import { bestSellers, newArrivals } from "@/demo/engine/catalog";
+import { recommendForCart } from "@/demo/engine/recommend";
 import { useDemoVersion } from "@/stores/admin";
-import { CategoryBento } from "../home/CategoryBento";
+import { useCart } from "@/stores/cart";
+import { useHydrated } from "@/stores/hydration";
+import { BenefitsBar } from "../home/BenefitsBar";
+import { CategoryCircles } from "../home/CategoryCircles";
 import { ClubBand } from "../home/ClubBand";
-import { Hero } from "../home/Hero";
-import { HowItWorks } from "../home/HowItWorks";
+import { HeroCarousel } from "../home/HeroCarousel";
 import { LiveCustomizer } from "../home/LiveCustomizer";
 import { ProductRail } from "../home/ProductRail";
+import { ProductStories } from "../home/ProductStories";
 import { Values } from "../home/Values";
-import { WordStrip } from "../home/WordStrip";
 import { toCard } from "./mappers";
 
-/** Inicio editorial. Todo sale de los datos editables (carrusel, destacadas, textos, misiones). */
+/** Inicio de tienda: carrusel, beneficios, categorías, recomendados, más vendidos, historias y novedades. */
 export function HomeSections() {
   const data = useDemoVersion();
+  const hydrated = useHydrated();
+  const lines = useCart((s) => s.lines);
   const slides = data.content.slides.filter((s) => s.active !== false);
+  const best = bestSellers(8);
+  // Recomendados: si hay carrito, complementos; si no, lo destacado que no está en "más vendidos".
+  const recommended = recommendForCart(hydrated ? lines : [], 8);
   return (
-    <div className="flex flex-col gap-20 sm:gap-28">
-      <Hero />
-      <WordStrip />
-      <ProductRail id="mas-vendidos" eyebrow="Los favoritos" title="Más vendidos" accent="del taller" products={bestSellers(4).map(toCard)} href="/categorias/" />
-      <CategoryBento />
-      <HowItWorks />
-      <LiveCustomizer />
-      {slides.length > 0 && <Carousel slides={slides} />}
+    <div className="flex flex-col gap-12 sm:gap-20">
+      <div className="flex flex-col gap-6">
+        <HeroCarousel slides={slides} />
+        <BenefitsBar />
+      </div>
+      <CategoryCircles />
+      <ProductRail id="recomendados" eyebrow="Elegidos para vos" title="Recomendados" products={recommended.map(toCard)} href="/categorias/" />
+      <LiveCustomizer eyebrow={data.content.homeCta.title} />
+      <ProductRail id="mas-vendidos" eyebrow="Los favoritos" title="Más vendidos" accent="del taller" products={best.map(toCard)} href="/categorias/" />
+      <ProductStories />
+      <ProductRail id="novedades" eyebrow="Recién salidos" title="Novedades" products={newArrivals(8).map(toCard)} />
       <ClubBand />
-      <ProductRail id="novedades" eyebrow="Recién salidos" title="Novedades" accent="de temporada" products={newArrivals(4).map(toCard)} />
-      <section aria-labelledby="cta-crear" className="text-center">
-        <p className="eyebrow text-brass-ink">{data.content.homeCta.title}</p>
-        <h2 id="cta-crear" className="font-display mx-auto mt-4 max-w-3xl text-4xl leading-tight sm:text-6xl">{data.content.homeCta.text}</h2>
-        <ButtonLink href="/crear/" size="lg" className="mt-8">Crear mi producto</ButtonLink>
-      </section>
       <Values />
     </div>
   );

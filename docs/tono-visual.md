@@ -32,5 +32,6 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
   contadores, tarjetas con segunda vista al hover y "agregar rápido", drawer del carrito, galería con zoom por cursor,
   medidor de stock, barra de envío gratis y misión, ruleta del club con giro desacelerado, check animado en la confirmación
   y recorrido animado en el seguimiento.
+- Íconos de premios propios en SVG (`RewardGlyph`: porcentaje, camión, regalo, grabado, moneda) con degradé dorado: se usan en los gajos de la ruleta y en los cupones con forma de ticket (talón con guilloché SVG y perforación).
 - Sin animaciones permanentes: nada queda en bucle (se quitó el marquee); todo termina en < 1,5 s salvo el giro de la ruleta (4,8 s, iniciado por el usuario).
 - `prefers-reduced-motion: reduce` desactiva splash y confeti, la ruleta salta al resultado y toda transición pasa a 1 ms. Sin autoplay ni audio.

@@ -4,6 +4,8 @@ import { Footer } from "@/components/organisms/Footer";
 import { Header } from "@/components/organisms/Header";
 import { WhatsAppFab } from "@/components/organisms/WhatsAppFab";
 import { CartDrawer } from "@/features/cart/CartDrawer";
+import { CouponsSheet } from "@/features/cart/CouponsSheet";
+import { SearchModal } from "@/features/catalog/SearchModal";
 import { WheelModal } from "@/features/club/WheelModal";
 
 export default function ShopLayout({ children }: { children: ReactNode }) {
@@ -16,6 +18,8 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
       <WhatsAppFab />
       <CartDrawer />
       <WheelModal />
+      <CouponsSheet />
+      <SearchModal />
     </>
   );
 }

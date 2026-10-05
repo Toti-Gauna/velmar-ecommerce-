@@ -3,13 +3,14 @@ import { horizontalOverflow } from "./helpers";
 
 // Rutas relativas (sin "/" inicial) para respetar el basePath del baseURL.
 const ROUTES = [
-  ["", "Destacados"],
+  ["", "Destacados de Velmar"],
   ["buscar/?q=comedro", "Buscar"],
   ["categorias/", "Buscar más cosas"],
   ["c/comederos/", "Comederos"],
   ["p/velador-con-foto/", "Velador con foto"],
   ["crear/", "Crear mi producto personalizado"],
-  ["crear/collar-con-nombre/", "Personalizá: Collar con nombre y dijes de patita"],
+  ["crear/collar-con-nombre/", "Collar con nombre y dijes de patita"],
+  ["cupones/", "Mis cupones"],
   ["carrito/", "Tu carrito"],
   ["checkout/", "Checkout de demostración"],
   ["checkout/confirmacion/", "Confirmación (demo)"],

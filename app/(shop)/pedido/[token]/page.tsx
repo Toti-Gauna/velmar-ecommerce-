@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Seguimiento (demo)" };
 export default function TrackingPage() {
   return (
     <>
-      <PageHeader title="Seguimiento de tu pedido">Estados de muestra para mostrar cómo se informa cada etapa.</PageHeader>
+      <PageHeader title="Seguimiento de tu pedido" />
       <TrackingView />
     </>
   );

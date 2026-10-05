@@ -59,7 +59,7 @@ export function ConfirmationView() {
             status={preview.completesNow ? "completes-now" : preview.alreadyComplete ? "complete" : "progress"}
             note="Ilustrativo: en la tienda real la misión avanza cuando el pago queda confirmado." />
         )}
-        <section aria-labelledby="items"><h2 id="items" className="font-display mb-3 text-3xl">Tu pedido</h2><OrderLines lines={order.lines} /></section>
+        <section aria-labelledby="items" className="rounded-[2rem] bg-surface p-4 shadow-[var(--shadow-card)] sm:p-6"><h2 id="items" className="font-display mb-3 text-3xl">Tu pedido</h2><OrderLines lines={order.lines} /></section>
       </div>
       <aside className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
         <OrderSummary rows={summaryRows(order.quote)} total={order.quote.total} totalNote="Montos de muestra." />

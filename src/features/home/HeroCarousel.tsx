@@ -1,0 +1,69 @@
+"use client";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useRef, useState } from "react";
+import { ProductArt } from "@/components/illustrations/ProductArt";
+import type { CarouselSlide } from "@/demo/types";
+import { cn } from "@/lib/cn";
+
+/** Fondos que rotan por diapositiva: noche, oliva y arcilla, con un halo dorado detrás de la pieza. */
+const TONES = [
+  { bg: "bg-night", eyebrow: "text-brass", glow: "rgb(210_173_105/0.28)" },
+  { bg: "bg-primary", eyebrow: "text-[#e9d9b4]", glow: "rgb(255_253_248/0.22)" },
+  { bg: "bg-[#6d3a26]", eyebrow: "text-[#f1cfa0]", glow: "rgb(241_207_160/0.26)" },
+];
+
+/** Carrusel principal del inicio (editable desde el panel). Desliza con el dedo, flechas y puntos; sin autoplay. */
+export function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
+  const track = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const go = (i: number) => {
+    const el = track.current;
+    if (!el) return;
+    const next = (i + slides.length) % slides.length;
+    el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+    setIndex(next);
+  };
+  if (slides.length === 0) return null;
+  return (
+    <section aria-roledescription="carrusel" aria-label="Destacados de Velmar" className="relative -mx-4 sm:mx-0">
+      <div ref={track} onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / Math.max(1, e.currentTarget.clientWidth)))}
+        className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto sm:rounded-[2rem]">
+        {slides.map((s, i) => {
+          const tone = TONES[i % TONES.length]!;
+          return (
+            <Link key={s.id} href={s.ctaHref} role="group" aria-roledescription="diapositiva" aria-label={`${i + 1} de ${slides.length}: ${s.title}`}
+              className={cn("group relative grid min-h-[19rem] w-full shrink-0 snap-center grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] overflow-hidden text-[#fffdf8] sm:min-h-[26rem] sm:grid-cols-[1.05fr_1fr]", tone.bg)}>
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:repeating-linear-gradient(135deg,#fff_0_1px,transparent_1px_22px)]" />
+              <div className="relative z-10 flex flex-col justify-center py-8 pl-5 pr-1 sm:px-12 sm:py-12 lg:px-16">
+                <p className={cn("eyebrow", tone.eyebrow)}>Velmar · {String(i + 1).padStart(2, "0")}</p>
+                <p className="font-display mt-2 text-[1.75rem] leading-[1.04] sm:mt-3 sm:text-5xl lg:text-6xl">{s.title}</p>
+                <p className="mt-2 line-clamp-2 max-w-md text-[13px] text-white/80 sm:mt-3 sm:line-clamp-none sm:text-lg">{s.subtitle}</p>
+                <span className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-[#fffdf8] px-4 py-2.5 text-[13px] font-bold sm:mt-6 sm:px-6 sm:py-3 sm:text-sm text-night shadow-[0_12px_30px_-14px_rgb(0_0_0/0.6)] transition-transform group-hover:translate-x-1">
+                  {s.ctaLabel} <ArrowRight size={16} aria-hidden="true" />
+                </span>
+              </div>
+              <div className="relative grid place-items-center py-8 pl-1 pr-5 sm:p-8">
+                <div aria-hidden="true" className="absolute inset-0 m-auto aspect-square w-[85%]" style={{ background: `radial-gradient(closest-side, ${tone.glow.replace(/_/g, " ")}, transparent)` }} />
+                <ProductArt art={s.art} label="" showBadge={false} className="relative aspect-square w-full max-w-[19rem] overflow-hidden rounded-[1.4rem] sm:rounded-[2rem] shadow-[0_40px_80px_-30px_rgb(0_0_0/0.65)] transition-transform duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.03] sm:max-w-[22rem]" />
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+      {slides.length > 1 && (
+        <>
+          <button type="button" aria-label="Diapositiva anterior" onClick={() => go(index - 1)} className="absolute left-4 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-[#fffdf8]/90 text-night shadow-[var(--shadow-card)] backdrop-blur transition hover:scale-105 sm:grid"><ArrowLeft size={20} aria-hidden="true" /></button>
+          <button type="button" aria-label="Diapositiva siguiente" onClick={() => go(index + 1)} className="absolute right-4 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-[#fffdf8]/90 text-night shadow-[var(--shadow-card)] backdrop-blur transition hover:scale-105 sm:grid"><ArrowRight size={20} aria-hidden="true" /></button>
+          <div className="absolute inset-x-0 bottom-2 flex justify-center gap-1 sm:bottom-4">
+            {slides.map((s, i) => (
+              <button key={s.id} type="button" onClick={() => go(i)} aria-label={`Ir a la diapositiva ${i + 1}`} aria-current={i === index ? "true" : undefined} className="grid h-6 place-items-center px-0.5">
+                <span className={cn("block h-1.5 rounded-full transition-all duration-500", i === index ? "w-8 bg-[#fffdf8]" : "w-1.5 bg-white/40")} />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}

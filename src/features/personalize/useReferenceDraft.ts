@@ -1,7 +1,13 @@
 "use client";
 import { useState } from "react";
 import { fileToThumbnail } from "@/lib/image";
-import type { ReferenceDraft } from "./ReferenceEditor";
+
+export interface ReferenceDraft {
+  thumbnail: string | null;
+  notes: string;
+  processing: boolean;
+  error: string | null;
+}
 
 export function useReferenceDraft() {
   const [draft, setDraft] = useState<ReferenceDraft>({ thumbnail: null, notes: "", processing: false, error: null });

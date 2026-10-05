@@ -22,7 +22,7 @@ export function Header() {
   const pathname = usePathname();
   const hydrated = useHydrated();
   const units = useCart((s) => s.lines.reduce((sum, l) => sum + l.quantity, 0));
-  const { openCart, setMenu } = useUi();
+  const { openCart, setMenu, setSearch } = useUi();
   const [compact, setCompact] = useState(false);
   useEffect(() => {
     const onScroll = () => setCompact(window.scrollY > 24);
@@ -47,7 +47,7 @@ export function Header() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-0.5">
-          <Link href="/buscar/" aria-label="Buscar" className={icon}><Search size={21} aria-hidden="true" /></Link>
+          <button type="button" onClick={() => setSearch(true)} aria-label="Buscar" className={icon}><Search size={21} aria-hidden="true" /></button>
           <Link href="/cuenta/" aria-label="Mi cuenta (demo)" className={cn(icon, "max-sm:hidden")}><UserRound size={21} aria-hidden="true" /></Link>
           <button type="button" onClick={() => openCart()} aria-label={`Carrito, ${count} ${count === 1 ? "producto" : "productos"}`} className={cn(icon, "relative")}>
             <ShoppingBag size={21} aria-hidden="true" />

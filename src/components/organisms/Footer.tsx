@@ -5,7 +5,7 @@ import { Logo } from "@/components/atoms/Logo";
 import { ResetDemoButton } from "./ResetDemoButton";
 
 const COLS = [
-  { title: "Tienda", links: [["/categorias/", "Todas las categorías"], ["/crear/", "Crear el tuyo"], ["/club/", "Club Velmar"], ["/buscar/", "Buscar"]] },
+  { title: "Tienda", links: [["/categorias/", "Todas las categorías"], ["/crear/", "Crear el tuyo"], ["/club/", "Club Velmar"], ["/cupones/", "Mis cupones"], ["/buscar/", "Buscar"]] },
   { title: "Ayuda", links: [["/preguntas/", "Preguntas frecuentes"], ["/pedido/demo-velmar/", "Seguir mi pedido (demo)"], ["/cuenta/", "Mi cuenta (demo)"]] },
   { title: "Legales", links: [["/terminos/", "Términos y condiciones"], ["/privacidad/", "Política de privacidad"], ["/arrepentimiento/", "Botón de arrepentimiento"]] },
 ];

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowUpRight, Gift, Sparkles, UserRound } from "lucide-react";
+import { ArrowUpRight, Gift, Sparkles, TicketPercent, UserRound } from "lucide-react";
 import { Logo } from "@/components/atoms/Logo";
 import { Sheet } from "@/components/motion/Sheet";
 import { visibleCategories } from "@/demo/engine/catalog";
@@ -11,6 +11,7 @@ import { useUi } from "@/stores/ui";
 const LINKS = [
   { href: "/crear/", label: "Crear el tuyo", icon: Sparkles },
   { href: "/club/", label: "Club Velmar", icon: Gift },
+  { href: "/cupones/", label: "Mis cupones", icon: TicketPercent },
   { href: "/cuenta/", label: "Mi cuenta", icon: UserRound },
 ];
 

@@ -2,24 +2,30 @@
 
 | Ruta | Qué muestra |
 |---|---|
-| `/` | Hero editorial, cómo funciona, personalizador en vivo de muestra, categorías en bento, rieles de más vendidos y novedades, banda del club, valores |
-| `/buscar/?q=` | Búsqueda en vivo tolerante a acentos y errores ("comedro" → comederos), sugerencias si no hay resultados |
+| `/` | Inicio de tienda: carrusel de banners (editable, sin autoplay), beneficios, categorías en círculos, recomendados, probador en vivo con "Quiero mi producto personalizado", más vendidos, "Productos que cuentan historias", novedades, banda del club |
+| `/buscar/?q=` | Resultados completos. El ícono de búsqueda abre un **buscador superpuesto** con búsquedas recientes, lo más buscado, recomendados y resultados en vivo (tolerante a acentos y errores: "comedro" → comederos) |
 | `/categorias/` | Categorías con productos (las vacías no aparecen: "Tablas de madera") |
 | `/c/[slug]/` | Grilla con orden (relevancia, precio, nuevos), recordado en localStorage |
-| `/p/[slug]/` | Galería con zoom, color/tamaño, medidor de stock y cantidad (tope = stock), precio con transferencia, misión que suma, entrega estimada, acordeones, "Completá el set" y barra fija en el celular |
-| `/crear/` y `/crear/[slug]/` | Personalizador: texto/fuente/color (SVG en vivo), foto con encuadre y zoom (Konva), foto de referencia + notas. Aprobación "Así lo quiero" obligatoria |
-| `/carrito/` | Ítems con la vista previa aprobada, cantidades, barra de envío gratis, empujón de misión, recomendaciones, cupón y acceso a la ruleta. Al agregar se abre el **drawer** del carrito |
+| `/p/[slug]/` | **Ficha todo en uno**: galería con zoom y "Tu diseño" (vista previa en vivo), color/tamaño, medidor de stock, personalización en la misma pantalla (texto/fuente/color, foto con encuadre y zoom, o foto de referencia + notas), aprobación "Así lo quiero" obligatoria, cantidad (tope = stock), **Comprar ahora** y **Agregar al carrito**, misión que suma, entrega estimada, acordeones, "Completá el set" y barra fija en el celular |
+| `/crear/` | Productos personalizables por tipo; cada uno abre su ficha. `/crear/[slug]/` se mantiene (enlaces viejos) y muestra la misma ficha todo en uno |
+| `/carrito/` | Envío gratis → productos → cupón ("Elegir de mis cupones" o código) → resumen y pago; abajo, misión y recomendaciones. En el celular, barra fija con total e "Ir a pagar". Al ir a pagar aparece la **ruleta** si todavía no se giró. Al agregar desde una ficha se abre el **drawer** |
 | `/checkout/` | Datos (invitado o cuenta demo) → entrega (retiro, cadete MdP por CP, nacional) → pago (Mercado Pago, transferencia, QR) → términos |
 | `/checkout/confirmacion/` | "Pedido de demostración", instrucciones de pago de muestra, comprobante local |
-| `/pedido/demo-velmar/` | Seguimiento con token fijo: estado actual, recorrido animado, etapas, ETA, productos, ayuda por WhatsApp y estados de muestra |
+| `/pedido/demo-velmar/` | Seguimiento con token fijo: **el pedido arriba** (en el celular 3 productos y "Ver N más" en un modal), "Falta el comprobante" debajo de los productos, estado actual con recorrido animado, estados de muestra, etapas y ayuda por WhatsApp |
 | `/club/` | Club Velmar: ruleta de cupones (un giro por navegador), camino de misiones y billetera de premios |
+| `/cupones/` | Mis cupones: el ganado en la ruleta y los vigentes de la tienda como tickets, con "Aplicar"; estado vencido / mínimo / solo con cuenta; cómo ganar más |
 | `/cuenta/` | Cuenta demo: pedidos, misiones, premios (un uso), direcciones |
 | `/preguntas/`, `/terminos/`, `/privacidad/`, `/arrepentimiento/` | Ayuda y legales (textos de muestra) |
 
-## Ruleta de cupones (agregada a pedido de Ignacio, 04/10/2026)
+## Agregados a pedido de Ignacio (04/10/2026, fuera de la spec original)
+Ruleta de cupones, página y selector de "Mis cupones", buscador superpuesto con búsquedas recientes, "Comprar ahora",
+historias de producto en el inicio (ilustrativas, `src/demo/fixtures/stories.ts`) y paginado del panel. Antes de llevarlos a
+producción hay que sumarlos a la especificación de Notion.
+
+## Ruleta de cupones
 - Fuera de la especificación original: se sumó como pedido explícito para la demo. Antes de llevarla a producción hay que
   incorporarla a la spec (límite por cliente, probabilidades, vigencia).
-- 8 segmentos configurables en el panel (Cupones → Ruleta): premio, tipo, valor, mínimo y peso. El sorteo es una función
+- 8 segmentos configurables en el panel (Cupones → Ruleta): premio, tipo, valor, mínimo y peso. Cada gajo se dibuja con un ícono SVG (porcentaje, camión, regalo, grabado, moneda) y el valor corto. El sorteo es una función
   pura (`src/demo/engine/wheel.ts`); el premio crea un cupón `RULETA…` de **un uso** con vencimiento (7 días por defecto)
   que aparece en el panel y se aplica en el carrito. En producción el sorteo y el cupón se generan en el servidor.
 
@@ -40,6 +46,6 @@ no se pide tarjeta, no se redirige a Mercado Pago, el QR no es escaneable, el CB
 afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
-Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`) y `sessionStorage` para no repetir el
+Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`) y `sessionStorage` para no repetir el
 splash. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
 navegador. "Reiniciar demo" (banner y pie) borra todo.

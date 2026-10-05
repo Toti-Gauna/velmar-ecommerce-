@@ -4,8 +4,12 @@
 > No es seguro, no protege nada y **no se reutiliza como autorización productiva**. No hay login simulado.
 
 ## Cómo funciona
-- Rutas estáticas (export de Next) bajo `app/admin-demo/`, con layout propio: banner persistente, navegación lateral
-  en escritorio y chips desplazables en el celular. Detalles y edición usan query params
+- Rutas estáticas (export de Next) bajo `app/admin-demo/`, con layout propio (`AdminShell`):
+  - Escritorio: barra lateral fija a todo el alto (marca, secciones agrupadas en Operación, Catálogo, Marketing y Clientes,
+    contadores de pedidos en marcha, comprobantes por revisar y reclamos abiertos, y la "cuenta" demo con acceso a la tienda)
+    + barra superior con la señal "Panel de demostración · datos ficticios", la sección actual, "Ver tienda" y "Reiniciar demo".
+  - Celular: la misma barra superior con **menú hamburguesa**, y **pestañas inferiores** (Inicio, Pedidos, Pagos, Productos, Más).
+  Listas largas (pedidos, productos, usuarios, reclamos, cupones) con **paginado** que vuelve a la página 1 al filtrar. Detalles y edición usan query params
   (`/admin-demo/pedidos/detalle/?codigo=`, `/admin-demo/productos/editar/?id=`) para que funcionen con datos creados
   en la demo y al refrescar.
 - Estado: store Zustand `velmar-demo:admin` en localStorage **de este navegador**, sembrado desde fixtures

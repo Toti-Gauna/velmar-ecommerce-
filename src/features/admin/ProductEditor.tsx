@@ -81,7 +81,7 @@ function Editor({ product }: { product: Product }) {
         <p className="text-xs text-muted">Las plantillas se ajustan en “Categorías y personalización”.</p>
       </Section>
       {errors.length > 0 && <ul role="alert" className="rounded-2xl bg-danger-soft p-3 text-sm font-semibold text-danger">{errors.map((x) => <li key={x}>{x}</li>)}</ul>}
-      <div className="sticky bottom-0 -mx-4 flex flex-wrap gap-3 border-t border-line bg-bg/95 px-4 py-3 backdrop-blur">
+      <div className="sticky bottom-[calc(4rem+env(safe-area-inset-bottom))] -mx-4 flex lg:bottom-0 flex-wrap gap-3 border-t border-line bg-bg/95 px-4 py-3 backdrop-blur">
         <Button type="submit" size="lg">Guardar (solo en esta demo)</Button>
         <ButtonLink href={productHref(d.slug)} variant="ghost">Ver en tienda</ButtonLink>
       </div>
