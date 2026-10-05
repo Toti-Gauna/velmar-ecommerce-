@@ -14,8 +14,8 @@ const PIECES: { art: ArtKey; angle: number; tint?: string }[] = [
 
 /**
  * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: los chevrones
- * se trazan, aparece "Velmar", las piezas del taller entran en órbita una a una, una línea dorada marca el
- * avance y un telón la retira. Con "reducir movimiento" no se muestra.
+ * se trazan, aparece "Velmar", las piezas del taller entran en órbita una a una y
+ * un telón la retira (sin barra de carga ni botón "Saltar", pedido de Ignacio). Con "reducir movimiento" no se muestra.
  */
 export function Splash() {
   return (
@@ -35,7 +35,6 @@ export function Splash() {
         </svg>
         <span className="word font-display mt-4 text-5xl text-[#f6f1e8] sm:text-7xl">{brand.name}</span>
       </div>
-      <div aria-hidden="true" className="splash-progress"><span /></div>
       <p aria-hidden="true" className="splash-city eyebrow">Objetos con alma · {brand.city}</p>
     </div>
   );

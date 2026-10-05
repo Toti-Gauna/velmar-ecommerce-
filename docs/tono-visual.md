@@ -54,7 +54,7 @@ del sistema sigan el tema. La cantidad de la ficha también es un `select` nativ
   se ve sin JS y no depende del bundle.
 - Pantalla de carga (HTML+CSS, pedida por Ignacio el 05/10): aparece en **cada recarga** y dura **5 s**. Fondo noche con
   halo dorado, los chevrones se trazan, "Velmar" se revela con un barrido, cinco piezas del taller entran en órbita una
-  por una, una línea dorada marca el avance y un telón la retira. Sin botón "Saltar" (lo pidió Ignacio): Escape la cierra antes;
+  por una y un telón la retira. Sin barra de carga ni botón "Saltar" (lo pidió Ignacio): Escape la cierra antes;
   sin JS se va sola. No reaparece al navegar dentro del sitio.
 - Tienda: header con vidrio que se compacta al hacer scroll, aparición escalonada al entrar en pantalla (`Reveal`),
   contadores, tarjetas con segunda vista al hover y "agregar rápido", drawer del carrito, galería con zoom por cursor,

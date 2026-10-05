@@ -238,12 +238,9 @@ html[data-theme="dark"] .bg-night { box-shadow: inset 0 0 0 1px rgb(210 173 105 
   opacity: 0; transform: scale(0.4) translateY(18px);
   animation: piece-in 700ms cubic-bezier(0.2, 1.4, 0.4, 1) calc(1500ms + var(--i) * 260ms) both, piece-float 2.2s ease-in-out calc(2300ms + var(--i) * 260ms);
 }
-#velmar-splash .splash-progress { position: absolute; bottom: calc(14% + env(safe-area-inset-bottom)); width: min(220px, 50vw); height: 2px; border-radius: 2px; background: rgb(246 241 232 / 0.12); overflow: hidden; }
-#velmar-splash .splash-progress span { display: block; height: 100%; background: linear-gradient(90deg, #9a7434, #f3dca6, #d2ad69); transform-origin: left; transform: scaleX(0); animation: line 4.2s cubic-bezier(0.45, 0, 0.2, 1) 100ms both; }
-#velmar-splash .splash-city { position: absolute; bottom: calc(14% + env(safe-area-inset-bottom) - 2rem); color: rgb(216 207 189 / 0.7); opacity: 0; animation: fade-in 500ms ease-out 900ms both; }
+#velmar-splash .splash-city { position: absolute; bottom: calc(6% + env(safe-area-inset-bottom)); color: rgb(216 207 189 / 0.7); opacity: 0; animation: fade-in 500ms ease-out 900ms both; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @keyframes wipe { to { clip-path: inset(0 0 0 0); } }
-@keyframes line { to { transform: scaleX(1); } }
 @keyframes glow { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
 @keyframes orbit-spin { from { transform: rotate(-24deg); } to { transform: rotate(10deg); } }
 @keyframes piece-in { to { opacity: 1; transform: scale(1) translateY(0); } }
