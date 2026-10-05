@@ -2,7 +2,7 @@
 import { Lock, Truck } from "lucide-react";
 import { motion } from "motion/react";
 import { Button, ButtonLink } from "@/components/atoms/Button";
-import { Skeleton } from "@/components/atoms/Skeleton";
+import { ListSkeleton } from "@/components/atoms/Skeleton";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { OrderSummary } from "@/components/molecules/OrderSummary";
 import { CartLineItem, type CartLineView } from "@/components/organisms/CartLineItem";
@@ -37,7 +37,7 @@ export function CartView() {
   const lines = useCart((s) => s.lines);
   const { setQuantity, remove } = useCart();
   const goToCheckout = useGoToCheckout();
-  if (!hydrated) return <div role="status" aria-label="Cargando carrito" className="flex flex-col gap-3"><Skeleton className="h-32" /><Skeleton className="h-32" /></div>;
+  if (!hydrated) return <ListSkeleton rows={2} label="Cargando carrito" />;
   if (quote.lines.length === 0) {
     return (
       <div className="flex flex-col gap-12">

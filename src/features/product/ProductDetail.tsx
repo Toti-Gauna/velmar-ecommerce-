@@ -2,19 +2,18 @@
 import { Eye, ShieldCheck, ShoppingBag, Undo2, Zap } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
-import { QuantityStepper } from "@/components/molecules/QuantityStepper";
 import { StockMeter } from "@/components/molecules/StockMeter";
-import { VariantPicker } from "@/components/molecules/VariantPicker";
 import { ProductGallery } from "@/components/organisms/ProductGallery";
-import { availability, getCategory, isPurchasable, maxQuantity, unitPrice } from "@/demo/engine/catalog";
+import { availability, getCategory, isPurchasable, maxQuantity, unitPrice, type Availability } from "@/demo/engine/catalog";
 import type { Product } from "@/demo/types";
 import { formatARS, withoutNationalTaxes } from "@/lib/money";
 import { useDemoData } from "@/stores/admin";
 import { usePersonalizationDraft } from "../personalize/usePersonalizationDraft";
+import { ConfigureCard } from "./ConfigureCard";
 import { DeliveryEstimate } from "./DeliveryEstimate";
+import { FavoriteButton } from "./FavoriteButton";
 import { LivePreview } from "./LivePreview";
 import { MissionChip } from "./MissionChip";
-import { PersonalizeSection } from "./PersonalizeSection";
 import { ProductAccordions } from "./ProductAccordions";
 import { useProductPurchase } from "./useProductPurchase";
 import { useVariantSelection } from "./useVariantSelection";
@@ -22,7 +21,11 @@ import { useVariantSelection } from "./useVariantSelection";
 const KIND_LABEL = { TEXT: "Personalizable con nombre", PHOTO: "Personalizable con tu foto", PHOTO_REFERENCE: "Pintado desde tu foto" };
 const TRUST = [{ icon: Eye, t: "Vista previa antes de pagar" }, { icon: ShieldCheck, t: "Mercado Pago, QR o transferencia" }, { icon: Undo2, t: "Botón de arrepentimiento" }];
 
-/** Ficha todo en uno: variante, personalización con vista previa en vivo, cantidad y compra en la misma pantalla. */
+function stockNote(a: Availability): string {
+  return a.kind === "in-stock" ? `(${a.units} disponibles)` : a.kind === "made-to-order" ? "Hecho a pedido" : "Sin stock";
+}
+
+/** Ficha todo en uno: galería con vista previa en vivo + una sola tarjeta para elegir opción, diseño y cantidad. */
 export function ProductDetail({ product: initial }: { product: Product }) {
   const product = useDemoData((d) => d.products.find((p) => p.slug === initial.slug)) ?? initial;
   const settings = useDemoData((d) => d.settings);
@@ -35,26 +38,27 @@ export function ProductDetail({ product: initial }: { product: Product }) {
   const quantity = Math.min(qty, max);
   const inactive = product.active === false;
   const canBuy = !inactive && isPurchasable(sel.variant, quantity);
-  const { purchase, needApproval } = useProductPurchase(product, sel.variant, quantity, canBuy, draft);
+  const avail = availability(product, sel.variant);
+  const { purchase } = useProductPurchase(product, sel.variant, quantity, canBuy, draft);
   const transferPrice = Math.round(price * (1 - settings.transferDiscountPct / 100));
   const category = getCategory(product.categorySlug);
   const live = tmpl && tmpl.kind !== "PHOTO_REFERENCE" ? <LivePreview product={product} tint={sel.variant.colorHex} draft={draft} /> : undefined;
 
-  const actions = (compact: boolean) => (
-    <div className={compact ? "flex gap-2" : "grid gap-3 sm:grid-cols-2"}>
-      <Button size="lg" variant="dark" disabled={!canBuy} onClick={() => purchase("buy")} className={compact ? "flex-1 px-4" : "w-full"}>
-        <Zap size={18} aria-hidden="true" className="text-brass" />Comprar ahora
-      </Button>
-      <Button size="lg" variant={compact ? "secondary" : "primary"} disabled={!canBuy} onClick={() => purchase("cart")} className={compact ? "px-4" : "w-full"} aria-label={compact ? "Agregar al carrito" : undefined}>
-        <ShoppingBag size={18} aria-hidden="true" />{!compact && "Agregar al carrito"}
-      </Button>
+  const desktopActions = (
+    <div className="flex gap-3">
+      <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14" />
+      <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="flex-1"><ShoppingBag size={18} aria-hidden="true" />Agregar al carrito</Button>
+      <Button size="lg" variant="dark" disabled={!canBuy} onClick={() => purchase("buy")} className="flex-1"><Zap size={18} aria-hidden="true" className="text-brass" />Comprar ahora</Button>
     </div>
   );
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
-      <div className="lg:sticky lg:top-28 lg:self-start">
+      <div className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
         <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} photoUrl={product.photoDataUrl} alt={product.imageAlt} live={live} />
+        {inactive ? (
+          <p role="status" className="rounded-2xl bg-warning-soft p-3 text-sm font-bold text-warning">Este producto está pausado desde el panel demo y no se puede comprar.</p>
+        ) : <StockMeter availability={avail} />}
       </div>
       <div className="flex flex-col gap-6">
         <div>
@@ -68,20 +72,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
           {settings.transferDiscountPct > 0 && <span className="mb-1 rounded-full bg-success-soft px-3 py-1 text-sm font-bold text-success">{formatARS(transferPrice)} con transferencia o QR</span>}
           <span className="w-full text-xs text-muted">Precio sin impuestos nacionales: {formatARS(withoutNationalTaxes(price, settings.nationalTaxRate))} · precio de muestra</span>
         </div>
-        {sel.colorOptions.length > 0 && <VariantPicker legend="Color" options={sel.colorOptions} value={sel.color} onChange={sel.chooseColor} swatches />}
-        {sel.sizeOptions.length > 0 && <VariantPicker legend="Opción" options={sel.sizeOptions} value={sel.size} onChange={sel.chooseSize} />}
-        {inactive ? (
-          <p role="status" className="rounded-2xl bg-warning-soft p-3 text-sm font-bold text-warning">Este producto está pausado desde el panel demo y no se puede comprar.</p>
-        ) : <StockMeter availability={availability(product, sel.variant)} />}
-        {tmpl && <PersonalizeSection product={product} draft={draft} needApproval={needApproval} />}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-bold">Cantidad</span>
-            <QuantityStepper label="Cantidad" value={quantity} max={max} onChange={setQty} />
-          </div>
-          <span className="text-sm text-muted">{quantity > 1 ? <>Total <strong className="tabular-nums text-ink">{formatARS(price * quantity)}</strong>{tmpl ? " · mismo diseño" : ""}</> : sel.variant.stock > 0 ? `Máximo ${max} ${max === 1 ? "unidad" : "unidades"}` : null}</span>
-        </div>
-        <div className="hidden sm:block">{actions(false)}</div>
+        <ConfigureCard product={product} sel={sel} draft={draft} quantity={quantity} max={max} stockNote={stockNote(avail)} onQuantity={setQty} actions={desktopActions} />
         <MissionChip units={quantity} />
         <DeliveryEstimate makeDays={product.madeToOrderDays ?? 1} />
         <ul className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-muted">
@@ -89,9 +80,12 @@ export function ProductDetail({ product: initial }: { product: Product }) {
         </ul>
         <ProductAccordions product={product} />
       </div>
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur sm:hidden">
-        <div className="mb-2 flex items-baseline justify-between text-sm"><span className="text-muted">{quantity} × {formatARS(price)}</span><span className="text-lg font-extrabold tabular-nums">{formatARS(price * quantity)}</span></div>
-        {actions(true)}
+      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-surface px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.4)] sm:hidden">
+        <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14" />
+        <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="flex-1 justify-between whitespace-nowrap px-5 text-[15px]">
+          <span>Agregar al carrito</span>
+          <span className="tabular-nums">{formatARS(price * quantity)}</span>
+        </Button>
       </div>
     </div>
   );

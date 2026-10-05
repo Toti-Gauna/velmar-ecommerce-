@@ -21,9 +21,8 @@ test("flujo móvil completo hasta la confirmación de demostración", async ({ p
   await page.getByText("Manuscrita").click();
   await expect(page.getByText("Vista previa en vivo")).toBeVisible();
   const add = page.getByRole("button", { name: "Agregar al carrito" }).filter({ visible: true });
-  await add.click();
-  await expect(page.getByRole("alert").filter({ hasText: "Aprobá la vista previa" })).toBeVisible();
-  await page.getByText("Así lo quiero.").click();
+  // Sin casilla: agregar al carrito equivale a "Así lo quiero" (queda explicado junto a la cantidad)
+  await expect(page.getByText(/Al agregarlo confirmás/)).toBeVisible();
   await add.click();
   const drawer = page.getByRole("dialog", { name: "Carrito" });
   await expect(drawer.getByText("Agregaste Comedero perro globo")).toBeVisible();
@@ -94,7 +93,8 @@ test("checkout con cuenta demo, retiro y Mercado Pago simulado", async ({ page }
   await expect(page.getByRole("dialog", { name: "Carrito" }).getByText("Agregaste Vela caniche")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog", { name: "Carrito" })).toBeHidden();
-  await page.getByRole("button", { name: "Sumar uno" }).first().click();
+  await page.getByRole("button", { name: "Cantidad: 1 unidad" }).click();
+  await page.getByRole("option", { name: "2 unidades" }).click();
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   await page.goto("checkout/");
   await page.getByRole("button", { name: "Ingresar con cuenta demo" }).click();

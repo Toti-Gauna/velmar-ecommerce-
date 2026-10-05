@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowUpRight, ChevronRight, FlaskConical, Menu, RotateCcw } from "lucide-react";
+import { ArrowUpRight, ChevronRight, CircleHelp, FlaskConical, Menu, RotateCcw } from "lucide-react";
 import { resetDemo } from "@/stores/hydration";
 import { useToasts } from "@/stores/toast";
 import { currentSection } from "./nav";
@@ -10,7 +10,7 @@ import { currentSection } from "./nav";
  * Barra superior del panel. Lleva la señal persistente de demo (abierto a propósito, datos ficticios, sin
  * seguridad real), la sección actual y las acciones. En el celular suma el botón del menú hamburguesa.
  */
-export function AdminTopbar({ onMenu }: { onMenu: () => void }) {
+export function AdminTopbar({ onMenu, onHelp }: { onMenu: () => void; onHelp: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const toast = useToasts((s) => s.push);
@@ -23,7 +23,7 @@ export function AdminTopbar({ onMenu }: { onMenu: () => void }) {
     router.push("/admin-demo/");
   };
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/90 backdrop-blur-md">
+    <header className="sticky top-[env(safe-area-inset-top)] z-40 border-b border-line bg-bg">
       <p className="flex items-center gap-2 border-b border-dashed border-warning/50 bg-warning-soft px-4 py-1.5 text-[12px] font-bold text-warning lg:px-10">
         <FlaskConical size={14} aria-hidden="true" className="shrink-0" />
         <span>Panel de demostración · datos ficticios<span className="hidden font-semibold sm:inline"> · Sin login a propósito: no es seguro ni sirve como acceso real.</span></span>
@@ -40,7 +40,10 @@ export function AdminTopbar({ onMenu }: { onMenu: () => void }) {
         <Link href="/" className="hidden h-10 items-center gap-1.5 rounded-full px-4 text-sm font-bold text-primary transition-colors hover:bg-accent/60 sm:flex">
           Ver tienda <ArrowUpRight size={15} aria-hidden="true" />
         </Link>
-        <button type="button" onClick={reset} aria-label="Reiniciar demo" className="flex h-10 shrink-0 items-center gap-2 rounded-full border border-ink/15 bg-surface px-3 text-sm font-bold transition-colors hover:border-ink/30 sm:px-4">
+        <button type="button" onClick={onHelp} aria-label="Ver guía del panel" data-tour="help" className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-accent/60 hover:text-ink">
+          <CircleHelp size={19} aria-hidden="true" />
+        </button>
+        <button type="button" onClick={reset} aria-label="Reiniciar demo" data-tour="reset" className="flex h-10 shrink-0 items-center gap-2 rounded-full border border-ink/15 bg-surface px-3 text-sm font-bold transition-colors hover:border-ink/30 sm:px-4">
           <RotateCcw size={15} aria-hidden="true" /><span className="hidden sm:inline">Reiniciar demo</span>
         </button>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 import { MessageCircle } from "lucide-react";
 import { useState } from "react";
-import { Skeleton } from "@/components/atoms/Skeleton";
+import { HeroSkeleton } from "@/components/atoms/Skeleton";
 import type { CartLine } from "@/demo/engine/cart-types";
 import { DEMO_ORDER_CODE } from "@/demo/fixtures/commerce";
 import { cn } from "@/lib/cn";
@@ -34,7 +34,7 @@ export function TrackingView() {
   const state = SAMPLE_STATES.find((s) => s.id === stateId)!;
   const copy = STATE_COPY[stateId];
   const code = order?.code ?? DEMO_ORDER_CODE;
-  if (!hydrated) return <Skeleton className="h-96 w-full" />;
+  if (!hydrated) return <HeroSkeleton label="Cargando seguimiento" />;
   return (
     <div className="flex flex-col gap-6 sm:gap-8">
       <OrderItemsCard code={code} lines={order?.lines.length ? order.lines : SAMPLE_LINES} sample={!order?.lines.length} />

@@ -34,11 +34,11 @@ export function Dashboard() {
           <p className="mt-2 text-muted">Tenés <strong className="text-ink">{counts.PAYMENT_REVIEW} comprobantes</strong> por revisar y <strong className="text-ink">{active} pedidos</strong> en marcha. Datos ficticios.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <ButtonLink href="/admin-demo/pagos/" variant="dark"><Search size={16} aria-hidden="true" /> Revisar comprobantes</ButtonLink>
+          <ButtonLink href="/admin-demo/pagos/" variant="dark" data-tour="proofs"><Search size={16} aria-hidden="true" /> Revisar comprobantes</ButtonLink>
           <ButtonLink href="/admin-demo/productos/" variant="secondary"><Plus size={16} aria-hidden="true" /> Productos</ButtonLink>
         </div>
       </header>
-      <section aria-label="Indicadores (demo)" className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+      <section aria-label="Indicadores (demo)" data-tour="kpis" className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <KpiTile className="col-span-2 sm:col-span-1" label="Ventas últimos 7 días" value={formatARS(sales.week)} delta={delta(sales.week, sales.prevWeek)} spark={sales.days.map((d) => d.amount)} />
         <KpiTile className="col-span-2 sm:col-span-1" label="Ticket promedio" value={formatARS(sales.avgTicket)} hint={`${sales.paidCount} pedidos pagados · demo`} />
         <KpiTile label="Pedidos en marcha" value={<Counter value={active} />} hint="pagados, en producción, listos y enviados" />
@@ -46,7 +46,7 @@ export function Dashboard() {
       </section>
       <section aria-labelledby="pipe">
         <div className="mb-3 flex items-end justify-between"><h2 id="pipe" className="font-display text-2xl">Pedidos por estado</h2><Link href="/admin-demo/pedidos/" className="text-sm font-bold text-primary underline">Ver todos</Link></div>
-        <StatusPipeline counts={counts} />
+        <div data-tour="pipeline"><StatusPipeline counts={counts} /></div>
       </section>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <SalesChart title="Ventas de muestra por día (pedidos pagados o posteriores)" bars={sales.days.map((d) => ({ key: d.day, label: DAY.format(new Date(`${d.day}T12:00:00-03:00`)), amount: d.amount, orders: d.orders }))} />

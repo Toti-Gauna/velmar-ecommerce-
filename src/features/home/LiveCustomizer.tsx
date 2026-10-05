@@ -43,12 +43,12 @@ export function LiveCustomizer({ eyebrow }: { eyebrow: string }) {
               </button>
             ))}
           </div>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href="/crear/" size="lg" variant="dark"><Sparkles size={18} aria-hidden="true" className="text-brass" />Quiero mi producto personalizado</ButtonLink>
-            <ButtonLink href="/p/collar-con-nombre/#personalizar" size="lg" variant="secondary">Este collar <ArrowRight size={18} aria-hidden="true" className="transition-transform group-hover/btn:translate-x-1" /></ButtonLink>
+          <div className="mt-8 grid gap-3 xl:grid-cols-2">
+            <ButtonLink href="/crear/" size="lg" variant="dark" className="w-full px-4 text-[15px]"><Sparkles size={18} aria-hidden="true" className="shrink-0 text-brass" />Quiero mi producto personalizado</ButtonLink>
+            <ButtonLink href="/p/collar-con-nombre/#personalizar" size="lg" variant="secondary" className="w-full px-4 text-[15px]">Personalizar este collar <ArrowRight size={18} aria-hidden="true" className="shrink-0 transition-transform group-hover/btn:translate-x-1" /></ButtonLink>
           </div>
         </Reveal>
-        <div className="relative">
+        <div className="relative order-first lg:order-last">
           <div aria-hidden="true" className="absolute -inset-6 rounded-full bg-[radial-gradient(closest-side,#efe3cb,transparent)]" />
           {zone && <TextPreview art="collar" text={text || "Tu nombre"} fontFamily={FONT_FAMILIES[font]!} color={color.hex} zone={zone} label={`Vista previa del collar con “${text}”`} className="relative mx-auto w-full max-w-md overflow-hidden rounded-[2rem] shadow-[var(--shadow-lift)]" />}
         </div>

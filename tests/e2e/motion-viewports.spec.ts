@@ -11,12 +11,20 @@ test.describe("movimiento reducido", () => {
   });
 });
 
-test("el splash no bloquea clics y se va en menos de 1 s", async ({ page }) => {
+test("la pantalla de carga aparece en cada recarga, dura 5 s y se puede saltar", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("");
-  expect(await page.locator("#velmar-splash").evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
-  await expect(page.locator("#velmar-splash")).toBeHidden({ timeout: 1000 });
+  const splash = page.locator("#velmar-splash");
+  await expect(splash).toBeVisible();
+  await expect(splash.locator(".splash-piece")).toHaveCount(5);
+  await page.getByRole("button", { name: "Saltar la animación de inicio" }).click();
+  await expect(splash).toBeHidden();
   await page.getByRole("link", { name: "Ver todas" }).click();
   await expect(page).toHaveURL(/categorias\/$/);
+  // Vuelve en la recarga y se va sola a los 5 s
+  await page.reload();
+  await expect(splash).toBeVisible();
+  await expect(splash).toBeHidden({ timeout: 6500 });
 });
 
 for (const width of [375, 768, 1440]) {

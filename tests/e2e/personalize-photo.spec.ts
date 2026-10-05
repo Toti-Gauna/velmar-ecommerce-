@@ -19,7 +19,6 @@ test("la foto se encuadra en la ficha y nunca sale del dispositivo", async ({ pa
   await expect(page.locator("canvas").first()).toBeVisible();
   await page.getByLabel(/Zoom/).fill("1.6");
   await page.getByRole("button", { name: "Mover a la derecha" }).click();
-  await page.getByText("Así lo quiero.").click();
   await add.click();
   await page.getByRole("dialog", { name: "Carrito" }).getByRole("link", { name: "Ver carrito completo" }).click();
   await expect(page).toHaveURL(/carrito\/$/);
@@ -35,7 +34,6 @@ test("foto de referencia con notas", async ({ page }) => {
   await page.getByLabel("Elegir foto").setInputFiles({ name: "ref.png", mimeType: "image/png", buffer: await makePng(page, "#e88aa0") });
   await expect(page.getByRole("img", { name: "Tu foto de referencia" })).toBeVisible();
   await page.getByLabel("Notas para el taller").fill("Sentado, con collar rojo y fondo verde.");
-  await page.getByText("Así lo quiero.").click();
   await page.getByRole("button", { name: "Agregar al carrito" }).filter({ visible: true }).click();
   await page.getByRole("dialog", { name: "Carrito" }).getByRole("link", { name: "Ver carrito completo" }).click();
   await expect(page.getByText(/Notas: Sentado/)).toBeVisible();

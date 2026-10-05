@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { LogoMark } from "@/components/atoms/Logo";
 import { cn } from "@/lib/cn";
@@ -13,6 +12,7 @@ import { useNavCounts } from "./useNavCounts";
  * Se usa fija a la izquierda en escritorio y dentro del menú hamburguesa en el celular.
  */
 export function SidebarContent({ onNavigate, layoutKey }: { onNavigate?: () => void; layoutKey: string }) {
+  const tour = layoutKey === "desktop" ? "nav" : undefined;
   const pathname = usePathname();
   const counts = useNavCounts();
   return (
@@ -26,7 +26,7 @@ export function SidebarContent({ onNavigate, layoutKey }: { onNavigate?: () => v
           <span className="mt-1 block text-[11px] font-bold uppercase tracking-[0.16em] text-brass">Admin · demo</span>
         </span>
       </div>
-      <nav aria-label="Secciones del panel demo" className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4">
+      <nav aria-label="Secciones del panel demo" data-tour={tour} className="no-scrollbar flex-1 overflow-y-auto px-3 pb-4">
         {ADMIN_GROUPS.map((g) => (
           <div key={g} className="mb-5">
             <p className="mb-1.5 px-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#8f8878]">{g}</p>
@@ -40,7 +40,7 @@ export function SidebarContent({ onNavigate, layoutKey }: { onNavigate?: () => v
                     <Link href={item.href} onClick={onNavigate} aria-current={active ? "page" : undefined}
                       className={cn("group relative flex h-10 items-center gap-3 rounded-xl px-3 text-[14px] font-semibold transition-colors",
                         active ? "text-white" : "text-[#cfc6b3] hover:bg-white/[0.04] hover:text-white")}>
-                      {active && <motion.span layoutId={`admin-nav-${layoutKey}`} aria-hidden="true" className="absolute inset-0 rounded-xl bg-white/[0.08] ring-1 ring-white/[0.06]" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
+                      {active && <span aria-hidden="true" className="animate-fade-in absolute inset-0 rounded-xl bg-white/[0.08] ring-1 ring-white/[0.06]" />}
                       {active && <span aria-hidden="true" className="absolute -left-3 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-brass" />}
                       <Icon size={18} aria-hidden="true" className={cn("relative shrink-0 transition-colors", active ? "text-brass" : "text-[#9d9583] group-hover:text-[#e9e2d3]")} />
                       <span className="relative min-w-0 flex-1 truncate">{item.label}</span>

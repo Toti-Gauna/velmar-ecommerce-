@@ -9,6 +9,9 @@
     contadores de pedidos en marcha, comprobantes por revisar y reclamos abiertos, y la "cuenta" demo con acceso a la tienda)
     + barra superior con la señal "Panel de demostración · datos ficticios", la sección actual, "Ver tienda" y "Reiniciar demo".
   - Celular: la misma barra superior con **menú hamburguesa**, y **pestañas inferiores** (Inicio, Pedidos, Pagos, Productos, Más).
+  - **Guía de primera sesión**: al entrar al inicio del panel por primera vez en el navegador aparece una guía de 7 pasos
+    (recorte sobre cada zona, flecha, tarjeta con Anterior / Siguiente, Escape para cerrar). Se vuelve a ver con el botón "?"
+    de la barra superior. Se recuerda en `velmar-tour:admin` (no se borra con "Reiniciar demo").
   Listas largas (pedidos, productos, usuarios, reclamos, cupones) con **paginado** que vuelve a la página 1 al filtrar. Detalles y edición usan query params
   (`/admin-demo/pedidos/detalle/?codigo=`, `/admin-demo/productos/editar/?id=`) para que funcionen con datos creados
   en la demo y al refrescar.

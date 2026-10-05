@@ -26,12 +26,17 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
   transiciones con resorte, `layoutId` (selector de variantes, pestañas) y `AnimatePresence` (galería, drawer, ruleta)
   sin escribir física a mano. Lo crítico para la primera impresión (splash, hero, entrada de página) es **CSS puro**:
   se ve sin JS y no depende del bundle.
-- Splash de marca (HTML+CSS): fondo noche, los dos chevrones se dibujan, "Velmar" aparece con un barrido y una línea
-  dorada; una cortina lo retira entre los 620 y 1040 ms. `pointer-events: none` (nunca bloquea), una vez por sesión.
+- Pantalla de carga (HTML+CSS, pedida por Ignacio el 05/10): aparece en **cada recarga** y dura **5 s**. Fondo noche con
+  halo dorado, los chevrones se trazan, "Velmar" se revela con un barrido, cinco piezas del taller entran en órbita una
+  por una, una línea dorada marca el avance y un telón la retira. Botón **"Saltar"** (y Escape) para cerrarla antes;
+  sin JS se va sola. No reaparece al navegar dentro del sitio.
 - Tienda: header con vidrio que se compacta al hacer scroll, aparición escalonada al entrar en pantalla (`Reveal`),
   contadores, tarjetas con segunda vista al hover y "agregar rápido", drawer del carrito, galería con zoom por cursor,
   medidor de stock, barra de envío gratis y misión, ruleta del club con giro desacelerado, check animado en la confirmación
   y recorrido animado en el seguimiento.
 - Íconos de premios propios en SVG (`RewardGlyph`: porcentaje, camión, regalo, grabado, moneda) con degradé dorado: se usan en los gajos de la ruleta y en los cupones con forma de ticket (talón con guilloché SVG y perforación).
-- Sin animaciones permanentes: nada queda en bucle (se quitó el marquee); todo termina en < 1,5 s salvo el giro de la ruleta (4,8 s, iniciado por el usuario).
-- `prefers-reduced-motion: reduce` desactiva splash y confeti, la ruleta salta al resultado y toda transición pasa a 1 ms. Sin autoplay ni audio.
+- Confeti a pantalla completa (~3 s) la primera vez que se ve la confirmación de cada pedido.
+- Sin animaciones permanentes, con dos excepciones pedidas: la pantalla de carga (5 s, se puede saltar) y el **carrusel
+  del inicio, que avanza cada 4 s** (se frena al tocarlo, al pasar el mouse o con foco, y tiene botón de pausa). La
+  ruleta gira 4,8 s solo cuando la persona la inicia.
+- `prefers-reduced-motion: reduce` desactiva pantalla de carga, confeti y autoplay del carrusel; la ruleta salta al resultado y toda transición pasa a 1 ms. Sin audio.

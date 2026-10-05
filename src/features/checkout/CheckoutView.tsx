@@ -38,7 +38,12 @@ export function CheckoutView() {
     mounted.current = true;
   }, [step]);
 
-  if (!hydrated) return <div role="status" aria-label="Cargando checkout"><Skeleton className="h-80 w-full" /></div>;
+  if (!hydrated) return (
+    <div role="status" aria-label="Cargando checkout" className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="flex flex-col gap-4"><Skeleton className="h-10 w-full rounded-full" /><Skeleton className="h-72 w-full rounded-3xl" /></div>
+      <Skeleton className="h-64 w-full rounded-3xl" />
+    </div>
+  );
   if (lines.length === 0 && !checkout.lastOrder?.code) {
     return <EmptyState title="No hay nada para pagar" action={<ButtonLink href="/">Ver productos</ButtonLink>}>Tu carrito está vacío. Agregá productos para iniciar el checkout de demostración.</EmptyState>;
   }

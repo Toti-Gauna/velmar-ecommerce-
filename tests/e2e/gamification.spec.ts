@@ -24,21 +24,44 @@ test("ruleta: gira (sin animación con movimiento reducido), emite un cupón y s
   assertNoExternal();
 });
 
-test("ficha todo en uno: stock, cantidad, personalización y comprar ahora", async ({ page }) => {
+test("ficha: stock bajo la imagen, cantidad desplegable, favoritos y diseño requerido", async ({ page }) => {
   await page.goto("p/chapita-nfc/");
   await expect(page.getByText(/En stock · 12 disponibles/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Completá el set/ })).toBeVisible();
-  await page.getByRole("button", { name: "Sumar uno" }).first().click();
-  // Comprar sin escribir el texto lleva el foco al campo
-  await page.getByRole("button", { name: "Comprar ahora" }).filter({ visible: true }).click();
+  await page.getByRole("button", { name: "Cantidad: 1 unidad" }).click();
+  await page.getByRole("option", { name: "2 unidades" }).click();
+  await expect(page.getByRole("button", { name: "Cantidad: 2 unidades" })).toBeVisible();
+  // Agregar sin escribir el texto lleva el foco al campo
+  const add = page.getByRole("button", { name: /Agregar al carrito/ }).filter({ visible: true });
+  await add.click();
   await expect(page.getByLabel("Texto", { exact: true })).toBeFocused();
   await page.getByLabel("Texto", { exact: true }).fill("Luna");
-  await page.getByText("Así lo quiero.").click();
-  await page.getByRole("button", { name: "Comprar ahora" }).filter({ visible: true }).click();
-  await expect(page).toHaveURL(/checkout\/$/);
-  await page.goto("carrito/");
-  await expect(page.getByRole("group", { name: /Cantidad de Chapita/ }).locator("output")).toHaveText("2");
-  await expect(page.getByText(/“Luna”/)).toBeVisible();
+  await add.click();
+  await page.getByRole("dialog", { name: "Carrito" }).getByRole("link", { name: "Ver carrito completo" }).click();
+  await expect(page).toHaveURL(/carrito\/$/);
+  const main = page.locator("main");
+  await expect(main.getByRole("group", { name: /Cantidad de Chapita/ }).locator("output")).toHaveText("2");
+  await expect(main.getByText(/“Luna”/)).toBeVisible();
+  // Favoritos: el corazón guarda el producto y aparece en "Mi cuenta"
+  await page.goto("p/vela-caniche/");
+  await page.getByRole("button", { name: "Guardar Vela caniche en favoritos" }).filter({ visible: true }).click();
+  await page.goto("cuenta/");
+  await expect(page.locator("#favoritos").getByText("Vela caniche")).toBeVisible();
+});
+
+test("barra inferior de la tienda y carrusel con pausa", async ({ page }) => {
+  await page.goto("");
+  const nav = page.getByRole("navigation", { name: "Navegación inferior" });
+  await expect(nav.getByRole("link", { name: "Inicio" })).toHaveAttribute("aria-current", "page");
+  await nav.getByRole("link", { name: "Cupones" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Mis cupones" })).toBeVisible();
+  await nav.getByRole("link", { name: "Categorías" }).click();
+  await expect(page).toHaveURL(/categorias\/$/);
+  // En la ficha la barra inferior se reemplaza por la de compra
+  await page.goto("p/vela-caniche/");
+  await expect(nav).toHaveCount(0);
+  await page.goto("");
+  await expect(page.getByRole("button", { name: /Reproducir carrusel|Pausar carrusel/ })).toBeVisible();
 });
 
 test("carrito: elegir cupón sin escribir el código y ruleta al ir a pagar", async ({ page }) => {

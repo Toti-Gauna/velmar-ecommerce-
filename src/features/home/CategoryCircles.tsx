@@ -14,7 +14,7 @@ export function CategoryCircles() {
         <h2 id="cats-title" className="font-display text-3xl sm:text-4xl">Comprá por categoría</h2>
         <Link href="/categorias/" className="text-sm font-bold text-primary hover:underline">Ver todas</Link>
       </div>
-      <ul className="no-scrollbar -mx-4 flex gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-4 sm:px-0 lg:grid-cols-8">
+      <ul className="no-scrollbar -mx-4 flex gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain px-4 pb-3 pt-2 sm:mx-0 sm:grid sm:grid-cols-4 sm:px-0 lg:grid-cols-8">
         {cats.map((c) => {
           const top = [...productsInCategory(c.slug)].sort((a, b) => b.soldCount - a.soldCount)[0];
           return (

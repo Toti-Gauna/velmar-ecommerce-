@@ -23,7 +23,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: brand.colors.primary, width: "device-width", initialScale: 1 };
+// viewport-fit=cover: las barras fijas llegan al borde real de la pantalla (iOS) y los rellenos usan safe-area.
+export const viewport: Viewport = { themeColor: brand.colors.background, width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 /** Datos estructurados solo con campos confirmados (nombre, ciudad, Instagram). */
 const organizationLd = {
@@ -41,8 +42,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: splashScript }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }} />
       </head>
-      <body className="min-h-dvh antialiased">
+      <body className="min-h-dvh pt-[env(safe-area-inset-top)] antialiased">
         <Splash />
+        {/* Tapa la zona de la barra de estado del celular: el contenido no se ve por detrás al hacer scroll. */}
+        <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[env(safe-area-inset-top)] bg-bg" />
         <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary">
           Saltar al contenido
         </a>

@@ -1,11 +1,12 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Check, MessageCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { Celebration } from "@/components/molecules/Celebration";
+import { ConfettiRain } from "@/components/molecules/ConfettiRain";
 import { Badge } from "@/components/atoms/Badge";
 import { ButtonLink } from "@/components/atoms/Button";
-import { Skeleton } from "@/components/atoms/Skeleton";
+import { HeroSkeleton } from "@/components/atoms/Skeleton";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { MissionProgress } from "@/components/molecules/MissionProgress";
 import { OrderSummary } from "@/components/molecules/OrderSummary";
@@ -26,16 +27,29 @@ export function ConfirmationView() {
   const order = useCheckout((s) => s.lastOrder);
   const missions = useDemoData((d) => d.missions);
   const syncShopOrder = useAdmin((s) => s.syncShopOrder);
+  // Confeti solo la primera vez que se ve la confirmación de cada pedido (no en cada recarga).
+  const [celebrate, setCelebrate] = useState(false);
   useEffect(() => {
-    if (order) syncShopOrder(order);
+    if (!order) return;
+    syncShopOrder(order);
+    const key = `velmar-demo:celebrated:${order.code}`;
+    let first = true;
+    try { first = !window.sessionStorage.getItem(key); } catch { /* sin sessionStorage: celebra igual */ }
+    if (!first) return;
+    const t = window.setTimeout(() => {
+      try { window.sessionStorage.setItem(key, "1"); } catch { /* ignorar */ }
+      setCelebrate(true);
+    }, 250);
+    return () => window.clearTimeout(t);
   }, [order, syncShopOrder]);
-  if (!hydrated) return <Skeleton className="h-96 w-full" />;
+  if (!hydrated) return <HeroSkeleton label="Cargando confirmación" />;
   if (!order) return <EmptyState title="Todavía no hay un pedido de demostración" action={<ButtonLink href="/">Ir a la tienda</ButtonLink>}>Completá el checkout para ver esta pantalla.</EmptyState>;
   const mission = missions.find((m) => m.active !== false) ?? missions[0]!;
   const preview = previewMission(mission, demoAccountProgress[mission.id] ?? 0, { units: order.quote.units, total: order.quote.total });
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="flex flex-col gap-6">
+        {celebrate && <ConfettiRain />}
         <section className="relative overflow-hidden rounded-[2.5rem] bg-night p-6 text-[#f6f1e8] sm:p-10">
           <Celebration />
           <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.15 }}

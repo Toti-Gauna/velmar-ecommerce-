@@ -12,7 +12,7 @@ const COLS = [
 
 export function Footer() {
   return (
-    <footer className="mt-24 bg-night text-[#e9e2d3]">
+    <footer className="mt-24 bg-night pb-[calc(4rem+env(safe-area-inset-bottom))] text-[#e9e2d3] lg:pb-0">
       <div className="mx-auto max-w-7xl px-6 pb-28 pt-16">
         <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)]">
           <div className="flex flex-col gap-5">

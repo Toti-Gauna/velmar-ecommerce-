@@ -52,7 +52,7 @@ export function ProductGallery({ art, views, tint, name, photoUrl, alt, live }: 
         </AnimatePresence>
       </div>
       {(views.length > 1 || live) && (
-        <div role="group" aria-label="Fotos del producto" className="no-scrollbar flex gap-2 overflow-x-auto p-1 lg:flex-col">
+        <div role="group" aria-label="Fotos del producto" className="no-scrollbar flex gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain p-1 lg:flex-col">
           {live && (
             <button type="button" onClick={() => setActive(-1)} aria-pressed={showLive} aria-label="Ver tu diseño"
               className={cn("grid aspect-square w-20 shrink-0 place-items-center rounded-2xl bg-night text-[#f6f1e8] transition-all duration-300 lg:w-24", showLive ? "ring-2 ring-primary ring-offset-2 ring-offset-bg" : "opacity-80 hover:opacity-100")}>

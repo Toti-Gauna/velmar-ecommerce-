@@ -15,7 +15,7 @@
 | **La foto no sale del navegador**: ningún request no-GET/HEAD ni a otro origen en todo el flujo | `guardNetwork()` en los e2e | ✅ |
 | Ningún CTA aparenta cobrar: rótulos "demo/muestra", QR no escaneable, CBU ficticio, sin "acreditado" | asserts en e2e + revisión | ✅ |
 | Movimiento reducido: sin splash, animaciones a 1 ms | `motion-viewports.spec.ts` | ✅ |
-| Splash no bloquea clics y desaparece en < 1 s | idem | ✅ |
+| Pantalla de carga en cada recarga, "Saltar" la cierra y se va sola a los 5 s | idem | ✅ |
 | Contraste AA de los tokens | cálculo WCAG (ver `tono-visual.md`) | ✅ |
 | Reglas: precio, cupones, envío gratis, total ≥ 0, misiones, stock, validaciones, recomendaciones, ruleta | `tests/unit` (Vitest) | ✅ |
 | Ruleta con movimiento reducido → cupón `RULETA…` → se aplica en el carrito → aparece en el panel | `gamification.spec.ts` | ✅ |
@@ -24,6 +24,9 @@
 | Buscador superpuesto: foco en el campo, resultados en vivo con error de tipeo, búsqueda reciente, Escape cierra | idem | ✅ |
 | Seguimiento: pedido arriba, "Ver 1 producto más" abre el modal, comprobante al elegir el estado pendiente | idem | ✅ |
 | Panel en el celular: menú hamburguesa y paginado de pedidos (se reinicia al filtrar) | `admin-flows.spec.ts` | ✅ |
+| Guía del panel: aparece una vez, Siguiente / Anterior, no reaparece, se reabre con "?" | idem | ✅ |
+| Ficha: cantidad desplegable, diseño requerido antes de agregar, favoritos en "Mi cuenta" | `gamification.spec.ts` | ✅ |
+| Barra inferior de la tienda (Inicio, Categorías, Cupones, Mi cuenta) y botón de pausa del carrusel | idem | ✅ |
 | Menú móvil y drawer del carrito: abren, atrapan el foco y cierran con Escape | idem | ✅ |
 | Sin desborde a 375 px con el carrito lleno (recomendaciones desplazables) | idem | ✅ |
 
@@ -43,7 +46,18 @@
 
 Nota: con emulación móvil, Chrome agranda el viewport de layout si algo desborda. El chequeo anterior
 (`scrollWidth - innerWidth`) podía dar falso negativo; ahora se compara contra el ancho configurado.
-Reglas aprendidas en esta ronda:
+Los e2e corren con `reducedMotion: "reduce"` por defecto (sin pantalla de carga ni autoplay) y con la guía del panel
+marcada como vista; los tests de pantalla de carga y de guía lo cambian explícitamente.
+
+Reglas aprendidas (05/10):
+- Con "reducir movimiento", un `motion.span` con `layoutId` dentro de un `Sheet` trababa la animación de salida y el menú
+  del panel no se cerraba. El indicador de sección activa ahora es un `span` común.
+- Los `fieldset` tienen `min-width: min-content`: en grilla, usar `min-w-0` y `grid-cols-[minmax(0,1fr)]`.
+- iOS (Safari 26): `viewport-fit=cover` + rellenos `env(safe-area-inset-*)`; una franja fija tapa la barra de estado y
+  las barras inferiores llegan al borde real de la pantalla.
+- Los carriles horizontales usan `overflow-y-hidden overscroll-x-contain` y aparición sin desplazamiento vertical.
+
+Reglas aprendidas en la ronda anterior:
 - Los modales (`Sheet`) se montan en `<body>` por portal: el header usa `backdrop-filter`, que convierte al ancestro en
   contenedor de los `position: fixed` y dejaba el menú móvil recortado al alto del header.
 - `onClose` llega como función nueva en cada render; el efecto de foco del `Sheet` depende solo de `open` (si no, cada

@@ -156,3 +156,31 @@ test("celular: menú hamburguesa del panel y paginado de pedidos", async ({ page
   await page.getByRole("button", { name: "Más secciones del panel" }).click();
   await expect(page.getByRole("dialog", { name: "Menú del panel" }).getByRole("link", { name: "Ajustes" })).toBeVisible();
 });
+
+test("guía de primera sesión: aparece una vez, avanza, retrocede y se puede volver a ver", async ({ page }) => {
+  await page.addInitScript(() => { if (!sessionStorage.getItem("tour-test")) { localStorage.removeItem("velmar-tour:admin"); sessionStorage.setItem("tour-test", "1"); } });
+  await page.goto("admin-demo/");
+  const guide = page.getByRole("dialog", { name: "Bienvenido al panel de Velmar" });
+  await expect(guide).toBeVisible();
+  await guide.getByRole("button", { name: "Siguiente" }).click();
+  const nav = page.getByRole("dialog", { name: "Todas las secciones" });
+  await expect(nav).toBeVisible();
+  await nav.getByRole("button", { name: "Anterior" }).click();
+  await expect(guide).toBeVisible();
+  for (const title of ["Todas las secciones", "Cómo viene la semana", "Pedidos por estado", "Comprobantes por revisar", "Volver a empezar", "¡Listo!"]) {
+    await page.getByRole("dialog").last().getByRole("button", { name: "Siguiente" }).click();
+    await expect(page.getByRole("dialog", { name: title })).toBeVisible();
+  }
+  await page.getByRole("dialog", { name: "¡Listo!" }).getByRole("button", { name: "Empezar" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  // No vuelve a aparecer sola
+  await page.reload();
+  await expect(page.getByRole("heading", { level: 1, name: /Buen día/ })).toBeVisible();
+  await page.waitForTimeout(1000);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  // Se puede reabrir desde la barra superior
+  await page.getByRole("button", { name: "Ver guía del panel" }).click();
+  await expect(page.getByRole("dialog", { name: "Bienvenido al panel de Velmar" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+});

@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import { Field, Input } from "@/components/atoms/Field";
-import { Skeleton } from "@/components/atoms/Skeleton";
+import { ListSkeleton } from "@/components/atoms/Skeleton";
 import { useAccount } from "@/stores/account";
 import { useCheckout } from "@/stores/checkout";
 import { useHydrated } from "@/stores/hydration";
+import { FavoritesSection } from "./FavoritesSection";
 import { AddressesSection, MissionsSection, OrdersSection, RewardsSection } from "./AccountSections";
 
 function DemoLogin() {
@@ -26,8 +27,14 @@ export function AccountView() {
   const hydrated = useHydrated();
   const { user, logout, usedRewards, markRewardUsed } = useAccount();
   const lastOrder = useCheckout((s) => s.lastOrder);
-  if (!hydrated) return <Skeleton className="h-80 w-full" />;
-  if (!user) return <DemoLogin />;
+  if (!hydrated) return <ListSkeleton rows={4} label="Cargando tu cuenta" />;
+  const favorites = (
+    <section id="favoritos" aria-labelledby="favoritos-t" className="scroll-mt-24">
+      <h2 id="favoritos-t" className="mb-3 text-xl font-extrabold">Favoritos</h2>
+      <FavoritesSection />
+    </section>
+  );
+  if (!user) return <div className="flex flex-col gap-10"><DemoLogin />{favorites}</div>;
   const sections = [
     { id: "pedidos", title: "Mis pedidos", body: <OrdersSection lastOrder={lastOrder} /> },
     { id: "misiones", title: "Misiones", body: <MissionsSection /> },
@@ -40,9 +47,10 @@ export function AccountView() {
         <p className="text-lg">Hola, <strong>{user.name}</strong> <span className="text-sm text-muted">({user.email} · cuenta demo)</span></p>
         <Button variant="ghost" size="sm" onClick={logout}>Salir</Button>
       </div>
-      <nav aria-label="Secciones de la cuenta" className="flex gap-2 overflow-x-auto">
+      <nav aria-label="Secciones de la cuenta" className="flex gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain">
         {sections.map((s) => <a key={s.id} href={`#${s.id}`} className="shrink-0 rounded-full border border-line bg-surface px-3 py-1.5 text-sm font-bold hover:bg-accent">{s.title}</a>)}
       </nav>
+      {favorites}
       {sections.map((s) => (
         <section key={s.id} id={s.id} aria-labelledby={`${s.id}-t`} className="scroll-mt-24">
           <h2 id={`${s.id}-t`} className="mb-3 text-xl font-extrabold">{s.title}</h2>
