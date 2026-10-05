@@ -15,7 +15,7 @@ const PIECES: { art: ArtKey; angle: number; tint?: string }[] = [
 /**
  * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: los chevrones
  * se trazan, aparece "Velmar", las piezas del taller entran en órbita una a una, una línea dorada marca el
- * avance y un telón la retira. "Saltar" la cierra antes. Con "reducir movimiento" no se muestra.
+ * avance y un telón la retira. Con "reducir movimiento" no se muestra.
  */
 export function Splash() {
   return (
@@ -37,7 +37,6 @@ export function Splash() {
       </div>
       <div aria-hidden="true" className="splash-progress"><span /></div>
       <p aria-hidden="true" className="splash-city eyebrow">Objetos con alma · {brand.city}</p>
-      <button type="button" id="velmar-splash-skip" className="splash-skip" aria-label="Saltar la animación de inicio">Saltar</button>
     </div>
   );
 }
