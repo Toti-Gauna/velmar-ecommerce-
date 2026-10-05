@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { DateInput } from "@/components/atoms/DateInput";
 import { Input } from "@/components/atoms/Field";
 import { Select } from "@/components/atoms/Select";
 import { EmptyState } from "@/components/molecules/EmptyState";
@@ -27,15 +28,15 @@ export function OrdersList() {
     <>
       <AdminPageHeader title="Pedidos">Pedidos ficticios. Abrí uno para ver productos, personalización aprobada, comprobante, historial y notas.</AdminPageHeader>
       <form role="search" onSubmit={(e) => e.preventDefault()} className="mb-4 grid gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-3 sm:grid-cols-2 lg:grid-cols-4">
-        <label className="flex flex-col gap-1 text-sm font-bold">Código o cliente<Input value={f.q} onChange={(e) => setF({ ...f, q: e.target.value })} placeholder="VEL-000123" /></label>
-        <label className="flex flex-col gap-1 text-sm font-bold">Estado
+        <label className="flex min-w-0 flex-col gap-1 text-sm font-bold">Código o cliente<Input value={f.q} onChange={(e) => setF({ ...f, q: e.target.value })} placeholder="VEL-000123" /></label>
+        <label className="flex min-w-0 flex-col gap-1 text-sm font-bold">Estado
           <Select value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as OrderStatus | "ALL" })}>
             <option value="ALL">Todos</option>
             {ORDER_STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
           </Select>
         </label>
-        <label className="flex flex-col gap-1 text-sm font-bold">Desde<Input type="date" value={f.from} onChange={(e) => setF({ ...f, from: e.target.value })} /></label>
-        <label className="flex flex-col gap-1 text-sm font-bold">Hasta<Input type="date" value={f.to} onChange={(e) => setF({ ...f, to: e.target.value })} /></label>
+        <label className="flex min-w-0 flex-col gap-1 text-sm font-bold">Desde<DateInput value={f.from} onChange={(e) => setF({ ...f, from: e.target.value })} /></label>
+        <label className="flex min-w-0 flex-col gap-1 text-sm font-bold">Hasta<DateInput value={f.to} onChange={(e) => setF({ ...f, to: e.target.value })} /></label>
       </form>
       <div className="mb-3 flex items-center justify-between text-sm">
         <p aria-live="polite" className="text-muted">{list.length} {list.length === 1 ? "pedido" : "pedidos"}</p>

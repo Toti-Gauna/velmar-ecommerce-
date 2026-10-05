@@ -23,8 +23,12 @@ export default defineConfig({
     // Movimiento reducido por defecto: sin la pantalla de carga de 5 s ni el autoplay del carrusel.
     // Los tests de splash y de animaciones lo cambian a "no-preference" explícitamente.
     contextOptions: { reducedMotion: "reduce" },
-    // La guía del panel se da por vista; su propio test la vuelve a habilitar.
-    storageState: { cookies: [], origins: [{ origin: `http://localhost:${port}`, localStorage: [{ name: "velmar-tour:admin", value: "done" }] }] },
+    // La guía del panel se da por vista; su propio test la vuelve a habilitar. La temática queda en "Original"
+    // para que los tests no dependan de la fecha del día (themes.spec.ts las prueba a propósito).
+    storageState: { cookies: [], origins: [{ origin: `http://localhost:${port}`, localStorage: [
+      { name: "velmar-tour:admin", value: "done" },
+      { name: "velmar-demo:theme-preview", value: JSON.stringify({ state: { previewId: "original" }, version: 0 }) },
+    ] }] },
   },
   projects: [{ name: "mobile", use: { ...devices["Pixel 7"], viewport: { width: 375, height: 812 } } }],
   webServer: { command: "node tests/e2e/static-server.mjs", port, reuseExistingServer: !process.env.CI },

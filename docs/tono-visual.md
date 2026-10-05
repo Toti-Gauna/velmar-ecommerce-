@@ -40,12 +40,31 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
   "Ofertas de …" con el precio con cupón (calculado en `src/demo/engine/themes.ts`). Entradas de una sola vez, sin
   animaciones permanentes; con "reducir movimiento" aparecen quietas.
 - "Probar temáticas" (botón flotante a la izquierda; WhatsApp queda a la derecha) cambia solo la vista de ese navegador.
+  Incluye **Automática** (la del cliente) y **Original** (Velmar sin temática). Elegir recarga la página a propósito:
+  vuelve a salir la pantalla de carga, ahora de temporada.
+- **Paleta de temporada** (`src/features/themes/palettes.ts`): cada temática pisa TODOS los tokens con `html[data-season]`
+  (header, fondo, tarjetas, bandas, controles, íconos de select/fecha y el **estudio** detrás de cada producto,
+  `--studio-1/2/3`). Halloween, Navidad, Año Nuevo, Black Friday y San Patricio son **inmersivas**: oscuras también en
+  modo claro. El contraste AA de cada par se prueba en `tests/unit/palettes.test.ts`. El panel no cambia.
+- **Fondo de la página**: aurora (tres manchas de luz de la temática que se desplazan lento), grano sutil y partículas,
+  detrás de todo. Header y barra inferior pasan a vidrio tintado; las tarjetas de producto llevan filo y brillo del color.
+- **Pantalla de carga de temporada**: el script del `<head>` (`seasonScript.ts`) decide la temática antes de pintar y
+  marca `data-season`; el fondo toma los colores de la festividad y `ThemeSplashScene` suma la escena: Papá Noel con su
+  trineo cruzando la luna y arbolitos (Navidad), luna naranja, bruja en escoba, niebla y calabazas que brillan
+  (Halloween), fuegos artificiales y copas (Año Nuevo); el resto, sus decoraciones en órbita. Más el fondo animado.
+- **Fondos animados** (`ambient.ts`, `AmbientField`): nieve, murciélagos, papelitos, corazones, tréboles, chispas, globos…
+  detrás del contenido, en el banner y en el splash. Solo `transform`/`opacity` y unidades del contenedor.
+  **Excepción a "sin animaciones permanentes"** pedida por Ignacio: con "reducir movimiento" no se muestran y la cinta
+  tiene un botón para pausarlas (se recuerda en el navegador).
+- **Guirnalda** bajo el header: luces que titilan (Navidad, Año Nuevo, Halloween, Black Friday, Hot Sale) o banderines.
 
 ## Controles de formulario
 Todos son **nativos** (`select`, `input type="date"`, `number`, `color`, `range`, `checkbox`, `radio`, `file`): el
 navegador abre su propia lista, calendario o rueda (accesible y familiar en el celular), con la estética de la tienda:
 mismos radios, bordes, foco y chevron, `accent-color` de marca y `color-scheme` claro/oscuro para que los selectores
 del sistema sigan el tema. La cantidad de la ficha también es un `select` nativo ("Cantidad: 1 unidad ⌄").
+Fechas: siempre con `DateInput`. En Safari de iPhone/iPad el `date` nativo ignora el alto, se desborda y vacío no
+muestra nada; ahí se le quita la apariencia del sistema, se dibuja el ícono de calendario y se muestra "dd/mm/aaaa".
 
 ## Motion
 - Librería: `motion` (`motion/react`), envuelta en `MotionRoot` con `reducedMotion="user"`. Se eligió porque da
@@ -54,7 +73,7 @@ del sistema sigan el tema. La cantidad de la ficha también es un `select` nativ
   se ve sin JS y no depende del bundle.
 - Pantalla de carga (HTML+CSS, pedida por Ignacio el 05/10): aparece en **cada recarga** y dura **5 s**. Fondo noche con
   halo dorado, los chevrones se trazan, "Velmar" se revela con un barrido, cinco piezas del taller entran en órbita una
-  por una, una línea dorada marca el avance y un telón la retira. Sin botón "Saltar" (lo pidió Ignacio): Escape la cierra antes;
+  por una y un telón la retira. Sin barra de carga ni botón "Saltar" (lo pidió Ignacio): Escape la cierra antes;
   sin JS se va sola. No reaparece al navegar dentro del sitio.
 - Tienda: header con vidrio que se compacta al hacer scroll, aparición escalonada al entrar en pantalla (`Reveal`),
   contadores, tarjetas con segunda vista al hover y "agregar rápido", drawer del carrito, galería con zoom por cursor,

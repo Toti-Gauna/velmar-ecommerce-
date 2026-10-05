@@ -25,6 +25,7 @@ describe("temáticas", () => {
   it("la vista previa manda; después el modo del panel", () => {
     const now = at("2026-10-05");
     expect(currentTheme(now, "navidad")?.id).toBe("navidad");
+    expect(currentTheme(now, "original")).toBeNull();
     setDemoData({ ...demoData(), themeSettings: { mode: "fixed", fixedId: "san-patricio", showTryButton: true } });
     expect(currentTheme(now, null)?.id).toBe("san-patricio");
     setDemoData({ ...demoData(), themeSettings: { mode: "off", fixedId: "san-patricio", showTryButton: true } });

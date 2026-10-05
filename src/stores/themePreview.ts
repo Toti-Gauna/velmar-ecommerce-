@@ -4,10 +4,13 @@ import { persist } from "zustand/middleware";
 import type { SeasonId } from "@/demo/types";
 import { demoStorage, STORAGE_PREFIX } from "./storage";
 
-/** "Probar temáticas": vista previa elegida en este navegador. null = la que corresponde por el panel. */
+/** Vista previa: una temática, "original" (la marca sin temática) o null (la que corresponde por el panel). */
+export type ThemePreview = SeasonId | "original" | null;
+
+/** "Probar temáticas": vista previa elegida en este navegador. */
 interface ThemePreviewState {
-  previewId: SeasonId | null;
-  setPreview: (id: SeasonId | null) => void;
+  previewId: ThemePreview;
+  setPreview: (id: ThemePreview) => void;
 }
 
 export const useThemePreview = create<ThemePreviewState>()(

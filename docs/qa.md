@@ -28,6 +28,7 @@
 | Ficha: cantidad desplegable, diseño requerido antes de agregar, favoritos en "Mi cuenta" | `gamification.spec.ts` | ✅ |
 | Barra inferior de la tienda (Inicio, Categorías, Cupones, Mi cuenta) y botón de pausa del carrusel | idem | ✅ |
 | Temáticas: "Probar temáticas" cambia cinta, sombrero del logo, primera diapositiva y ofertas; "Usar código" lo deja en el carrito; se recuerda al recargar y se sale desde la cinta | `themes.spec.ts`, `tests/unit/themes.test.ts` | ✅ |
+| Temáticas premium: paleta de temporada en `data-season`, pausa de animaciones, opción "Original" | `themes.spec.ts`, `tests/unit/palettes.test.ts` (AA de las 13 paletas en claro y oscuro) | ✅ |
 | Temáticas en el panel: editar titular, modo fija/ninguna y ocultar el botón se refleja en la tienda | idem | ✅ |
 | Modo oscuro: se activa desde el menú, se recuerda al recargar y llega al panel | idem | ✅ |
 | Menú móvil y drawer del carrito: abren, atrapan el foco y cierran con Escape | idem | ✅ |

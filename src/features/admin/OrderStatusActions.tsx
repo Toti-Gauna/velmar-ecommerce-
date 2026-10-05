@@ -1,5 +1,6 @@
 "use client";
 import { ConfirmButton } from "@/components/molecules/ConfirmButton";
+import { DateInput } from "@/components/atoms/DateInput";
 import type { AdminOrder } from "@/demo/admin/types";
 import { manualNextStatuses, STATUS_LABEL } from "@/demo/engine/orders";
 import { useAdmin } from "@/stores/admin";
@@ -35,8 +36,7 @@ export function OrderStatusActions({ order }: { order: AdminOrder }) {
       </div>
       <label className="flex max-w-xs flex-col gap-1 text-sm font-bold">
         Fecha comprometida de producción
-        <input type="date" value={order.promisedDate ?? ""} onChange={(e) => e.target.value && save("Fecha comprometida guardada", () => setPromisedDate(order.code, e.target.value))}
-          className="min-h-11 rounded-xl border border-line bg-surface px-3 font-semibold" />
+        <DateInput value={order.promisedDate ?? ""} onChange={(e) => e.target.value && save("Fecha comprometida guardada", () => setPromisedDate(order.code, e.target.value))} className="font-semibold" />
       </label>
     </div>
   );

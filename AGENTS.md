@@ -28,9 +28,9 @@ Ante una duda de alcance: parar y preguntar a Ignacio, no decidir.
 - Archivos escritos a mano: objetivo ≤150 líneas, >250 bloquea (excluye fixtures).
 - Antes de commitear: `npm run lint && npm run typecheck && npm test && npm run build`.
 - E2E: `PAGES_BASE_PATH=/velmar-ecommerce- npm run build && PAGES_BASE_PATH=/velmar-ecommerce- npm run e2e`.
-- Accesibilidad AA, foco visible, `prefers-reduced-motion`, sin animaciones permanentes ni audio.
+- Accesibilidad AA, foco visible, `prefers-reduced-motion`, sin animaciones permanentes ni audio (excepción: fondos de temáticas, con pausa y apagados con "reducir movimiento").
 - Motion: `motion/react` solo en componentes cliente y dentro de `MotionRoot`; lo que se ve antes de hidratar (splash, hero) va en CSS. Ver `docs/tono-visual.md`.
-- Colores: usar tokens (`bg-bg`, `bg-surface`, `text-ink`, `text-muted`, `bg-night`…), nunca hex sueltos sobre superficies que cambian con el modo oscuro. Controles de formulario: siempre nativos con `Select`/`Input`.
+- Colores: usar tokens (`bg-bg`, `bg-surface`, `text-ink`, `text-muted`, `bg-night`…), nunca hex sueltos sobre superficies que cambian con el modo oscuro. Controles de formulario: siempre nativos con `Select`/`Input`/`DateInput`.
 - Modales, menús y paneles: usar `Sheet` (portal a `<body>`, foco atrapado, Escape). No montar `fixed` dentro del header.
 - Grillas con carriles desplazables: `grid-cols-[minmax(0,1fr)]` de base para no desbordar en 375 px.
 - Cada tarea declara archivos tocados, comportamiento, prueba ejecutada y decisiones abiertas.

@@ -19,11 +19,12 @@ export function themeForDate(themes: SeasonalTheme[], now: Date): SeasonalTheme 
 }
 
 /**
- * Temática visible en la tienda. La vista previa ("Probar temáticas") manda; si no, el modo del panel:
+ * Temática visible en la tienda. La vista previa ("Probar temáticas", u "original" para verla sin temática) manda; si no, el modo del panel:
  * automática por fecha, fija o ninguna.
  */
-export function currentTheme(now: Date, previewId: SeasonId | null): SeasonalTheme | null {
+export function currentTheme(now: Date, previewId: SeasonId | "original" | null): SeasonalTheme | null {
   const { themes, themeSettings } = demoData();
+  if (previewId === "original") return null;
   if (previewId) return themes.find((t) => t.id === previewId) ?? null;
   if (themeSettings.mode === "off") return null;
   if (themeSettings.mode === "fixed") return themes.find((t) => t.id === themeSettings.fixedId) ?? null;

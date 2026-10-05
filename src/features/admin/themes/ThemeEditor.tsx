@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
+import { DateInput } from "@/components/atoms/DateInput";
 import { Input, Textarea } from "@/components/atoms/Field";
 import { Select } from "@/components/atoms/Select";
 import { Switch } from "@/components/atoms/Switch";
@@ -45,8 +46,8 @@ function EditorForm({ initial, onClose }: { initial: SeasonalTheme; onClose: () 
         <ThemeMiniPreview theme={t} />
         <Switch checked={t.active} onChange={(v) => set({ active: v })} label="Habilitada" description="Sale sola en sus fechas (modo automático) y aparece en “Probar temáticas”." />
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="flex flex-col gap-1 text-sm font-bold">Desde<Input type="date" value={t.startsOn} onChange={(e) => set({ startsOn: e.target.value })} /></label>
-          <label className="flex flex-col gap-1 text-sm font-bold">Hasta<Input type="date" value={t.endsOn} onChange={(e) => set({ endsOn: e.target.value })} /></label>
+          <label className="flex min-w-0 flex-col gap-1 text-sm font-bold">Desde<DateInput value={t.startsOn} onChange={(e) => set({ startsOn: e.target.value })} /></label>
+          <label className="flex min-w-0 flex-col gap-1 text-sm font-bold">Hasta<DateInput value={t.endsOn} onChange={(e) => set({ endsOn: e.target.value })} /></label>
           <p className="-mt-1 text-xs text-muted sm:col-span-2">Se repite todos los años en estas fechas (cuentan día y mes).</p>
         </div>
         <label className="flex flex-col gap-1 text-sm font-bold">Titular<Input value={t.headline} maxLength={60} onChange={(e) => set({ headline: e.target.value })} /></label>

@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { Eye, Pencil } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/atoms/Badge";
@@ -10,7 +9,7 @@ import { currentTheme, themeOffer } from "@/demo/engine/themes";
 import type { SeasonId } from "@/demo/types";
 import { formatDayRange } from "@/lib/date";
 import { useAdmin } from "@/stores/admin";
-import { useThemePreview } from "@/stores/themePreview";
+import { reloadWithTheme } from "@/features/themes/reloadWithTheme";
 import { skinOf } from "@/features/themes/skins";
 import { AdminPageHeader } from "../AdminPageHeader";
 import { useDemoSave } from "../useDemoSave";
@@ -21,12 +20,11 @@ import { ThemeMode } from "./ThemeMode";
 export function ThemesAdmin() {
   const themes = useAdmin((s) => s.data.themes);
   const saveTheme = useAdmin((s) => s.saveTheme);
-  const setPreview = useThemePreview((s) => s.setPreview);
-  const router = useRouter();
   const save = useDemoSave();
   const [editing, setEditing] = useState<SeasonId | null>(null);
   const live = currentTheme(new Date(), null);
-  const preview = (id: SeasonId) => { setPreview(id); router.push("/"); };
+  // Abre la tienda con carga forzada: sale la pantalla de carga de esa temática.
+  const preview = (id: SeasonId) => reloadWithTheme(id, "/");
   return (
     <>
       <AdminPageHeader title="Temáticas">

@@ -3,6 +3,7 @@ import "@fontsource-variable/fraunces/opsz.css";
 import "@fontsource-variable/fraunces/opsz-italic.css";
 import "@fontsource/caveat/600.css";
 import "./globals.css";
+import "./seasons.css";
 import type { Metadata, Viewport } from "next";
 import type { CSSProperties, ReactNode } from "react";
 import { brand, brandCssVariables } from "@/config/brand";
@@ -12,6 +13,8 @@ import { MotionRoot } from "@/components/motion/MotionRoot";
 import { ClientShell } from "@/components/organisms/ClientShell";
 import { Splash, splashScript } from "@/components/organisms/Splash";
 import { themeScript } from "@/components/atoms/ThemeToggle";
+import { seasonPaletteCss } from "@/features/themes/palettes";
+import { seasonScript } from "@/features/themes/seasonScript";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -42,7 +45,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="es-AR" suppressHydrationWarning style={brandCssVariables() as CSSProperties}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: seasonScript }} />
         <script dangerouslySetInnerHTML={{ __html: splashScript }} />
+        <style dangerouslySetInnerHTML={{ __html: seasonPaletteCss() }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }} />
       </head>
       <body className="min-h-dvh pt-[env(safe-area-inset-top)] antialiased">
