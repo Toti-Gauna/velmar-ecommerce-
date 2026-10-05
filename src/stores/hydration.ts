@@ -6,6 +6,7 @@ import { useCart } from "./cart";
 import { useCheckout } from "./checkout";
 import { useFavorites } from "./favorites";
 import { clearDemoStorage } from "./storage";
+import { useThemePreview } from "./themePreview";
 
 let hydrated = false;
 const listeners = new Set<() => void>();
@@ -14,7 +15,7 @@ const listeners = new Set<() => void>();
 export function useRehydrateStores(): void {
   useEffect(() => {
     if (hydrated) return;
-    Promise.all([useCart.persist.rehydrate(), useCheckout.persist.rehydrate(), useAccount.persist.rehydrate(), useAdmin.persist.rehydrate(), useFavorites.persist.rehydrate()]).finally(() => {
+    Promise.all([useCart.persist.rehydrate(), useCheckout.persist.rehydrate(), useAccount.persist.rehydrate(), useAdmin.persist.rehydrate(), useFavorites.persist.rehydrate(), useThemePreview.persist.rehydrate()]).finally(() => {
       hydrated = true;
       listeners.forEach((l) => l());
     });
@@ -39,5 +40,6 @@ export function resetDemo(): void {
   useAccount.setState({ user: null, usedRewards: [], sort: "relevance", wheelPrize: null });
   useAdmin.getState().resetAdmin();
   useFavorites.getState().clear();
+  useThemePreview.getState().setPreview(null);
   clearDemoStorage();
 }

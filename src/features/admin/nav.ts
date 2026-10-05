@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { BadgePercent, Boxes, ClipboardList, LayoutDashboard, LifeBuoy, Palette, Settings, Shapes, Target, Users, Wallet } from "lucide-react";
+import { BadgePercent, Boxes, ClipboardList, LayoutDashboard, LifeBuoy, Palette, PartyPopper, Settings, Shapes, Target, Users, Wallet } from "lucide-react";
 
 export const ADMIN_GROUPS = ["Operación", "Catálogo", "Marketing", "Clientes"] as const;
 
@@ -26,6 +26,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin-demo/categorias/", label: "Categorías y personalización", short: "Categorías", icon: Shapes, group: "Catálogo" },
   { href: "/admin-demo/misiones/", label: "Misiones", short: "Misiones", icon: Target, group: "Marketing" },
   { href: "/admin-demo/cupones/", label: "Cupones y ruleta", short: "Cupones", icon: BadgePercent, group: "Marketing" },
+  { href: "/admin-demo/tematicas/", label: "Temáticas", short: "Temáticas", icon: PartyPopper, group: "Marketing" },
   { href: "/admin-demo/contenido/", label: "Contenido", short: "Contenido", icon: Palette, group: "Marketing" },
   { href: "/admin-demo/usuarios/", label: "Usuarios", short: "Usuarios", icon: Users, group: "Clientes" },
   { href: "/admin-demo/ajustes/", label: "Ajustes", short: "Ajustes", icon: Settings, group: "Clientes" },

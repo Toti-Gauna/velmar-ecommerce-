@@ -26,13 +26,14 @@ function statusOf(coupon: Coupon, ctx: { subtotal: number; isRegistered: boolean
 
 /**
  * "Mis cupones": el cupón propio de la ruleta + los cupones de la tienda. Los RULETA… de otras
- * personas nunca se listan. Ordena primero lo que se puede usar ahora.
+ * personas nunca se listan; los de una temática, solo mientras está puesta. Ordena primero lo que se puede usar ahora.
  */
-export function walletCoupons(ctx: { subtotal: number; isRegistered: boolean; now: Date; wheelCode: string | null }): WalletCoupon[] {
+export function walletCoupons(ctx: { subtotal: number; isRegistered: boolean; now: Date; wheelCode: string | null; themeId?: string | null }): WalletCoupon[] {
   const list = demoData().coupons.flatMap((coupon): WalletCoupon[] => {
     const own = coupon.code === ctx.wheelCode;
     if (coupon.code.startsWith("RULETA") && !own) return [];
     if (!own && coupon.active === false) return [];
+    if (coupon.themeId && coupon.themeId !== ctx.themeId) return [];
     return [{ coupon, origin: own ? "ruleta" : "tienda", ...statusOf(coupon, ctx) }];
   });
   return list.sort((a, b) => ORDER[a.status] - ORDER[b.status] || (a.origin === "ruleta" ? -1 : b.origin === "ruleta" ? 1 : 0));

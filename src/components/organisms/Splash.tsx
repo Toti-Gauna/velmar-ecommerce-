@@ -41,5 +41,5 @@ export function Splash() {
   );
 }
 
-/** Cierra la pantalla de carga con "Saltar" o Escape (si no hay JS, igual se va sola a los 5 s). */
-export const splashScript = `(function(){function hide(){document.documentElement.classList.add("splash-done")}document.addEventListener("click",function(e){if(e.target&&e.target.closest&&e.target.closest("#velmar-splash-skip"))hide()});document.addEventListener("keydown",function(e){if(e.key==="Escape")hide()});setTimeout(hide,5200)})();`;
+/** Cierra la pantalla de carga con Escape (si no hay JS, igual se va sola a los 5 s). */
+export const splashScript = `(function(){function hide(){document.documentElement.classList.add("splash-done")}document.addEventListener("keydown",function(e){if(e.key==="Escape")hide()});setTimeout(hide,5200)})();`;

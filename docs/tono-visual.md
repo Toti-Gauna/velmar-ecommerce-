@@ -29,6 +29,18 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
   Todos AA. Las bandas "noche" pasan a un negro más profundo con filo dorado sutil.
 - Los colores de marca editados en el panel aplican al modo claro; el oscuro usa su propia paleta.
 
+## Temáticas (05/10, pedido de Ignacio, fuera de la especificación)
+- Cada fecha comercial tiene su "piel" fija en `src/features/themes/skins.ts`: degradado oscuro o saturado con texto claro
+  (AA en modo claro y oscuro), un color de acento para el cupón y el botón, un sombrero para el logo y cinco decoraciones.
+- Decoraciones: SVG propios en `src/components/illustrations/seasonal/` (sombrero de bruja, calabaza, murciélago, fantasma,
+  gorro y árbol de Navidad, adorno, regalo, copo, copas, fuegos, gorro de fiesta, trébol, sombrero de duende, olla de oro,
+  corazón, carta, huevo, orejas de conejo, tulipán, patita, hueso, llama, etiqueta, bolsa, corbata, bigote, sombrero, mate,
+  globo y barrilete). Sin imágenes externas.
+- Dónde aparece: cinta debajo de la barra de demo, sombrero sobre el logo, **primera diapositiva del carrusel** y riel
+  "Ofertas de …" con el precio con cupón (calculado en `src/demo/engine/themes.ts`). Entradas de una sola vez, sin
+  animaciones permanentes; con "reducir movimiento" aparecen quietas.
+- "Probar temáticas" (botón flotante a la izquierda; WhatsApp queda a la derecha) cambia solo la vista de ese navegador.
+
 ## Controles de formulario
 Todos son **nativos** (`select`, `input type="date"`, `number`, `color`, `range`, `checkbox`, `radio`, `file`): el
 navegador abre su propia lista, calendario o rueda (accesible y familiar en el celular), con la estética de la tienda:
@@ -42,7 +54,7 @@ del sistema sigan el tema. La cantidad de la ficha también es un `select` nativ
   se ve sin JS y no depende del bundle.
 - Pantalla de carga (HTML+CSS, pedida por Ignacio el 05/10): aparece en **cada recarga** y dura **5 s**. Fondo noche con
   halo dorado, los chevrones se trazan, "Velmar" se revela con un barrido, cinco piezas del taller entran en órbita una
-  por una, una línea dorada marca el avance y un telón la retira. Botón **"Saltar"** (y Escape) para cerrarla antes;
+  por una, una línea dorada marca el avance y un telón la retira. Sin botón "Saltar" (lo pidió Ignacio): Escape la cierra antes;
   sin JS se va sola. No reaparece al navegar dentro del sitio.
 - Tienda: header con vidrio que se compacta al hacer scroll, aparición escalonada al entrar en pantalla (`Reveal`),
   contadores, tarjetas con segunda vista al hover y "agregar rápido", drawer del carrito, galería con zoom por cursor,

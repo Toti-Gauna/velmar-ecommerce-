@@ -86,6 +86,8 @@ export interface Coupon {
   maxUses?: number;
   /** Usos simulados. */
   usedCount?: number;
+  /** Cupón de una temática: en "Mis cupones" solo aparece mientras esa temática está puesta. */
+  themeId?: SeasonId;
 }
 
 export interface Mission {
@@ -120,4 +122,36 @@ export interface CarouselSlide {
   ctaHref: string;
   art: ArtKey;
   active?: boolean;
+}
+
+/** Festividades comerciales con temática propia (pedido de Ignacio, fuera de la especificación). */
+export type SeasonId =
+  | "san-valentin" | "san-patricio" | "pascuas" | "dia-del-animal" | "hot-sale" | "dia-del-padre" | "dia-del-amigo"
+  | "dia-del-nino" | "dia-de-la-madre" | "halloween" | "black-friday" | "navidad" | "ano-nuevo";
+
+/** Contenido editable de una temática. Lo visual (colores y decoraciones) es fijo por festividad. */
+export interface SeasonalTheme {
+  id: SeasonId;
+  name: string;
+  /** Habilitada para el modo automático y para "Probar temáticas". */
+  active: boolean;
+  /** Fechas (AAAA-MM-DD). Se repite cada año: solo cuentan mes y día. */
+  startsOn: string;
+  endsOn: string;
+  headline: string;
+  subtitle: string;
+  /** Texto de la cinta superior. */
+  ribbon: string;
+  /** Cupón de la oferta (de la lista de cupones). */
+  couponCode: string;
+  /** Productos en oferta, en orden. */
+  productSlugs: string[];
+}
+
+export interface ThemeSettings {
+  /** auto: según la fecha · fixed: siempre la elegida · off: sin temática. */
+  mode: "auto" | "fixed" | "off";
+  fixedId: SeasonId;
+  /** Muestra el botón "Probar temáticas" en la tienda (para mostrarle la demo al cliente). */
+  showTryButton: boolean;
 }

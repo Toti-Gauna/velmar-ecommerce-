@@ -3,12 +3,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Search, ShoppingBag, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Logo } from "@/components/atoms/Logo";
 import { cn } from "@/lib/cn";
 import { useCart } from "@/stores/cart";
 import { useHydrated } from "@/stores/hydration";
 import { useUi } from "@/stores/ui";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle";
+import { ThemeLogo } from "@/features/themes/ThemeLogo";
 import { MobileMenu } from "./MobileMenu";
 import { ShopMenu } from "./ShopMenu";
 
@@ -37,7 +37,7 @@ export function Header() {
     <header className={cn("sticky top-[env(safe-area-inset-top)] z-40 bg-surface lg:glass border-b transition-[border-color,box-shadow] duration-300", compact ? "border-line shadow-[0_8px_30px_-20px_rgb(28_32_22/0.35)]" : "border-transparent")}>
       <div className={cn("mx-auto flex max-w-7xl items-center gap-2 px-4 transition-[height] duration-300 sm:px-6", compact ? "h-16" : "h-[4.5rem] lg:h-20")}>
         <button type="button" onClick={() => setMenu(true)} aria-label="Abrir menú" className={cn(icon, "-ml-2 lg:hidden")}><Menu size={22} aria-hidden="true" /></button>
-        <Link href="/" aria-label="Velmar, ir al inicio" className="shrink-0"><Logo /></Link>
+        <Link href="/" aria-label="Velmar, ir al inicio" className="shrink-0"><ThemeLogo /></Link>
         <nav aria-label="Principal" className="ml-8 hidden items-center gap-1 lg:flex">
           {NAV.map((n) => n.href === "/categorias/" ? <ShopMenu key={n.href} active={pathname.startsWith("/c") || pathname.startsWith("/p")} /> : (
             <Link key={n.href} href={n.href} aria-current={pathname.startsWith(n.href) ? "page" : undefined}
