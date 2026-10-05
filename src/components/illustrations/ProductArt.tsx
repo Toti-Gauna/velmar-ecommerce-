@@ -16,14 +16,14 @@ const STUDIO: Record<Exclude<ArtView, "context">, [string, string, string]> = {
   detail: ["#f1e6d3", "#e5d6bd", "#d6c4a6"],
 };
 
-/** Fondo de estudio: degradado, luz lateral, horizonte y sombra difusa. IDs deterministas (definiciones idénticas). */
+/** Fondo de estudio: degradado, luz lateral, horizonte y sombra difusa. IDs deterministas (definiciones idénticas). Las temáticas cambian el degradado con --studio-1/2/3. */
 function Studio({ view }: { view: Exclude<ArtView, "context"> }) {
   const [top, mid, floor] = STUDIO[view];
   return (
     <g aria-hidden="true">
       <defs>
         <linearGradient id={`st-${view}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor={top} /><stop offset=".72" stopColor={mid} /><stop offset="1" stopColor={floor} />
+          <stop offset="0" style={{ stopColor: `var(--studio-1, ${top})` }} /><stop offset=".72" style={{ stopColor: `var(--studio-2, ${mid})` }} /><stop offset="1" style={{ stopColor: `var(--studio-3, ${floor})` }} />
         </linearGradient>
         <radialGradient id="st-light" cx=".22" cy=".12" r=".75"><stop offset="0" stopColor="#fff" stopOpacity=".7" /><stop offset="1" stopColor="#fff" stopOpacity="0" /></radialGradient>
         <filter id="st-blur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="9" /></filter>

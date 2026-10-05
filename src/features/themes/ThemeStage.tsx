@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { AMBIENT } from "./ambient";
 import { AmbientField } from "./AmbientField";
+import { isImmersive } from "./palettes";
 import { skinOf } from "./skins";
 import { useCurrentTheme } from "./useCurrentTheme";
 
@@ -26,9 +27,18 @@ export function ThemeStage() {
   useEffect(() => () => document.documentElement.removeAttribute("data-season"), []);
   if (!theme) return null;
   const skin = skinOf(theme.id);
+  const dark = isImmersive(theme.id);
+  // Aurora: tres manchas de luz de la temática que se desplazan lento detrás de todo (solo transform).
+  const blobs = [skin.to, skin.accent, dark ? skin.from : skin.to];
   return (
-    <div aria-hidden="true" className="season-backdrop" style={{ background: `radial-gradient(80% 50% at 50% -8%, color-mix(in srgb, ${skin.to} 26%, transparent), transparent 72%), radial-gradient(60% 40% at 100% 100%, color-mix(in srgb, ${skin.accent} 14%, transparent), transparent 70%)` }}>
-      <AmbientField layers={AMBIENT[theme.id]} density={0.9} className="absolute inset-0" />
+    <div aria-hidden="true" className="season-backdrop">
+      <div className="season-aurora">
+        {blobs.map((c, i) => (
+          <span key={i} className={`aurora-blob aurora-${i}`} style={{ background: `radial-gradient(closest-side, ${c}, transparent 72%)`, opacity: dark ? [0.55, 0.22, 0.6][i] : [0.32, 0.26, 0.2][i] }} />
+        ))}
+      </div>
+      <div className="season-grain" />
+      <AmbientField layers={AMBIENT[theme.id]} density={1} className="absolute inset-0" />
     </div>
   );
 }

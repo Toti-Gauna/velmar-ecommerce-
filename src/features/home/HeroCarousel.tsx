@@ -7,10 +7,10 @@ import { ProductArt } from "@/components/illustrations/ProductArt";
 import type { CarouselSlide } from "@/demo/types";
 import { cn } from "@/lib/cn";
 
-/** Fondos que rotan por diapositiva: noche, oliva y arcilla, con un halo dorado detrás de la pieza. */
+/** Fondos que rotan por diapositiva: noche, oliva (mezcla de noche y primario: oscuro en cualquier temática) y arcilla. */
 const TONES = [
   { bg: "bg-night", eyebrow: "text-brass", glow: "rgb(210_173_105/0.28)" },
-  { bg: "bg-primary", eyebrow: "text-[#e9d9b4]", glow: "rgb(255_253_248/0.22)" },
+  { bg: "bg-[color-mix(in_oklab,var(--c-night-2)_68%,var(--color-primary))]", eyebrow: "text-[#e9d9b4]", glow: "rgb(255_253_248/0.22)" },
   { bg: "bg-[#6d3a26]", eyebrow: "text-[#f1cfa0]", glow: "rgb(241_207_160/0.26)" },
 ];
 

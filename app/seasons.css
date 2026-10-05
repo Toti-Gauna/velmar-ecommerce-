@@ -37,8 +37,34 @@ html[data-theme="dark"] { --amb-snow: #ffffff; }
 }
 @keyframes amb-twinkle { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: var(--o); transform: scale(1); } }
 
-/* Fondo de la página: detrás del contenido, con un halo del color de la temática arriba. */
-.season-backdrop { position: fixed; inset: 0; z-index: -1; }
+/* Fondo de la página: aurora animada + grano sutil + partículas, detrás de todo el contenido. */
+.season-backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; contain: strict; }
+.season-aurora { position: absolute; inset: 0; }
+.aurora-blob { position: absolute; width: 75vmax; height: 75vmax; border-radius: 9999px; will-change: transform; animation: aurora-0 28s ease-in-out infinite alternate; }
+.aurora-0 { left: -20vmax; top: -30vmax; }
+.aurora-1 { right: -25vmax; top: 10vh; animation-name: aurora-1; animation-duration: 34s; }
+.aurora-2 { left: 10vw; bottom: -40vmax; animation-name: aurora-2; animation-duration: 40s; }
+@keyframes aurora-0 { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(30vw, 22vh, 0) scale(1.25); } }
+@keyframes aurora-1 { from { transform: translate3d(0, 0, 0) scale(1.1); } to { transform: translate3d(-35vw, 30vh, 0) scale(0.9); } }
+@keyframes aurora-2 { from { transform: translate3d(0, 0, 0) scale(0.9); } to { transform: translate3d(25vw, -30vh, 0) scale(1.2); } }
+.season-grain { position: absolute; inset: 0; opacity: 0.05; background-image: radial-gradient(rgb(255 255 255 / 0.9) 0.6px, transparent 0.8px); background-size: 3px 3px; mix-blend-mode: overlay; }
+.amb-paused .aurora-blob { animation-play-state: paused; }
+
+/* Componentes de la tienda durante una temática: vidrio tintado, filo luminoso y brillo del color al pasar. */
+html[data-season] [data-shop-header], html[data-season] [data-shop-bottomnav] {
+  background: color-mix(in oklab, var(--color-surface) 74%, transparent);
+  backdrop-filter: saturate(1.6) blur(18px);
+  -webkit-backdrop-filter: saturate(1.6) blur(18px);
+}
+html[data-season] [data-shop-header] { border-bottom-color: color-mix(in oklab, var(--color-primary) 22%, transparent); }
+html[data-season] [data-product-card] > div:first-child {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-primary) 18%, transparent), var(--sh-card);
+  transition: box-shadow 500ms var(--ease-out-expo), transform 500ms var(--ease-out-expo);
+}
+html[data-season] [data-product-card]:hover > div:first-child {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-primary) 45%, transparent), 0 26px 60px -24px color-mix(in oklab, var(--color-primary) 60%, transparent);
+  transform: translateY(-3px);
+}
 .garland-bulb { animation: bulb 2.1s ease-in-out infinite alternate; filter: drop-shadow(0 0 4px currentColor); }
 @keyframes bulb { from { opacity: 0.55; } to { opacity: 1; } }
 .amb-paused .garland-bulb,
@@ -68,5 +94,6 @@ html[data-season] #velmar-splash .chev { stroke: var(--sp-accent, #d2ad69); }
 
 @media (prefers-reduced-motion: reduce) {
   .amb-field, .season-backdrop .amb-field { display: none; }
+  .aurora-blob { animation: none; }
   .garland-bulb { animation: none; }
 }

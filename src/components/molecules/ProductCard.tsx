@@ -34,7 +34,7 @@ export function ProductCard({ product, priority }: { product: ProductCardData; p
   const quickAdd = useQuickAdd();
   const full = getProduct(product.slug);
   return (
-    <article className="group relative flex flex-col gap-3">
+    <article data-product-card className="group relative flex flex-col gap-3">
       <div className="relative overflow-hidden rounded-[var(--radius-card)] bg-accent shadow-[var(--shadow-card)] transition-shadow duration-500 group-hover:shadow-[var(--shadow-lift)]">
         <ProductVisual art={product.art} tint={product.tint} photoUrl={product.photoUrl} label={product.alt}
           className="aspect-[4/5] transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]" />

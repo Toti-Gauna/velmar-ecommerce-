@@ -1,38 +1,78 @@
 import type { SeasonId } from "@/demo/types";
 
 /**
- * Colores de la tienda durante cada temática, en claro y oscuro (pedido de Ignacio, fuera de la especificación).
- * Pisan los tokens de marca con `html[data-season]`: todo el sitio cambia de color sin tocar componentes.
+ * Colores de la tienda durante cada temática (pedido de Ignacio, fuera de la especificación). Pisan TODOS los
+ * tokens con `html[data-season]`: header, fondo, tarjetas, el "estudio" detrás de cada producto, bandas y
+ * controles cambian sin tocar componentes. Las fechas nocturnas son **inmersivas**: oscuras también en modo claro.
  * El contraste AA de cada par se verifica en tests/unit/palettes.test.ts.
  */
 export interface Palette {
+  scheme: "light" | "dark";
   primary: string; primaryHover: string; onPrimary: string; accent: string;
   background: string; surface: string; text: string; muted: string; border: string;
   night: string; night2: string; brassInk: string;
+  /** Degradado del estudio de fotos de los productos: arriba, medio, piso. */
+  studio: [string, string, string];
 }
 
 type Pair = { light: Palette; dark: Palette };
-const p = (v: string): Palette => {
+const p = (scheme: Palette["scheme"], v: string, studio: string): Palette => {
   const [primary, primaryHover, onPrimary, accent, background, surface, text, muted, border, night, night2, brassInk] = v.split(" ") as [string, string, string, string, string, string, string, string, string, string, string, string];
-  return { primary, primaryHover, onPrimary, accent, background, surface, text, muted, border, night, night2, brassInk };
+  return { scheme, primary, primaryHover, onPrimary, accent, background, surface, text, muted, border, night, night2, brassInk, studio: studio.split(" ") as [string, string, string] };
 };
+const immersive = (v: string, studio: string): Pair => { const d = p("dark", v, studio); return { light: d, dark: d }; };
 
 // primary · hover · texto sobre primary · acento · fondo · superficie · texto · apagado · borde · noche · noche 2 · dorado de texto
 export const PALETTES: Record<SeasonId, Pair> = {
-  "dia-de-la-madre": { light: p("#8f3a5e #7a2f50 #fffafb #f5e3ea #fbf4f5 #fffafb #2a1520 #6e5562 #eedae1 #4a1830 #5e2440 #8a3d62"), dark: p("#f5a8c6 #f8c0d6 #3a1226 #301a24 #160b10 #211118 #f7e9ef #c7a9b6 #3e2330 #0c0508 #1c0d14 #f3b3cd") },
-  halloween: { light: p("#5b2a86 #4a2170 #fffaf5 #f3e3d3 #faf4ee #fffaf5 #1f1426 #66586f #eadccf #1d1426 #2a1c38 #a3470d"), dark: p("#ffa64d #ffb96f #1d1426 #2a1f35 #120d18 #1b1424 #efe6f5 #b3a5c2 #33263f #0b0810 #171020 #ffb877") },
-  "black-friday": { light: p("#141416 #000000 #f3dca6 #ece8e1 #f4f2ee #ffffff #121214 #5f5c56 #e2ddd4 #0b0b0d #1c1c20 #7a5c26"), dark: p("#f3dca6 #f8e8c4 #0b0b0d #1b1b1f #070708 #111113 #f2efe8 #a8a49b #2a2a2f #000000 #0e0e10 #f3dca6") },
-  navidad: { light: p("#a32630 #8a1f28 #fffcf6 #efe4d4 #f8f3ea #fffcf6 #1d1f17 #5f5d50 #e6dccb #0e2a1f #153a2b #8a6a1c"), dark: p("#ff9a9a #ffb3b3 #2a0b0e #1b2e25 #0b1712 #12211a #eef0e6 #a8b5a8 #243b30 #06100c #0c1b14 #f3c84c") },
-  "ano-nuevo": { light: p("#1f2a5c #18214a #fffdf8 #ece6d6 #f7f4ec #fffdf8 #161a2c #5b5e70 #e5dfcf #0d1330 #18204a #85641a"), dark: p("#f3dca6 #f8e8c4 #0d1330 #1b2344 #0a0e20 #121831 #eceaf5 #a7abc6 #263058 #05081a #0c1230 #f3dca6") },
-  "san-valentin": { light: p("#a8274a #8e1f3e #fffafa #f6e1e5 #fbf3f4 #fffafa #2a1218 #6d525a #efd9dd #3b0d1c #561428 #9c3555"), dark: p("#ff9bb3 #ffb6c8 #3b0d1c #321821 #170a0f #221017 #f7e8ec #c9a7b1 #3f1f2b #0d0508 #1b0a11 #ffa9c0") },
-  "san-patricio": { light: p("#1b6b3a #155a30 #fbfdf9 #e3efe1 #f4f8f1 #fbfdf9 #142017 #54604f #d9e6d6 #0c3f24 #135432 #6f5a10"), dark: p("#8fdc9f #aae7b6 #08140d #16301f #08140d #0f1f15 #e6f2e8 #9fb9a5 #1f3d2a #040c07 #0a1a10 #f6c84c") },
-  pascuas: { light: p("#6a4a9e #5a3e88 #fffcff #efe6f6 #faf6fb #fffcff #211a2c #625a6e #e8ddef #3f2a66 #50367f #8a5a12"), dark: p("#cdb3f5 #dccaf8 #241539 #261d35 #110c18 #1a1424 #f0eaf7 #b6a8c8 #322745 #0a0710 #170f22 #ffe28a") },
-  "dia-del-animal": { light: p("#3a4527 #283019 #fffdf8 #efe3cc #f7f1e6 #fffdf8 #1c2016 #5d6050 #e4d9c3 #283019 #343e22 #7a5c26"), dark: p("#c5d19e #d6e0b4 #151910 #262b20 #121510 #1b1f17 #ece6d8 #a9a591 #2f3528 #0a0c08 #16190f #d9b878") },
-  "hot-sale": { light: p("#b23a0a #963108 #fffaf6 #fbe6d6 #fbf4ee #fffaf6 #24140d #6b5549 #f0dccd #3d0f06 #5e1508 #a3360a"), dark: p("#ff9f6b #ffb78d #2a0c04 #321a10 #160b07 #22110a #f8ebe3 #c9ab9b #422417 #0d0503 #1d0c06 #ffb78d") },
-  "dia-del-padre": { light: p("#2e4862 #24394e #fdfcfa #e4e9ee #f5f4f1 #fdfcfa #161d24 #57606a #dfe2e4 #16222f #22344a #7a5c26"), dark: p("#a9c6e6 #c1d6ee #0b1118 #1b2633 #0b1118 #121a24 #e8edf2 #a3afbc #263443 #060a0f #0e1620 #e9c27a") },
-  "dia-del-amigo": { light: p("#44622a #3a5424 #fdfdf7 #ebeedc #f6f5ec #fdfdf7 #1a2014 #596050 #e0e3cf #22381f #2f4a2a #7a5c26"), dark: p("#b7d68f #cbe3aa #121a0c #1f2a18 #0d120a #151d10 #edf1e4 #a9b39a #2c3a22 #060a04 #111a0c #f3dca6") },
-  "dia-del-nino": { light: p("#1a6390 #155377 #fbfdff #e2eff7 #f3f8fb #fbfdff #122029 #52616b #d6e6f0 #0b4468 #0f5884 #8a5a12"), dark: p("#8fd0f5 #ace0fa #062033 #142a3a #07121a #0d1c27 #e6f2f9 #9fb8c8 #1d3a50 #030a10 #0a1822 #ffd34d") },
+  halloween: immersive("#ffa64d #ffb96f #1d1426 #2a1f38 #120b1a #1c1228 #f2e9f7 #b7a8c6 #352646 #08050d #160e21 #ffb877", "#3d2554 #2b1a3d #1d1229"),
+  navidad: immersive("#f3c84c #f7d777 #10251b #173a2b #0b1f16 #12291e #f1efe4 #aebfae #22412f #06140d #0e2219 #f3c84c", "#21503b #183d2d #10291f"),
+  "ano-nuevo": immersive("#f3dca6 #f8e8c4 #0d1330 #1b2448 #0a0f24 #121a36 #eeecf6 #aab0cc #263162 #05081a #0c1230 #f3dca6", "#28346f #1d2756 #131b3d"),
+  "black-friday": immersive("#f3dca6 #f8e8c4 #0b0b0d #1b1b1f #070708 #111113 #f2efe8 #a8a49b #2a2a2f #000000 #0e0e10 #f3dca6", "#2c2c31 #1d1d21 #121214"),
+  "san-patricio": immersive("#f6c84c #f9d777 #08140d #16301f #08160e #0f2216 #e9f4ea #a3bea9 #1f3f2a #040c07 #0a1a10 #f6c84c", "#1f4d31 #173b26 #0f2a1a"),
+  "dia-de-la-madre": {
+    light: p("light", "#9b3563 #842c54 #fff7fa #f7dce7 #fbeaf1 #fff7fa #2a1520 #6e5060 #efd0dd #4a1830 #5e2440 #8a3d62", "#fbe3ec #f3d0de #e8bccd"),
+    dark: p("dark", "#f5a8c6 #f8c0d6 #3a1226 #301a24 #160b10 #211118 #f7e9ef #c7a9b6 #3e2330 #0c0508 #1c0d14 #f3b3cd", "#3a1d2a #2e1621 #221018"),
+  },
+  "san-valentin": {
+    light: p("light", "#b0234a #951d3f #fff7f8 #f8d9e0 #fce9ee #fff7f8 #2a1218 #6d4f58 #f1cfd8 #3b0d1c #561428 #9c2f50", "#fde1e8 #f6cdd8 #ecb7c6"),
+    dark: p("dark", "#ff9bb3 #ffb6c8 #3b0d1c #321821 #170a0f #221017 #f7e8ec #c9a7b1 #3f1f2b #0d0508 #1b0a11 #ffa9c0", "#3d1823 #30121b #230c14"),
+  },
+  pascuas: {
+    light: p("light", "#6a4a9e #5a3e88 #fffcff #ece0f7 #f5eefb #fffcff #211a2c #605870 #e2d4ef #3f2a66 #50367f #8a5a12", "#f1e6fa #e6d6f5 #d8c3ee"),
+    dark: p("dark", "#cdb3f5 #dccaf8 #241539 #261d35 #110c18 #1a1424 #f0eaf7 #b6a8c8 #322745 #0a0710 #170f22 #ffe28a", "#2a1f3d #211830 #181124"),
+  },
+  "dia-del-animal": {
+    light: p("light", "#3a4527 #283019 #fffdf8 #ecdfc5 #f4ecdc #fffaf1 #1c2016 #5a5d4c #e4d6bc #283019 #343e22 #7a5c26", "#f3e7d2 #e6d6ba #d6c2a0"),
+    dark: p("dark", "#c5d19e #d6e0b4 #151910 #262b20 #121510 #1b1f17 #ece6d8 #a9a591 #2f3528 #0a0c08 #16190f #d9b878", "#2a2f20 #22271a #1a1e14"),
+  },
+  "hot-sale": {
+    light: p("light", "#b23a0a #963108 #fff8f3 #fbdcc7 #fdeee3 #fff8f3 #24140d #6b5246 #f3d3bf #3d0f06 #5e1508 #a3360a", "#fde6d6 #f8d2b8 #efbb98"),
+    dark: p("dark", "#ff9f6b #ffb78d #2a0c04 #321a10 #160b07 #22110a #f8ebe3 #c9ab9b #422417 #0d0503 #1d0c06 #ffb78d", "#4a2414 #3a1b0f #2a130a"),
+  },
+  "dia-del-padre": {
+    light: p("light", "#2b4560 #22374d #f8fafc #dbe3eb #eef2f6 #fafcfd #161d24 #525c66 #d5dde5 #16222f #22344a #7a5c26", "#e7edf3 #d8e1ea #c6d2de"),
+    dark: p("dark", "#a9c6e6 #c1d6ee #0b1118 #1b2633 #0b1118 #121a24 #e8edf2 #a3afbc #263443 #060a0f #0e1620 #e9c27a", "#22344a #1b2a3c #14202e"),
+  },
+  "dia-del-amigo": {
+    light: p("light", "#44622a #3a5424 #fbfdf5 #e4ebcf #f1f4e2 #fbfdf5 #1a2014 #565e4c #dae2c3 #22381f #2f4a2a #7a5c26", "#eef2dc #e1e8c8 #d1dbb2"),
+    dark: p("dark", "#b7d68f #cbe3aa #121a0c #1f2a18 #0d120a #151d10 #edf1e4 #a9b39a #2c3a22 #060a04 #111a0c #f3dca6", "#2a3a20 #212e19 #182212"),
+  },
+  "dia-del-nino": {
+    light: p("light", "#17608c #134f74 #f6fbff #d9ecf8 #eaf5fc #f8fcff #122029 #4e5f6a #cfe3f0 #0b4468 #0f5884 #8a5a12", "#e3f2fc #cfe6f6 #b9d8ee"),
+    dark: p("dark", "#8fd0f5 #ace0fa #062033 #142a3a #07121a #0d1c27 #e6f2f9 #9fb8c8 #1d3a50 #030a10 #0a1822 #ffd34d", "#14324a #0f273b #0b1d2c"),
+  },
 };
+
+/** Estados (éxito, aviso, error), sombras y esqueletos para paletas oscuras: los mismos del modo oscuro. */
+const DARK_EXTRAS = [
+  "color-scheme:dark", "--c-clay:#e08a6c", "--c-success:#93d39f", "--c-success-soft:#1c2b1f", "--c-warning:#ebc77f", "--c-warning-soft:#2d2513",
+  "--c-danger:#f3a497", "--c-danger-soft:#37201b", "--amb-snow:#ffffff",
+  "--sh-card:0 1px 0 rgb(255 255 255/0.04) inset,0 18px 40px -22px rgb(0 0 0/0.75)", "--sh-lift:0 1px 0 rgb(255 255 255/0.05) inset,0 30px 60px -24px rgb(0 0 0/0.9)",
+];
+
+const icon = (svg: string, color: string) => `url("data:image/svg+xml,${encodeURIComponent(svg.replace("COLOR", color))}")`;
+const CHEVRON = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='COLOR' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>";
+const CALENDAR = "<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2'/><path d='M16 2v4M8 2v4M3 10h18'/></svg>";
 
 function vars(c: Palette): string {
   return [
@@ -40,6 +80,10 @@ function vars(c: Palette): string {
     `--brand-accent:${c.accent}!important`, `--brand-background:${c.background}!important`, `--brand-surface:${c.surface}!important`,
     `--brand-text:${c.text}!important`, `--brand-muted:${c.muted}!important`, `--brand-border:${c.border}!important`,
     `--c-night:${c.night}`, `--c-night-2:${c.night2}`, `--c-brass-ink:${c.brassInk}`,
+    `--studio-1:${c.studio[0]}`, `--studio-2:${c.studio[1]}`, `--studio-3:${c.studio[2]}`,
+    `--skeleton-a:${c.accent}`, `--skeleton-b:${c.surface}`,
+    `--chevron:${icon(CHEVRON, c.primary)}`, `--calendar:${icon(CALENDAR, c.primary)}`,
+    ...(c.scheme === "dark" ? DARK_EXTRAS : ["color-scheme:light"]),
   ].join(";");
 }
 
@@ -47,4 +91,9 @@ function vars(c: Palette): string {
 export function seasonPaletteCss(): string {
   return Object.entries(PALETTES).map(([id, { light, dark }]) =>
     `html[data-season="${id}"]:not([data-theme="dark"]){${vars(light)}}html[data-season="${id}"][data-theme="dark"]{${vars(dark)}}`).join("");
+}
+
+/** Temáticas inmersivas (oscuras en ambos modos). */
+export function isImmersive(id: SeasonId): boolean {
+  return PALETTES[id].light.scheme === "dark";
 }

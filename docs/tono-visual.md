@@ -42,8 +42,12 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
 - "Probar temáticas" (botón flotante a la izquierda; WhatsApp queda a la derecha) cambia solo la vista de ese navegador.
   Incluye **Automática** (la del cliente) y **Original** (Velmar sin temática). Elegir recarga la página a propósito:
   vuelve a salir la pantalla de carga, ahora de temporada.
-- **Paleta de temporada** (`src/features/themes/palettes.ts`): cada temática pisa los tokens de marca en claro y oscuro con
-  `html[data-season]`. El contraste AA de cada par se prueba en `tests/unit/palettes.test.ts`. El panel no cambia.
+- **Paleta de temporada** (`src/features/themes/palettes.ts`): cada temática pisa TODOS los tokens con `html[data-season]`
+  (header, fondo, tarjetas, bandas, controles, íconos de select/fecha y el **estudio** detrás de cada producto,
+  `--studio-1/2/3`). Halloween, Navidad, Año Nuevo, Black Friday y San Patricio son **inmersivas**: oscuras también en
+  modo claro. El contraste AA de cada par se prueba en `tests/unit/palettes.test.ts`. El panel no cambia.
+- **Fondo de la página**: aurora (tres manchas de luz de la temática que se desplazan lento), grano sutil y partículas,
+  detrás de todo. Header y barra inferior pasan a vidrio tintado; las tarjetas de producto llevan filo y brillo del color.
 - **Pantalla de carga de temporada**: el script del `<head>` (`seasonScript.ts`) decide la temática antes de pintar y
   marca `data-season`; el fondo toma los colores de la festividad y `ThemeSplashScene` suma la escena: Papá Noel con su
   trineo cruzando la luna y arbolitos (Navidad), luna naranja, bruja en escoba, niebla y calabazas que brillan
