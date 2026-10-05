@@ -25,7 +25,7 @@ export function CouponForm({ subtotal, isRegistered, check }: { subtotal: number
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-2 rounded-2xl bg-success-soft p-3 text-sm">
           <span className="flex items-center gap-2 font-bold text-success"><TicketPercent size={18} aria-hidden="true" /> {code}: {check.coupon.description}</span>
-          <button type="button" onClick={() => setCoupon(null)} aria-label={`Quitar cupón ${code}`} className="grid h-9 w-9 place-items-center rounded-full hover:bg-white"><X size={16} aria-hidden="true" /></button>
+          <button type="button" onClick={() => setCoupon(null)} aria-label={`Quitar cupón ${code}`} className="grid h-9 w-9 place-items-center rounded-full hover:bg-surface"><X size={16} aria-hidden="true" /></button>
         </div>
         <button type="button" onClick={() => setCoupons(true)} className="text-left text-sm font-bold text-primary underline underline-offset-4">Cambiar por otro de mis cupones</button>
       </div>

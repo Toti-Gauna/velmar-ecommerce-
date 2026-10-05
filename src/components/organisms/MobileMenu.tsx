@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { ArrowUpRight, Gift, Sparkles, TicketPercent, UserRound } from "lucide-react";
 import { Logo } from "@/components/atoms/Logo";
 import { Sheet } from "@/components/motion/Sheet";
+import { ThemeToggle } from "@/components/atoms/ThemeToggle";
 import { visibleCategories } from "@/demo/engine/catalog";
 import { useDemoVersion } from "@/stores/admin";
 import { useUi } from "@/stores/ui";
@@ -39,6 +40,7 @@ export function MobileMenu() {
             <li key={href}><Link href={href} onClick={close} className="flex min-h-12 items-center gap-3 rounded-2xl bg-surface px-4 font-bold"><Icon size={18} aria-hidden="true" className="text-primary" />{label}</Link></li>
           ))}
         </ul>
+        <ThemeToggle withLabel className="mt-6 min-h-12 w-full rounded-2xl bg-surface px-4 font-bold text-ink" />
         <Link href="/preguntas/" onClick={close} className="mt-6 text-sm font-semibold text-muted underline underline-offset-4">Ayuda y preguntas frecuentes</Link>
       </div>
     </Sheet>

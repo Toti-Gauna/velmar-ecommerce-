@@ -28,9 +28,8 @@ test("ficha: stock bajo la imagen, cantidad desplegable, favoritos y diseño req
   await page.goto("p/chapita-nfc/");
   await expect(page.getByText(/En stock · 12 disponibles/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Completá el set/ })).toBeVisible();
-  await page.getByRole("button", { name: "Cantidad: 1 unidad" }).click();
-  await page.getByRole("option", { name: "2 unidades" }).click();
-  await expect(page.getByRole("button", { name: "Cantidad: 2 unidades" })).toBeVisible();
+  await page.getByLabel("Cantidad:").selectOption("2");
+  await expect(page.getByLabel("Cantidad:")).toHaveValue("2");
   // Agregar sin escribir el texto lleva el foco al campo
   const add = page.getByRole("button", { name: /Agregar al carrito/ }).filter({ visible: true });
   await add.click();
@@ -139,4 +138,20 @@ test("sin desborde horizontal a 375 px con productos en carrito, checkout y conf
     await page.waitForTimeout(400);
     expect(await horizontalOverflow(page), path).toBeLessThanOrEqual(0);
   }
+});
+
+test("modo oscuro: se activa, se recuerda al recargar y llega al panel", async ({ page }) => {
+  await page.goto("");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.getByRole("button", { name: "Abrir menú" }).click();
+  await page.getByRole("dialog", { name: "Menú" }).getByRole("button", { name: "Activar modo oscuro" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  expect(bg).toBe("rgb(18, 21, 16)");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.goto("admin-demo/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("button", { name: "Activar modo claro" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });

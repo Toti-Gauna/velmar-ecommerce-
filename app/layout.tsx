@@ -11,6 +11,7 @@ import { SITE_URL } from "@/lib/base-path";
 import { MotionRoot } from "@/components/motion/MotionRoot";
 import { ClientShell } from "@/components/organisms/ClientShell";
 import { Splash, splashScript } from "@/components/organisms/Splash";
+import { themeScript } from "@/components/atoms/ThemeToggle";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -24,7 +25,8 @@ export const metadata: Metadata = {
 };
 
 // viewport-fit=cover: las barras fijas llegan al borde real de la pantalla (iOS) y los rellenos usan safe-area.
-export const viewport: Viewport = { themeColor: brand.colors.background, width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = {
+  themeColor: [{ media: "(prefers-color-scheme: light)", color: brand.colors.background }, { media: "(prefers-color-scheme: dark)", color: "#121510" }], width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 /** Datos estructurados solo con campos confirmados (nombre, ciudad, Instagram). */
 const organizationLd = {
@@ -39,6 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es-AR" suppressHydrationWarning style={brandCssVariables() as CSSProperties}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: splashScript }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }} />
       </head>

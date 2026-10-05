@@ -27,6 +27,7 @@
 | Guía del panel: aparece una vez, Siguiente / Anterior, no reaparece, se reabre con "?" | idem | ✅ |
 | Ficha: cantidad desplegable, diseño requerido antes de agregar, favoritos en "Mi cuenta" | `gamification.spec.ts` | ✅ |
 | Barra inferior de la tienda (Inicio, Categorías, Cupones, Mi cuenta) y botón de pausa del carrusel | idem | ✅ |
+| Modo oscuro: se activa desde el menú, se recuerda al recargar y llega al panel | idem | ✅ |
 | Menú móvil y drawer del carrito: abren, atrapan el foco y cierran con Escape | idem | ✅ |
 | Sin desborde a 375 px con el carrito lleno (recomendaciones desplazables) | idem | ✅ |
 

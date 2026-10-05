@@ -76,7 +76,7 @@ export function ProductArt({ art, view = "front", tint, label, className, showBa
         </g>
       </svg>
       {showBadge && (
-        <span className="absolute bottom-2.5 left-2.5 rounded-full bg-[#fffdf8]/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted backdrop-blur">
+        <span className="absolute bottom-2.5 left-2.5 rounded-full bg-[#fffdf8]/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#5d6050] backdrop-blur">
           Imagen ilustrativa
         </span>
       )}

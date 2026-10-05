@@ -21,6 +21,20 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
 - Imágenes: no hay fotos reales de Velmar en el repo. Se usan ilustraciones vectoriales propias, rotuladas
   "Imagen ilustrativa". Reemplazarlas por fotos reales cuando Velmar las entregue.
 
+## Modo oscuro (05/10)
+- Claro / oscuro con el botón de sol/luna (header, menú móvil y barra del panel). La primera vez sigue al sistema; la
+  elección se guarda en `velmar-theme`. Un script en `<head>` pone `data-theme` antes de pintar (sin destello).
+- Tokens oscuros en `app/globals.css` (`html[data-theme="dark"]`): fondo `#121510`, superficie `#1b1f17`, texto `#ece6d8`
+  (14,8:1), secundario `#a9a591` (≥ 5,8:1), primario salvia `#c5d19e` con texto `#151910`, dorado de texto `#d9b878`.
+  Todos AA. Las bandas "noche" pasan a un negro más profundo con filo dorado sutil.
+- Los colores de marca editados en el panel aplican al modo claro; el oscuro usa su propia paleta.
+
+## Controles de formulario
+Todos son **nativos** (`select`, `input type="date"`, `number`, `color`, `range`, `checkbox`, `radio`, `file`): el
+navegador abre su propia lista, calendario o rueda (accesible y familiar en el celular), con la estética de la tienda:
+mismos radios, bordes, foco y chevron, `accent-color` de marca y `color-scheme` claro/oscuro para que los selectores
+del sistema sigan el tema. La cantidad de la ficha también es un `select` nativo ("Cantidad: 1 unidad ⌄").
+
 ## Motion
 - Librería: `motion` (`motion/react`), envuelta en `MotionRoot` con `reducedMotion="user"`. Se eligió porque da
   transiciones con resorte, `layoutId` (selector de variantes, pestañas) y `AnimatePresence` (galería, drawer, ruleta)

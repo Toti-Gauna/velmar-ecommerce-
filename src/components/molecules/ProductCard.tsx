@@ -42,11 +42,11 @@ export function ProductCard({ product, priority }: { product: ProductCardData; p
         )}
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           {product.isNew && <span className="rounded-full bg-night px-2.5 py-1 text-[11px] font-bold text-[#f6f1e8]">Nuevo</span>}
-          {product.personalizable && <span className="rounded-full bg-[#fffdf8]/90 px-2.5 py-1 text-[11px] font-bold text-ink backdrop-blur">Personalizable</span>}
+          {product.personalizable && <span className="rounded-full bg-[#fffdf8]/90 px-2.5 py-1 text-[11px] font-bold text-[#1c2016] backdrop-blur">Personalizable</span>}
         </div>
         {full && (
           <button type="button" onClick={() => quickAdd(full)} aria-label={product.personalizable ? `Personalizar ${product.name}` : `Agregar ${product.name} al carrito`}
-            className="absolute bottom-3 right-3 z-10 flex h-11 items-center gap-2 rounded-full bg-[#fffdf8] px-3.5 text-sm font-bold text-ink shadow-[var(--shadow-card)] transition-all duration-300 hover:bg-primary hover:text-on-primary lg:translate-y-3 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:focus-visible:translate-y-0 lg:focus-visible:opacity-100">
+            className="absolute bottom-3 right-3 z-10 flex h-11 items-center gap-2 rounded-full bg-[#fffdf8] px-3.5 text-sm font-bold text-[#1c2016] shadow-[var(--shadow-card)] transition-all duration-300 hover:bg-primary hover:text-on-primary lg:translate-y-3 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 lg:focus-visible:translate-y-0 lg:focus-visible:opacity-100">
             {product.personalizable ? <Sparkles size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
             <span className="max-lg:sr-only">{product.personalizable ? "Personalizar" : "Agregar"}</span>
           </button>
