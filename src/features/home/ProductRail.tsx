@@ -30,9 +30,9 @@ export function ProductRail({ id, eyebrow, title, accent, products, href }: Prop
           )}
         </div>
       </Reveal>
-      <ul ref={track} className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto scroll-smooth px-4 pb-2 sm:-mx-6 sm:gap-5 sm:px-6 lg:mx-0 lg:px-0">
+      <ul ref={track} className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth px-4 pb-3 pt-2 sm:-mx-6 sm:gap-5 sm:px-6 lg:mx-0 lg:px-0">
         {products.map((p, i) => (
-          <Reveal as="li" key={p.slug} delay={Math.min(i, 4) * 0.06} className="w-[46%] shrink-0 snap-start sm:w-[31%] lg:w-[calc(25%-15px)]">
+          <Reveal as="li" key={p.slug} y={0} delay={Math.min(i, 4) * 0.06} className="w-[46%] shrink-0 snap-start sm:w-[31%] lg:w-[calc(25%-15px)]">
             <ProductCard product={p} />
           </Reveal>
         ))}

@@ -15,7 +15,7 @@ export function AdminTabBar({ onMore, moreOpen }: { onMore: () => void; moreOpen
   const inTabs = tabs.some((t) => isActive(pathname, t.href));
   const item = "relative flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-bold transition-colors";
   return (
-    <nav aria-label="Accesos rápidos del panel" className="fixed inset-x-0 bottom-0 z-40 border-t border-white/[0.06] bg-night/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">
+    <nav aria-label="Accesos rápidos del panel" data-tour="nav" className="fixed inset-x-0 bottom-0 z-40 border-t border-white/[0.06] bg-night pb-[env(safe-area-inset-bottom)] lg:hidden">
       <ul className="mx-auto flex h-16 max-w-lg px-2">
         {tabs.map((t) => {
           const active = isActive(pathname, t.href);

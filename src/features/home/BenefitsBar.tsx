@@ -14,7 +14,7 @@ export function BenefitsBar() {
   ];
   return (
     <section aria-label="Beneficios" className="-mt-2 sm:mt-0">
-      <ul className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0">
+      <ul className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto overflow-y-hidden overscroll-x-contain px-4 pb-3 pt-1 sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0">
         {items.map(({ icon: Icon, title, text }) => (
           <li key={title} className="flex min-w-[15rem] shrink-0 snap-start items-center gap-3 rounded-2xl bg-surface px-4 py-3.5 shadow-[var(--shadow-card)] sm:min-w-0">
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-primary"><Icon size={20} aria-hidden="true" /></span>

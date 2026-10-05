@@ -13,7 +13,7 @@ export function MiniRecommendations({ title, products, onNavigate }: { title: st
   return (
     <section aria-label={title}>
       <p className="eyebrow mb-3 text-muted">{title}</p>
-      <ul className="no-scrollbar -mx-1 flex gap-3 overflow-x-auto px-1 pb-1">
+      <ul className="no-scrollbar -mx-1 flex gap-3 overflow-x-auto overflow-y-hidden overscroll-x-contain px-1 pb-1">
         {products.map((p) => (
           <li key={p.slug} className="group relative w-36 shrink-0">
             <div className="relative">

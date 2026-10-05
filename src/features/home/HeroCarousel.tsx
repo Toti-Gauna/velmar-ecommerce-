@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
+import { useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import type { CarouselSlide } from "@/demo/types";
 import { cn } from "@/lib/cn";
@@ -13,10 +14,19 @@ const TONES = [
   { bg: "bg-[#6d3a26]", eyebrow: "text-[#f1cfa0]", glow: "rgb(241_207_160/0.26)" },
 ];
 
-/** Carrusel principal del inicio (editable desde el panel). Desliza con el dedo, flechas y puntos; sin autoplay. */
+const INTERVAL = 4000;
+
+/**
+ * Carrusel principal del inicio (editable desde el panel). Avanza solo cada 4 s; se frena al tocarlo,
+ * al pasar el mouse o con foco, tiene botón de pausa y con "reducir movimiento" no avanza solo.
+ */
 export function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [hold, setHold] = useState(false);
+  const reduce = useReducedMotion();
+  const auto = !paused && !hold && !reduce && slides.length > 1;
   const go = (i: number) => {
     const el = track.current;
     if (!el) return;
@@ -24,11 +34,18 @@ export function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
     el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
     setIndex(next);
   };
+  useEffect(() => {
+    if (!auto) return;
+    const t = window.setTimeout(() => go(index + 1), INTERVAL);
+    return () => window.clearTimeout(t);
+  });
   if (slides.length === 0) return null;
   return (
-    <section aria-roledescription="carrusel" aria-label="Destacados de Velmar" className="relative -mx-4 sm:mx-0">
+    <section aria-roledescription="carrusel" aria-label="Destacados de Velmar" className="relative -mx-4 -mt-6 sm:mx-0 sm:mt-0"
+      onPointerEnter={(e) => e.pointerType === "mouse" && setHold(true)} onPointerLeave={() => setHold(false)} onTouchStart={() => setPaused(true)}
+      onFocusCapture={() => setHold(true)} onBlurCapture={() => setHold(false)}>
       <div ref={track} onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / Math.max(1, e.currentTarget.clientWidth)))}
-        className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto sm:rounded-[2rem]">
+        className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-contain sm:rounded-[2rem]">
         {slides.map((s, i) => {
           const tone = TONES[i % TONES.length]!;
           return (
@@ -55,6 +72,10 @@ export function HeroCarousel({ slides }: { slides: CarouselSlide[] }) {
         <>
           <button type="button" aria-label="Diapositiva anterior" onClick={() => go(index - 1)} className="absolute left-4 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-[#fffdf8]/90 text-night shadow-[var(--shadow-card)] backdrop-blur transition hover:scale-105 sm:grid"><ArrowLeft size={20} aria-hidden="true" /></button>
           <button type="button" aria-label="Diapositiva siguiente" onClick={() => go(index + 1)} className="absolute right-4 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-[#fffdf8]/90 text-night shadow-[var(--shadow-card)] backdrop-blur transition hover:scale-105 sm:grid"><ArrowRight size={20} aria-hidden="true" /></button>
+          <button type="button" onClick={() => setPaused((p) => !p)} aria-label={paused || reduce ? "Reproducir carrusel" : "Pausar carrusel"}
+            className="absolute bottom-2 right-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-black/25 text-white backdrop-blur transition hover:bg-black/40 sm:bottom-4 sm:right-5">
+            {paused || reduce ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
+          </button>
           <div className="absolute inset-x-0 bottom-2 flex justify-center gap-1 sm:bottom-4">
             {slides.map((s, i) => (
               <button key={s.id} type="button" onClick={() => go(i)} aria-label={`Ir a la diapositiva ${i + 1}`} aria-current={i === index ? "true" : undefined} className="grid h-6 place-items-center px-0.5">

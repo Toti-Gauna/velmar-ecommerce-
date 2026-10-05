@@ -2,24 +2,27 @@
 
 | Ruta | Qué muestra |
 |---|---|
-| `/` | Inicio de tienda: carrusel de banners (editable, sin autoplay), beneficios, categorías en círculos, recomendados, probador en vivo con "Quiero mi producto personalizado", más vendidos, "Productos que cuentan historias", novedades, banda del club |
+| `/` | Inicio de tienda: carrusel de banners (editable, avanza cada 4 s con pausa), beneficios, categorías en círculos, recomendados, probador en vivo con "Quiero mi producto personalizado", más vendidos, "Productos que cuentan historias", novedades, banda del club |
 | `/buscar/?q=` | Resultados completos. El ícono de búsqueda abre un **buscador superpuesto** con búsquedas recientes, lo más buscado, recomendados y resultados en vivo (tolerante a acentos y errores: "comedro" → comederos) |
 | `/categorias/` | Categorías con productos (las vacías no aparecen: "Tablas de madera") |
 | `/c/[slug]/` | Grilla con orden (relevancia, precio, nuevos), recordado en localStorage |
-| `/p/[slug]/` | **Ficha todo en uno**: galería con zoom y "Tu diseño" (vista previa en vivo), color/tamaño, medidor de stock, personalización en la misma pantalla (texto/fuente/color, foto con encuadre y zoom, o foto de referencia + notas), aprobación "Así lo quiero" obligatoria, cantidad (tope = stock), **Comprar ahora** y **Agregar al carrito**, misión que suma, entrega estimada, acordeones, "Completá el set" y barra fija en el celular |
+| `/p/[slug]/` | **Ficha todo en uno**: galería con "Tu diseño" (vista previa en vivo) y el **stock debajo de la imagen**; una sola tarjeta para elegir opción/color, personalizar (texto, foto o referencia) y la **cantidad** (desplegable "Cantidad: 1 unidad ⌄ (N disponibles)"). Sin casilla: **agregar al carrito equivale a "Así lo quiero"** (queda explicado en la tarjeta y se guarda `approvedAt`). Favoritos (corazón). En el celular, barra fija con corazón + "Agregar al carrito · total"; en escritorio también "Comprar ahora" |
 | `/crear/` | Productos personalizables por tipo; cada uno abre su ficha. `/crear/[slug]/` se mantiene (enlaces viejos) y muestra la misma ficha todo en uno |
 | `/carrito/` | Envío gratis → productos → cupón ("Elegir de mis cupones" o código) → resumen y pago; abajo, misión y recomendaciones. En el celular, barra fija con total e "Ir a pagar". Al ir a pagar aparece la **ruleta** si todavía no se giró. Al agregar desde una ficha se abre el **drawer** |
 | `/checkout/` | Datos (invitado o cuenta demo) → entrega (retiro, cadete MdP por CP, nacional) → pago (Mercado Pago, transferencia, QR) → términos |
 | `/checkout/confirmacion/` | "Pedido de demostración", instrucciones de pago de muestra, comprobante local |
 | `/pedido/demo-velmar/` | Seguimiento con token fijo: **el pedido arriba** (en el celular 3 productos y "Ver N más" en un modal), "Falta el comprobante" debajo de los productos, estado actual con recorrido animado, estados de muestra, etapas y ayuda por WhatsApp |
 | `/club/` | Club Velmar: ruleta de cupones (un giro por navegador), camino de misiones y billetera de premios |
+| Barra inferior (celular) | Inicio, Categorías, Cupones y Mi cuenta. No aparece en ficha, carrito ni checkout (tienen su propia barra) |
 | `/cupones/` | Mis cupones: el ganado en la ruleta y los vigentes de la tienda como tickets, con "Aplicar"; estado vencido / mínimo / solo con cuenta; cómo ganar más |
 | `/cuenta/` | Cuenta demo: pedidos, misiones, premios (un uso), direcciones |
 | `/preguntas/`, `/terminos/`, `/privacidad/`, `/arrepentimiento/` | Ayuda y legales (textos de muestra) |
 
-## Agregados a pedido de Ignacio (04/10/2026, fuera de la spec original)
+## Agregados a pedido de Ignacio (04-05/10/2026, fuera de la spec original)
 Ruleta de cupones, página y selector de "Mis cupones", buscador superpuesto con búsquedas recientes, "Comprar ahora",
-historias de producto en el inicio (ilustrativas, `src/demo/fixtures/stories.ts`) y paginado del panel. Antes de llevarlos a
+historias de producto en el inicio (ilustrativas, `src/demo/fixtures/stories.ts`), paginado del panel, favoritos,
+barra inferior, autoplay del carrusel, pantalla de carga de 5 s, guía del panel y confeti de compra. **Cambio a revisar en la
+spec:** la aprobación "Así lo quiero" ya no es una casilla; se confirma al agregar al carrito. Antes de llevarlos a
 producción hay que sumarlos a la especificación de Notion.
 
 ## Ruleta de cupones
@@ -46,6 +49,6 @@ no se pide tarjeta, no se redirige a Mercado Pago, el QR no es escaneable, el CB
 afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
-Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`) y `sessionStorage` para no repetir el
-splash. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
+Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`; y
+`velmar-tour:admin` para no repetir la guía del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
 navegador. "Reiniciar demo" (banner y pie) borra todo.

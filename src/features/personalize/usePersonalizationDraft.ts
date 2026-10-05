@@ -9,15 +9,14 @@ import type { TextDraft } from "./TextFields";
 import { useReferenceDraft } from "./useReferenceDraft";
 
 /**
- * Borrador de personalización de la ficha. Cualquier cambio en el diseño desmarca "Así lo quiero":
- * lo aprobado es siempre exactamente lo que llega al carrito.
+ * Borrador de personalización de la ficha. La aprobación ("Así lo quiero") se registra al agregar
+ * al carrito, con el diseño exacto de ese momento (queda en `approvedAt` de la línea).
  */
 export function usePersonalizationDraft(tmpl: PersonalizationTemplate | undefined) {
   const firstColor = tmpl?.colors?.[0];
   const [text, setTextState] = useState<TextDraft>({ text: "", font: tmpl?.fonts?.[0] ?? "Redondeada", color: firstColor?.hex ?? "#3a4527", colorName: firstColor?.name ?? "" });
   const [photo, setPhotoState] = useState<PhotoDraft>({ url: null, zoom: 1, offset: { x: 0, y: 0 } });
   const ref = useReferenceDraft();
-  const [approved, setApproved] = useState(false);
   const [touched, setTouched] = useState(false);
   const stageRef = useRef<Konva.Stage | null>(null);
   useEffect(() => () => { if (photo.url) URL.revokeObjectURL(photo.url); }, [photo.url]);
@@ -38,12 +37,11 @@ export function usePersonalizationDraft(tmpl: PersonalizationTemplate | undefine
   };
 
   return {
-    tmpl, text, photo, reference: ref.draft, approved, touched, problem, stageRef,
-    setText: (d: TextDraft) => { setTextState(d); setApproved(false); },
-    setPhoto: (d: PhotoDraft) => { setPhotoState(d); setApproved(false); },
-    onReferenceFile: (f: File) => { setApproved(false); return ref.onFile(f); },
-    setNotes: (n: string) => { ref.setNotes(n); setApproved(false); },
-    setApproved,
+    tmpl, text, photo, reference: ref.draft, touched, problem, stageRef,
+    setText: setTextState,
+    setPhoto: setPhotoState,
+    onReferenceFile: ref.onFile,
+    setNotes: ref.setNotes,
     touch: () => setTouched(true),
     build,
   };

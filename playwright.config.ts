@@ -20,6 +20,11 @@ export default defineConfig({
     trace: "retain-on-failure",
     locale: "es-AR",
     launchOptions: executablePath ? { executablePath } : undefined,
+    // Movimiento reducido por defecto: sin la pantalla de carga de 5 s ni el autoplay del carrusel.
+    // Los tests de splash y de animaciones lo cambian a "no-preference" explícitamente.
+    contextOptions: { reducedMotion: "reduce" },
+    // La guía del panel se da por vista; su propio test la vuelve a habilitar.
+    storageState: { cookies: [], origins: [{ origin: `http://localhost:${port}`, localStorage: [{ name: "velmar-tour:admin", value: "done" }] }] },
   },
   projects: [{ name: "mobile", use: { ...devices["Pixel 7"], viewport: { width: 375, height: 812 } } }],
   webServer: { command: "node tests/e2e/static-server.mjs", port, reuseExistingServer: !process.env.CI },
