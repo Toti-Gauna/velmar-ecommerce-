@@ -85,7 +85,7 @@ html[data-theme="dark"] { --amb-snow: #ffffff; }
 .amb-paused [class^="fx-"], .amb-paused [class^="fx-"] i, .amb-paused .fx-star { animation-play-state: paused !important; }
 
 /* Componentes de la tienda durante una temática: vidrio tintado, filo luminoso y brillo del color al pasar. */
-html[data-season] [data-shop-header], html[data-season] [data-shop-bottomnav] {
+html[data-season] [data-shop-header] {
   background: color-mix(in oklab, var(--color-surface) 74%, transparent);
   backdrop-filter: saturate(1.6) blur(18px);
   -webkit-backdrop-filter: saturate(1.6) blur(18px);

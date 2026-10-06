@@ -85,7 +85,7 @@ export function CartView() {
         <CartMissionNudge units={quote.units} total={quote.total} />
         <MiniRecommendations title="Completá tu pedido" products={recommendForCart(lines, 6)} />
       </div>
-      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-surface/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur lg:hidden">
+      <div className="bleed-bottom fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-surface px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 lg:hidden">
         <div className="min-w-0 flex-1">
           <p className="text-xs text-muted">Total{quote.couponDiscount > 0 ? " con cupón" : ""} · sin envío</p>
           <p className="text-xl font-extrabold tabular-nums">{formatARS(quote.total)}</p>

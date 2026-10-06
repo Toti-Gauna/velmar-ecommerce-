@@ -18,7 +18,7 @@ export function ShopBottomNav() {
   const pathname = usePathname();
   if (bottomBarFor(pathname) !== "nav") return null;
   return (
-    <nav aria-label="Navegación inferior" data-shop-bottomnav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.35)] lg:hidden">
+    <nav aria-label="Navegación inferior" data-shop-bottomnav className="bleed-bottom fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.35)] lg:hidden">
       <ul className="mx-auto flex h-16 max-w-lg px-2">
         {TABS.map(({ href, label, icon: Icon, match }) => {
           const active = match(pathname);

@@ -80,7 +80,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
         </ul>
         <ProductAccordions product={product} />
       </div>
-      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-surface px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.4)] sm:hidden">
+      <div className="bleed-bottom fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-surface px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.4)] sm:hidden">
         <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14" />
         <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="flex-1 justify-between whitespace-nowrap px-5 text-[15px]">
           <span>Agregar al carrito</span>

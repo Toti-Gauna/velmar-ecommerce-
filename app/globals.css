@@ -179,6 +179,14 @@ html[data-theme="dark"] .bg-night { box-shadow: inset 0 0 0 1px rgb(210 173 105 
   -webkit-backdrop-filter: saturate(1.4) blur(18px);
 }
 
+/*
+ * Barras fijas inferiores: su fondo se extiende hacia abajo. Safari de iPhone deja ver la página por debajo de la
+ * barra (detrás de su barra flotante y al estirar el scroll); así esa franja queda del color de la barra.
+ */
+@utility bleed-bottom {
+  &::after { content: ""; position: absolute; inset-inline: 0; top: 100%; height: 50vh; background: inherit; pointer-events: none; }
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
