@@ -13,8 +13,9 @@
 | `/checkout/confirmacion/` | "Pedido de demostración", instrucciones de pago de muestra, comprobante local |
 | `/pedido/demo-velmar/` | Seguimiento con token fijo: **el pedido arriba** (en el celular 3 productos y "Ver N más" en un modal), "Falta el comprobante" debajo de los productos, estado actual con recorrido animado, estados de muestra, etapas y ayuda por WhatsApp |
 | `/club/` | Club Velmar: ruleta de cupones (un giro por navegador), camino de misiones y billetera de premios |
-| Barra inferior (celular) | Inicio, Categorías, Cupones y Mi cuenta. No aparece en ficha, carrito ni checkout (tienen su propia barra) |
+| Barra inferior (celular) | Inicio, Categorías, Favoritos, Cupones y Mi cuenta. No aparece en ficha, carrito ni checkout (tienen su propia barra) |
 | `/cupones/` | Mis cupones: el ganado en la ruleta y los vigentes de la tienda como tickets, con "Aplicar"; estado vencido / mínimo / solo con cuenta; cómo ganar más |
+| `/favoritos/` | Pantalla de favoritos (guardados con el corazón de cada ficha, en este navegador); vacía invita a explorar la tienda. Pedido de Ignacio, fuera de la spec |
 | `/cuenta/` | Cuenta demo: pedidos, misiones, premios (un uso), direcciones |
 | `/preguntas/`, `/terminos/`, `/privacidad/`, `/arrepentimiento/` | Ayuda y legales (textos de muestra) |
 

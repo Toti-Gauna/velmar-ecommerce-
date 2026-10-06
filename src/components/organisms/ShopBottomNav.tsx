@@ -2,13 +2,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "motion/react";
-import { Home, LayoutGrid, TicketPercent, UserRound } from "lucide-react";
+import { Heart, Home, LayoutGrid, TicketPercent, UserRound } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { bottomBarFor } from "./bottomBars";
 
 const TABS = [
   { href: "/", label: "Inicio", icon: Home, match: (p: string) => p === "/" },
   { href: "/categorias/", label: "Categorías", icon: LayoutGrid, match: (p: string) => p.startsWith("/categorias") || p.startsWith("/c/") },
+  { href: "/favoritos/", label: "Favoritos", icon: Heart, match: (p: string) => p.startsWith("/favoritos") },
   { href: "/cupones/", label: "Cupones", icon: TicketPercent, match: (p: string) => p.startsWith("/cupones") },
   { href: "/cuenta/", label: "Mi cuenta", icon: UserRound, match: (p: string) => p.startsWith("/cuenta") },
 ];
@@ -18,8 +19,8 @@ export function ShopBottomNav() {
   const pathname = usePathname();
   if (bottomBarFor(pathname) !== "nav") return null;
   return (
-    <nav aria-label="Navegación inferior" data-shop-bottomnav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.35)] lg:hidden">
-      <ul className="mx-auto flex h-16 max-w-lg px-2">
+    <nav aria-label="Navegación inferior" data-shop-bottomnav className="bleed-bottom fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.35)] lg:hidden">
+      <ul className="mx-auto flex h-16 max-w-lg px-1">
         {TABS.map(({ href, label, icon: Icon, match }) => {
           const active = match(pathname);
           return (

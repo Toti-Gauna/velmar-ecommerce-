@@ -19,7 +19,7 @@ export function ProductStories() {
         <h2 id="historias" className="font-display mt-3 text-4xl leading-tight sm:text-5xl">Productos que <span className="italic text-primary">cuentan historias</span></h2>
         <p className="mt-3 text-muted">Cada pieza nace de un nombre, una foto o un recuerdo. Historias ilustrativas de la demo.</p>
       </Reveal>
-      <ul className="no-scrollbar -mx-4 flex snap-x gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain px-4 pb-3 pt-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+      <ul className="no-scrollbar -mx-4 flex snap-x scroll-px-4 gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain px-4 pb-3 pt-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
         {stories.map(({ s, p }, i) => (
           <Reveal as="li" key={s.id} y={0} delay={i * 0.08} className="w-[80%] shrink-0 snap-start sm:w-auto">
             <Link href={productHref(p.slug)} className="group flex h-full flex-col overflow-hidden rounded-[2rem] bg-surface shadow-[var(--shadow-card)] transition-shadow duration-500 hover:shadow-[var(--shadow-lift)]">

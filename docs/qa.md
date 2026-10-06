@@ -25,8 +25,8 @@
 | Seguimiento: pedido arriba, "Ver 1 producto más" abre el modal, comprobante al elegir el estado pendiente | idem | ✅ |
 | Panel en el celular: menú hamburguesa y paginado de pedidos (se reinicia al filtrar) | `admin-flows.spec.ts` | ✅ |
 | Guía del panel: aparece una vez, Siguiente / Anterior, no reaparece, se reabre con "?" | idem | ✅ |
-| Ficha: cantidad desplegable, diseño requerido antes de agregar, favoritos en "Mi cuenta" | `gamification.spec.ts` | ✅ |
-| Barra inferior de la tienda (Inicio, Categorías, Cupones, Mi cuenta) y botón de pausa del carrusel | idem | ✅ |
+| Ficha: cantidad desplegable, diseño requerido antes de agregar, favoritos en su pantalla `/favoritos/` | `gamification.spec.ts` | ✅ |
+| Barra inferior de la tienda (Inicio, Categorías, Favoritos, Cupones, Mi cuenta) y botón de pausa del carrusel | idem | ✅ |
 | Temáticas: "Probar temáticas" cambia cinta, sombrero del logo, primera diapositiva y ofertas; "Usar código" lo deja en el carrito; se recuerda al recargar y se sale desde la cinta | `themes.spec.ts`, `tests/unit/themes.test.ts` | ✅ |
 | Temáticas premium: paleta de temporada en `data-season`, pausa de animaciones, opción "Original" | `themes.spec.ts`, `tests/unit/palettes.test.ts` (AA de las 13 paletas en claro y oscuro) | ✅ |
 | Temáticas en el panel: editar titular, modo fija/ninguna y ocultar el botón se refleja en la tienda | idem | ✅ |
