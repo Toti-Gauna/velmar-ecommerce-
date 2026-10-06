@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, ShoppingBag, UserRound } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Heart, Menu, Search, ShoppingBag, UserRound } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { useCart } from "@/stores/cart";
 import { useHydrated } from "@/stores/hydration";
@@ -25,8 +25,15 @@ export function Header() {
   const units = useCart((s) => s.lines.reduce((sum, l) => sum + l.quantity, 0));
   const { openCart, setMenu, setSearch } = useUi();
   const [compact, setCompact] = useState(false);
+  const [stuck, setStuck] = useState(false);
+  const ref = useRef<HTMLElement>(null);
   useEffect(() => {
-    const onScroll = () => setCompact(window.scrollY > 24);
+    const onScroll = () => {
+      setCompact(window.scrollY > 24);
+      // Pegado arriba: recién ahí su fondo se extiende hacia la franja de la hora (antes taparía el aviso de la demo).
+      const el = ref.current;
+      if (el) setStuck(el.getBoundingClientRect().top <= parseFloat(getComputedStyle(el).top) + 0.5);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -34,7 +41,7 @@ export function Header() {
   const count = hydrated ? units : 0;
   const icon = "grid h-11 w-11 place-items-center rounded-full text-ink transition-colors hover:bg-ink/5";
   return (
-    <header data-shop-header className={cn("sticky top-[env(safe-area-inset-top)] z-40 bg-surface lg:glass border-b transition-[border-color,box-shadow] duration-300", compact ? "border-line shadow-[0_8px_30px_-20px_rgb(28_32_22/0.35)]" : "border-transparent")}>
+    <header ref={ref} data-shop-header className={cn(stuck && "max-lg:bleed-top", "sticky top-[env(safe-area-inset-top)] z-40 bg-surface lg:glass border-b transition-[border-color,box-shadow] duration-300", compact ? "border-line shadow-[0_8px_30px_-20px_rgb(28_32_22/0.35)]" : "border-transparent")}>
       <div className={cn("mx-auto flex max-w-7xl items-center gap-2 px-4 transition-[height] duration-300 sm:px-6", compact ? "h-16" : "h-[4.5rem] lg:h-20")}>
         <button type="button" onClick={() => setMenu(true)} aria-label="Abrir menú" className={cn(icon, "-ml-2 lg:hidden")}><Menu size={22} aria-hidden="true" /></button>
         <Link href="/" aria-label="Velmar, ir al inicio" className="shrink-0"><ThemeLogo /></Link>
@@ -50,6 +57,7 @@ export function Header() {
         <div className="ml-auto flex items-center gap-0.5">
           <ThemeToggle className={cn(icon, "max-sm:hidden")} />
           <button type="button" onClick={() => setSearch(true)} aria-label="Buscar" className={icon}><Search size={21} aria-hidden="true" /></button>
+          <Link href="/favoritos/" aria-label="Favoritos" className={cn(icon, "max-lg:hidden")}><Heart size={21} aria-hidden="true" /></Link>
           <Link href="/cuenta/" aria-label="Mi cuenta (demo)" className={cn(icon, "max-sm:hidden")}><UserRound size={21} aria-hidden="true" /></Link>
           <button type="button" onClick={() => openCart()} aria-label={`Carrito, ${count} ${count === 1 ? "producto" : "productos"}`} className={cn(icon, "relative")}>
             <ShoppingBag size={21} aria-hidden="true" />

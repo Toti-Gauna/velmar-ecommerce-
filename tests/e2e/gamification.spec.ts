@@ -41,11 +41,11 @@ test("ficha: stock bajo la imagen, cantidad desplegable, favoritos y diseño req
   const main = page.locator("main");
   await expect(main.getByRole("group", { name: /Cantidad de Chapita/ }).locator("output")).toHaveText("2");
   await expect(main.getByText(/“Luna”/)).toBeVisible();
-  // Favoritos: el corazón guarda el producto y aparece en "Mi cuenta"
+  // Favoritos: el corazón guarda el producto y aparece en su pantalla (pestaña de la barra inferior)
   await page.goto("p/vela-caniche/");
   await page.getByRole("button", { name: "Guardar Vela caniche en favoritos" }).filter({ visible: true }).click();
-  await page.goto("cuenta/");
-  await expect(page.locator("#favoritos").getByText("Vela caniche")).toBeVisible();
+  await page.goto("favoritos/");
+  await expect(page.getByRole("list", { name: "Favoritos guardados" }).getByText("Vela caniche")).toBeVisible();
 });
 
 test("barra inferior de la tienda y carrusel con pausa", async ({ page }) => {
@@ -54,6 +54,8 @@ test("barra inferior de la tienda y carrusel con pausa", async ({ page }) => {
   await expect(nav.getByRole("link", { name: "Inicio" })).toHaveAttribute("aria-current", "page");
   await nav.getByRole("link", { name: "Cupones" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Mis cupones" })).toBeVisible();
+  await nav.getByRole("link", { name: "Favoritos" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Favoritos" })).toBeVisible();
   await nav.getByRole("link", { name: "Categorías" }).click();
   await expect(page).toHaveURL(/categorias\/$/);
   // En la ficha la barra inferior se reemplaza por la de compra

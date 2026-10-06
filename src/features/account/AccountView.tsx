@@ -6,7 +6,6 @@ import { ListSkeleton } from "@/components/atoms/Skeleton";
 import { useAccount } from "@/stores/account";
 import { useCheckout } from "@/stores/checkout";
 import { useHydrated } from "@/stores/hydration";
-import { FavoritesSection } from "./FavoritesSection";
 import { AddressesSection, MissionsSection, OrdersSection, RewardsSection } from "./AccountSections";
 
 function DemoLogin() {
@@ -28,13 +27,7 @@ export function AccountView() {
   const { user, logout, usedRewards, markRewardUsed } = useAccount();
   const lastOrder = useCheckout((s) => s.lastOrder);
   if (!hydrated) return <ListSkeleton rows={4} label="Cargando tu cuenta" />;
-  const favorites = (
-    <section id="favoritos" aria-labelledby="favoritos-t" className="scroll-mt-24">
-      <h2 id="favoritos-t" className="mb-3 text-xl font-extrabold">Favoritos</h2>
-      <FavoritesSection />
-    </section>
-  );
-  if (!user) return <div className="flex flex-col gap-10"><DemoLogin />{favorites}</div>;
+  if (!user) return <DemoLogin />;
   const sections = [
     { id: "pedidos", title: "Mis pedidos", body: <OrdersSection lastOrder={lastOrder} /> },
     { id: "misiones", title: "Misiones", body: <MissionsSection /> },
@@ -50,7 +43,6 @@ export function AccountView() {
       <nav aria-label="Secciones de la cuenta" className="flex gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain">
         {sections.map((s) => <a key={s.id} href={`#${s.id}`} className="shrink-0 rounded-full border border-line bg-surface px-3 py-1.5 text-sm font-bold hover:bg-accent">{s.title}</a>)}
       </nav>
-      {favorites}
       {sections.map((s) => (
         <section key={s.id} id={s.id} aria-labelledby={`${s.id}-t`} className="scroll-mt-24">
           <h2 id={`${s.id}-t`} className="mb-3 text-xl font-extrabold">{s.title}</h2>
