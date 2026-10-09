@@ -51,5 +51,5 @@ afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
 Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`; y
-`velmar-tour:admin` para no repetir la guía del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
+`velmar-tour:admin` para no repetir la guía del panel; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
 navegador. "Reiniciar demo" (banner y pie) borra todo.

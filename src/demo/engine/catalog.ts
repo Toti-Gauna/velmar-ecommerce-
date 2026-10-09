@@ -1,5 +1,5 @@
 import type { Category, Product, Variant } from "../types";
-import { demoData, STATIC_PRODUCT_SLUGS } from "./source";
+import { demoData, STATIC_CATEGORY_SLUGS, STATIC_PRODUCT_SLUGS } from "./source";
 
 export type Availability = { kind: "made-to-order"; days?: number } | { kind: "in-stock"; units: number } | { kind: "out-of-stock" };
 export type SortKey = "relevance" | "price-asc" | "price-desc" | "new";
@@ -29,6 +29,10 @@ export function visibleCategories(): Category[] {
 
 export function productHref(slug: string): string {
   return STATIC_PRODUCT_SLUGS.has(slug) ? `/p/${slug}/` : `/p/demo/?slug=${encodeURIComponent(slug)}`;
+}
+
+export function categoryHref(slug: string): string {
+  return STATIC_CATEGORY_SLUGS.has(slug) ? `/c/${slug}/` : `/c/demo/?slug=${encodeURIComponent(slug)}`;
 }
 
 /** La personalización vive en la ficha: este enlace lleva directo a esa sección. */

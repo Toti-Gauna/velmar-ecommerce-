@@ -1,6 +1,7 @@
 "use client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { createCatalogActions, type CatalogActions } from "@/demo/admin/catalog-slice";
 import { createDataActions, type DataActions } from "@/demo/admin/data-slice";
 import { auditEntry, defaultAdminData, type AdminData } from "@/demo/admin/defaults";
 import { createOrdersActions, type OrdersActions } from "@/demo/admin/orders-slice";
@@ -8,7 +9,7 @@ import type { AdminClaim } from "@/demo/admin/types";
 import { setDemoData, type DemoData } from "@/demo/engine/source";
 import { demoStorage, STORAGE_PREFIX } from "./storage";
 
-export type AdminState = AdminData & OrdersActions & DataActions & {
+export type AdminState = AdminData & OrdersActions & DataActions & CatalogActions & {
   addClaim: (claim: Omit<AdminClaim, "id" | "status" | "createdAt">) => void;
   resetAdmin: () => void;
 };
@@ -23,6 +24,7 @@ export const useAdmin = create<AdminState>()(
       ...defaultAdminData(),
       ...createOrdersActions(set),
       ...createDataActions(set),
+      ...createCatalogActions(set),
       addClaim: (claim) =>
         set((s) => ({
           claims: [{ ...claim, id: `c-${Date.now().toString(36)}`, status: "OPEN", createdAt: new Date().toISOString(), fromShop: true }, ...s.claims],
@@ -42,7 +44,7 @@ export const useAdmin = create<AdminState>()(
         const p = (persisted ?? {}) as Partial<AdminData>;
         return { ...current, ...p, data: { ...current.data, ...(p.data ?? {}) } };
       },
-      partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit }),
+      partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport }),
     },
   ),
 );

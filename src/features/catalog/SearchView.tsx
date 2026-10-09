@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { ProductGrid } from "@/components/molecules/ProductCard";
 import { SearchForm } from "@/components/molecules/SearchForm";
-import { bestSellers, featuredCategories } from "@/demo/engine/catalog";
+import { bestSellers, categoryHref, featuredCategories } from "@/demo/engine/catalog";
 import { searchProducts, suggestTerm } from "@/demo/engine/search";
 import { activeProducts } from "@/demo/engine/catalog";
 import { useDemoVersion } from "@/stores/admin";
@@ -48,7 +48,7 @@ export function SearchView() {
               <p>Revisá cómo lo escribiste o mirá las categorías.</p>
             )}
             <p className="mt-3 flex flex-wrap justify-center gap-2">
-              {featuredCategories().map((c) => <Link key={c.slug} href={`/c/${c.slug}/`} className="rounded-full bg-accent px-3 py-1.5 text-sm font-bold text-ink">{c.name}</Link>)}
+              {featuredCategories().map((c) => <Link key={c.slug} href={categoryHref(c.slug)} className="rounded-full bg-accent px-3 py-1.5 text-sm font-bold text-ink">{c.name}</Link>)}
             </p>
           </EmptyState>
           <section aria-label="Más vendidos"><h2 className="mb-4 text-xl font-extrabold">Lo más elegido</h2><ProductGrid products={bestSellers(4).map(toCard)} /></section>

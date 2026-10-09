@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { ProductsList } from "@/features/admin/ProductsList";
+import { Suspense } from "react";
+import { ListSkeleton } from "@/components/atoms/Skeleton";
+import { ProductsTable } from "@/features/admin/products/ProductsTable";
 
 export const metadata: Metadata = { title: "Productos" };
 
 export default function AdminProductsPage() {
-  return <ProductsList />;
+  return <Suspense fallback={<ListSkeleton rows={4} />}><ProductsTable /></Suspense>;
 }

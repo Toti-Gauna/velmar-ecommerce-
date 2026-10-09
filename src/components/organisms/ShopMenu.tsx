@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ProductArt } from "@/components/illustrations/ProductArt";
-import { productsInCategory, visibleCategories } from "@/demo/engine/catalog";
+import { categoryHref, productsInCategory, visibleCategories } from "@/demo/engine/catalog";
 import { cn } from "@/lib/cn";
 import { useDemoVersion } from "@/stores/admin";
 
@@ -36,7 +36,7 @@ export function ShopMenu({ active }: { active: boolean }) {
               <ul className="grid grid-cols-2 gap-1">
                 {cats.map((c) => (
                   <li key={c.slug}>
-                    <Link href={`/c/${c.slug}/`} onClick={() => setOpen(false)} className="group flex items-center gap-3 rounded-2xl p-2 hover:bg-accent/50">
+                    <Link href={categoryHref(c.slug)} onClick={() => setOpen(false)} className="group flex items-center gap-3 rounded-2xl p-2 hover:bg-accent/50">
                       <ProductArt art={c.art} label="" showBadge={false} className="h-12 w-12 shrink-0 rounded-xl" />
                       <span className="flex-1"><span className="block font-bold">{c.name}</span><span className="text-xs text-muted">{productsInCategory(c.slug).length} productos</span></span>
                       <ArrowRight size={16} aria-hidden="true" className="-translate-x-1 text-primary opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
