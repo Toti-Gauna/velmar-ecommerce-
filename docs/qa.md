@@ -74,6 +74,9 @@ Reglas aprendidas (05/10):
 - Los `fieldset` tienen `min-width: min-content`: en grilla, usar `min-w-0` y `grid-cols-[minmax(0,1fr)]`.
 - iOS (Safari 26): `viewport-fit=cover` + rellenos `env(safe-area-inset-*)`; una franja fija tapa la barra de estado y
   las barras inferiores llegan al borde real de la pantalla.
+- iOS 26 (09/10): Safari no dibuja nada `fixed` por detrás de su barra de direcciones (bug reportado a Apple), así que una
+  barra pegada al borde deja ver la página debajo. Las barras de compra (ficha, carrito) y las pestañas del panel son
+  cápsulas flotantes (`FLOATING_BAR` en `bottomBars.ts`), como la navegación inferior de la tienda.
 - Los carriles horizontales usan `overflow-y-hidden overscroll-x-contain` y aparición sin desplazamiento vertical.
 
 Reglas aprendidas en la ronda anterior:

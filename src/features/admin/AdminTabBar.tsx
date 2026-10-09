@@ -7,7 +7,10 @@ import { cn } from "@/lib/cn";
 import { ADMIN_NAV, isActive } from "./nav";
 import { useNavCounts } from "./useNavCounts";
 
-/** Pestañas inferiores del panel en el celular (como una app): las 4 secciones de uso diario + "Más". */
+/**
+ * Pestañas inferiores del panel en el celular (como una app): las 4 secciones de uso diario + "Más". Cápsula flotante:
+ * Safari 26 de iPhone no dibuja nada fijo detrás de su barra, así que no se intenta llegar al borde.
+ */
 export function AdminTabBar({ onMore, moreOpen }: { onMore: () => void; moreOpen: boolean }) {
   const pathname = usePathname();
   const counts = useNavCounts();
@@ -15,8 +18,8 @@ export function AdminTabBar({ onMore, moreOpen }: { onMore: () => void; moreOpen
   const inTabs = tabs.some((t) => isActive(pathname, t.href));
   const item = "relative flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-bold transition-colors";
   return (
-    <nav aria-label="Accesos rápidos del panel" data-tour="nav" className="bleed-bottom fixed inset-x-0 bottom-0 z-40 border-t border-white/[0.06] bg-night pb-[env(safe-area-inset-bottom)] lg:hidden">
-      <ul className="mx-auto flex h-16 max-w-lg px-2">
+    <nav aria-label="Accesos rápidos del panel" data-tour="nav" className="fixed inset-x-3 bottom-[calc(0.625rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-lg overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-night/95 shadow-[0_18px_40px_-14px_rgb(0_0_0/0.6)] backdrop-blur-xl lg:hidden">
+      <ul className="flex h-16 px-2">
         {tabs.map((t) => {
           const active = isActive(pathname, t.href);
           const Icon = t.icon;
