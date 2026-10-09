@@ -3,6 +3,7 @@ import { defaultDemoData, type DemoData } from "../engine/source";
 import type { OrderStatus } from "../engine/orders";
 import { orderSeeds } from "../fixtures/admin-orders";
 import { adminClaims, adminUsers } from "../fixtures/admin-people";
+import type { ImportSnapshot } from "./catalog-slice";
 import type { AdminClaim, AdminOrder, AdminUser, AuditEntry, StatusLogEntry } from "./types";
 
 export interface AdminData {
@@ -11,6 +12,8 @@ export interface AdminData {
   users: AdminUser[];
   claims: AdminClaim[];
   audit: AuditEntry[];
+  /** Última importación de Excel, para deshacerla. */
+  lastImport: ImportSnapshot | null;
 }
 
 const HAPPY_PATH: OrderStatus[] = ["PENDING_PAYMENT", "PAYMENT_REVIEW", "PAID", "IN_PRODUCTION", "READY", "SHIPPED", "DELIVERED"];
@@ -40,6 +43,7 @@ export function defaultAdminData(): AdminData {
     users: structuredClone(adminUsers),
     claims: structuredClone(adminClaims),
     audit: [{ id: "a0", at: "2026-10-04T08:00:00-03:00", actor: "Sistema (demo)", action: "Datos de muestra cargados", entity: "Panel" }],
+    lastImport: null,
   };
 }
 

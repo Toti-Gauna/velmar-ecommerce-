@@ -14,6 +14,8 @@ export interface DemoSettings {
   brandColors: { primary: string; accent: string; background: string };
   legalName: string | null;
   cuit: string | null;
+  /** Aviso de stock bajo desde estas unidades (las demos viejas no lo traen: se usa 3). */
+  lowStockThreshold?: number;
 }
 
 /** Ajustes de cobro de MUESTRA. Ningún dato bancario real. */

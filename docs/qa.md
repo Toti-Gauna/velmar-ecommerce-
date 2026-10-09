@@ -37,7 +37,7 @@
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
-| 13 rutas del panel abren directo y al refrescar bajo subpath, con la señal de demo y sin "acreditado" | ✅ |
+| 16 rutas del panel abren directo y al refrescar bajo subpath, con la señal de demo y sin "acreditado" | ✅ |
 | Sin desborde horizontal a 375 px (el chequeo compara contra el ancho del viewport configurado) | ✅ |
 | Cambiar stock a 0 → la ficha muestra "Sin stock" y bloquea el agregado; pausar productos oculta la categoría vacía | ✅ |
 | Aprobar comprobante pide confirmación y deja auditoría; rechazar exige motivo; nada dice "pago acreditado" | ✅ |
@@ -47,6 +47,13 @@
 | Teclado: diálogo de confirmación abre con Enter, cierra con Escape, se opera con Tab | ✅ |
 | Movimiento reducido en el panel | ✅ |
 | Transiciones de pedido válidas/ inválidas (spec 5.2) y acciones del store | ✅ unit |
+| Importar Excel: columnas con otros nombres se reconocen, vista previa marca errores (centavos), importa, la categoría nueva abre en la tienda y se deshace con aviso | ✅ |
+| Importar CSV con `;` y montos con `$` actualiza precio y stock | ✅ |
+| Pedidos: pestañas por etapa, cambio de estado en lote (solo transiciones válidas), vista rápida y exportar `.xlsx` | ✅ |
+| Stock: sumar en la tabla se refleja en la ficha de la tienda | ✅ |
+| ⌘K / Ctrl+K abre un pedido por código | ✅ |
+| Planilla (escritorio): validar al escribir, pegar celdas de Excel, Ctrl+Z / Ctrl+Y, guardar y ver en la tienda | ✅ |
+| Lectura de celdas (montos, stock, sí/no, CSV), mapeo de columnas, plan de importación, orden, búsqueda, stock en lote, clientes y TSV | ✅ unit |
 
 Nota: con emulación móvil, Chrome agranda el viewport de layout si algo desborda. El chequeo anterior
 (`scrollWidth - innerWidth`) podía dar falso negativo; ahora se compara contra el ancho configurado.
@@ -90,4 +97,6 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
 - El prefetch del router de Next hace `HEAD` al mismo origen; es lectura y no envía datos.
 - **Panel demo abierto**: cualquiera con el link puede abrirlo y "editar" su propia copia local. No hay datos reales ni persistencia compartida; no es un panel seguro.
 - **Temáticas**: fechas aproximadas (las móviles, como Pascuas o Día de la Madre, hay que ajustarlas cada año en el panel). El cupón de una temática se puede escribir a mano fuera de temporada; en producción el servidor validaría la vigencia.
+- **Excel**: se lee y escribe en el navegador con `read-excel-file` y `write-excel-file` (MIT, carga bajo demanda). El CDN de SheetJS está bloqueado desde la sesión de desarrollo. Fórmulas y formatos de celda de la planilla del cliente no se leen: entra el valor calculado.
+- **Deshacer importación**: vuelve al catálogo previo a la importación; lo cambiado después también se revierte (se avisa antes de confirmar).
 - **Datos del panel por navegador**: lo que Velmar cambie en su celular no lo ve otra persona; cada navegador arranca de los fixtures.

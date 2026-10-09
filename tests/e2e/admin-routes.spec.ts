@@ -4,8 +4,8 @@ import { horizontalOverflow } from "./helpers";
 const ADMIN_ROUTES = [
   ["admin-demo/", "Buen día, Velmar"], ["admin-demo/pedidos/", "Pedidos"], ["admin-demo/pedidos/detalle/?codigo=VEL-000123", "VEL-000123"],
   ["admin-demo/pagos/", "Pagos manuales"], ["admin-demo/productos/", "Productos y stock"], ["admin-demo/productos/editar/?id=vela-caniche", "Editar: Vela caniche"],
-  ["admin-demo/categorias/", "Categorías y personalización"], ["admin-demo/misiones/", "Misiones y premios"], ["admin-demo/cupones/", "Cupones"],
-  ["admin-demo/usuarios/", "Usuarios"], ["admin-demo/reclamos/", "Reclamos"], ["admin-demo/contenido/", "Contenido"], ["admin-demo/ajustes/", "Ajustes"],
+  ["admin-demo/categorias/", "Categorías y personalización"], ["admin-demo/stock/", "Stock"], ["admin-demo/planilla/", "Planilla"], ["admin-demo/importar/", "Importar desde Excel"], ["admin-demo/misiones/", "Misiones y premios"], ["admin-demo/cupones/", "Cupones"],
+  ["admin-demo/usuarios/", "Clientes"], ["admin-demo/reclamos/", "Reclamos"], ["admin-demo/contenido/", "Contenido"], ["admin-demo/ajustes/", "Ajustes"],
 ] as const;
 
 test.describe("panel demo: rutas directas y refresh", () => {

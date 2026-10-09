@@ -5,7 +5,7 @@ import { ArrowUpRight, Gift, Heart, Sparkles, TicketPercent, UserRound } from "l
 import { Logo } from "@/components/atoms/Logo";
 import { Sheet } from "@/components/motion/Sheet";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle";
-import { visibleCategories } from "@/demo/engine/catalog";
+import { categoryHref, visibleCategories } from "@/demo/engine/catalog";
 import { useDemoVersion } from "@/stores/admin";
 import { useUi } from "@/stores/ui";
 
@@ -30,7 +30,7 @@ export function MobileMenu() {
         <ul className="mt-3 flex flex-col">
           {visibleCategories().map((c, i) => (
             <motion.li key={c.slug} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 + i * 0.035 }}>
-              <Link href={`/c/${c.slug}/`} onClick={close} className="font-display flex items-center justify-between border-b border-line py-3 text-[1.65rem] leading-tight">
+              <Link href={categoryHref(c.slug)} onClick={close} className="font-display flex items-center justify-between border-b border-line py-3 text-[1.65rem] leading-tight">
                 {c.name}<ArrowUpRight size={20} aria-hidden="true" className="text-muted" />
               </Link>
             </motion.li>

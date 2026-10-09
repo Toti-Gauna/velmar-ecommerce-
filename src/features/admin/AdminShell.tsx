@@ -7,6 +7,7 @@ import { AdminGate } from "./AdminGate";
 import { AdminSidebar, SidebarContent } from "./AdminSidebar";
 import { AdminTabBar } from "./AdminTabBar";
 import { AdminTopbar } from "./AdminTopbar";
+import { CommandPalette } from "./CommandPalette";
 import { AdminTour } from "./tour/AdminTour";
 import { tourSeen } from "./tour/steps";
 
@@ -14,6 +15,7 @@ import { tourSeen } from "./tour/steps";
 export function AdminShell({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [tour, setTour] = useState(false);
+  const [search, setSearch] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const hydrated = useHydrated();
@@ -24,6 +26,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
     const t = window.setTimeout(() => setTour(true), 700);
     return () => window.clearTimeout(t);
   }, [hydrated, onDashboard]);
+  // ⌘K / Ctrl+K abre el buscador desde cualquier pantalla del panel.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setSearch((v) => !v); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const openTour = () => {
     setMenuOpen(false);
     if (!onDashboard) router.push("/admin-demo/");
@@ -33,13 +43,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh">
       <AdminSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <AdminTopbar onMenu={() => setMenuOpen(true)} onHelp={openTour} />
-        <main id="contenido" className="mx-auto w-full min-w-0 max-w-6xl px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-16 lg:pt-8">
+        <AdminTopbar onMenu={() => setMenuOpen(true)} onHelp={openTour} onSearch={() => setSearch(true)} />
+        <main id="contenido" className="mx-auto w-full min-w-0 max-w-7xl px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-16 lg:pt-8">
           <AdminGate>{children}</AdminGate>
         </main>
       </div>
       <AdminTabBar onMore={() => setMenuOpen(true)} moreOpen={menuOpen} />
       {tour && <AdminTour onClose={() => setTour(false)} />}
+      <CommandPalette open={search} onClose={() => setSearch(false)} />
       <Sheet open={menuOpen} onClose={() => setMenuOpen(false)} title="Menú del panel" side="left" className="max-w-[min(88vw,320px)] bg-night">
         <SidebarContent layoutKey="mobile" onNavigate={() => setMenuOpen(false)} />
       </Sheet>

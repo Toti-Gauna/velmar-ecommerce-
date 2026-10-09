@@ -54,3 +54,6 @@ export function setDemoData(next: DemoData): void {
 
 /** Productos con página estática generada en build; los creados en el panel usan /p/demo/?slug=. */
 export const STATIC_PRODUCT_SLUGS = new Set(products.map((p) => p.slug));
+
+/** Categorías con página estática (las que tienen productos en los datos de muestra); las nuevas usan /c/demo/?slug=. */
+export const STATIC_CATEGORY_SLUGS = new Set(categories.filter((c) => products.some((p) => p.categorySlug === c.slug)).map((c) => c.slug));
