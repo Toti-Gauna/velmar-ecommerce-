@@ -1,40 +1,55 @@
-import { Bike, Store, Truck } from "lucide-react";
+"use client";
+import { Bike, CalendarCheck, Store, Truck } from "lucide-react";
+import { deliveryWindows, estimateForProduct } from "@/demo/engine/delivery";
 import { DEMO_TODAY } from "@/demo/fixtures/admin-orders";
+import type { Product, Variant } from "@/demo/types";
+import { formatDay } from "@/lib/date";
+import { useAdmin } from "@/stores/admin";
+import { useHydrated } from "@/stores/hydration";
 
-const fmt = new Intl.DateTimeFormat("es-AR", { weekday: "short", day: "numeric", month: "short", timeZone: "America/Argentina/Buenos_Aires" });
+const day = (d: string) => formatDay(d);
+const ROWS = [
+  { id: "pickup", icon: Store, label: "Retiro en Mar del Plata" },
+  { id: "local", icon: Bike, label: "Cadete en MdP" },
+  { id: "shipping", icon: Truck, label: "Envío al país" },
+] as const;
 
-/** Días hábiles desde la fecha de referencia de la demo (sin feriados). */
-function addBusinessDays(from: string, days: number): Date {
-  const d = new Date(`${from}T12:00:00-03:00`);
-  let left = days;
-  while (left > 0) {
-    d.setDate(d.getDate() + 1);
-    const wd = d.getDay();
-    if (wd !== 0 && wd !== 6) left -= 1;
-  }
-  return d;
-}
-
-/** Estimación ilustrativa: plazo de fabricación + tránsito, contra la fecha de referencia de la demo. */
-export function DeliveryEstimate({ makeDays }: { makeDays: number }) {
-  const rows = [
-    { icon: Store, label: "Retiro en Mar del Plata", from: makeDays, to: makeDays + 1 },
-    { icon: Bike, label: "Cadete en MdP", from: makeDays + 1, to: makeDays + 2 },
-    { icon: Truck, label: "Envío al país", from: makeDays + 3, to: makeDays + 7 },
-  ];
+/**
+ * Estimación con el calendario real del taller: plazo de fabricación en días hábiles, feriados y capacidad diaria.
+ * Si los primeros días ya están completos en el panel, el comprador ve la próxima fecha con lugar.
+ */
+export function DeliveryEstimate({ product, variant }: { product: Product; variant: Variant }) {
+  const hydrated = useHydrated();
+  const orders = useAdmin((s) => s.orders);
+  const settings = useAdmin((s) => s.workshop.settings);
+  const est = estimateForProduct(product, variant, DEMO_TODAY, hydrated ? orders : [], settings);
+  const windows = deliveryWindows(est.day, settings);
   return (
     <div className="rounded-2xl border border-line p-4">
       <p className="eyebrow mb-3 text-muted">¿Cuándo llega?</p>
+      <p className="mb-3 flex items-start gap-2.5 rounded-xl bg-bg p-3 text-sm">
+        <CalendarCheck size={18} aria-hidden="true" className="mt-0.5 shrink-0 text-primary" />
+        <span>
+          <span className="font-bold">Lo tenemos listo el {formatDay(est.day, "long")}</span>
+          <span className="block text-muted">
+            {est.leadDays === 1 ? "Sale al día hábil siguiente." : `Se fabrica en ${est.leadDays} días hábiles.`}
+            {est.fullDays.length > 0 && ` Los días anteriores el taller ya está completo: es la primera fecha con lugar.`}
+          </span>
+        </span>
+      </p>
       <ul className="flex flex-col gap-2.5 text-sm">
-        {rows.map(({ icon: Icon, label, from, to }) => (
-          <li key={label} className="flex items-center gap-3">
-            <Icon size={18} aria-hidden="true" className="shrink-0 text-primary" />
-            <span className="flex-1">{label}</span>
-            <span className="font-bold">{fmt.format(addBusinessDays(DEMO_TODAY, from))} – {fmt.format(addBusinessDays(DEMO_TODAY, to))}</span>
-          </li>
-        ))}
+        {ROWS.map(({ id, icon: Icon, label }) => {
+          const w = windows.find((x) => x.id === id)!;
+          return (
+            <li key={id} className="flex items-center gap-3">
+              <Icon size={18} aria-hidden="true" className="shrink-0 text-primary" />
+              <span className="flex-1">{label}</span>
+              <span className="font-bold">{day(w.from)} – {day(w.to)}</span>
+            </li>
+          );
+        })}
       </ul>
-      <p className="mt-3 text-xs text-muted">Estimado de muestra si comprás hoy (fecha de referencia de la demo).</p>
+      <p className="mt-3 text-xs text-muted">Estimado de muestra si comprás hoy (fecha de referencia de la demo). Se cuentan días hábiles: no suman fines de semana ni feriados.</p>
     </div>
   );
 }

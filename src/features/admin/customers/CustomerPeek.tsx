@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/date";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { useDemoSave } from "../useDemoSave";
+import { profileHref } from "./Reminders";
 
 /** Ficha del cliente: contacto, números, compras, misiones y premios. Nunca contraseñas ni datos de pago. */
 export function CustomerPeek({ customer, onClose }: { customer: CustomerRow | null; onClose: () => void }) {
@@ -33,6 +34,9 @@ export function CustomerPeek({ customer, onClose }: { customer: CustomerRow | nu
             </ul>
           </header>
           <div className="flex flex-col gap-5 p-6">
+            <Link href={profileHref(customer.email)} className="inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-primary px-5 text-sm font-bold text-on-primary hover:bg-primary-hover">
+              Abrir ficha completa: mascotas, notas y recordatorios
+            </Link>
             <div className="grid grid-cols-3 gap-2">{stat("Total pagado", formatARS(customer.totalSpent))}{stat("Pedidos", String(customer.orders.length))}{stat("Ticket prom.", customer.avgTicket ? formatARS(customer.avgTicket) : "—")}</div>
             <section aria-labelledby="c-orders"><h3 id="c-orders" className="mb-2 font-bold">Compras</h3>
               {customer.orders.length ? (

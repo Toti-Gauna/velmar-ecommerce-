@@ -7,6 +7,8 @@ import { EmptyState } from "@/components/molecules/EmptyState";
 import { DataTable } from "@/components/organisms/data-table/DataTable";
 import type { Column, RowCardProps } from "@/components/organisms/data-table/types";
 import { customerRows, type CustomerRow, type CustomerSegment } from "@/demo/admin/customers";
+import { customerReminders } from "@/demo/admin/workshop/reminders";
+import { DEMO_TODAY } from "@/demo/fixtures/admin-orders";
 import { formatDate } from "@/lib/date";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
@@ -16,6 +18,7 @@ import { BulkButton, TabFilter } from "../table/TabFilter";
 import { useExport } from "../table/useExport";
 import { useTableState } from "../table/useTableState";
 import { CustomerPeek } from "./CustomerPeek";
+import { ReminderList } from "./Reminders";
 
 type Tab = "all" | CustomerSegment | "guest";
 const TABS: [Tab, string][] = [["all", "Todos"], ["VIP", "VIP"], ["Recurrente", "Recurrentes"], ["Nuevo", "Nuevos"], ["Sin compras", "Sin compras"], ["guest", "Invitados"]];
@@ -49,6 +52,8 @@ function Card({ row: c, selected, onToggle, onOpen }: RowCardProps<CustomerRow>)
 export function CustomersTable() {
   const users = useAdmin((s) => s.users);
   const orders = useAdmin((s) => s.orders);
+  const products = useAdmin((s) => s.data.products);
+  const { profiles, settings } = useAdmin((s) => s.workshop);
   const push = useToasts((s) => s.push);
   const onExport = useExport("clientes");
   const [tab, setTab] = useState<Tab>("all");
@@ -59,6 +64,7 @@ export function CustomersTable() {
   if (param !== seen) { setSeen(param); setPeek(param); }
   const state = useTableState("customers", { sort: { id: "spent", dir: "desc" }, hidden: ["email", "phone"] });
   const all = customerRows(users, orders);
+  const reminders = customerReminders(all, profiles, products, settings, DEMO_TODAY);
   const copy = async (list: CustomerRow[]) => {
     try { await navigator.clipboard.writeText(list.map((c) => c.email).join(", ")); push({ tone: "success", title: `${list.length} emails copiados`, description: "Listos para pegar en tu correo o en una campaña." }); }
     catch { push({ tone: "error", title: "No se pudo copiar", description: "Tu navegador no dejó usar el portapapeles." }); }
@@ -66,6 +72,13 @@ export function CustomersTable() {
   return (
     <>
       <AdminPageHeader title="Clientes">Cuentas registradas y compradores invitados, unidos por email. Perfiles ficticios: el panel nunca muestra contraseñas ni datos de pago.</AdminPageHeader>
+      {reminders.length > 0 && (
+        <section aria-labelledby="c-remind" className="mb-6">
+          <h2 id="c-remind" className="mb-2 font-bold">Para escribirles (próximos 30 días)</h2>
+          <ReminderList reminders={reminders.slice(0, 4)} showCustomer />
+          {reminders.length > 4 && <p className="mt-2 text-sm text-muted">Y {reminders.length - 4} más en las fichas de cada cliente.</p>}
+        </section>
+      )}
       <div className="mb-4"><TabFilter label="Segmento" value={tab} onChange={(t) => { setTab(t); state.setPage(1); }} tabs={TABS.map(([id, label]) => ({ id, label, count: all.filter((c) => inTab(c, id)).length }))} /></div>
       <DataTable caption="Clientes" noun="clientes" rows={all.filter((c) => inTab(c, tab))} columns={columns} state={state} pageSize={10}
         rowKey={(c) => c.key} rowLabel={(c) => `Seleccionar ${c.name}`} searchText={(c) => `${c.name} ${c.email} ${c.phone ?? ""}`}

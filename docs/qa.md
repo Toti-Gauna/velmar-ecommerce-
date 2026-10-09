@@ -54,6 +54,14 @@
 | ⌘K / Ctrl+K abre un pedido por código | ✅ |
 | Planilla (escritorio): validar al escribir, pegar celdas de Excel, Ctrl+Z / Ctrl+Y, guardar y ver en la tienda | ✅ |
 | Lectura de celdas (montos, stock, sí/no, CSV), mapeo de columnas, plan de importación, orden, búsqueda, stock en lote, clientes y TSV | ✅ unit |
+| 21 rutas del panel (con calendario, producción, costos, insumos y ficha de cliente) abren directo y al refrescar | ✅ |
+| Calendario (escritorio): arrastrar un pedido a un feriado no se aplica; a un día hábil sí; a un día completo avisa "sobrecargado"; el .ics se descarga | ✅ |
+| Reprogramar sin arrastrar (agenda → ficha de entrega → primera fecha libre) saca al pedido de atrasados | ✅ |
+| Capacidad: con 8 y 9/10 completos y el 12/10 feriado, la placa NFC muestra el 13/10; con capacidad 4, el 8/10 | ✅ |
+| Cola de producción: pasar a máquina descuenta insumos (cera 5000 → 3920 g), terminación → Listo | ✅ |
+| Costos: margen de la receta y "Usar precio sugerido" cambia el precio en la tienda | ✅ |
+| Ficha de cliente: mascota con cumpleaños crea recordatorio; notas persisten al recargar | ✅ |
+| Días hábiles y feriados, plazos por variante/producto, capacidad, reprogramación, costos en pesos enteros, insumos comprometidos, tablero, recordatorios, .ics | ✅ unit |
 
 Nota: con emulación móvil, Chrome agranda el viewport de layout si algo desborda. El chequeo anterior
 (`scrollWidth - innerWidth`) podía dar falso negativo; ahora se compara contra el ancho configurado.
@@ -66,6 +74,9 @@ Reglas aprendidas (05/10):
 - Los `fieldset` tienen `min-width: min-content`: en grilla, usar `min-w-0` y `grid-cols-[minmax(0,1fr)]`.
 - iOS (Safari 26): `viewport-fit=cover` + rellenos `env(safe-area-inset-*)`; una franja fija tapa la barra de estado y
   las barras inferiores llegan al borde real de la pantalla.
+- iOS 26 (09/10): Safari no dibuja nada `fixed` por detrás de su barra de direcciones (bug reportado a Apple), así que una
+  barra pegada al borde deja ver la página debajo. Las barras de compra (ficha, carrito) y las pestañas del panel son
+  cápsulas flotantes (`FLOATING_BAR` en `bottomBars.ts`), como la navegación inferior de la tienda.
 - Los carriles horizontales usan `overflow-y-hidden overscroll-x-contain` y aparición sin desplazamiento vertical.
 
 Reglas aprendidas en la ronda anterior:
@@ -99,4 +110,7 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
 - **Temáticas**: fechas aproximadas (las móviles, como Pascuas o Día de la Madre, hay que ajustarlas cada año en el panel). El cupón de una temática se puede escribir a mano fuera de temporada; en producción el servidor validaría la vigencia.
 - **Excel**: se lee y escribe en el navegador con `read-excel-file` y `write-excel-file` (MIT, carga bajo demanda). El CDN de SheetJS está bloqueado desde la sesión de desarrollo. Fórmulas y formatos de celda de la planilla del cliente no se leen: entra el valor calculado.
 - **Deshacer importación**: vuelve al catálogo previo a la importación; lo cambiado después también se revierte (se avisa antes de confirmar).
+- **Feriados**: 2026 según Ley 27.399 y Resolución 164/2025; 2027 sin los días turísticos (se decretan cada año). Se pueden agregar o quitar en "Capacidad y feriados". Verificar contra el calendario oficial antes de producción.
+- **Arrastrar en el celular**: el arrastre es de escritorio (HTML5); en el celular se reprograma desde la ficha de entrega o con los botones del tablero.
+- **Capacidad**: se mide en pedidos por día, no en horas de máquina; un pedido grande ocupa lo mismo que uno chico.
 - **Datos del panel por navegador**: lo que Velmar cambie en su celular no lo ve otra persona; cada navegador arranca de los fixtures.

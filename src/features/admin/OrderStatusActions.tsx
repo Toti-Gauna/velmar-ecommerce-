@@ -1,16 +1,20 @@
 "use client";
+import Link from "next/link";
 import { ConfirmButton } from "@/components/molecules/ConfirmButton";
-import { DateInput } from "@/components/atoms/DateInput";
 import type { AdminOrder } from "@/demo/admin/types";
+import { canReschedule } from "@/demo/engine/delivery";
 import { manualNextStatuses, STATUS_LABEL } from "@/demo/engine/orders";
 import { useAdmin } from "@/stores/admin";
+import { useToasts } from "@/stores/toast";
+import { PickDate } from "./calendar/PickDate";
 import { useDemoSave } from "./useDemoSave";
 
 /** Solo ofrece transiciones válidas (spec 5.2). El cobro se resuelve en "Pagos manuales" o por webhook. */
 export function OrderStatusActions({ order }: { order: AdminOrder }) {
   const transition = useAdmin((s) => s.transition);
   const confirmProvider = useAdmin((s) => s.confirmProvider);
-  const setPromisedDate = useAdmin((s) => s.setPromisedDate);
+  const rescheduleOrder = useAdmin((s) => s.rescheduleOrder);
+  const push = useToasts((s) => s.push);
   const save = useDemoSave();
   const next = manualNextStatuses(order.status, order.fulfillment, order.prevStatus);
   const mpPending = order.paymentMethod === "CHECKOUT_PRO" && order.status === "PENDING_PAYMENT";
@@ -34,10 +38,16 @@ export function OrderStatusActions({ order }: { order: AdminOrder }) {
           </ConfirmButton>
         )}
       </div>
-      <label className="flex max-w-xs flex-col gap-1 text-sm font-bold">
-        Fecha comprometida de producción
-        <DateInput value={order.promisedDate ?? ""} onChange={(e) => e.target.value && save("Fecha comprometida guardada", () => setPromisedDate(order.code, e.target.value))} className="font-semibold" />
-      </label>
+      {canReschedule(order.status) && (
+        <div className="flex max-w-sm flex-col gap-1">
+          <PickDate key={`${order.code}-${order.promisedDate ?? ""}`} id={`promise-${order.code}`} label="Fecha comprometida de entrega" value={order.promisedDate ?? ""} action="Guardar" onPick={(day) => {
+            const r = rescheduleOrder(order.code, day);
+            if (!r.ok) push({ tone: "error", title: "No se puede comprometer esa fecha", description: r.error });
+            else push({ tone: r.warnings.length ? "info" : "success", title: "Fecha comprometida guardada", description: r.warnings.join(" ") || "Cambio guardado solo en esta demo (este navegador)." });
+          }} />
+          <Link href="/admin-demo/calendario/" className="text-xs font-bold text-primary underline">Ver la capacidad en el calendario</Link>
+        </div>
+      )}
     </div>
   );
 }

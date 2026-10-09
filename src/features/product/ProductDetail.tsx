@@ -2,10 +2,12 @@
 import { Eye, ShieldCheck, ShoppingBag, Undo2, Zap } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
+import { FLOATING_BAR } from "@/components/organisms/bottomBars";
 import { StockMeter } from "@/components/molecules/StockMeter";
 import { ProductGallery } from "@/components/organisms/ProductGallery";
 import { availability, getCategory, isPurchasable, maxQuantity, unitPrice, type Availability } from "@/demo/engine/catalog";
 import type { Product } from "@/demo/types";
+import { cn } from "@/lib/cn";
 import { formatARS, withoutNationalTaxes } from "@/lib/money";
 import { useDemoData } from "@/stores/admin";
 import { usePersonalizationDraft } from "../personalize/usePersonalizationDraft";
@@ -74,14 +76,14 @@ export function ProductDetail({ product: initial }: { product: Product }) {
         </div>
         <ConfigureCard product={product} sel={sel} draft={draft} quantity={quantity} max={max} stockNote={stockNote(avail)} onQuantity={setQty} actions={desktopActions} />
         <MissionChip units={quantity} />
-        <DeliveryEstimate makeDays={product.madeToOrderDays ?? 1} />
+        <DeliveryEstimate product={product} variant={sel.variant} />
         <ul className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-muted">
           {TRUST.map(({ icon: Icon, t }) => <li key={t} className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-3"><Icon size={18} aria-hidden="true" className="text-primary" />{t}</li>)}
         </ul>
         <ProductAccordions product={product} />
       </div>
-      <div className="bleed-bottom fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-surface px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.4)] sm:hidden">
-        <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14" />
+      <div data-buy-bar className={cn(FLOATING_BAR, "z-30 sm:hidden")}>
+        <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14 shrink-0" />
         <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="flex-1 justify-between whitespace-nowrap px-5 text-[15px]">
           <span>Agregar al carrito</span>
           <span className="tabular-nums">{formatARS(price * quantity)}</span>

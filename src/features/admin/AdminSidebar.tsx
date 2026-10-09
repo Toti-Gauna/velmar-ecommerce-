@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { LogoMark } from "@/components/atoms/Logo";
 import { cn } from "@/lib/cn";
-import { ADMIN_GROUPS, ADMIN_NAV, isActive } from "./nav";
+import { ADMIN_GROUPS, ADMIN_NAV, BADGE_TEXT, isActive } from "./nav";
 import { useNavCounts } from "./useNavCounts";
 
 /**
@@ -46,8 +46,8 @@ export function SidebarContent({ onNavigate, layoutKey }: { onNavigate?: () => v
                       <span className="relative min-w-0 flex-1 truncate">{item.label}</span>
                       {count > 0 && (
                         <span className={cn("relative grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[11px] font-extrabold tabular-nums",
-                          item.badge === "payments" ? "bg-brass text-night" : item.badge === "stock" ? "bg-warning/80 text-night" : "bg-white/10 text-[#e9e2d3]")}>
-                          {count}<span className="sr-only"> {item.badge === "payments" ? "por revisar" : item.badge === "claims" ? "abiertos" : item.badge === "stock" ? "para reponer" : "en marcha"}</span>
+                          item.badge === "payments" ? "bg-brass text-night" : item.badge === "stock" || item.badge === "materials" ? "bg-warning/80 text-night" : item.badge === "late" ? "bg-danger text-night" : "bg-white/10 text-[#e9e2d3]")}>
+                          {count}<span className="sr-only"> {BADGE_TEXT[item.badge!]}</span>
                         </span>
                       )}
                     </Link>

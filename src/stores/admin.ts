@@ -6,10 +6,11 @@ import { createDataActions, type DataActions } from "@/demo/admin/data-slice";
 import { auditEntry, defaultAdminData, type AdminData } from "@/demo/admin/defaults";
 import { createOrdersActions, type OrdersActions } from "@/demo/admin/orders-slice";
 import type { AdminClaim } from "@/demo/admin/types";
+import { createWorkshopActions, type WorkshopActions } from "@/demo/admin/workshop-slice";
 import { setDemoData, type DemoData } from "@/demo/engine/source";
-import { demoStorage, STORAGE_PREFIX } from "./storage";
+import { ADMIN_STORE_VERSION, demoStorage, STORAGE_PREFIX } from "./storage";
 
-export type AdminState = AdminData & OrdersActions & DataActions & CatalogActions & {
+export type AdminState = AdminData & OrdersActions & DataActions & CatalogActions & WorkshopActions & {
   addClaim: (claim: Omit<AdminClaim, "id" | "status" | "createdAt">) => void;
   resetAdmin: () => void;
 };
@@ -20,11 +21,12 @@ export type AdminState = AdminData & OrdersActions & DataActions & CatalogAction
  */
 export const useAdmin = create<AdminState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...defaultAdminData(),
-      ...createOrdersActions(set),
+      ...createOrdersActions(set, get),
       ...createDataActions(set),
       ...createCatalogActions(set),
+      ...createWorkshopActions(set),
       addClaim: (claim) =>
         set((s) => ({
           claims: [{ ...claim, id: `c-${Date.now().toString(36)}`, status: "OPEN", createdAt: new Date().toISOString(), fromShop: true }, ...s.claims],
@@ -34,7 +36,8 @@ export const useAdmin = create<AdminState>()(
     }),
     {
       name: `${STORAGE_PREFIX}admin`,
-      version: 3,
+      // v4: taller (fechas comprometidas, etapas, insumos, recetas y fichas): la demo vuelve a los datos de muestra.
+      version: ADMIN_STORE_VERSION,
       storage: demoStorage,
       skipHydration: true,
       // Versiones viejas de la demo: se descartan y vuelven a los fixtures.
@@ -42,9 +45,9 @@ export const useAdmin = create<AdminState>()(
       // Campos nuevos de `data` toman el valor por defecto si el estado guardado no los tiene.
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<AdminData>;
-        return { ...current, ...p, data: { ...current.data, ...(p.data ?? {}) } };
+        return { ...current, ...p, data: { ...current.data, ...(p.data ?? {}) }, workshop: { ...current.workshop, ...(p.workshop ?? {}) } };
       },
-      partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport }),
+      partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop }),
     },
   ),
 );

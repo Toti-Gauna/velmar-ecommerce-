@@ -13,6 +13,7 @@ import { ActivityFeed, ClubPerformance, TopProducts } from "./DashboardInsights"
 import { KpiTile } from "./KpiTile";
 import { OrderCard } from "./OrderCard";
 import { StatusPipeline } from "./StatusPipeline";
+import { WorkshopStrip } from "./WorkshopStrip";
 
 const DAY = new Intl.DateTimeFormat("es-AR", { weekday: "short", day: "numeric", timeZone: "America/Argentina/Buenos_Aires" });
 
@@ -48,6 +49,7 @@ export function Dashboard() {
         <div className="mb-3 flex items-end justify-between"><h2 id="pipe" className="font-display text-2xl">Pedidos por estado</h2><Link href="/admin-demo/pedidos/" className="text-sm font-bold text-primary underline">Ver todos</Link></div>
         <div data-tour="pipeline"><StatusPipeline counts={counts} /></div>
       </section>
+      <WorkshopStrip />
       <div className="grid grid-cols-[minmax(0,1fr)] gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <SalesChart title="Ventas de muestra por día (pedidos pagados o posteriores)" bars={sales.days.map((d) => ({ key: d.day, label: DAY.format(new Date(`${d.day}T12:00:00-03:00`)), amount: d.amount, orders: d.orders }))} />
         <TopProducts orders={orders} />

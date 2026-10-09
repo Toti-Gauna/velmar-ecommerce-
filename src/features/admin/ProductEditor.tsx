@@ -55,7 +55,7 @@ function Editor({ product }: { product: Product }) {
             <Select value={d.categorySlug} onChange={(e) => set({ categorySlug: e.target.value })}>{categories.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}</Select>
           </label>
           <NumberField id="p-price" label="Precio base ilustrativo" suffix="ARS" value={d.basePrice} onChange={(n) => set({ basePrice: n })} />
-          <NumberField id="p-days" label="Plazo de fabricación" suffix="días hábiles" value={d.madeToOrderDays} onChange={(n) => set({ madeToOrderDays: n || undefined })} hint="0 = sin plazo informado" />
+          <NumberField id="p-days" label="Plazo de fabricación" suffix="días hábiles" value={d.madeToOrderDays} onChange={(n) => set({ madeToOrderDays: n || undefined })} hint="Lo que tarda el taller desde el pago. Cuenta solo días hábiles (sin feriados) y lo usa el calendario de entregas" />
         </div>
         <div className="flex flex-wrap gap-x-6">
           <Switch checked={d.active !== false} onChange={(v) => set({ active: v })} label="Visible en la tienda" />

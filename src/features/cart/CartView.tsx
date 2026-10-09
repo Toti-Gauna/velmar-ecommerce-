@@ -5,11 +5,13 @@ import { Button, ButtonLink } from "@/components/atoms/Button";
 import { ListSkeleton } from "@/components/atoms/Skeleton";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { OrderSummary } from "@/components/molecules/OrderSummary";
+import { FLOATING_BAR } from "@/components/organisms/bottomBars";
 import { CartLineItem, type CartLineView } from "@/components/organisms/CartLineItem";
 import { getProduct, maxQuantity } from "@/demo/engine/catalog";
 import { missingForFreeShipping, type QuotedLine } from "@/demo/engine/pricing";
 import { recommendForCart } from "@/demo/engine/recommend";
 import { demoData } from "@/demo/engine/source";
+import { cn } from "@/lib/cn";
 import { formatARS } from "@/lib/money";
 import { useDemoVersion } from "@/stores/admin";
 import { useCart } from "@/stores/cart";
@@ -85,7 +87,7 @@ export function CartView() {
         <CartMissionNudge units={quote.units} total={quote.total} />
         <MiniRecommendations title="Completá tu pedido" products={recommendForCart(lines, 6)} />
       </div>
-      <div className="bleed-bottom fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-line bg-surface px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 lg:hidden">
+      <div data-buy-bar className={cn(FLOATING_BAR, "z-30 pl-5 lg:hidden")}>
         <div className="min-w-0 flex-1">
           <p className="text-xs text-muted">Total{quote.couponDiscount > 0 ? " con cupón" : ""} · sin envío</p>
           <p className="text-xl font-extrabold tabular-nums">{formatARS(quote.total)}</p>

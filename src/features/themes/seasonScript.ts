@@ -1,4 +1,5 @@
 import { seasonalThemes, themeSettings } from "@/demo/fixtures/themes";
+import { ADMIN_STORE_VERSION } from "@/stores/storage";
 import { SKINS } from "./skins";
 
 /**
@@ -17,7 +18,7 @@ if(location.pathname.indexOf("/admin-demo")>-1)return;
 var T=${JSON.stringify(defaults)},S=${JSON.stringify(themeSettings)},K=${JSON.stringify(skins)};
 function j(k){try{return JSON.parse(ls.getItem(k)||"null")}catch(e){return null}}
 var pv=j("velmar-demo:theme-preview"),pid=pv&&pv.state?pv.state.previewId:null;
-var ad=j("velmar-demo:admin"),dd=ad&&ad.version===3&&ad.state&&ad.state.data;
+var ad=j("velmar-demo:admin"),dd=ad&&ad.version===${ADMIN_STORE_VERSION}&&ad.state&&ad.state.data;
 if(dd&&dd.themes)T=dd.themes;if(dd&&dd.themeSettings)S=dd.themeSettings;
 var id=null;
 if(pid==="original")id=null;else if(pid)id=pid;else if(S.mode==="fixed")id=S.fixedId;else if(S.mode==="auto"){

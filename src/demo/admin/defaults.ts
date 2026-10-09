@@ -3,6 +3,7 @@ import { defaultDemoData, type DemoData } from "../engine/source";
 import type { OrderStatus } from "../engine/orders";
 import { orderSeeds } from "../fixtures/admin-orders";
 import { adminClaims, adminUsers } from "../fixtures/admin-people";
+import { customerProfiles, materials, recipes, workshopSettings, type CustomerProfile, type Material, type Recipe, type WorkshopSettings } from "../fixtures/workshop";
 import type { ImportSnapshot } from "./catalog-slice";
 import type { AdminClaim, AdminOrder, AdminUser, AuditEntry, StatusLogEntry } from "./types";
 
@@ -14,6 +15,16 @@ export interface AdminData {
   audit: AuditEntry[];
   /** Última importación de Excel, para deshacerla. */
   lastImport: ImportSnapshot | null;
+  /** Taller: calendario y capacidad, insumos, recetas de costo y fichas de clientes (solo del panel). */
+  workshop: WorkshopData;
+}
+
+export interface WorkshopData {
+  settings: WorkshopSettings;
+  materials: Material[];
+  recipes: Record<string, Recipe>;
+  /** Fichas por email en minúsculas. */
+  profiles: Record<string, CustomerProfile>;
 }
 
 const HAPPY_PATH: OrderStatus[] = ["PENDING_PAYMENT", "PAYMENT_REVIEW", "PAID", "IN_PRODUCTION", "READY", "SHIPPED", "DELIVERED"];
@@ -44,6 +55,7 @@ export function defaultAdminData(): AdminData {
     claims: structuredClone(adminClaims),
     audit: [{ id: "a0", at: "2026-10-04T08:00:00-03:00", actor: "Sistema (demo)", action: "Datos de muestra cargados", entity: "Panel" }],
     lastImport: null,
+    workshop: structuredClone({ settings: workshopSettings, materials, recipes, profiles: customerProfiles }),
   };
 }
 
