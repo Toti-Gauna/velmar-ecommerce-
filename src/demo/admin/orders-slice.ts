@@ -6,6 +6,7 @@ import { formatDate } from "@/lib/date";
 import { auditEntry, type AdminData } from "./defaults";
 import type { AdminOrder } from "./types";
 import { consumeMaterials, orderNeeds } from "./workshop/materials";
+import { emailsForOrder, pushOutbox, triggersForNewOrder, triggersForTransition, type OutboxEmail } from "./emails/triggers";
 import { productionMove, PRODUCTION_COLUMNS, type ProductionColumn } from "./workshop/production";
 
 type Set = (fn: (s: AdminData) => Partial<AdminData>) => void;
@@ -32,6 +33,7 @@ function move(set: Set, code: string, to: OrderStatus, trigger: TransitionTrigge
   let ok = false;
   set((s) => {
     let materials = s.workshop.materials;
+    let mails: OutboxEmail[] = [];
     const orders = s.orders.map((o) => {
       if (o.code !== code || !canTransition(o.status, to, { fulfillment: o.fulfillment, trigger, prevStatus: o.prevStatus })) return o;
       ok = true;
@@ -42,9 +44,11 @@ function move(set: Set, code: string, to: OrderStatus, trigger: TransitionTrigge
       if (to === "IN_PRODUCTION" && o.status === "PAID") materials = consumeMaterials(materials, orderNeeds(o.lines, s.workshop.recipes));
       // La etapa se conserva durante un reclamo para volver a la misma columna; se borra al salir de producción.
       if (to !== "IN_PRODUCTION" && to !== "IN_CLAIM") delete next.stage;
+      // Emails automáticos del cambio de estado (bandeja de salida simulada).
+      mails = emailsForOrder(s.emails.templates, triggersForTransition(o.status, to), next, new Date().toISOString());
       return next;
     });
-    return ok ? { orders, workshop: { ...s.workshop, materials }, audit: [auditEntry(action, code), ...s.audit].slice(0, 80) } : {};
+    return ok ? { orders, workshop: { ...s.workshop, materials }, emails: { ...s.emails, outbox: pushOutbox(s.emails.outbox, mails) }, audit: [auditEntry(action, code), ...s.audit].slice(0, 80) } : {};
   });
   return ok;
 }
@@ -60,7 +64,8 @@ export function createOrdersActions(set: Set, get: () => AdminData): OrdersActio
           status: "PENDING_PAYMENT", fulfillment: order.fulfillment, paymentMethod: order.paymentMethod, lines: order.lines,
           total: order.quote.total, notes: [], fromShop: true, promisedDate: promiseFor(order.lines, DEMO_TODAY, s.orders, s.workshop.settings, order.code).day, log: [{ at: order.createdAt, from: null, to: "PENDING_PAYMENT", note: "Checkout de demostración" }],
         };
-        return { orders: [created, ...s.orders.filter((o) => o.code !== order.code)] };
+        const mails = emailsForOrder(s.emails.templates, triggersForNewOrder(created), created, order.createdAt);
+        return { orders: [created, ...s.orders.filter((o) => o.code !== order.code)], emails: { ...s.emails, outbox: pushOutbox(s.emails.outbox, mails) } };
       }),
     receiveProof: (code, fileName) =>
       move(set, code, "PAYMENT_REVIEW", "proof-received", () => ({ proof: { fileName, receivedAt: new Date().toISOString(), status: "IN_REVIEW" } }), `Comprobante recibido (${fileName}): queda en revisión`),

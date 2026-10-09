@@ -62,6 +62,11 @@
 | Costos: margen de la receta y "Usar precio sugerido" cambia el precio en la tienda | ✅ |
 | Ficha de cliente: mascota con cumpleaños crea recordatorio; notas persisten al recargar | ✅ |
 | Días hábiles y feriados, plazos por variante/producto, capacidad, reprogramación, costos en pesos enteros, insumos comprometidos, tablero, recordatorios, .ics | ✅ unit |
+| Compra en la tienda → "Gracias por tu compra" y "Recibimos tu diseño" en la bandeja, con productos y personalización | ✅ |
+| Pasar a producción manda su email; una plantilla pausada no sale | ✅ |
+| Editor (escritorio): insertar ficha con un toque, vista previa con datos reales sin llaves, guardar, recargar y enviar prueba | ✅ |
+| Cumpleaños de mascota: "Enviar email" desde los recordatorios de Clientes | ✅ |
+| Fichas resueltas, montos y fechas, datos faltantes con texto natural, bloques sin pedido omitidos, disparadores, pausa, límite de la bandeja, prueba, restaurar | ✅ unit |
 
 Nota: con emulación móvil, Chrome agranda el viewport de layout si algo desborda. El chequeo anterior
 (`scrollWidth - innerWidth`) podía dar falso negativo; ahora se compara contra el ancho configurado.
@@ -112,5 +117,6 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
 - **Deshacer importación**: vuelve al catálogo previo a la importación; lo cambiado después también se revierte (se avisa antes de confirmar).
 - **Feriados**: 2026 según Ley 27.399 y Resolución 164/2025; 2027 sin los días turísticos (se decretan cada año). Se pueden agregar o quitar en "Capacidad y feriados". Verificar contra el calendario oficial antes de producción.
 - **Arrastrar en el celular**: el arrastre es de escritorio (HTML5); en el celular se reprograma desde la ficha de entrega o con los botones del tablero.
+- **Emails**: no sale ninguno. La bandeja guarda hasta 60 en este navegador. El editor de fichas usa `contentEditable`; en producción el HTML lo arma React Email (con tablas y estilos en línea para clientes de correo).
 - **Capacidad**: se mide en pedidos por día, no en horas de máquina; un pedido grande ocupa lo mismo que uno chico.
 - **Datos del panel por navegador**: lo que Velmar cambie en su celular no lo ve otra persona; cada navegador arranca de los fixtures.

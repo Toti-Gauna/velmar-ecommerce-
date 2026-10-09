@@ -3,9 +3,11 @@ import { defaultDemoData, type DemoData } from "../engine/source";
 import type { OrderStatus } from "../engine/orders";
 import { orderSeeds } from "../fixtures/admin-orders";
 import { adminClaims, adminUsers } from "../fixtures/admin-people";
+import { emailTemplates, type EmailTemplate } from "../fixtures/emails";
 import { customerProfiles, materials, recipes, workshopSettings, type CustomerProfile, type Material, type Recipe, type WorkshopSettings } from "../fixtures/workshop";
 import type { ImportSnapshot } from "./catalog-slice";
 import type { AdminClaim, AdminOrder, AdminUser, AuditEntry, StatusLogEntry } from "./types";
+import { emailsForOrder, OUTBOX_LIMIT, triggersForNewOrder, triggersForTransition, type OutboxEmail } from "./emails/triggers";
 
 export interface AdminData {
   data: DemoData;
@@ -17,6 +19,22 @@ export interface AdminData {
   lastImport: ImportSnapshot | null;
   /** Taller: calendario y capacidad, insumos, recetas de costo y fichas de clientes (solo del panel). */
   workshop: WorkshopData;
+  /** Emails automáticos: plantillas y bandeja de salida simulada (nada se envía). */
+  emails: EmailsData;
+}
+
+export interface EmailsData {
+  templates: EmailTemplate[];
+  outbox: OutboxEmail[];
+}
+
+/** Historial de muestra: los emails que habrían salido con cada paso de los pedidos sembrados. */
+function seedOutbox(orders: AdminOrder[], templates: EmailTemplate[]): OutboxEmail[] {
+  const sent = orders.flatMap((o) => [
+    ...emailsForOrder(templates, triggersForNewOrder(o), o, o.createdAt),
+    ...o.log.flatMap((l) => (l.from ? emailsForOrder(templates, triggersForTransition(l.from, l.to), { ...o, status: l.to }, l.at) : [])),
+  ]);
+  return sent.sort((a, b) => Date.parse(b.at) - Date.parse(a.at)).slice(0, OUTBOX_LIMIT);
 }
 
 export interface WorkshopData {
@@ -45,17 +63,20 @@ function seedLog(o: (typeof orderSeeds)[number]): StatusLogEntry[] {
 
 export function defaultAdminData(): AdminData {
   const data = defaultDemoData();
+  const orders: AdminOrder[] = orderSeeds.map((o) => ({
+    ...o, notes: o.notes ?? [], log: o.log ?? seedLog(o),
+    total: quoteCart(o.lines, { fulfillment: o.fulfillment, paymentMethod: o.paymentMethod }).total,
+  }));
+  const templates = structuredClone(emailTemplates);
   return {
     data,
-    orders: orderSeeds.map((o) => ({
-      ...o, notes: o.notes ?? [], log: o.log ?? seedLog(o),
-      total: quoteCart(o.lines, { fulfillment: o.fulfillment, paymentMethod: o.paymentMethod }).total,
-    })),
+    orders,
     users: structuredClone(adminUsers),
     claims: structuredClone(adminClaims),
     audit: [{ id: "a0", at: "2026-10-04T08:00:00-03:00", actor: "Sistema (demo)", action: "Datos de muestra cargados", entity: "Panel" }],
     lastImport: null,
     workshop: structuredClone({ settings: workshopSettings, materials, recipes, profiles: customerProfiles }),
+    emails: { templates, outbox: seedOutbox(orders, templates) },
   };
 }
 

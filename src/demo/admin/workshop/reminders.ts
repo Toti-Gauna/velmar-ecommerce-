@@ -20,6 +20,8 @@ export interface Reminder {
   title: string;
   /** Mensaje sugerido para copiar en WhatsApp o email. */
   message: string;
+  /** Mascota del recordatorio (para el email de cumpleaños). */
+  petId?: string;
 }
 
 export const REMINDER_HORIZON = 30;
@@ -37,7 +39,7 @@ export function remindersFor(customer: CustomerRow, profile: CustomerProfile | u
   const key = customer.email.toLowerCase();
   const push = (kind: ReminderKind, id: string, date: string, title: string, message: string) => {
     const inDays = daysBetween(today, date);
-    if (inDays <= horizon) out.push({ id: `${key}:${kind}:${id}`, email: customer.email, name: customer.name, kind, date, inDays, title, message });
+    if (inDays <= horizon) out.push({ id: `${key}:${kind}:${id}`, email: customer.email, name: customer.name, kind, date, inDays, title, message, ...(kind === "pet-birthday" ? { petId: id } : {}) });
   };
   for (const pet of profile?.pets ?? []) {
     if (!pet.birthday) continue;
