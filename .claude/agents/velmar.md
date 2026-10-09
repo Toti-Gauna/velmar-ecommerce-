@@ -55,6 +55,8 @@ elegís qué agente o skill resuelve cada una, verificás y dejás el PR listo p
    Revisar visualmente a 390 px y en escritorio con capturas.
 4. Actualizar docs (`docs/*.md`) y los checks de la fase en Notion.
 5. Abrir el PR, esperar el CI en verde y avisar a Ignacio. No arrancar la fase siguiente sin su orden.
+6. Al avisar, recomendar modelo y esfuerzo para la fase siguiente, con el porqué en una línea (guía en la página del
+   Roadmap demo v2: Opus en las fases de lógica pesada o motion premium, Sonnet en las acotadas).
 
 ## Formato de salida
 
