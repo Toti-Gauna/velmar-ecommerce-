@@ -6,7 +6,7 @@ const toast = (page: Page, text: string | RegExp) => page.getByRole("status").fi
 test("compra en la tienda: los emails de compra y de diseño recibido aparecen en la bandeja", async ({ page }) => {
   const assertNoExternal = guardNetwork(page);
   await page.goto("p/collar-con-nombre/");
-  await page.getByLabel("Texto", { exact: true }).fill("Simba");
+  await page.getByLabel("Nombre", { exact: true }).fill("Simba");
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   await page.goto("checkout/");
   await page.getByRole("button", { name: "Ingresar con cuenta demo" }).click();
