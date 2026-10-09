@@ -3,6 +3,7 @@ import type Konva from "konva";
 import { useEffect, useRef, useState } from "react";
 import type { LinePersonalization } from "@/demo/engine/cart-types";
 import { defaultCollarConfig, type CollarConfig, type CollarPreset } from "@/demo/fixtures/collar";
+import { sizeInSpec } from "@/demo/engine/collar";
 import { validateText } from "@/demo/engine/personalization";
 import type { PersonalizationTemplate } from "@/demo/types";
 import type { PhotoDraft } from "./PhotoControls";
@@ -23,7 +24,9 @@ export function usePersonalizationDraft(tmpl: PersonalizationTemplate | undefine
   const stageRef = useRef<Konva.Stage | null>(null);
   useEffect(() => () => { if (photo.url) URL.revokeObjectURL(photo.url); }, [photo.url]);
 
+  const neckOut = !!tmpl?.collar && collar.neckCm !== undefined && !sizeInSpec(tmpl.collar, collar.neckCm);
   const problem = !tmpl ? null
+    : neckOut ? "Ese contorno de cuello queda fuera de los talles: escribinos por WhatsApp y lo hacemos a medida."
     : tmpl.kind === "TEXT" ? validateText(text.text, tmpl.maxChars ?? 12)
     : tmpl.kind === "PHOTO" ? (photo.url ? null : "Subí una foto para armar la vista previa.")
     : !ref.draft.thumbnail ? "Subí la foto de referencia." : ref.draft.notes.trim().length < 10 ? "Contanos un poco más en las notas (mínimo 10 caracteres)." : null;

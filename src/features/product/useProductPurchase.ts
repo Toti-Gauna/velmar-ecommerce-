@@ -1,4 +1,5 @@
 "use client";
+import { scrollBehavior } from "@/lib/scroll";
 import { useRouter } from "next/navigation";
 import type { Product, Variant } from "@/demo/types";
 import { useCart } from "@/stores/cart";
@@ -17,7 +18,7 @@ export function useProductPurchase(product: Product, variant: Variant, quantity:
 
   const focus = (id: string) => {
     const el = document.getElementById(id);
-    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    el?.scrollIntoView({ behavior: scrollBehavior(), block: "center" });
     window.setTimeout(() => el?.focus({ preventScroll: true }), 350);
   };
 

@@ -34,7 +34,8 @@ export function ConfigureCard({ product, sel, draft, quantity, max, stockNote, o
       {(sel.colorOptions.length > 0 || sel.sizeOptions.length > 0) && (
         <div className="flex flex-col gap-5">
           {sel.colorOptions.length > 0 && <VariantPicker legend="Color" options={sel.colorOptions} value={sel.color} onChange={sel.chooseColor} swatches />}
-          {sel.sizeOptions.length > 0 && <VariantPicker legend="Opción" options={sel.sizeOptions} value={sel.size} onChange={sel.chooseSize} />}
+          {sel.sizeOptions.length > 0 && <VariantPicker legend={tmpl?.collar ? "Talle" : "Opción"} options={sel.sizeOptions} value={sel.size}
+            onChange={(size) => { sel.chooseSize(size); if (draft.collar?.neckCm !== undefined) draft.setCollar({ ...draft.collar, neckCm: undefined }); }} />}
         </div>
       )}
       {tmpl && (

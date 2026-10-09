@@ -38,7 +38,10 @@ interface Props {
 
 /** Opciones del collar: formato del nombre, color del cordón, material, dije y talle por centímetros de cuello. */
 export function CollarFields({ spec, product, config, onChange, variantId, onSize }: Props) {
+  // El texto del campo sigue a la configuración: si cambia desde afuera (combinación lista, talle elegido a mano) se actualiza.
   const [neck, setNeck] = useState(config.neckCm ? String(config.neckCm) : "");
+  const [seen, setSeen] = useState(config.neckCm);
+  if (config.neckCm !== seen) { setSeen(config.neckCm); setNeck(config.neckCm ? String(config.neckCm).replace(".", ",") : ""); }
   const cordName = useId();
   const cm = Number(neck.replace(",", "."));
   const fit = neck ? sizeForNeck(spec, product, cm) : null;
@@ -64,13 +67,17 @@ export function CollarFields({ spec, product, config, onChange, variantId, onSiz
       <div className="rounded-2xl bg-bg p-3">
         <label htmlFor="p-neck" className="flex items-center gap-2 text-sm font-bold"><Ruler size={16} aria-hidden="true" className="text-primary" /> Contorno de cuello</label>
         <div className="mt-2 flex items-center gap-2">
-          <input id="p-neck" type="number" inputMode="decimal" min={15} max={80} placeholder={range ? `${range.min}–${range.max}` : "38"} value={neck}
+          <input id="p-neck" type="text" inputMode="decimal" aria-invalid={Boolean(neck && !fit)} placeholder={range ? `${range.min}–${range.max}` : "38"} value={neck}
             aria-describedby="p-neck-hint"
             onChange={(e) => {
               setNeck(e.target.value);
-              const n = Number(e.target.value.replace(",", "."));
-              const v = sizeForNeck(spec, product, n);
-              if (v) { onSize(v); set({ neckCm: Math.round(n) }); } else set({ neckCm: undefined });
+              const raw = e.target.value.trim();
+              const n = Number(raw.replace(",", "."));
+              const neckCm = raw && Number.isFinite(n) ? Math.round(n * 2) / 2 : undefined;
+              setSeen(neckCm);
+              const v = neckCm !== undefined ? sizeForNeck(spec, product, neckCm) : null;
+              if (v) onSize(v);
+              set({ neckCm });
             }}
             className="h-11 w-24 rounded-xl border border-ink/12 bg-surface px-3 text-right font-bold tabular-nums" />
           <span className="text-sm text-muted">cm</span>

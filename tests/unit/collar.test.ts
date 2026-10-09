@@ -25,6 +25,12 @@ describe("configurador de collar", () => {
     expect(sizeForNeck(collarSpec, product, 55)).toBe("col-l");
     expect(sizeForNeck(collarSpec, product, 80)).toBeNull();
     expect(sizeForNeck(collarSpec, product, Number.NaN)).toBeNull();
+    // Sin huecos entre talles: 27,5 cm (entre 27 y 28) cae en un talle; los extremos quedan afuera.
+    expect(sizeForNeck(collarSpec, product, 27.5)).toBe("col-xs");
+    expect(sizeForNeck(collarSpec, product, 35.5)).toBe("col-s");
+    expect(sizeForNeck(collarSpec, product, 65.5)).toBe("col-xl");
+    expect(sizeForNeck(collarSpec, product, 19.5)).toBeNull();
+    expect(sizeForNeck(collarSpec, product, 66)).toBeNull();
   });
   it("descripción para el taller y piezas a imprimir", () => {
     expect(describeCollar(collarSpec, { ...defaultCollarConfig, neckCm: 38 })).toBe("Letras sueltas · Paracord trenzado verde oliva · dije patita · cuello 38 cm");

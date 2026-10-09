@@ -22,7 +22,7 @@ export function ThemeToggle({ className, withLabel }: { className?: string; with
   const label = dark ? "Activar modo claro" : "Activar modo oscuro";
   return (
     <button type="button" onClick={toggle} aria-label={label} aria-pressed={dark} title={label}
-      className={cn("inline-flex items-center gap-2 transition-colors", className)}>
+      className={cn("transition-colors", withLabel ? "inline-flex items-center gap-2" : "grid place-items-center", className)}>
       {dark ? <Sun size={withLabel ? 18 : 20} aria-hidden="true" /> : <Moon size={withLabel ? 18 : 20} aria-hidden="true" />}
       {withLabel && <span>{dark ? "Modo claro" : "Modo oscuro"}</span>}
     </button>

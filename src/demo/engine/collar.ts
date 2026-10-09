@@ -11,9 +11,16 @@ export function collarSurcharge(spec: CollarSpec | undefined, config: CollarConf
 
 /** Talle (variante) para un contorno de cuello; null si está fuera de los talles (se hace a medida por WhatsApp). */
 export function sizeForNeck(spec: CollarSpec, product: Product, cm: number): string | null {
+  const id = sizeInSpec(spec, cm);
+  return id && product.variants.some((v) => v.id === id) ? id : null;
+}
+
+/** Talle por contorno con rangos sin huecos: cada talle va desde su mínimo hasta el mínimo del siguiente (27,5 cm cae en un talle). */
+export function sizeInSpec(spec: CollarSpec, cm: number): string | null {
   if (!Number.isFinite(cm)) return null;
-  const size = spec.sizes.find((s) => cm >= s.min && cm <= s.max && product.variants.some((v) => v.id === s.variantId));
-  return size?.variantId ?? null;
+  const sizes = [...spec.sizes].sort((a, b) => a.min - b.min);
+  const i = sizes.findIndex((s, k) => cm >= s.min && cm < (sizes[k + 1]?.min ?? s.max + 1));
+  return i >= 0 ? sizes[i]!.variantId : null;
 }
 
 export function neckRange(spec: CollarSpec, variantId: string): { min: number; max: number } | null {

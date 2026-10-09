@@ -1,4 +1,5 @@
 "use client";
+import { scrollBehavior } from "@/lib/scroll";
 import { Camera, Sparkles } from "lucide-react";
 import { CollarPreview } from "@/components/illustrations/CollarPreview";
 import { collarPresets, type CollarPreset } from "@/demo/fixtures/collar";
@@ -23,7 +24,7 @@ export function CollarInspiration({ spec, onPick }: { spec: CollarSpec; onPick: 
         {collarPresets.map((p) => (
           <li key={p.id} className="w-[11.5rem] shrink-0 snap-start">
             <button type="button" aria-label={`Usar la combinación ${p.title}: ${p.name}, ${describeCollar(spec, p.config)}`}
-              onClick={() => { onPick(p); push({ tone: "success", title: `Cargamos “${p.title}”`, description: "Cambiá el nombre o lo que quieras: la vista previa se actualiza en vivo." }); document.getElementById("personalizar")?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+              onClick={() => { onPick(p); push({ tone: "success", title: `Cargamos “${p.title}”`, description: "Cambiá el nombre o lo que quieras: la vista previa se actualiza en vivo." }); document.getElementById("personalizar")?.scrollIntoView({ behavior: scrollBehavior(), block: "start" }); }}
               className="group flex w-full flex-col overflow-hidden rounded-3xl bg-bg text-left ring-1 ring-ink/[0.06] transition-shadow hover:shadow-[var(--shadow-card)] hover:ring-primary">
               <CollarPreview compact text={p.name} font={FONT_FAMILIES[p.font] ?? FONT_FAMILIES.Redondeada!} letterColor={p.letterColor} config={p.config} className="aspect-square w-full bg-[radial-gradient(120%_90%_at_50%_0%,#fffaf1,#efe6d4)]" label="" />
               <span className="flex flex-col gap-0.5 p-3">

@@ -170,13 +170,13 @@ export function CollarPreview({ text, font, letterColor, config, className, labe
           <g className="collar-swing" style={{ transformOrigin: `${cx}px ${cy}px`, transformBox: "view-box" }} filter={`url(#${uid}-drop)`}>
             <circle cx={cx} cy={cy + 14} r="5" fill="none" stroke="#b9b4a8" strokeWidth="2.2" />
             <path transform={`translate(${cx} ${cy + 56})`} d="M-62 -14a13 13 0 1 1 13-13h98a13 13 0 1 1 13 13v28a13 13 0 1 1-13 13h-98a13 13 0 1 1-13-13z" fill="#fbf6ea" stroke="#cdbf9f" strokeWidth="2" />
-            <text x={cx} y={cy + 57} textAnchor="middle" fontSize="23" fontWeight="800" fill={letterColor === "#ffffff" ? "#3d4a2a" : letterColor} style={{ fontFamily: font }}>{name}</text>
+            <text x={cx} y={cy + 57} textAnchor="middle" fontSize="23" fontWeight="800" fill={isLight(letterColor) ? "#3d4a2a" : letterColor} style={{ fontFamily: font }}>{name}</text>
             <text x={cx} y={cy + 74} textAnchor="middle" fontSize="11" fontWeight="700" fill="#8a8170">Tel. 223 ··· ····</text>
           </g>
         )}
         <Charm kind={config.charm} x={charmAt[0]} y={charmAt[1]} uid={uid} />
       </svg>
-      {!compact && <span className="absolute bottom-3 left-3 rounded-full bg-white/80 px-2.5 py-0.5 text-[11px] font-semibold text-muted">Vista previa ilustrativa</span>}
+      {!compact && <span className="absolute bottom-3 left-3 rounded-full bg-white/85 px-2.5 py-0.5 text-[11px] font-semibold text-[#4f5545]">Vista previa ilustrativa</span>}
     </div>
   );
 }

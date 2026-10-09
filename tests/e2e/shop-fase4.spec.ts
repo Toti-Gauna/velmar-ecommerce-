@@ -3,6 +3,11 @@ import { guardNetwork } from "./helpers";
 
 const sounds = (page: Page) => page.evaluate(() => window.__velmarSounds ?? []);
 
+// El registro de sonidos solo existe si la página lo pide: se crea antes de cada carga.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => { window.__velmarSounds = []; });
+});
+
 test("configurador de collar: formato, cordón, material y talle por cuello cambian la vista previa y el precio", async ({ page }) => {
   const assertNoExternal = guardNetwork(page);
   await page.goto("p/collar-con-nombre/");
@@ -22,8 +27,10 @@ test("configurador de collar: formato, cordón, material y talle por cuello camb
   await expect(page.getByText(/Te corresponde Mediano \(36–45 cm\)/)).toBeVisible();
   await expect(page.getByText(/\$\s?20\.900/).first()).toBeVisible();
   await page.getByLabel("Contorno de cuello").fill("90");
-  await expect(page.getByText(/fuera de los talles/)).toBeVisible();
+  await expect(page.getByText(/fuera de los talles/).first()).toBeVisible();
+  await expect(page.getByLabel("Contorno de cuello")).toHaveAttribute("aria-invalid", "true");
   await page.getByLabel("Contorno de cuello").fill("40");
+  await expect(page.getByLabel("Contorno de cuello")).toHaveAttribute("aria-invalid", "false");
 
   await page.getByRole("button", { name: /Agregar al carrito/ }).last().click();
   await page.goto("carrito/");
@@ -72,15 +79,16 @@ test("sonidos: suenan al agregar y en favoritos; el silencio se recuerda", async
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   expect(await sounds(page)).toContain("add");
   await page.keyboard.press("Escape");
-  const toggle = page.getByRole("button", { name: "Silenciar los sonidos" });
+  const toggle = page.getByRole("button", { name: "Sonidos", exact: true });
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
   await toggle.click();
-  await expect(page.getByRole("button", { name: "Activar los sonidos" })).toHaveAttribute("aria-pressed", "false");
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
   await page.reload();
-  await expect(page.getByRole("button", { name: "Activar los sonidos" })).toBeVisible();
-  await page.evaluate(() => { window.__velmarSounds = []; });
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
   await page.getByRole("button", { name: /favoritos/i }).first().click();
   expect(await sounds(page)).toEqual([]);
-  await page.getByRole("button", { name: "Activar los sonidos" }).click();
+  await toggle.click();
+  await page.evaluate(() => { window.__velmarSounds = []; });
   await page.getByRole("button", { name: /favoritos/i }).first().click();
   expect(await sounds(page)).toContain("unfavorite");
 });

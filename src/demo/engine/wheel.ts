@@ -23,6 +23,24 @@ export function rotationFor(index: number, count: number, turns = 6, jitter = 0.
   return turns * 360 + (360 - center) + offset;
 }
 
+const mod360 = (a: number) => ((a % 360) + 360) % 360;
+
+/** Gajo que queda bajo el puntero de arriba para una rotación dada (grados, sentido horario). */
+export function segmentAt(rotation: number, count: number): number {
+  return Math.floor(mod360(360 - mod360(rotation)) / (360 / count)) % count;
+}
+
+/**
+ * Rotación final para que, partiendo de `current` y girando `turns` vueltas hacia `dir` (1 horario, -1 antihorario),
+ * el gajo `index` quede bajo el puntero. `jitter` (0–1) corre el punto de frenado dentro del gajo.
+ */
+export function landingRotation(current: number, index: number, count: number, dir: 1 | -1, turns: number, jitter = 0.5): number {
+  const slice = 360 / count;
+  const desired = mod360(360 - (index * slice + slice / 2) + (jitter - 0.5) * slice * 0.6);
+  const base = current + dir * turns * 360;
+  return dir > 0 ? base + mod360(desired - mod360(base)) : base - mod360(mod360(base) - desired);
+}
+
 export function probability(config: WheelConfig, segment: WheelSegment): number {
   const total = config.segments.filter((s) => s.active).reduce((sum, s) => sum + s.weight, 0);
   return segment.active && total > 0 ? segment.weight / total : 0;

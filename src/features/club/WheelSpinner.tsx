@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { Button } from "@/components/atoms/Button";
 import { LogoMark } from "@/components/atoms/Logo";
 import { Celebration } from "@/components/molecules/Celebration";
-import { pickSegment, prizeCoupon } from "@/demo/engine/wheel";
+import { landingRotation, pickSegment, prizeCoupon, segmentAt } from "@/demo/engine/wheel";
 import { formatDate } from "@/lib/date";
 import { playSound } from "@/lib/sound";
 import { useAccount } from "@/stores/account";
@@ -24,18 +24,12 @@ interface Props {
 }
 
 const BULBS = 24;
-const mod360 = (a: number) => ((a % 360) + 360) % 360;
-
-/** Gajo que queda bajo el puntero de arriba para una rotación dada (sentido horario). */
-export function segmentAt(rotation: number, count: number): number {
-  return Math.floor(mod360(360 - mod360(rotation)) / (360 / count)) % count;
-}
 
 export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
   const wheel = useDemoData((d) => d.wheel);
   const coupons = useDemoData((d) => d.coupons);
   const addPrizeCoupon = useAdmin((s) => s.addPrizeCoupon);
-  const { wheelPrize, setWheelPrize } = useAccount();
+  const { wheelPrize, setWheelPrize, setWheelSpinning } = useAccount();
   const setCoupon = useCart((s) => s.setCoupon);
   const toast = useToasts((s) => s.push);
   const reduce = useReducedMotion();
@@ -44,11 +38,15 @@ export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
   const [spinning, setSpinning] = useState(false);
   const [justWon, setJustWon] = useState(false);
   const disc = useRef<HTMLDivElement>(null);
-  const drag = useRef<{ last: number; acc: number; start: number; at: number; samples: { t: number; r: number }[] } | null>(null);
+  const drag = useRef<{ id: number; last: number; acc: number; start: number; samples: { t: number; r: number }[] } | null>(null);
   const spinningRef = useRef(false);
+  const mounted = useRef(true);
+  useEffect(() => () => { mounted.current = false; useAccount.getState().setWheelSpinning(false); }, []);
   const prize = wheelPrize ? coupons.find((c) => c.code === wheelPrize.code) : undefined;
   const count = wheel.segments.length;
   const canSpin = wheel.active && !wheelPrize && !spinning;
+  // Mientras gira, el premio ya está guardado pero no se muestra hasta que frena.
+  const shown = spinning ? null : wheelPrize;
 
   // Clic de cada casilla y golpecito del puntero cuando pasa un gajo (también al arrastrar con el dedo).
   useEffect(() => {
@@ -66,24 +64,24 @@ export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
 
   /** Gira hacia `dir` con la fuerza del gesto; el premio lo decide el sorteo ponderado y el frenado lo lleva ahí. */
   const spin = async (dir: 1 | -1 = 1, speed = 1) => {
-    if (spinningRef.current || wheelPrize || !wheel.active) return;
+    if (spinningRef.current || useAccount.getState().wheelPrize || !wheel.active) return;
     const pick = pickSegment(wheel);
     if (!pick) return;
     spinningRef.current = true;
     setSpinning(true);
-    playSound("spin");
-    const slice = 360 / count;
-    const desired = mod360(360 - (pick.index * slice + slice / 2) + (Math.random() - 0.5) * slice * 0.6);
-    const turns = Math.min(8, Math.max(3, Math.round(2 + speed * 2.4)));
-    const current = rotate.get();
-    const base = current + dir * turns * 360;
-    const target = dir > 0 ? base + mod360(desired - mod360(base)) : base - mod360(mod360(base) - desired);
-    await animate(rotate, target, { duration: reduce ? 0 : Math.min(6.2, 3.2 + turns * 0.35), ease: [0.1, 0.72, 0.16, 1] });
+    setWheelSpinning(true);
+    // El premio se guarda antes de la animación (que es solo visual): cerrar la ruleta a mitad de giro no da otro giro.
     const coupon = prizeCoupon(pick.segment, Math.random().toString(36).slice(2, 7), new Date(), wheel.validDays);
     addPrizeCoupon(coupon);
     setWheelPrize({ code: coupon.code, label: pick.segment.label, at: new Date().toISOString() });
+    playSound("spin");
+    const turns = Math.min(8, Math.max(3, Math.round(2 + speed * 2.4)));
+    const target = landingRotation(rotate.get(), pick.index, count, dir, turns, Math.random());
+    await animate(rotate, target, { duration: reduce ? 0 : Math.min(6.2, 3.2 + turns * 0.35), ease: [0.1, 0.72, 0.16, 1] });
+    if (!mounted.current) return;
     spinningRef.current = false;
     setSpinning(false);
+    setWheelSpinning(false);
     setJustWon(true);
     playSound("win");
   };
@@ -93,14 +91,15 @@ export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
     return (Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180) / Math.PI;
   };
   const onDown = (e: PointerEvent<HTMLDivElement>) => {
-    if (!canSpin) return;
+    // Solo el botón principal y un dedo a la vez (un segundo dedo o el clic derecho no mezclan el gesto).
+    if (!canSpin || e.button !== 0 || drag.current) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     const a = angleOf(e);
-    drag.current = { last: a, acc: 0, start: rotate.get(), at: performance.now(), samples: [{ t: performance.now(), r: rotate.get() }] };
+    drag.current = { id: e.pointerId, last: a, acc: 0, start: rotate.get(), samples: [{ t: performance.now(), r: rotate.get() }] };
   };
   const onMove = (e: PointerEvent<HTMLDivElement>) => {
     const d = drag.current;
-    if (!d) return;
+    if (!d || e.pointerId !== d.id) return;
     const a = angleOf(e);
     let delta = a - d.last;
     if (delta > 180) delta -= 360;
@@ -111,10 +110,10 @@ export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
     const now = performance.now();
     d.samples = [...d.samples.filter((s) => now - s.t < 90), { t: now, r: d.start + d.acc }];
   };
-  const onUp = () => {
+  const onUp = (e: PointerEvent<HTMLDivElement>) => {
     const d = drag.current;
+    if (!d || e.pointerId !== d.id) return;
     drag.current = null;
-    if (!d) return;
     const first = d.samples[0]!, last = d.samples.at(-1)!;
     const velocity = last.t > first.t ? (last.r - first.r) / (last.t - first.t) : 0; // grados por ms
     // Un toque (casi sin arrastre) gira con la fuerza normal; un empujón gira hacia donde se tiró.
@@ -135,9 +134,9 @@ export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
               className={justWon ? "bulb-win" : spinning ? "bulb-chase" : undefined} style={spinning ? { animationDelay: `${(i % 6) * -0.083}s` } : undefined} opacity={spinning || justWon ? 1 : i % 2 ? 0.45 : 0.85} />;
           })}
         </svg>
-        <motion.div ref={disc} style={{ rotate, touchAction: "none" }} role="button" tabIndex={canSpin ? 0 : -1}
+        <motion.div ref={disc} style={{ rotate, touchAction: "pan-y" }} role="button" tabIndex={canSpin ? 0 : -1}
           aria-label={canSpin ? "Ruleta: tocala o arrastrala para girar" : "Ruleta"} aria-disabled={!canSpin}
-          onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={() => { drag.current = null; }}
+          onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={() => { if (drag.current) rotate.set(drag.current.start); drag.current = null; }}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); void spin(); } }}
           className={`absolute inset-0 rounded-full focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-primary ${canSpin ? "cursor-grab active:cursor-grabbing" : ""}`}>
           <WheelDisc segments={wheel.segments} />
@@ -152,20 +151,20 @@ export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
         </div>
       </div>
       <div aria-live="polite" className="relative w-full max-w-sm text-center">
-        {wheelPrize ? (
+        {shown ? (
           <div className="rounded-3xl bg-surface p-5 shadow-[var(--shadow-card)]">
             {justWon && <Celebration />}
             <p className="eyebrow text-brass-ink">{justWon ? "¡Ganaste!" : "Tu premio"}</p>
-            <p className="font-display mt-1 text-3xl">{wheelPrize.label}</p>
+            <p className="font-display mt-1 text-3xl">{shown.label}</p>
             <p className="mt-1 text-sm text-muted">{prize?.description}{prize?.endsAt ? ` · vence ${formatDate(prize.endsAt)}` : ""} · 1 uso</p>
-            <button type="button" onClick={() => { void navigator.clipboard?.writeText(wheelPrize.code); toast({ tone: "success", title: "Código copiado", description: wheelPrize.code }); }}
-              className="mx-auto mt-3 flex items-center gap-2 rounded-full border border-dashed border-brass-ink px-4 py-2 font-mono text-lg font-extrabold tracking-wider" aria-label={`Copiar código ${wheelPrize.code}`}>
-              {wheelPrize.code} <Copy size={16} aria-hidden="true" />
+            <button type="button" onClick={() => { void navigator.clipboard?.writeText(shown.code); toast({ tone: "success", title: "Código copiado", description: shown.code }); }}
+              className="mx-auto mt-3 flex items-center gap-2 rounded-full border border-dashed border-brass-ink px-4 py-2 font-mono text-lg font-extrabold tracking-wider" aria-label={`Copiar código ${shown.code}`}>
+              {shown.code} <Copy size={16} aria-hidden="true" />
             </button>
-            <Button className="mt-4 w-full" onClick={() => { setCoupon(wheelPrize.code); toast({ tone: "success", title: "Cupón aplicado a tu carrito", description: wheelPrize.code }); onApplied?.(); }}>
+            <Button className="mt-4 w-full" onClick={() => { setCoupon(shown.code); toast({ tone: "success", title: "Cupón aplicado a tu carrito", description: shown.code }); onApplied?.(); }}>
               <ShoppingBag size={18} aria-hidden="true" /> {checkout ? "Aplicar y continuar al pago" : "Aplicar a mi carrito"}
             </Button>
-            <Button variant="ghost" className="mt-2 w-full" onClick={() => { toast({ tone: "info", title: "Guardado en Mis cupones", description: wheelPrize.code, action: { label: "Ver cupones", href: "/cupones/" } }); onSaved?.(); }}>
+            <Button variant="ghost" className="mt-2 w-full" onClick={() => { toast({ tone: "info", title: "Guardado en Mis cupones", description: shown.code, action: { label: "Ver cupones", href: "/cupones/" } }); onSaved?.(); }}>
               Guardar para más tarde
             </Button>
           </div>

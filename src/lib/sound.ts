@@ -34,7 +34,8 @@ export function subscribeMuted(cb: () => void): () => void {
 /** Crea o reanuda el contexto de audio; se llama en el primer toque o tecla de la página. */
 export function unlockAudio(): void {
   if (typeof window === "undefined") return;
-  if (ctx) { if (ctx.state === "suspended") void ctx.resume(); return; }
+  // iOS deja el contexto "interrupted" (llamada, segundo plano): se reanuda con cualquier estado que no sea "running".
+  if (ctx) { if (ctx.state !== "running" && ctx.state !== "closed") void ctx.resume(); return; }
   const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
   if (!AC) return;
   ctx = new AC();
@@ -111,8 +112,9 @@ declare global { interface Window { __velmarSounds?: SoundName[] } }
 
 export function playSound(name: SoundName): void {
   if (typeof window === "undefined" || window.location.pathname.includes("/admin-demo") || isMuted()) return;
-  (window.__velmarSounds ??= []).push(name);
+  // Registro para los tests: solo si la página lo pidió (no crece en uso normal).
+  window.__velmarSounds?.push(name);
   if (!ctx) return;
-  if (ctx.state === "suspended") void ctx.resume();
+  if (ctx.state !== "running" && ctx.state !== "closed") void ctx.resume();
   try { SOUNDS[name](); } catch { /* audio no disponible: la tienda sigue igual */ }
 }
