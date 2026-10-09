@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { BadgePercent, Boxes, Calculator, CalendarDays, ClipboardList, Factory, FileSpreadsheet, LayoutDashboard, LifeBuoy, PackageCheck, Palette, PartyPopper, Settings, Shapes, Sheet, Spool, Target, Users, Wallet } from "lucide-react";
+import { BadgePercent, Boxes, Calculator, CalendarDays, ClipboardList, Factory, FileSpreadsheet, LayoutDashboard, Mail, LifeBuoy, PackageCheck, Palette, PartyPopper, Settings, Shapes, Sheet, Spool, Target, Users, Wallet } from "lucide-react";
 
 export const ADMIN_GROUPS = ["Ventas", "Taller", "Catálogo", "Marketing", "Ajustes"] as const;
 
@@ -36,6 +36,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin-demo/importar/", label: "Importar desde Excel", short: "Importar", icon: FileSpreadsheet, group: "Catálogo" },
   { href: "/admin-demo/categorias/", label: "Categorías y personalización", short: "Categorías", icon: Shapes, group: "Catálogo" },
   { href: "/admin-demo/misiones/", label: "Misiones", short: "Misiones", icon: Target, group: "Marketing" },
+  { href: "/admin-demo/emails/", label: "Emails automáticos", short: "Emails", icon: Mail, group: "Marketing" },
   { href: "/admin-demo/cupones/", label: "Cupones y ruleta", short: "Cupones", icon: BadgePercent, group: "Marketing" },
   { href: "/admin-demo/tematicas/", label: "Temáticas", short: "Temáticas", icon: PartyPopper, group: "Marketing" },
   { href: "/admin-demo/contenido/", label: "Contenido", short: "Contenido", icon: Palette, group: "Marketing" },

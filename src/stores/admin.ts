@@ -7,10 +7,11 @@ import { auditEntry, defaultAdminData, type AdminData } from "@/demo/admin/defau
 import { createOrdersActions, type OrdersActions } from "@/demo/admin/orders-slice";
 import type { AdminClaim } from "@/demo/admin/types";
 import { createWorkshopActions, type WorkshopActions } from "@/demo/admin/workshop-slice";
+import { createEmailActions, type EmailActions } from "@/demo/admin/emails-slice";
 import { setDemoData, type DemoData } from "@/demo/engine/source";
 import { ADMIN_STORE_VERSION, demoStorage, STORAGE_PREFIX } from "./storage";
 
-export type AdminState = AdminData & OrdersActions & DataActions & CatalogActions & WorkshopActions & {
+export type AdminState = AdminData & OrdersActions & DataActions & CatalogActions & WorkshopActions & EmailActions & {
   addClaim: (claim: Omit<AdminClaim, "id" | "status" | "createdAt">) => void;
   resetAdmin: () => void;
 };
@@ -27,6 +28,7 @@ export const useAdmin = create<AdminState>()(
       ...createDataActions(set),
       ...createCatalogActions(set),
       ...createWorkshopActions(set),
+      ...createEmailActions(set, get),
       addClaim: (claim) =>
         set((s) => ({
           claims: [{ ...claim, id: `c-${Date.now().toString(36)}`, status: "OPEN", createdAt: new Date().toISOString(), fromShop: true }, ...s.claims],
@@ -45,9 +47,9 @@ export const useAdmin = create<AdminState>()(
       // Campos nuevos de `data` toman el valor por defecto si el estado guardado no los tiene.
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<AdminData>;
-        return { ...current, ...p, data: { ...current.data, ...(p.data ?? {}) }, workshop: { ...current.workshop, ...(p.workshop ?? {}) } };
+        return { ...current, ...p, data: { ...current.data, ...(p.data ?? {}) }, workshop: { ...current.workshop, ...(p.workshop ?? {}) }, emails: { ...current.emails, ...(p.emails ?? {}) } };
       },
-      partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop }),
+      partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop, emails: s.emails }),
     },
   ),
 );

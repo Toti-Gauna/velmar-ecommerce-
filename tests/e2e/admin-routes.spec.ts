@@ -4,7 +4,7 @@ import { horizontalOverflow } from "./helpers";
 const ADMIN_ROUTES = [
   ["admin-demo/", "Buen día, Velmar"], ["admin-demo/pedidos/", "Pedidos"], ["admin-demo/pedidos/detalle/?codigo=VEL-000123", "VEL-000123"],
   ["admin-demo/pagos/", "Pagos manuales"], ["admin-demo/productos/", "Productos y stock"], ["admin-demo/productos/editar/?id=vela-caniche", "Editar: Vela caniche"],
-  ["admin-demo/categorias/", "Categorías y personalización"], ["admin-demo/stock/", "Stock"], ["admin-demo/planilla/", "Planilla"], ["admin-demo/importar/", "Importar desde Excel"], ["admin-demo/misiones/", "Misiones y premios"], ["admin-demo/cupones/", "Cupones"],
+  ["admin-demo/categorias/", "Categorías y personalización"], ["admin-demo/stock/", "Stock"], ["admin-demo/planilla/", "Planilla"], ["admin-demo/importar/", "Importar desde Excel"], ["admin-demo/misiones/", "Misiones y premios"], ["admin-demo/cupones/", "Cupones"], ["admin-demo/emails/", "Emails automáticos"], ["admin-demo/emails/editar/?id=tpl-order-created", "Gracias por tu compra"],
   ["admin-demo/calendario/", "Calendario de entregas"], ["admin-demo/produccion/", "Cola de producción"], ["admin-demo/costos/", "Costos y margen"], ["admin-demo/insumos/", "Insumos"],
   ["admin-demo/usuarios/ficha/?email=diego.a@ejemplo.com", "Diego Álvarez"],
   ["admin-demo/usuarios/", "Clientes"], ["admin-demo/reclamos/", "Reclamos"], ["admin-demo/contenido/", "Contenido"], ["admin-demo/ajustes/", "Ajustes"],

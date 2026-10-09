@@ -16,6 +16,33 @@ import { OrderItems } from "./OrderItems";
 import { OrderStatusActions } from "./OrderStatusActions";
 import { ProofReview } from "./ProofReview";
 import { useDemoSave } from "./useDemoSave";
+import { OutboxSheet } from "./emails/OutboxSheet";
+import { TRIGGER_LABEL } from "@/demo/fixtures/emails";
+
+/** Emails automáticos que "salieron" para este pedido (bandeja de salida simulada). */
+function OrderEmails({ code }: { code: string }) {
+  const outbox = useAdmin((s) => s.emails.outbox);
+  const [open, setOpen] = useState<string | null>(null);
+  const mails = outbox.filter((m) => m.orderCode === code);
+  return (
+    <Panel title="Emails enviados (simulados)">
+      {mails.length ? (
+        <ul className="flex flex-col gap-1.5 text-sm">
+          {mails.map((m) => (
+            <li key={m.id}>
+              <button type="button" onClick={() => setOpen(m.id)} className="w-full rounded-xl bg-bg p-2 text-left hover:ring-1 hover:ring-primary">
+                <span className="block font-bold">{m.email.subject}</span>
+                <span className="text-xs text-muted">{TRIGGER_LABEL[m.trigger]} · {formatDateTime(m.at)}{m.test ? " · prueba" : ""}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : <p className="text-sm text-muted">Todavía no salió ningún email para este pedido.</p>}
+      <Link href="/admin-demo/emails/" className="mt-3 inline-block text-xs font-bold text-primary underline">Configurar emails automáticos</Link>
+      <OutboxSheet mail={mails.find((m) => m.id === open) ?? null} onClose={() => setOpen(null)} />
+    </Panel>
+  );
+}
 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
   return <section className="rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4"><h2 className="mb-3 font-extrabold">{title}</h2>{children}</section>;
@@ -60,6 +87,7 @@ export function OrderDetail() {
               ))}
             </ol>
           </Panel>
+          <OrderEmails code={order.code} />
           <Panel title="Notas internas (ficticias)">
             <ul className="mb-3 flex flex-col gap-1.5 text-sm">{order.notes.length ? order.notes.map((n, i) => <li key={i} className="rounded-xl bg-accent/50 p-2">{n}</li>) : <li className="text-muted">Sin notas.</li>}</ul>
             <form onSubmit={(e) => { e.preventDefault(); if (!note.trim()) return; save("Nota agregada", () => addNote(order.code, note.trim())); setNote(""); }} className="flex flex-col gap-2">
