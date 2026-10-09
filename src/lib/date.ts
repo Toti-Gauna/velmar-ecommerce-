@@ -24,3 +24,15 @@ export function formatDayRange(from: string, to: string): string {
   const f = (d: string) => dayMonth.format(new Date(`${d}T12:00:00-03:00`));
   return `${f(from)} – ${f(to)}`;
 }
+
+const dayFormats = {
+  short: new Intl.DateTimeFormat("es-AR", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }),
+  long: new Intl.DateTimeFormat("es-AR", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" }),
+  month: new Intl.DateTimeFormat("es-AR", { month: "long", year: "numeric", timeZone: "UTC" }),
+  dayMonth: new Intl.DateTimeFormat("es-AR", { day: "numeric", month: "short", timeZone: "UTC" }),
+};
+
+/** Un día AAAA-MM-DD del calendario del taller: "jue, 8 oct" (short), "jueves, 8 de octubre" (long), "octubre de 2026" (month). */
+export function formatDay(day: string, style: keyof typeof dayFormats = "short"): string {
+  return dayFormats[style].format(new Date(`${day}T12:00:00Z`));
+}

@@ -74,7 +74,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
         </div>
         <ConfigureCard product={product} sel={sel} draft={draft} quantity={quantity} max={max} stockNote={stockNote(avail)} onQuantity={setQty} actions={desktopActions} />
         <MissionChip units={quantity} />
-        <DeliveryEstimate makeDays={product.madeToOrderDays ?? 1} />
+        <DeliveryEstimate product={product} variant={sel.variant} />
         <ul className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-muted">
           {TRUST.map(({ icon: Icon, t }) => <li key={t} className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-3"><Icon size={18} aria-hidden="true" className="text-primary" />{t}</li>)}
         </ul>

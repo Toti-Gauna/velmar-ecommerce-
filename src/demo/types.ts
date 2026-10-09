@@ -27,6 +27,8 @@ export interface Variant {
   priceDelta: number;
   /** -1 = a pedido (sin límite), 0 = sin stock */
   stock: number;
+  /** Plazo de fabricación propio de la variante, en días hábiles (si no, el del producto). */
+  leadDays?: number;
 }
 
 export interface Faq {

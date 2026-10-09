@@ -1,9 +1,12 @@
 import type { LucideIcon } from "lucide-react";
-import { BadgePercent, Boxes, ClipboardList, FileSpreadsheet, LayoutDashboard, LifeBuoy, PackageCheck, Palette, PartyPopper, Settings, Shapes, Sheet, Target, Users, Wallet } from "lucide-react";
+import { BadgePercent, Boxes, Calculator, CalendarDays, ClipboardList, Factory, FileSpreadsheet, LayoutDashboard, LifeBuoy, PackageCheck, Palette, PartyPopper, Settings, Shapes, Sheet, Spool, Target, Users, Wallet } from "lucide-react";
 
-export const ADMIN_GROUPS = ["Ventas", "Catálogo", "Marketing", "Ajustes"] as const;
+export const ADMIN_GROUPS = ["Ventas", "Taller", "Catálogo", "Marketing", "Ajustes"] as const;
 
-export type NavBadge = "orders" | "payments" | "claims" | "stock";
+export type NavBadge = "orders" | "payments" | "claims" | "stock" | "late" | "materials";
+
+/** Texto para lectores de pantalla después del número del contador. */
+export const BADGE_TEXT: Record<NavBadge, string> = { orders: "en marcha", payments: "por revisar", claims: "abiertos", stock: "para reponer", late: "atrasados", materials: "para reponer" };
 
 export interface AdminNavItem {
   href: string;
@@ -23,6 +26,10 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin-demo/pagos/", label: "Pagos manuales", short: "Pagos", icon: Wallet, group: "Ventas", badge: "payments", tab: true },
   { href: "/admin-demo/usuarios/", label: "Clientes", short: "Clientes", icon: Users, group: "Ventas" },
   { href: "/admin-demo/reclamos/", label: "Reclamos", short: "Reclamos", icon: LifeBuoy, group: "Ventas", badge: "claims" },
+  { href: "/admin-demo/calendario/", label: "Calendario de entregas", short: "Calendario", icon: CalendarDays, group: "Taller", badge: "late" },
+  { href: "/admin-demo/produccion/", label: "Cola de producción", short: "Producción", icon: Factory, group: "Taller" },
+  { href: "/admin-demo/costos/", label: "Costos y margen", short: "Costos", icon: Calculator, group: "Taller" },
+  { href: "/admin-demo/insumos/", label: "Insumos", short: "Insumos", icon: Spool, group: "Taller", badge: "materials" },
   { href: "/admin-demo/productos/", label: "Productos", short: "Productos", icon: Boxes, group: "Catálogo", tab: true },
   { href: "/admin-demo/stock/", label: "Stock", short: "Stock", icon: PackageCheck, group: "Catálogo", badge: "stock" },
   { href: "/admin-demo/planilla/", label: "Planilla", short: "Planilla", icon: Sheet, group: "Catálogo" },
