@@ -7,7 +7,7 @@ import { Button } from "@/components/atoms/Button";
 import { Input } from "@/components/atoms/Field";
 import { Switch } from "@/components/atoms/Switch";
 import { EmptyState } from "@/components/molecules/EmptyState";
-import { contextForOrder, renderEmail, type EmailContext } from "@/demo/admin/emails/render";
+import { contextForOrder, petSampleContext, renderEmail, sampleOrder, type EmailContext } from "@/demo/admin/emails/render";
 import { TEST_INBOX } from "@/demo/admin/emails-slice";
 import { ORDER_TOKENS, TOKEN_LABEL, TRIGGER_HINT, TRIGGER_LABEL, type EmailTemplate, type EmailToken } from "@/demo/fixtures/emails";
 import { useAdmin } from "@/stores/admin";
@@ -40,7 +40,9 @@ export function EmailEditor() {
   // Si la plantilla guardada cambia (restaurar, otra pestaña), el borrador vuelve a ella.
   if (saved !== seen) { setSeen(saved); setDraft(saved ?? null); }
   const sampleOrders = orders.filter((o) => o.status !== "CANCELLED");
-  const [sample, setSample] = useState(sampleOrders.find((o) => o.code === "VEL-000121")?.code ?? sampleOrders[0]?.code ?? "");
+  const users = useAdmin((s) => s.users);
+  const profiles = useAdmin((s) => s.workshop.profiles);
+  const [sample, setSample] = useState(sampleOrder(orders)?.code ?? "");
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const dirty = !!draft && !!saved && JSON.stringify(draft) !== JSON.stringify(saved);
 
@@ -57,7 +59,7 @@ export function EmailEditor() {
   const isPet = draft.trigger === "pet-birthday";
   const order = orders.find((o) => o.code === sample);
   const ctx: EmailContext = isPet
-    ? { customerName: "Diego Álvarez", email: "diego.a@ejemplo.com", pet: { name: "Ñoqui" } }
+    ? petSampleContext(profiles, orders, users)
     : order ? contextForOrder(order) : { customerName: "Cliente de muestra", email: "cliente@ejemplo.com" };
   const rendered = renderEmail(draft, ctx);
   const tokens = tokensFor(draft.trigger);
@@ -77,7 +79,7 @@ export function EmailEditor() {
           <div className="flex flex-wrap items-center gap-2">
             <Switch checked={draft.active} onChange={(active) => set({ active })} label={draft.active ? "Activo" : "Pausado"} />
             <Button variant="ghost" size="sm" onClick={() => save("Plantilla restaurada", () => resetEmailTemplate(draft.id))}><RotateCcw size={15} aria-hidden="true" /> Restaurar</Button>
-            <Button variant="secondary" size="sm" disabled={dirty || !order} title={dirty ? "Guardá los cambios para mandar la prueba" : undefined}
+            <Button variant="secondary" size="sm" disabled={dirty || (!order && !isPet)} title={dirty ? "Guardá los cambios para mandar la prueba" : undefined}
               onClick={() => { if (sendTestEmail(draft.id, sample)) push({ tone: "success", title: "Prueba en la bandeja de salida", description: `Simulada para ${TEST_INBOX}. La demo no envía nada.` }); }}>
               <Send size={15} aria-hidden="true" /> Enviar prueba
             </Button>

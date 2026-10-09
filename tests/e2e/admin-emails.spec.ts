@@ -21,7 +21,7 @@ test("compra en la tienda: los emails de compra y de diseño recibido aparecen e
 
   await page.goto("admin-demo/emails/?vista=enviados");
   const inbox = page.getByRole("region", { name: "Bandeja de salida" });
-  await expect(inbox.getByRole("button", { name: /Recibimos tu diseño/ }).first()).toBeVisible();
+  await expect(inbox.getByRole("button", { name: /Recibimos tu diseño.*VEL-DEMO-0001/ })).toBeVisible();
   await inbox.getByRole("button", { name: /¡Gracias por tu compra, .*VEL-DEMO-0001/ }).click();
   const mail = page.getByRole("dialog", { name: /Email: ¡Gracias por tu compra/ });
   await expect(mail.getByRole("article")).toContainText("1 × Collar con nombre y dijes de patita");
@@ -32,7 +32,7 @@ test("compra en la tienda: los emails de compra y de diseño recibido aparecen e
 
 test("pasar un pedido a producción manda su email; pausado no sale", async ({ page }) => {
   await page.goto("admin-demo/emails/");
-  await page.getByRole("switch", { name: /Se envía solo/ }).nth(4).click(); // "Listo para entregar"
+  await page.getByRole("switch", { name: "Se envía solo: Listo para entregar" }).click();
   await expect(toast(page, "“Listo para entregar” pausado")).toBeVisible();
   await page.goto("admin-demo/produccion/");
   await page.getByRole("button", { name: "Pasar VEL-000113 a En máquina" }).click();
@@ -65,6 +65,16 @@ test.describe("editor en escritorio", () => {
     await page.keyboard.press("End");
     await page.getByRole("button", { name: "Insertar Nombre del cliente" }).click();
     await expect(page.getByText("Cambios sin guardar")).toBeVisible();
+    // Pegar algo copiado del editor conserva la ficha (no queda el nombre del dato como texto)
+    await page.getByRole("textbox", { name: "Texto de vista previa" }).click();
+    await page.evaluate(() => {
+      const dt = new DataTransfer();
+      dt.setData("application/x-velmar-inline", JSON.stringify([{ kind: "text", text: " Para " }, { kind: "token", token: "customer.firstName" }]));
+      dt.setData("text/plain", " Para Nombre del cliente");
+      document.getElementById("e-preheader")!.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
+    });
+    await expect(page.locator("#e-preheader [data-token='customer.firstName']")).toBeVisible();
+    await expect(page.getByText(/Ya entra al taller\. Para Julián/)).toBeVisible();
     await page.getByRole("button", { name: "Guardar cambios" }).click();
     await expect(toast(page, "Plantilla guardada")).toBeVisible();
     await page.reload();
@@ -79,8 +89,11 @@ test.describe("editor en escritorio", () => {
 
 test("cumpleaños de mascota: el email sale desde los recordatorios de clientes", async ({ page }) => {
   await page.goto("admin-demo/usuarios/");
-  await page.getByRole("button", { name: /Enviar email: Cumple de Ñoqui/ }).click();
+  const send = page.getByRole("button", { name: /Simular el email del día: Cumple de Ñoqui/ });
+  await send.click();
   await expect(toast(page, "Email de cumpleaños en la bandeja de salida")).toBeVisible();
+  await send.click();
+  await expect(toast(page, "Ya salió este año")).toBeVisible();
   await page.goto("admin-demo/emails/?vista=enviados");
   await expect(page.getByRole("region", { name: "Bandeja de salida" }).getByRole("button", { name: /¡Feliz cumple, Ñoqui!/ })).toBeVisible();
 });

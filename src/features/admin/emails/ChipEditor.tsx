@@ -103,6 +103,18 @@ interface Props {
   className?: string;
 }
 
+/** Formato propio en el portapapeles: copiar y pegar entre campos conserva las fichas (no solo su texto). */
+const CLIP = "application/x-velmar-inline";
+
+const escapeHtml = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/** HTML de partes para `insertHTML` (así la inserción entra en el deshacer del navegador). */
+function toHtml(value: Inline, multiline: boolean): string {
+  return value.map((p) => (p.kind === "token"
+    ? `<span contenteditable="false" data-token="${p.token}" class="${CHIP}">${escapeHtml(TOKEN_LABEL[p.token])}</span>`
+    : escapeHtml(multiline ? p.text : p.text.replace(/\n/g, " ")))).join("");
+}
+
 export function ChipEditor({ id, label, value, onChange, tokens, multiline = false, placeholder, className }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const range = useRef<Range | null>(null);
@@ -112,8 +124,9 @@ export function ChipEditor({ id, label, value, onChange, tokens, multiline = fal
   useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
   const isActive = ctx.active === id;
   const json = JSON.stringify(value);
+  const tokensKey = tokens.join(",");
 
-  // El DOM editable se reconstruye solo cuando el valor cambia desde afuera (cargar, restaurar, deshacer):
+  // El DOM editable se reconstruye solo cuando el valor cambia desde afuera (cargar, restaurar):
   // si se reconstruyera en cada tecla, el cursor saltaría al principio.
   useEffect(() => {
     const el = ref.current;
@@ -125,60 +138,81 @@ export function ChipEditor({ id, label, value, onChange, tokens, multiline = fal
   const emit = () => {
     const el = ref.current;
     if (!el) return;
-    const next = parseNodes(el, multiline);
+    let next = parseNodes(el, multiline);
+    // Campo vaciado: Chrome deja un <br> que no es contenido (y taparía el texto de ayuda).
+    if (next.every((p) => p.kind === "text" && !p.text.trim())) { if (el.childNodes.length) el.replaceChildren(); next = []; }
     emitted.current = JSON.stringify(next);
-    onChange(next);
+    onChangeRef.current(next);
   };
   const save = () => {
     const sel = window.getSelection();
     if (sel && sel.rangeCount && ref.current?.contains(sel.getRangeAt(0).commonAncestorContainer)) range.current = sel.getRangeAt(0).cloneRange();
   };
+  /** Inserta partes donde está el cursor, con las fichas que este campo admite (las otras quedan afuera). */
+  const insertParts = (parts: Inline) => {
+    const el = ref.current;
+    if (!el) return;
+    const allowed = tokensKey.split(",");
+    const clean = parts.filter((p) => p.kind === "text" || allowed.includes(p.token));
+    el.focus();
+    const sel = window.getSelection();
+    let r = range.current;
+    if (!r || !el.contains(r.commonAncestorContainer)) { r = document.createRange(); r.selectNodeContents(el); r.collapse(false); }
+    sel?.removeAllRanges();
+    sel?.addRange(r);
+    document.execCommand("insertHTML", false, toHtml(clean, multiline));
+    save();
+  };
+  const insertRef = useRef(insertParts);
+  useEffect(() => { insertRef.current = insertParts; });
 
-  // El registro vive en un efecto: la función de insertar usa refs (siempre el DOM y el cursor vigentes).
-  const tokensKey = tokens.join(",");
+  // Registro para la paleta, el cursor en el celular (selectionchange) y los cambios de formato que no se guardan.
   useEffect(() => {
     const el = ref.current;
-    ctx.register(id, {
-      tokens: tokensKey.split(",") as EmailToken[],
-      insert: (token) => {
-        if (!el) return;
-        const [chip] = toNodes([{ kind: "token", token }], multiline);
-        const space = document.createTextNode(" ");
-        let r = range.current;
-        if (!r || !el.contains(r.commonAncestorContainer)) { r = document.createRange(); r.selectNodeContents(el); r.collapse(false); }
-        r.deleteContents();
-        r.insertNode(space);
-        r.insertNode(chip!);
-        const after = document.createRange();
-        after.setStartAfter(space);
-        after.collapse(true);
-        const sel = window.getSelection();
-        el.focus();
-        sel?.removeAllRanges();
-        sel?.addRange(after);
-        range.current = after.cloneRange();
-        const next = parseNodes(el, multiline);
-        emitted.current = JSON.stringify(next);
-        onChangeRef.current(next);
-      },
-    });
-    return () => ctx.register(id, null);
+    if (!el) return;
+    ctx.register(id, { tokens: tokensKey.split(",") as EmailToken[], insert: (token) => insertRef.current([{ kind: "token", token }, { kind: "text", text: " " }]) });
+    const onSelection = () => { if (document.activeElement === el) save(); };
+    const onBefore = (e: InputEvent) => {
+      // Negrita, cursiva, etc. no existen en el email: no se permiten (si no, se verían acá y no en el email).
+      if (e.inputType.startsWith("format") || e.inputType === "insertFromDrop" || e.inputType === "deleteByDrag") { e.preventDefault(); return; }
+      if (e.inputType === "insertParagraph" || e.inputType === "insertLineBreak") {
+        e.preventDefault();
+        if (multiline) document.execCommand("insertText", false, "\n");
+      }
+    };
+    document.addEventListener("selectionchange", onSelection);
+    el.addEventListener("beforeinput", onBefore);
+    return () => { ctx.register(id, null); document.removeEventListener("selectionchange", onSelection); el.removeEventListener("beforeinput", onBefore); };
     // ctx cambia en cada render del proveedor; el registro solo depende del campo.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, tokensKey, multiline]);
+
+  const copySelection = (e: React.ClipboardEvent, cut: boolean) => {
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount || sel.isCollapsed) return;
+    const holder = document.createElement("div");
+    holder.append(sel.getRangeAt(0).cloneContents());
+    const parts = parseNodes(holder, multiline);
+    e.preventDefault();
+    e.clipboardData.setData(CLIP, JSON.stringify(parts));
+    e.clipboardData.setData("text/plain", parts.map((p) => (p.kind === "text" ? p.text : TOKEN_LABEL[p.token])).join(""));
+    if (cut) document.execCommand("delete");
+  };
+
   return (
     <div className={cn("relative", className)}>
       <div ref={ref} id={id} role="textbox" aria-label={label} aria-multiline={multiline} contentEditable suppressContentEditableWarning tabIndex={0}
         data-placeholder={placeholder}
         onFocus={() => { ctx.activate(id); save(); }}
-        onInput={() => { emit(); save(); }} onKeyUp={save} onMouseUp={save}
-        onKeyDown={(e) => {
-          if (e.key !== "Enter") return;
-          e.preventDefault();
-          if (multiline) document.execCommand("insertText", false, "\n");
-        }}
+        onInput={emit} onKeyUp={save} onMouseUp={save}
+        onCopy={(e) => copySelection(e, false)} onCut={(e) => copySelection(e, true)}
+        onDragOver={(e) => e.preventDefault()} onDrop={(e) => e.preventDefault()}
         onPaste={(e) => {
           e.preventDefault();
+          const own = e.clipboardData.getData(CLIP);
+          if (own) {
+            try { insertParts(JSON.parse(own) as Inline); return; } catch { /* formato viejo: va como texto */ }
+          }
           const text = e.clipboardData.getData("text/plain");
           document.execCommand("insertText", false, multiline ? text : text.replace(/\s*\n\s*/g, " "));
         }}

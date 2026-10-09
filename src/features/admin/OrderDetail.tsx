@@ -18,12 +18,13 @@ import { ProofReview } from "./ProofReview";
 import { useDemoSave } from "./useDemoSave";
 import { OutboxSheet } from "./emails/OutboxSheet";
 import { TRIGGER_LABEL } from "@/demo/fixtures/emails";
+import { emailsOfOrder } from "@/demo/admin/emails/triggers";
 
 /** Emails automáticos que "salieron" para este pedido (bandeja de salida simulada). */
-function OrderEmails({ code }: { code: string }) {
+function OrderEmails({ code, createdAt }: { code: string; createdAt: string }) {
   const outbox = useAdmin((s) => s.emails.outbox);
   const [open, setOpen] = useState<string | null>(null);
-  const mails = outbox.filter((m) => m.orderCode === code);
+  const mails = emailsOfOrder(outbox, code, createdAt);
   return (
     <Panel title="Emails enviados (simulados)">
       {mails.length ? (
@@ -87,7 +88,7 @@ export function OrderDetail() {
               ))}
             </ol>
           </Panel>
-          <OrderEmails code={order.code} />
+          <OrderEmails code={order.code} createdAt={order.createdAt} />
           <Panel title="Notas internas (ficticias)">
             <ul className="mb-3 flex flex-col gap-1.5 text-sm">{order.notes.length ? order.notes.map((n, i) => <li key={i} className="rounded-xl bg-accent/50 p-2">{n}</li>) : <li className="text-muted">Sin notas.</li>}</ul>
             <form onSubmit={(e) => { e.preventDefault(); if (!note.trim()) return; save("Nota agregada", () => addNote(order.code, note.trim())); setNote(""); }} className="flex flex-col gap-2">

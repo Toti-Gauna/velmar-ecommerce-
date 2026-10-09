@@ -34,7 +34,7 @@ function seedOutbox(orders: AdminOrder[], templates: EmailTemplate[]): OutboxEma
     ...emailsForOrder(templates, triggersForNewOrder(o), o, o.createdAt),
     ...o.log.flatMap((l) => (l.from ? emailsForOrder(templates, triggersForTransition(l.from, l.to), { ...o, status: l.to }, l.at) : [])),
   ]);
-  return sent.sort((a, b) => b.at.localeCompare(a.at)).slice(0, OUTBOX_LIMIT);
+  return sent.sort((a, b) => Date.parse(b.at) - Date.parse(a.at)).slice(0, OUTBOX_LIMIT);
 }
 
 export interface WorkshopData {

@@ -33,6 +33,18 @@ export function contextForOrder(order: AdminOrder): EmailContext {
   };
 }
 
+/** Pedido de muestra para la vista previa: el primero en producción (tiene fecha, productos y personalización). */
+export function sampleOrder(orders: AdminOrder[]): AdminOrder | undefined {
+  return orders.find((o) => o.status === "IN_PRODUCTION") ?? orders.find((o) => o.status !== "CANCELLED") ?? orders[0];
+}
+
+/** Cliente con mascota de las fichas, para la vista previa y la prueba del email de cumpleaños (sin pedido). */
+export function petSampleContext(profiles: Record<string, { pets: { name: string }[] }>, orders: AdminOrder[], users: { email: string; name: string }[]): EmailContext {
+  const [email, profile] = Object.entries(profiles).find(([, p]) => p.pets.length > 0) ?? ["", { pets: [] }];
+  const name = users.find((u) => u.email.toLowerCase() === email)?.name ?? orders.find((o) => o.customer.email.toLowerCase() === email)?.customer.name ?? "Cliente";
+  return { customerName: name, email, pet: profile.pets[0] ? { name: profile.pets[0].name } : undefined };
+}
+
 const firstName = (name: string) => name.trim().split(/\s+/)[0] ?? name;
 
 /** Valor de una ficha. Si falta el dato se usa un texto natural (nunca queda la ficha vacía ni un código). */

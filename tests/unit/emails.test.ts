@@ -55,6 +55,7 @@ describe("disparadores y bandeja de salida", () => {
     expect(triggersForTransition("PAYMENT_REVIEW", "PAID")).toEqual(["payment-approved"]);
     expect(triggersForTransition("PAID", "IN_PRODUCTION")).toEqual(["in-production"]);
     expect(triggersForTransition("IN_CLAIM", "IN_PRODUCTION")).toEqual([]);
+    expect(triggersForTransition("IN_CLAIM", "PAID")).toEqual([]);
     expect(triggersForNewOrder({ lines: [{ id: "a", productSlug: "x", variantId: "y", quantity: 1, personalization: { kind: "TEXT", approvedAt: "" } }] })).toEqual(["order-created", "custom-received"]);
   });
   it("una plantilla pausada no sale y la bandeja tiene límite", () => {
@@ -68,21 +69,35 @@ describe("disparadores y bandeja de salida", () => {
     const h = harness();
     const before = h.get().emails.outbox.length;
     expect(before).toBeGreaterThan(5);
-    expect(h.get().emails.outbox.every((m, i, all) => i === 0 || all[i - 1]!.at >= m.at)).toBe(true);
+    expect(h.get().emails.outbox.every((m, i, all) => i === 0 || Date.parse(all[i - 1]!.at) >= Date.parse(m.at))).toBe(true);
     h.orders.moveProduction("VEL-000113", "machine");
     const [mail] = h.get().emails.outbox;
     expect(mail).toMatchObject({ trigger: "in-production", orderCode: "VEL-000113", to: "ana.l@ejemplo.com" });
     expect(mail!.email.subject).toContain("VEL-000113 está en producción");
     h.emails.setEmailTemplateActive("tpl-ready", false);
-    h.orders.moveProduction("VEL-000113", "ready");
+    expect(h.orders.moveProduction("VEL-000113", "ready")).toBeNull();
+    expect(h.get().orders.find((o) => o.code === "VEL-000113")!.status).toBe("READY");
     expect(h.get().emails.outbox[0]!.trigger).toBe("in-production");
+    // Un reclamo y la vuelta a pagado no reenvían "Pago aprobado"
+    const paid = () => h.get().emails.outbox.filter((m) => m.orderCode === "VEL-000122" && m.trigger === "payment-approved").length;
+    const before122 = paid();
+    expect(h.orders.transition("VEL-000122", "IN_CLAIM")).toBe(true);
+    expect(h.orders.transition("VEL-000122", "PAID")).toBe(true);
+    expect(paid()).toBe(before122);
   });
   it("prueba, cumpleaños de mascota y plantilla restaurada", () => {
     const h = harness();
     expect(h.emails.sendTestEmail("tpl-shipped", "VEL-000119")).toBe(true);
     expect(h.get().emails.outbox[0]).toMatchObject({ test: true, to: "taller@velmar.demo" });
-    expect(h.emails.sendPetBirthdayEmail("diego.a@ejemplo.com", "p1")).toBe(true);
+    expect(h.emails.sendPetBirthdayEmail("diego.a@ejemplo.com", "Diego Álvarez", "p1", "2026")).toBe("sent");
     expect(h.get().emails.outbox[0]!.email.subject).toBe("¡Feliz cumple, Ñoqui! 🎂");
+    expect(h.emails.sendPetBirthdayEmail("diego.a@ejemplo.com", "Diego Álvarez", "p1", "2026")).toBe("already");
+    // La prueba del cumpleaños usa el cliente con mascota (sin pedido), igual que la vista previa
+    expect(h.emails.sendTestEmail("tpl-pet-birthday", "")).toBe(true);
+    const test = h.get().emails.outbox[0]!;
+    expect(test.orderCode).toBeUndefined();
+    expect(test.email.blocks.some((b) => b.type === "order-card")).toBe(false);
+    expect(plainText(test.email)).toContain("Hola Diego");
     const t = h.get().emails.templates.find((x) => x.id === "tpl-ready")!;
     h.emails.saveEmailTemplate({ ...t, name: "Cambiada", blocks: [] });
     h.emails.resetEmailTemplate("tpl-ready");

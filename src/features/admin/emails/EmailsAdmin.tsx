@@ -7,7 +7,7 @@ import { Badge } from "@/components/atoms/Badge";
 import { Switch } from "@/components/atoms/Switch";
 import { ConfirmButton } from "@/components/molecules/ConfirmButton";
 import { EmptyState } from "@/components/molecules/EmptyState";
-import { contextForOrder, resolveInline } from "@/demo/admin/emails/render";
+import { contextForOrder, petSampleContext, resolveInline, sampleOrder } from "@/demo/admin/emails/render";
 import { matchesQuery } from "@/demo/admin/table";
 import { TRIGGER_HINT, TRIGGER_LABEL, type EmailTrigger } from "@/demo/fixtures/emails";
 import { formatDateTime } from "@/lib/date";
@@ -31,8 +31,11 @@ export function EmailsAdmin() {
   const [open, setOpen] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [trigger, setTrigger] = useState<EmailTrigger | "all">("all");
-  const sample = orders.find((o) => o.code === "VEL-000121") ?? orders[0];
+  const users = useAdmin((s) => s.users);
+  const profiles = useAdmin((s) => s.workshop.profiles);
+  const sample = sampleOrder(orders);
   const ctx = sample ? contextForOrder(sample) : { customerName: "Cliente", email: "" };
+  const petCtx = petSampleContext(profiles, orders, users);
   const list = outbox.filter((m) => (trigger === "all" || m.trigger === trigger) && matchesQuery(q, m.email.subject, m.to, m.name, m.orderCode ?? ""));
   const go = (v: View) => router.replace(v === "outbox" ? "/admin-demo/emails/?vista=enviados" : "/admin-demo/emails/");
 
@@ -59,10 +62,10 @@ export function EmailsAdmin() {
                   <Badge tone={t.active ? "success" : "neutral"}>{t.active ? "Activo" : "Pausado"}</Badge>
                 </div>
                 <p className="text-sm text-muted">{TRIGGER_HINT[t.trigger]}</p>
-                <p className="rounded-2xl bg-bg p-3 text-sm"><span className="block text-xs font-bold text-muted">Asunto (ejemplo)</span>{resolveInline(t.subject, t.trigger === "pet-birthday" ? { customerName: "Diego Álvarez", email: "", pet: { name: "Ñoqui" } } : ctx)}</p>
+                <p className="rounded-2xl bg-bg p-3 text-sm"><span className="block text-xs font-bold text-muted">Asunto (ejemplo)</span>{resolveInline(t.subject, t.trigger === "pet-birthday" ? petCtx : ctx)}</p>
                 <p className="flex items-center gap-1.5 text-xs font-semibold text-muted"><MailCheck size={14} aria-hidden="true" />{sent.length} {sent.length === 1 ? "enviado" : "enviados"}{sent[0] ? ` · último ${formatDateTime(sent[0].at)}` : ""}</p>
                 <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
-                  <Switch checked={t.active} label={t.active ? "Se envía solo" : "Pausado"} onChange={(v) => save(v ? `“${t.name}” activado` : `“${t.name}” pausado`, () => setEmailTemplateActive(t.id, v))} />
+                  <Switch checked={t.active} label="Se envía solo" ariaLabel={`Se envía solo: ${t.name}`} onChange={(v) => save(v ? `“${t.name}” activado` : `“${t.name}” pausado`, () => setEmailTemplateActive(t.id, v))} />
                   <Link href={`/admin-demo/emails/editar/?id=${t.id}`} aria-label={`Editar ${t.name}`} className="inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-bold text-on-primary hover:bg-primary-hover">
                     <PencilLine size={15} aria-hidden="true" /> Editar
                   </Link>

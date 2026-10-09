@@ -59,7 +59,7 @@ export function Sheet({ open, onClose, title, side = "right", children, classNam
         <div className="fixed inset-0 z-[70]">
           <motion.div className="absolute inset-0 bg-night/45 backdrop-blur-[3px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onClick={onClose} />
           <motion.div ref={panel} role="dialog" aria-modal="true" aria-label={title}
-            className={cn("absolute flex flex-col bg-bg shadow-[var(--shadow-lift)]", PLACE[side], className)}
+            className={cn("absolute flex flex-col bg-bg shadow-[var(--shadow-lift)]", /\bmax-w-/.test(className ?? "") ? PLACE[side].replace(/ max-w-\S+/g, "") : PLACE[side], className)}
             initial={OFFSET[side]} animate={{ x: 0, y: 0, opacity: 1, scale: 1 }} exit={OFFSET[side]} transition={{ type: "spring", stiffness: 380, damping: 38 }}>
             <button type="button" onClick={onClose} aria-label="Cerrar" className="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full bg-surface/80 text-ink hover:bg-accent">
               <X size={20} aria-hidden="true" />

@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import { LogoMark } from "@/components/atoms/Logo";
 import { ProductVisual } from "@/components/illustrations/ProductVisual";
 import type { RenderedBlock, RenderedEmail } from "@/demo/admin/emails/render";
+import { withBase } from "@/lib/base-path";
 import { cn } from "@/lib/cn";
 import { useDemoData } from "@/stores/admin";
 
@@ -24,14 +25,14 @@ function Block({ block: b, primary }: { block: RenderedBlock; primary: string })
     case "image":
       return (
         <figure className="px-6 pt-5">
-          <ProductVisual art={b.art} label="" showBadge={false} className="aspect-[16/9] w-full rounded-2xl" />
+          <ProductVisual art={b.art} label={b.caption || "Imagen del taller"} showBadge={false} className="aspect-[16/9] w-full rounded-2xl" />
           {b.caption && <figcaption className="mt-2 text-center text-xs text-[#6b675c]">{b.caption}</figcaption>}
         </figure>
       );
     case "button":
       return (
         <div className="px-6 pt-5 text-center">
-          <a href={b.href} target="_blank" rel="noopener noreferrer" style={{ background: primary }}
+          <a href={b.href.startsWith("/") ? withBase(b.href) : b.href} target="_blank" rel="noopener noreferrer" style={{ background: primary }}
             className="inline-block rounded-full px-7 py-3.5 text-[15px] font-bold text-white no-underline">{b.label}</a>
         </div>
       );
@@ -51,7 +52,7 @@ function Block({ block: b, primary }: { block: RenderedBlock; primary: string })
         <ul className="mx-6 mt-5 flex flex-col divide-y divide-[#eee7da] rounded-2xl border border-[#e6dfd1]">
           {b.lines.map((l, i) => (
             <li key={i} className="flex items-center gap-3 p-3 text-sm">
-              <ProductVisual art={l.art} tint={l.tint} label="" showBadge={false} className="aspect-square w-14 shrink-0 rounded-xl" />
+              <ProductVisual art={l.art} tint={l.tint} label={l.name} showBadge={false} className="aspect-square w-14 shrink-0 rounded-xl" />
               <span className="min-w-0 flex-1 text-[#3b3a33]">
                 <span className="block font-bold text-[#1c2016]">{l.quantity} × {l.name}</span>
                 {l.variant}{l.detail ? ` · ${l.detail}` : ""}

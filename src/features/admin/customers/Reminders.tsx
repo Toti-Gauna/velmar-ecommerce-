@@ -34,7 +34,9 @@ export function ReminderList({ reminders, showCustomer = false }: { reminders: R
   const sendPet = useAdmin((s) => s.sendPetBirthdayEmail);
   const push = useToasts((s) => s.push);
   const send = (r: Reminder) => {
-    if (r.petId && sendPet(r.email, r.petId)) push({ tone: "success", title: "Email de cumpleaños en la bandeja de salida", description: "Simulado: la demo no envía nada.", action: { label: "Ver la bandeja", href: "/admin-demo/emails/?vista=enviados" } });
+    const result = r.petId ? sendPet(r.email, r.name, r.petId, r.date.slice(0, 4)) : "off";
+    if (result === "sent") push({ tone: "success", title: "Email de cumpleaños en la bandeja de salida", description: "En producción sale solo el día del cumpleaños. La demo no envía nada.", action: { label: "Ver la bandeja", href: "/admin-demo/emails/?vista=enviados" } });
+    else if (result === "already") push({ tone: "info", title: "Ya salió este año", description: "El email de este cumpleaños ya está en la bandeja de salida." });
     else push({ tone: "error", title: "No se pudo armar el email", description: "Revisá que el email de cumpleaños esté activo en Emails automáticos." });
   };
   return (
@@ -49,9 +51,9 @@ export function ReminderList({ reminders, showCustomer = false }: { reminders: R
               <span className="text-sm text-muted">{REMINDER_LABEL[r.kind]} · {formatDay(r.date)} ({whenText(r.inDays)})</span>
             </span>
             {r.kind === "pet-birthday" && r.petId && (
-              <button type="button" onClick={() => send(r)} aria-label={`Enviar email: ${r.title}${showCustomer ? `, ${r.name}` : ""}`}
+              <button type="button" onClick={() => send(r)} aria-label={`Simular el email del día: ${r.title}${showCustomer ? `, ${r.name}` : ""}`}
                 className="inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-3.5 text-sm font-bold text-on-primary hover:bg-primary-hover">
-                <Mail size={15} aria-hidden="true" /> Enviar email
+                <Mail size={15} aria-hidden="true" /> Simular el email del día
               </button>
             )}
             <button type="button" onClick={() => copy(r.message)} aria-label={`Copiar mensaje: ${r.title}${showCustomer ? `, ${r.name}` : ""}`}
