@@ -130,6 +130,8 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
   verifican qué sonido se pidió (`window.__velmarSounds`), no el audio. Probar en el iPhone que el silencio del
   sistema y el botón de la tienda se respetan.
 - **Collar**: vista previa ilustrativa (SVG), no un render 3D; materiales y recargos de muestra.
+- **Ruleta en el celular**: el disco deja pasar el scroll vertical (`pan-y`); el giro se toma del arrastre
+  lateral o del toque. El premio se guarda al empezar el giro (cerrar la ruleta a mitad no da otro giro).
 - **Emails**: no sale ninguno. La bandeja guarda hasta 60 en este navegador. El editor de fichas usa `contentEditable`; en producción el HTML lo arma React Email (con tablas y estilos en línea para clientes de correo).
 - **Capacidad**: se mide en pedidos por día, no en horas de máquina; un pedido grande ocupa lo mismo que uno chico.
 - **Datos del panel por navegador**: lo que Velmar cambie en su celular no lo ve otra persona; cada navegador arranca de los fixtures.
