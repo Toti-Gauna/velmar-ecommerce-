@@ -5,6 +5,7 @@ import type { CartLine } from "@/demo/engine/cart-types";
 import type { Quote } from "@/demo/engine/pricing";
 import type { FulfillmentType, PaymentMethod } from "@/demo/types";
 import { demoStorage, STORAGE_PREFIX } from "./storage";
+import { playSound } from "@/lib/sound";
 
 export interface Contact {
   name: string;
@@ -58,7 +59,7 @@ export const useCheckout = create<CheckoutState>()(
       ...empty,
       lastOrder: null,
       patch: (data) => set(data),
-      placeOrder: (order) => set({ ...empty, lastOrder: order }),
+      placeOrder: (order) => { set({ ...empty, lastOrder: order }); playSound("purchase"); },
       reset: () => set({ ...empty, lastOrder: null }),
     }),
     { name: `${STORAGE_PREFIX}checkout`, storage: demoStorage, skipHydration: true },

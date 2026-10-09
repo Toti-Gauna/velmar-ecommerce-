@@ -1,3 +1,5 @@
+import type { CollarSpec } from "./fixtures/collar";
+
 /** Tipos del catálogo de demo. Espejan el modelo de la especificación técnica (sección 4). */
 
 export type PersonalizationKind = "TEXT" | "PHOTO" | "PHOTO_REFERENCE";
@@ -49,6 +51,8 @@ export interface PersonalizationTemplate {
   colors?: { name: string; hex: string }[];
   surcharge: number;
   notesPlaceholder?: string;
+  /** Configurador de collar (formato, material, cordón, dije y talle). Pedido de Ignacio, fuera de la spec. */
+  collar?: CollarSpec;
 }
 
 export interface Product {

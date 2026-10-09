@@ -1,5 +1,5 @@
 import type { Product } from "../types";
-import { engravingTemplate, nameTemplate, photoPlateTemplate } from "./templates";
+import { collarTemplate, engravingTemplate, nameTemplate, photoPlateTemplate } from "./templates";
 
 const madeToOrderFaq = { q: "¿Cuánto tarda?", a: "Se fabrica a pedido. El plazo corre desde que se confirma el pago." };
 
@@ -34,14 +34,16 @@ export const petProducts: Product[] = [
   },
   {
     slug: "collar-con-nombre", name: "Collar con nombre y dijes de patita", short: "Paracord trenzado con letras 3D",
-    description: "Collar de paracord trenzado a mano, con el nombre de tu mascota en letras impresas en 3D que cuelgan una al lado de la otra y dijes de patita. Elegí el color de las letras.",
+    description: "Collar de paracord trenzado a mano, con el nombre de tu mascota en letras impresas en 3D que cuelgan una al lado de la otra y dijes de patita. Armalo a tu gusto: letras sueltas o de corrido, color del cordón y de las letras, material, dije y talle según el cuello.",
     categorySlug: "collares", basePrice: 14900, madeToOrderDays: 5, art: "collar", gallery: ["front", "detail"],
     variants: [
-      { id: "col-s", label: "Chico (25–35 cm)", size: "Chico", priceDelta: 0, stock: -1 },
-      { id: "col-m", label: "Mediano (35–45 cm)", size: "Mediano", priceDelta: 1500, stock: -1 },
-      { id: "col-l", label: "Grande (45–55 cm)", size: "Grande", priceDelta: 2500, stock: -1 },
+      { id: "col-xs", label: "Mini (20–27 cm)", size: "Mini", priceDelta: 0, stock: -1 },
+      { id: "col-s", label: "Chico (28–35 cm)", size: "Chico", priceDelta: 0, stock: -1 },
+      { id: "col-m", label: "Mediano (36–45 cm)", size: "Mediano", priceDelta: 1500, stock: -1 },
+      { id: "col-l", label: "Grande (46–55 cm)", size: "Grande", priceDelta: 2500, stock: -1 },
+      { id: "col-xl", label: "Extra grande (56–65 cm)", size: "Extra grande", priceDelta: 3500, stock: -1 },
     ],
-    personalization: nameTemplate,
+    personalization: collarTemplate,
     faqs: [madeToOrderFaq, { q: "¿Cómo mido el cuello?", a: "Con un centímetro, dejando dos dedos de holgura." }],
     featured: true, isNew: false, soldCount: 51, tags: ["perro", "gato", "nombre"],
   },

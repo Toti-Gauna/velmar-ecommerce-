@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { Heart, Home, LayoutGrid, TicketPercent, UserRound } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { bottomBarFor } from "./bottomBars";
+import { playSound } from "@/lib/sound";
 
 const TABS = [
   { href: "/", label: "Inicio", icon: Home, match: (p: string) => p === "/" },
@@ -26,7 +27,7 @@ export function ShopBottomNav() {
           const active = match(pathname);
           return (
             <li key={href} className="flex flex-1">
-              <Link href={href} aria-current={active ? "page" : undefined}
+              <Link href={href} aria-current={active ? "page" : undefined} onClick={() => { if (!active) playSound("nav"); }}
                 className={cn("relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[1.4rem] text-[11px] font-bold transition-colors", active ? "text-primary" : "text-muted")}>
                 {active && <motion.span layoutId="shop-tab" aria-hidden="true" transition={{ type: "spring", stiffness: 420, damping: 34 }} className="absolute inset-x-0.5 inset-y-1.5 rounded-[1.25rem] bg-primary/[0.12]" />}
                 <Icon size={21} aria-hidden="true" strokeWidth={active ? 2.4 : 2} className="relative" />

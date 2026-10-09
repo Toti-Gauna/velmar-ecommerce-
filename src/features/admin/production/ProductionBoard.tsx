@@ -7,7 +7,7 @@ import { isLate } from "@/demo/admin/order-groups";
 import type { AdminOrder } from "@/demo/admin/types";
 import { materialRows } from "@/demo/admin/workshop/materials";
 import { columnOf, nextColumn, PRODUCTION_COLUMNS, productionMove, type ProductionColumn } from "@/demo/admin/workshop/production";
-import { getProduct } from "@/demo/engine/catalog";
+import { collarLineDetail, getProduct } from "@/demo/engine/catalog";
 import { calendarOf } from "@/demo/engine/delivery";
 import { demoData } from "@/demo/engine/source";
 import { workdaysBetween } from "@/demo/engine/workdays";
@@ -57,6 +57,7 @@ function Card({ order, column, today, onMove, onDragStart }: { order: AdminOrder
                 <p className="font-bold">{l.quantity} × {p?.name ?? l.productSlug}</p>
                 <p className="text-muted">{v?.label}</p>
                 {per && <p className="mt-0.5 text-xs font-semibold text-success">{KIND[per.kind]} aprobada{per.text ? `: “${per.text}”` : ""}{per.font ? ` · ${per.font}` : ""}{per.colorName ? ` · ${per.colorName}` : ""}</p>}
+                {per?.collar && <p className="text-xs font-semibold text-ink">{collarLineDetail(l)}</p>}
                 {per?.notes && <p className="text-xs text-muted">{per.notes}</p>}
               </div>
             </li>

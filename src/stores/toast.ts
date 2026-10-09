@@ -1,5 +1,6 @@
 "use client";
 import { create } from "zustand";
+import { playSound } from "@/lib/sound";
 
 export interface Toast {
   id: number;
@@ -19,6 +20,7 @@ let seq = 0;
 export const useToasts = create<ToastState>()((set, get) => ({
   toasts: [],
   push: (toast) => {
+    if (toast.tone === "error") playSound("error");
     const id = ++seq;
     set((s) => ({ toasts: [...s.toasts.slice(-2), { ...toast, id }] }));
     setTimeout(() => get().dismiss(id), 5000);

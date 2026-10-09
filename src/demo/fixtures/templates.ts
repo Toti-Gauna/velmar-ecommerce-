@@ -1,4 +1,5 @@
 import type { PersonalizationTemplate } from "../types";
+import { collarSpec } from "./collar";
 
 const petColors = [
   { name: "Verde oliva", hex: "#3d4a2a" },
@@ -12,6 +13,13 @@ export const fonts = ["Redondeada", "Clásica", "Manuscrita"] as const;
 
 export const nameTemplate: PersonalizationTemplate = {
   id: "t-nombre", name: "Nombre impreso", kind: "TEXT", maxChars: 10, fonts: [...fonts], colors: petColors, surcharge: 0,
+};
+
+/** Collar con nombre: el nombre con fuente y color de letras, más el configurador (formato, cordón, dije, talle). */
+export const collarTemplate: PersonalizationTemplate = {
+  id: "t-collar", name: "Collar con nombre", kind: "TEXT", maxChars: 8, fonts: [...fonts], surcharge: 0, collar: collarSpec,
+  // Letras impresas en 3D: primero las que contrastan con la mayoría de los cordones.
+  colors: [{ name: "Blanco", hex: "#ffffff" }, { name: "Crema", hex: "#f3e7cf" }, { name: "Negro", hex: "#1f1f1f" }, { name: "Rosa", hex: "#d9667f" }, { name: "Celeste", hex: "#3f7fb5" }, { name: "Verde oliva", hex: "#3d4a2a" }],
 };
 
 export const engravingTemplate: PersonalizationTemplate = {
@@ -50,4 +58,4 @@ export const FONT_FAMILIES: Record<string, string> = {
   Manuscrita: "Caveat, 'Segoe Script', cursive",
 };
 
-export const baseTemplates: PersonalizationTemplate[] = [nameTemplate, engravingTemplate, photoLampTemplate, photoPlateTemplate, referenceTemplate];
+export const baseTemplates: PersonalizationTemplate[] = [nameTemplate, collarTemplate, engravingTemplate, photoLampTemplate, photoPlateTemplate, referenceTemplate];

@@ -6,6 +6,7 @@ import type { TextZone } from "@/demo/fixtures/templates";
 import { formatARS } from "@/lib/money";
 import { QuantityStepper } from "@/components/molecules/QuantityStepper";
 import { LineThumb } from "./LineThumb";
+import { collarLineDetail } from "@/demo/engine/catalog";
 
 export interface CartLineView {
   id: string;
@@ -37,6 +38,7 @@ export function CartLineItem({ line, onQuantity, onRemove }: { line: CartLineVie
           <p className="line-clamp-2 text-[13px]">
             <span className="font-bold text-success">✓ Aprobada</span> · {KIND[p.kind]}
             {p.text && <> · “{p.text}” ({p.font}, {p.colorName})</>}
+            {p.collar && <span className="block text-muted">{collarLineDetail({ productSlug: line.slug, personalization: p })}</span>}
             {p.notes && <span className="block truncate text-muted">Notas: {p.notes}</span>}
           </p>
         )}

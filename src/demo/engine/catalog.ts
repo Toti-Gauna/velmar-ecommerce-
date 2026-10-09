@@ -1,5 +1,8 @@
 import type { Category, Product, Variant } from "../types";
 import { demoData, STATIC_CATEGORY_SLUGS, STATIC_PRODUCT_SLUGS } from "./source";
+import type { CollarConfig } from "../fixtures/collar";
+import { collarSurcharge, describeCollar } from "./collar";
+import type { CartLine } from "./cart-types";
 
 export type Availability = { kind: "made-to-order"; days?: number } | { kind: "in-stock"; units: number } | { kind: "out-of-stock" };
 export type SortKey = "relevance" | "price-asc" | "price-desc" | "new";
@@ -60,9 +63,14 @@ export function fromPrice(product: Product): number {
   return product.basePrice + Math.min(0, ...product.variants.map((v) => v.priceDelta));
 }
 
-export function unitPrice(product: Product, variant: Variant, withPersonalization: boolean): number {
-  const surcharge = withPersonalization ? (product.personalization?.surcharge ?? 0) : 0;
-  return product.basePrice + variant.priceDelta + surcharge;
+/** Precio unitario: base + variante + recargo de personalización (+ opciones del collar si las hay). */
+export function unitPrice(product: Product, variant: Variant, withPersonalization: boolean, collar?: CollarConfig): number {
+  return product.basePrice + variant.priceDelta + personalizationSurcharge(product, withPersonalization, collar);
+}
+
+export function personalizationSurcharge(product: Product, withPersonalization: boolean, collar?: CollarConfig): number {
+  if (!withPersonalization) return 0;
+  return (product.personalization?.surcharge ?? 0) + collarSurcharge(product.personalization?.collar, collar);
 }
 
 export function availability(product: Product, variant: Variant): Availability {
@@ -99,4 +107,9 @@ export function variantOptions(product: Product): { colors: { name: string; hex?
     if (v.size) sizes.add(v.size);
   }
   return { colors: [...colors].map(([name, hex]) => ({ name, hex })), sizes: [...sizes] };
+}
+
+/** Opciones del collar de una línea (carrito, pedido, emails), o "" si no es un collar configurado. */
+export function collarLineDetail(line: Pick<CartLine, "productSlug" | "personalization">): string {
+  return describeCollar(getProduct(line.productSlug)?.personalization?.collar, line.personalization?.collar);
 }

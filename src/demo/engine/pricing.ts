@@ -1,6 +1,6 @@
 import type { Coupon, FulfillmentType, PaymentMethod } from "../types";
 import type { CartLine } from "./cart-types";
-import { getProduct, unitPrice } from "./catalog";
+import { getProduct, unitPrice, personalizationSurcharge } from "./catalog";
 import { couponDiscount } from "./coupons";
 import { demoData } from "./source";
 
@@ -38,8 +38,8 @@ export function quoteLines(lines: CartLine[]): QuotedLine[] {
     const product = getProduct(line.productSlug);
     const variant = product?.variants.find((v) => v.id === line.variantId);
     if (!product || !variant) return [];
-    const price = unitPrice(product, variant, Boolean(line.personalization));
-    const surcharge = line.personalization ? (product.personalization?.surcharge ?? 0) : 0;
+    const price = unitPrice(product, variant, Boolean(line.personalization), line.personalization?.collar);
+    const surcharge = personalizationSurcharge(product, Boolean(line.personalization), line.personalization?.collar);
     return [{ line, unitPrice: price, lineTotal: price * line.quantity, surcharge: surcharge * line.quantity }];
   });
 }

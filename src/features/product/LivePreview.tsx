@@ -1,5 +1,6 @@
 "use client";
 import { ImagePlus } from "lucide-react";
+import { CollarPreview } from "@/components/illustrations/CollarPreview";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { TextPreview } from "@/components/organisms/TextPreview";
 import { FONT_FAMILIES } from "@/demo/fixtures/templates";
@@ -12,6 +13,9 @@ import type { PersonalizationDraft } from "../personalize/usePersonalizationDraf
 export function LivePreview({ product, tint, draft }: { product: Product; tint?: string; draft: PersonalizationDraft }) {
   const zone = useDemoData((d) => d.textZones[product.art]) ?? { x: 100, y: 180, w: 200, h: 40, cover: "#ffffff" };
   const kind = draft.tmpl?.kind;
+  if (draft.collar) {
+    return <CollarPreview text={draft.text.text} font={FONT_FAMILIES[draft.text.font] ?? FONT_FAMILIES.Redondeada!} letterColor={draft.text.color} config={draft.collar} className="h-full w-full" />;
+  }
   if (kind === "TEXT") {
     return (
       <TextPreview art={product.art} tint={tint} text={draft.text.text || "Tu texto"} fontFamily={FONT_FAMILIES[draft.text.font] ?? FONT_FAMILIES.Redondeada!}

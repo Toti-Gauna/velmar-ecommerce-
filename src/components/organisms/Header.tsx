@@ -7,6 +7,7 @@ import { cn } from "@/lib/cn";
 import { useCart } from "@/stores/cart";
 import { useHydrated } from "@/stores/hydration";
 import { useUi } from "@/stores/ui";
+import { SoundToggle } from "@/components/atoms/SoundToggle";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle";
 import { ThemeLogo } from "@/features/themes/ThemeLogo";
 import { MobileMenu } from "./MobileMenu";
@@ -55,6 +56,7 @@ export function Header() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-0.5">
+          <SoundToggle className={icon} />
           <ThemeToggle className={cn(icon, "max-sm:hidden")} />
           <button type="button" onClick={() => setSearch(true)} aria-label="Buscar" className={icon}><Search size={21} aria-hidden="true" /></button>
           <Link href="/favoritos/" aria-label="Favoritos" className={cn(icon, "max-lg:hidden")}><Heart size={21} aria-hidden="true" /></Link>

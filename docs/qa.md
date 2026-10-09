@@ -34,6 +34,15 @@
 | Menú móvil y drawer del carrito: abren, atrapan el foco y cierran con Escape | idem | ✅ |
 | Sin desborde a 375 px con el carrito lleno (recomendaciones desplazables) | idem | ✅ |
 
+## Tienda · Fase 4 (`tests/e2e/shop-fase4.spec.ts`, `tests/unit/collar.test.ts`)
+| Verificación | Estado |
+|---|---|
+| Collar: letras sueltas una por pieza, de corrido en una, cordón, material y talle por cuello cambian vista previa y precio; fuera de talle avisa; la configuración llega al carrito | ✅ |
+| Combinación lista carga nombre, cordón y vista previa | ✅ |
+| Ruleta arrastrada con el mouse/dedo da premio con clic de gajos, giro y fanfarria; también con Enter | ✅ |
+| Sonidos al agregar y en favoritos; silencio recordado al recargar | ✅ |
+| Recargos del collar en pesos enteros, talle por cm, descripción, piezas y combinaciones válidas | ✅ unit |
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
@@ -117,6 +126,10 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
 - **Deshacer importación**: vuelve al catálogo previo a la importación; lo cambiado después también se revierte (se avisa antes de confirmar).
 - **Feriados**: 2026 según Ley 27.399 y Resolución 164/2025; 2027 sin los días turísticos (se decretan cada año). Se pueden agregar o quitar en "Capacidad y feriados". Verificar contra el calendario oficial antes de producción.
 - **Arrastrar en el celular**: el arrastre es de escritorio (HTML5); en el celular se reprograma desde la ficha de entrega o con los botones del tablero.
+- **Sonidos**: el primer sonido llega recién después del primer toque (regla de los navegadores). Las pruebas
+  verifican qué sonido se pidió (`window.__velmarSounds`), no el audio. Probar en el iPhone que el silencio del
+  sistema y el botón de la tienda se respetan.
+- **Collar**: vista previa ilustrativa (SVG), no un render 3D; materiales y recargos de muestra.
 - **Emails**: no sale ninguno. La bandeja guarda hasta 60 en este navegador. El editor de fichas usa `contentEditable`; en producción el HTML lo arma React Email (con tablas y estilos en línea para clientes de correo).
 - **Capacidad**: se mide en pedidos por día, no en horas de máquina; un pedido grande ocupa lo mismo que uno chico.
 - **Datos del panel por navegador**: lo que Velmar cambie en su celular no lo ve otra persona; cada navegador arranca de los fixtures.
