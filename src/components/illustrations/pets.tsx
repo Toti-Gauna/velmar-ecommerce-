@@ -24,6 +24,7 @@ export function BowlWood({ tint = "#d8b98c" }: { tint?: string }) {
   const dark = shade(tint, -0.25);
   return (
     <g>
+      {[[74, 186], [74, 228], [326, 186], [326, 228]].map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="24" fill={tint} />)}
       <rect x="70" y="190" width="260" height="46" rx="12" fill={tint} />
       <rect x="86" y="236" width="22" height="80" rx="6" fill={dark} /><rect x="292" y="236" width="22" height="80" rx="6" fill={dark} />
       <path d="M100 198h200" stroke={shade(tint, -0.1)} strokeWidth="4" />
@@ -41,8 +42,9 @@ export function BowlWood({ tint = "#d8b98c" }: { tint?: string }) {
 export function Collar({ tint = "#3d4a2a" }: { tint?: string }) {
   return (
     <g>
-      <ellipse cx="200" cy="200" rx="130" ry="96" fill="none" stroke="#c9a77a" strokeWidth="22" />
-      <ellipse cx="200" cy="200" rx="130" ry="96" fill="none" stroke="#fff" strokeOpacity=".3" strokeWidth="4" strokeDasharray="10 14" />
+      <ellipse cx="200" cy="200" rx="130" ry="96" fill="none" stroke="#f2c94c" strokeWidth="22" />
+      <ellipse cx="200" cy="200" rx="130" ry="96" fill="none" stroke="#6fb7e0" strokeWidth="22" strokeDasharray="9 9" />
+      <ellipse cx="200" cy="200" rx="130" ry="96" fill="none" stroke="#fff" strokeOpacity=".35" strokeWidth="3" strokeDasharray="4 14" />
       <rect x="114" y="270" width="172" height="44" rx="14" fill="#fff" stroke="#e4dccb" strokeWidth="3" />
       <text x="200" y="302" textAnchor="middle" fontSize="28" fontWeight="800" fill={tint} fontFamily="ui-rounded, system-ui">LOLA</text>
       {[88, 312].map((x) => (
@@ -50,35 +52,6 @@ export function Collar({ tint = "#3d4a2a" }: { tint?: string }) {
           <ellipse cx="0" cy="8" rx="11" ry="9" /><circle cx="-10" cy="-6" r="5" /><circle cx="0" cy="-10" r="5" /><circle cx="10" cy="-6" r="5" />
         </g>
       ))}
-    </g>
-  );
-}
-
-export function NfcTag() {
-  return (
-    <g>
-      <path d="M118 160a30 30 0 1 1 40-36h84a30 30 0 1 1 40 36 30 30 0 1 1-40 36h-84a30 30 0 1 1-40-36Z" fill="#3d4a2a" transform="translate(0 40)" />
-      <g stroke="#ede0c6" strokeWidth="7" fill="none" strokeLinecap="round" transform="translate(200 200)">
-        <path d="M-6-18a26 26 0 0 1 0 36" /><path d="M8-30a42 42 0 0 1 0 60" /><path d="M22-42a58 58 0 0 1 0 84" />
-      </g>
-      <circle cx="118" cy="140" r="10" fill="#fbf8f2" />
-      <path d="M118 130c-20-40-10-70 10-90" stroke="#a8a8a8" strokeWidth="6" fill="none" />
-    </g>
-  );
-}
-
-export function NfcKeychain({ tint = "#3d4a2a" }: { tint?: string }) {
-  return (
-    <g fill={tint}>
-      <ellipse cx="200" cy="250" rx="62" ry="52" />
-      <ellipse cx="128" cy="182" rx="24" ry="32" transform="rotate(-25 128 182)" />
-      <ellipse cx="176" cy="150" rx="24" ry="32" transform="rotate(-8 176 150)" />
-      <ellipse cx="226" cy="150" rx="24" ry="32" transform="rotate(8 226 150)" />
-      <ellipse cx="272" cy="182" rx="24" ry="32" transform="rotate(25 272 182)" />
-      <circle cx="200" cy="106" r="22" fill="none" stroke="#b5b5b5" strokeWidth="7" />
-      <g stroke="#fff" strokeOpacity=".75" strokeWidth="6" fill="none" strokeLinecap="round" transform="translate(196 252)">
-        <path d="M-4-12a18 18 0 0 1 0 24" /><path d="M8-22a32 32 0 0 1 0 44" />
-      </g>
     </g>
   );
 }

@@ -14,22 +14,23 @@ const TABS = [
   { href: "/cuenta/", label: "Mi cuenta", icon: UserRound, match: (p: string) => p.startsWith("/cuenta") },
 ];
 
-/** Barra inferior de la tienda en el celular. No aparece donde hay una barra de compra propia. */
+/** Barra inferior de la tienda en el celular: cápsula flotante de vidrio (pedido de Ignacio). No aparece donde hay una barra de compra propia. */
 export function ShopBottomNav() {
   const pathname = usePathname();
   if (bottomBarFor(pathname) !== "nav") return null;
   return (
-    <nav aria-label="Navegación inferior" data-shop-bottomnav className="bleed-bottom fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-12px_30px_-20px_rgb(28_32_22/0.35)] lg:hidden">
-      <ul className="mx-auto flex h-16 max-w-lg px-1">
+    <nav aria-label="Navegación inferior" data-shop-bottomnav
+      className="fixed inset-x-3 bottom-[calc(0.625rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-md rounded-[1.75rem] border border-white/25 bg-surface/70 shadow-[0_18px_40px_-14px_rgb(28_32_22/0.45),inset_0_1px_0_rgb(255_255_255/0.45)] ring-1 ring-ink/[0.06] backdrop-blur-xl backdrop-saturate-150 lg:hidden">
+      <ul className="flex h-16 px-1.5">
         {TABS.map(({ href, label, icon: Icon, match }) => {
           const active = match(pathname);
           return (
             <li key={href} className="flex flex-1">
               <Link href={href} aria-current={active ? "page" : undefined}
-                className={cn("relative flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-bold transition-colors", active ? "text-primary" : "text-muted")}>
-                {active && <motion.span layoutId="shop-tab" aria-hidden="true" className="absolute top-0 h-[3px] w-8 rounded-b-full bg-primary" />}
-                <Icon size={21} aria-hidden="true" strokeWidth={active ? 2.4 : 2} />
-                {label}
+                className={cn("relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[1.4rem] text-[11px] font-bold transition-colors", active ? "text-primary" : "text-muted")}>
+                {active && <motion.span layoutId="shop-tab" aria-hidden="true" transition={{ type: "spring", stiffness: 420, damping: 34 }} className="absolute inset-x-0.5 inset-y-1.5 rounded-[1.25rem] bg-primary/[0.12]" />}
+                <Icon size={21} aria-hidden="true" strokeWidth={active ? 2.4 : 2} className="relative" />
+                <span className="relative">{label}</span>
               </Link>
             </li>
           );

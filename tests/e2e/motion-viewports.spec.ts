@@ -29,6 +29,8 @@ test("la pantalla de carga aparece en cada recarga, dura 5 s y se cierra con Esc
 
 for (const width of [375, 768, 1440]) {
   test(`capturas a ${width}px`, async ({ page }, info) => {
+    // Diez capturas de página completa: a 1440 px cada una tarda 2–6 s, más que los 45 s por defecto.
+    test.setTimeout(120_000);
     await page.setViewportSize({ width, height: 900 });
     for (const path of ["", "p/comedero-perro-globo/", "crear/collar-con-nombre/", "carrito/", "checkout/", "cupones/", "admin-demo/", "admin-demo/pedidos/detalle/?codigo=VEL-000123", "admin-demo/pagos/", "admin-demo/productos/editar/?id=comedero-perro-globo"]) {
       await page.goto(path);

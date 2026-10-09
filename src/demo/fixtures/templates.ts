@@ -20,6 +20,8 @@ export const engravingTemplate: PersonalizationTemplate = {
 
 export const photoLampTemplate: PersonalizationTemplate = { id: "t-foto", name: "Foto en velador", kind: "PHOTO", mask: "arch", surcharge: 0 };
 
+export const photoPlateTemplate: PersonalizationTemplate = { id: "t-placa", name: "Imagen en placa NFC", kind: "PHOTO", mask: "rounded", surcharge: 0 };
+
 export const referenceTemplate: PersonalizationTemplate = {
   id: "t-referencia", name: "Pintado desde referencia", kind: "PHOTO_REFERENCE",
   surcharge: 0,
@@ -38,7 +40,6 @@ export interface TextZone {
 export const textZones: Record<string, TextZone> = {
   "bowl-dog": { x: 125, y: 252, w: 150, h: 36 },
   collar: { x: 118, y: 273, w: 164, h: 38, cover: "#ffffff" },
-  "nfc-tag": { x: 132, y: 178, w: 136, h: 44, cover: "#3d4a2a" },
   "bowl-wood": { x: 96, y: 203, w: 208, h: 28, cover: "tint" },
   "leash-hanger": { x: 84, y: 180, w: 232, h: 32, cover: "tint" },
 };
@@ -49,4 +50,4 @@ export const FONT_FAMILIES: Record<string, string> = {
   Manuscrita: "Caveat, 'Segoe Script', cursive",
 };
 
-export const baseTemplates: PersonalizationTemplate[] = [nameTemplate, engravingTemplate, photoLampTemplate, referenceTemplate];
+export const baseTemplates: PersonalizationTemplate[] = [nameTemplate, engravingTemplate, photoLampTemplate, photoPlateTemplate, referenceTemplate];

@@ -11,7 +11,7 @@ import { PhotoInput } from "../personalize/PhotoInput";
 
 const ARTS: { key: ArtKey; label: string }[] = [
   { key: "bowl-dog", label: "Comedero perro globo" }, { key: "bowl-wood", label: "Comedero de madera" }, { key: "collar", label: "Collar" },
-  { key: "nfc-tag", label: "Chapita NFC" }, { key: "nfc-keychain", label: "Llavero huella" }, { key: "lamp-photo", label: "Velador con foto" },
+  { key: "nfc-plate", label: "Placa NFC con imagen" }, { key: "nfc-social", label: "Placa NFC Instagram" }, { key: "lamp-photo", label: "Velador con foto" },
   { key: "lamp-painted", label: "Velador pintado" }, { key: "leash-hanger", label: "Colgador de correa" }, { key: "dachshund", label: "Salchicha" },
   { key: "figure-pair", label: "Persona y perro" }, { key: "candle-poodle", label: "Vela caniche" }, { key: "home-spray", label: "Home spray" },
   { key: "diffuser", label: "Difusor" }, { key: "mdp-sign", label: "I ♥ MDP" },

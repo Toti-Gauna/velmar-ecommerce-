@@ -45,7 +45,7 @@ export const coupons: Coupon[] = [
 ];
 
 export const missions: Mission[] = [
-  { id: "m-dos-productos", title: "Comprá 2 productos", description: "En uno o varios pedidos pagados.", type: "UNITS_COUNT", threshold: 2, reward: "Llavero NFC de regalo", active: true, nextMissionId: "m-gasto", completedCount: 14 },
+  { id: "m-dos-productos", title: "Comprá 2 productos", description: "En uno o varios pedidos pagados.", type: "UNITS_COUNT", threshold: 2, reward: "Placa NFC de regalo", active: true, nextMissionId: "m-gasto", completedCount: 14 },
   { id: "m-primera", title: "Primera compra con cuenta", description: "Tu primer pedido pagado con cuenta.", type: "ORDERS_COUNT", threshold: 1, reward: "Grabado de nombre gratis en la próxima", active: true, nextMissionId: null, completedCount: 31 },
   { id: "m-gasto", title: "Sumá $100.000", description: "Acumulado en pedidos pagados.", type: "SPEND_TOTAL", threshold: 100000, reward: "Comedero de regalo", active: true, nextMissionId: null, completedCount: 4 },
 ];

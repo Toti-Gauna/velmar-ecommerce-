@@ -1,14 +1,16 @@
 import type { ArtKey, ArtView } from "@/demo/types";
 import { cn } from "@/lib/cn";
-import { BowlDog, BowlWood, Collar, LeashHanger, NfcKeychain, NfcTag } from "./pets";
+import { BowlDog, BowlWood, Collar, LeashHanger } from "./pets";
+import { CandleBowl, CandleTin, LabelGuide, NfcPlate, NfcSocial } from "./crafts";
 import { CandlePoodle, Dachshund, Diffuser, FigurePair, HomeSpray, LampPainted, LampPhoto, MdpSign } from "./home";
 
 type ArtComponent = (props: { tint?: string }) => React.JSX.Element;
 
 const ART: Record<ArtKey, ArtComponent> = {
-  "bowl-dog": BowlDog, "bowl-wood": BowlWood, collar: Collar, "nfc-tag": NfcTag, "nfc-keychain": NfcKeychain,
+  "bowl-dog": BowlDog, "bowl-wood": BowlWood, collar: Collar, "nfc-plate": NfcPlate, "nfc-social": NfcSocial,
   "lamp-photo": LampPhoto, "lamp-painted": LampPainted, "leash-hanger": LeashHanger, dachshund: Dachshund,
   "figure-pair": FigurePair, "candle-poodle": CandlePoodle, "home-spray": HomeSpray, diffuser: Diffuser, "mdp-sign": MdpSign,
+  "candle-tin": CandleTin, "candle-bowl": CandleBowl, "label-guide": LabelGuide,
 };
 
 const STUDIO: Record<Exclude<ArtView, "context">, [string, string, string]> = {
