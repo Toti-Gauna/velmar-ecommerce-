@@ -38,8 +38,8 @@ test.describe("rutas directas y refresh bajo el subpath", () => {
   }
 
   test("sin barra final redirige y una ruta inexistente da 404 con la página de la tienda", async ({ page }) => {
-    const res = await page.goto("p/chapita-nfc");
-    expect(page.url()).toMatch(/\/p\/chapita-nfc\/$/);
+    const res = await page.goto("p/placa-nfc");
+    expect(page.url()).toMatch(/\/p\/placa-nfc\/$/);
     expect(res?.status()).toBe(200);
     const missing = await page.goto("p/no-existe/");
     expect(missing?.status()).toBe(404);

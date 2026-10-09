@@ -2,12 +2,16 @@ import type { ReactNode } from "react";
 import { brand } from "@/config/brand";
 import { cn } from "@/lib/cn";
 
-/** Marca provisional: dos chevrones + nombre en Fraunces. */
+/** Logo de Velmar: una "M" de dos picos sobre una "V", con cortes rectos a 45° (como en su Instagram). */
+export const LOGO_VIEWBOX = "156 234 558 452";
+export const LOGO_M = "M187.5 432.5 323 297l112 112 112-112 135.5 135.5";
+export const LOGO_V = "M295.5 487.5 435 627l139.5-139.5";
+export const LOGO_STROKE = 78;
+
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 48 44" aria-hidden="true" className={cn("h-8 w-8 text-primary", className)}>
-      <path d="M8 22 24 8l16 14" fill="none" stroke="currentColor" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M8 36 24 22l16 14" fill="none" stroke="currentColor" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox={LOGO_VIEWBOX} aria-hidden="true" className={cn("h-8 w-8 text-primary", className)}>
+      <path d={`${LOGO_M}M${LOGO_V.slice(1)}`} fill="none" stroke="currentColor" strokeWidth={LOGO_STROKE} strokeLinejoin="miter" />
     </svg>
   );
 }

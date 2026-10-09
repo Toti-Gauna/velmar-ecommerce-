@@ -1,7 +1,7 @@
 # Tono visual (PROVISIONAL)
 
-No hay paleta ni tipografía confirmadas por Velmar. Lo siguiente se derivó del logo descrito (dos chevrones verde
-oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña). **No es la identidad final.**
+No hay paleta ni tipografía confirmadas por Velmar. Lo siguiente se derivó del logo real (una "M" de dos picos sobre una
+"V", verde oliva sobre blanco, tomado de su Instagram; `LogoMark` en `src/components/atoms/Logo.tsx`) y de sus fotos (madera clara, plantas, estética hogareña). **No es la identidad final.**
 
 | Token | Valor | Uso |
 |---|---|---|
@@ -47,7 +47,7 @@ oliva sobre blanco) y de sus fotos (madera clara, plantas, estética hogareña).
   `--studio-1/2/3`). Halloween, Navidad, Año Nuevo, Black Friday y San Patricio son **inmersivas**: oscuras también en
   modo claro. El contraste AA de cada par se prueba en `tests/unit/palettes.test.ts`. El panel no cambia.
 - **Fondo de la página**: aurora (tres manchas de luz de la temática que se desplazan lento), grano sutil y partículas,
-  detrás de todo. En escritorio el header pasa a vidrio tintado (en el celular header y barras inferiores quedan sólidos y su fondo se extiende hasta el borde de la pantalla, por Safari de iPhone); las tarjetas de producto llevan filo y brillo del color.
+  detrás de todo. En escritorio el header pasa a vidrio tintado (en el celular el header y las barras de compra quedan sólidos y su fondo se extiende hasta el borde de la pantalla, por Safari de iPhone; la barra de navegación inferior es una cápsula flotante de vidrio); las tarjetas de producto llevan filo y brillo del color.
 - **Pantalla de carga de temporada**: el script del `<head>` (`seasonScript.ts`) decide la temática antes de pintar y
   marca `data-season`; el fondo toma los colores de la festividad y `ThemeSplashScene` monta **una escena distinta por
   fecha** (motion graphics con `motion/react`, `src/features/themes/splash/`):

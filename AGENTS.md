@@ -23,6 +23,10 @@ Ante una duda de alcance: parar y preguntar a Ignacio, no decidir.
 - `src/features/` contenedores cliente que conectan stores + engine con componentes.
 - `src/stores/` Zustand persistido (`velmar-demo:*`), con rehidratación después del primer render.
 
+## Agentes
+- `.claude/agents/velmar.md` coordina cada fase del Roadmap demo v2 (Notion) y delega en los agentes de `Toti-Gauna/agents`
+  (frontend-architect, trailer-arquitect, game-arquitect, documentation-agent). Sus reglas ceden ante las de este archivo.
+
 ## Calidad
 - TypeScript estricto. Montos en pesos enteros.
 - Archivos escritos a mano: objetivo ≤150 líneas, >250 bloquea (excluye fixtures).

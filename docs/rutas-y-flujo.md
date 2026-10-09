@@ -13,7 +13,7 @@
 | `/checkout/confirmacion/` | "Pedido de demostración", instrucciones de pago de muestra, comprobante local |
 | `/pedido/demo-velmar/` | Seguimiento con token fijo: **el pedido arriba** (en el celular 3 productos y "Ver N más" en un modal), "Falta el comprobante" debajo de los productos, estado actual con recorrido animado, estados de muestra, etapas y ayuda por WhatsApp |
 | `/club/` | Club Velmar: ruleta de cupones (un giro por navegador), camino de misiones y billetera de premios |
-| Barra inferior (celular) | Inicio, Categorías, Favoritos, Cupones y Mi cuenta. No aparece en ficha, carrito ni checkout (tienen su propia barra) |
+| Barra inferior (celular) | Cápsula flotante de vidrio con Inicio, Categorías, Favoritos, Cupones y Mi cuenta. No aparece en ficha, carrito ni checkout (tienen su propia barra) |
 | `/cupones/` | Mis cupones: el ganado en la ruleta y los vigentes de la tienda como tickets, con "Aplicar"; estado vencido / mínimo / solo con cuenta; cómo ganar más |
 | `/favoritos/` | Pantalla de favoritos (guardados con el corazón de cada ficha, en este navegador); vacía invita a explorar la tienda. Pedido de Ignacio, fuera de la spec |
 | `/cuenta/` | Cuenta demo: pedidos, misiones, premios (un uso), direcciones |
@@ -40,7 +40,7 @@ Reglas simples y deterministas, sin tracking del usuario.
 ## Datos de muestra
 - Cupones: `BIENVENIDA10` (10%), `FERIA2000` (desde $20.000), `ENVIOGRATIS` (solo con cuenta), `INVIERNO` (vencido).
 - Códigos postales con cadete: 7600–7612. Envío gratis desde $120.000. 10% off con transferencia/QR.
-- Productos sin stock para demostrar el bloqueo: Comedero elevado "Nogal", Llavero NFC "Madera".
+- Productos sin stock para demostrar el bloqueo: Comedero elevado "Nogal", Placa NFC Instagram "Madera".
 - Catálogo basado en las líneas vistas en el Instagram de Velmar, **sin productos con licencia**. Precios orientativos.
 
 ## Pagos (decisión confirmada 03/10/2026)

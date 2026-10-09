@@ -1,6 +1,8 @@
 import type { Product } from "../types";
 import { engravingTemplate, photoLampTemplate, referenceTemplate } from "./templates";
 
+const madeToOrderFaq = { q: "¿Cuánto tarda?", a: "Se fabrica a pedido. El plazo corre desde que se confirma el pago." };
+
 export const homeProducts: Product[] = [
   {
     slug: "velador-con-foto", name: "Velador con foto", short: "Tu foto impresa, con luz LED",
@@ -71,6 +73,41 @@ export const homeProducts: Product[] = [
     ],
     faqs: [{ q: "¿Cuánto dura?", a: "Alrededor de 20 horas de encendido." }],
     featured: false, isNew: true, soldCount: 26, tags: ["vela", "aroma", "caniche", "regalo"],
+  },
+  {
+    slug: "vela-en-lata", name: "Vela en lata pintada", short: "Soja, en lata decorada a mano",
+    description: "Vela de cera de soja en lata con tapa, pintada a mano. Diseños por fecha: patria, Día de la Madre, Navidad o el que pidas.",
+    categorySlug: "velas", basePrice: 9500, art: "candle-tin", gallery: ["front", "context"],
+    variants: [
+      { id: "vel-patria", label: "Celeste y blanca", color: "Celeste y blanca", colorHex: "#74acdf", priceDelta: 0, stock: 18 },
+      { id: "vel-rosa", label: "Rosa", color: "Rosa", colorHex: "#e88aa0", priceDelta: 0, stock: 10 },
+      { id: "vel-oliva", label: "Verde oliva", color: "Verde oliva", colorHex: "#7d8a5a", priceDelta: 0, stock: 6 },
+    ],
+    faqs: [{ q: "¿Cuánto dura?", a: "Alrededor de 15 horas de encendido." }, { q: "¿Hacen diseños especiales?", a: "Sí, desde 6 unidades. Escribinos con la idea." }],
+    featured: false, isNew: true, soldCount: 33, tags: ["vela", "soja", "lata", "patria", "regalo"],
+  },
+  {
+    slug: "vela-souvenir-flores", name: "Vela souvenir con flores", short: "Cuenco de madera con nombre grabado",
+    description: "Vela en cuenco de madera con flores de cera hechas a mano y el nombre grabado. Pensada para cumpleaños, casamientos y bautismos: se encarga por cantidad.",
+    categorySlug: "velas", basePrice: 6900, madeToOrderDays: 12, art: "candle-bowl", gallery: ["front", "detail"],
+    variants: [
+      { id: "vsf-rosa", label: "Flores rosa", color: "Rosa", colorHex: "#f2a9a2", priceDelta: 0, stock: -1 },
+      { id: "vsf-blanca", label: "Flores blancas", color: "Blanca", colorHex: "#f6efe2", priceDelta: 0, stock: -1 },
+    ],
+    personalization: engravingTemplate,
+    faqs: [madeToOrderFaq, { q: "¿Hay pedido mínimo?", a: "Para eventos, desde 10 unidades. Una sola también se puede encargar." }],
+    featured: true, isNew: true, soldCount: 120, tags: ["vela", "souvenir", "evento", "nombre", "regalo"],
+  },
+  {
+    slug: "guia-etiquetas-velas", name: "Guía aplicadora de etiquetas para velas", short: "Etiquetas rectas y centradas, siempre",
+    description: "Herramienta impresa en 3D para pegar etiquetas en velas de vaso de forma rápida, precisa y perfectamente centrada. Para emprendedores que hacen velas.",
+    categorySlug: "emprendedores", basePrice: 15900, art: "label-guide", gallery: ["front", "context"],
+    variants: [
+      { id: "gev-chica", label: "Vaso chico (6–7 cm)", size: "Chica", priceDelta: 0, stock: 8 },
+      { id: "gev-grande", label: "Vaso grande (8–9 cm)", size: "Grande", priceDelta: 2000, stock: 4 },
+    ],
+    faqs: [{ q: "¿Sirve para mi vaso?", a: "Pasanos el diámetro y la altura de la etiqueta y te confirmamos el modelo." }],
+    featured: false, isNew: true, soldCount: 11, tags: ["emprendedores", "velas", "etiquetas", "3d", "herramienta"],
   },
   {
     slug: "home-spray", name: "Home spray Velmar", short: "Línea nueva de aromas · 250 ml",

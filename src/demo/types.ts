@@ -4,9 +4,9 @@ export type PersonalizationKind = "TEXT" | "PHOTO" | "PHOTO_REFERENCE";
 export type PaymentMethod = "CHECKOUT_PRO" | "BANK_TRANSFER" | "QR_MANUAL";
 export type FulfillmentType = "PICKUP" | "LOCAL_DELIVERY" | "SHIPPING";
 export type ArtKey =
-  | "bowl-dog" | "bowl-wood" | "collar" | "nfc-tag" | "nfc-keychain" | "lamp-photo"
+  | "bowl-dog" | "bowl-wood" | "collar" | "nfc-plate" | "nfc-social" | "lamp-photo"
   | "lamp-painted" | "leash-hanger" | "dachshund" | "figure-pair" | "candle-poodle"
-  | "home-spray" | "diffuser" | "mdp-sign";
+  | "home-spray" | "diffuser" | "mdp-sign" | "candle-tin" | "candle-bowl" | "label-guide";
 export type ArtView = "front" | "detail" | "context";
 
 export interface Category {

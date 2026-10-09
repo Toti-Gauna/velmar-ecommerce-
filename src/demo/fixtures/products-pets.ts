@@ -1,5 +1,5 @@
 import type { Product } from "../types";
-import { engravingTemplate, nameTemplate } from "./templates";
+import { engravingTemplate, nameTemplate, photoPlateTemplate } from "./templates";
 
 const madeToOrderFaq = { q: "¿Cuánto tarda?", a: "Se fabrica a pedido. El plazo corre desde que se confirma el pago." };
 
@@ -21,11 +21,11 @@ export const petProducts: Product[] = [
     featured: true, isNew: false, soldCount: 64, tags: ["perro", "plato", "3d"],
   },
   {
-    slug: "comedero-elevado-madera", name: "Comedero elevado de madera", short: "Doble, con bowls de acero",
-    description: "Soporte de madera maciza con dos bowls de acero inoxidable. Altura pensada para perros medianos. Podés grabar el nombre en el frente.",
+    slug: "comedero-elevado-madera", name: "Comedero elevado hueso", short: "Madera con forma de hueso y dos bowls de acero",
+    description: "Comedero elevado de diseño: tabla de madera con forma de hueso y dos bowls de acero inoxidable. Altura pensada para perros medianos. Podés grabar el nombre en el frente.",
     categorySlug: "comederos", basePrice: 32000, art: "bowl-wood", gallery: ["front", "context"],
     variants: [
-      { id: "cem-natural", label: "Natural", color: "Natural", colorHex: "#d8b98c", priceDelta: 0, stock: 3 },
+      { id: "cem-natural", label: "Natural", color: "Natural", colorHex: "#d8b98c", priceDelta: 0, stock: 12 },
       { id: "cem-nogal", label: "Nogal", color: "Nogal", colorHex: "#7a5434", priceDelta: 3000, stock: 0 },
     ],
     personalization: engravingTemplate,
@@ -33,8 +33,8 @@ export const petProducts: Product[] = [
     featured: true, isNew: false, soldCount: 22, tags: ["perro", "plato", "madera"],
   },
   {
-    slug: "collar-con-nombre", name: "Collar con nombre y dijes de patita", short: "Letras impresas en 3D",
-    description: "Collar regulable con el nombre de tu mascota en letras impresas en 3D y dijes de patita. Elegí el color de las letras.",
+    slug: "collar-con-nombre", name: "Collar con nombre y dijes de patita", short: "Paracord trenzado con letras 3D",
+    description: "Collar de paracord trenzado a mano, con el nombre de tu mascota en letras impresas en 3D que cuelgan una al lado de la otra y dijes de patita. Elegí el color de las letras.",
     categorySlug: "collares", basePrice: 14900, madeToOrderDays: 5, art: "collar", gallery: ["front", "detail"],
     variants: [
       { id: "col-s", label: "Chico (25–35 cm)", size: "Chico", priceDelta: 0, stock: -1 },
@@ -46,26 +46,28 @@ export const petProducts: Product[] = [
     featured: true, isNew: false, soldCount: 51, tags: ["perro", "gato", "nombre"],
   },
   {
-    slug: "chapita-nfc", name: "Chapita identificatoria NFC", short: "Acercás el celu y abre tu link",
-    description: "Chapita con chip NFC que abre el link que quieras: tu WhatsApp, un perfil o una página con datos de contacto. Lleva el nombre grabado del otro lado.",
-    categorySlug: "llaveros-nfc", basePrice: 12500, art: "nfc-tag", gallery: ["front", "detail", "context"],
+    slug: "placa-nfc", name: "Placa NFC con tu imagen", short: "Subí cualquier imagen y elegí a dónde lleva",
+    description: "Placa impresa con la imagen que quieras (tu logo, una foto o un ícono) y chip NFC: al acercar el celular abre el link que elijas, como tu Instagram, WhatsApp, menú o reseñas. Ideal para mostradores, ferias y regalos.",
+    categorySlug: "placas-nfc", basePrice: 13500, madeToOrderDays: 4, art: "nfc-plate", gallery: ["front", "detail", "context"],
     variants: [
-      { id: "nfc-hueso", label: "Hueso", size: "Hueso", priceDelta: 0, stock: 12 },
-      { id: "nfc-circulo", label: "Círculo", size: "Círculo", priceDelta: 0, stock: 7 },
+      { id: "pnfc-cuad-6", label: "Cuadrada 6 cm", size: "Cuadrada 6 cm", priceDelta: 0, stock: 12 },
+      { id: "pnfc-red-6", label: "Redonda 6 cm", size: "Redonda 6 cm", priceDelta: 0, stock: 7 },
+      { id: "pnfc-cuad-9", label: "Cuadrada 9 cm", size: "Cuadrada 9 cm", priceDelta: 3500, stock: 5 },
     ],
-    personalization: nameTemplate,
-    faqs: [{ q: "¿Necesita batería?", a: "No. El chip NFC se activa con el celular." }, { q: "¿Puedo cambiar el link?", a: "Sí, se reprograma desde el celular." }],
-    featured: false, isNew: true, soldCount: 38, tags: ["perro", "gato", "identificación", "nfc"],
+    personalization: photoPlateTemplate,
+    faqs: [{ q: "¿Necesita batería?", a: "No. El chip NFC se activa con el celular." }, { q: "¿Puedo cambiar el link?", a: "Sí, se reprograma desde el celular las veces que quieras." }, { q: "¿Funciona con iPhone?", a: "Sí, con modelos que leen NFC (iPhone XS en adelante) y la mayoría de los Android." }],
+    featured: true, isNew: true, soldCount: 38, tags: ["nfc", "placa", "negocio", "instagram", "regalo"],
   },
   {
-    slug: "llavero-nfc-huella", name: "Llavero NFC con huella", short: "Para tus llaves, con chip NFC",
-    description: "Llavero con forma de huella y chip NFC. Ideal para compartir tu contacto o el perfil de tu emprendimiento.",
-    categorySlug: "llaveros-nfc", basePrice: 9900, art: "nfc-keychain", gallery: ["front", "detail"],
+    slug: "placa-nfc-instagram", name: "Placa NFC “Seguinos en Instagram”", short: "Lista para el mostrador",
+    description: "Placa con ícono de cámara y chip NFC programado con tu perfil: tus clientes acercan el celular y te siguen en un toque. Viene lista para apoyar o pegar.",
+    categorySlug: "placas-nfc", basePrice: 11900, art: "nfc-social", gallery: ["front", "detail"],
     variants: [
-      { id: "lln-verde", label: "Verde oliva", color: "Verde oliva", colorHex: "#3d4a2a", priceDelta: 0, stock: 9 },
-      { id: "lln-madera", label: "Madera", color: "Madera", colorHex: "#c9a77a", priceDelta: 0, stock: 0 },
+      { id: "pnig-blanca", label: "Blanca", color: "Blanca", colorHex: "#f7f3ea", priceDelta: 0, stock: 9 },
+      { id: "pnig-oliva", label: "Verde oliva", color: "Verde oliva", colorHex: "#c5ccb3", priceDelta: 0, stock: 6 },
+      { id: "pnig-madera", label: "Madera", color: "Madera", colorHex: "#d8b98c", priceDelta: 1500, stock: 0 },
     ],
-    faqs: [{ q: "¿Funciona con iPhone?", a: "Sí, con modelos que leen NFC (iPhone XS en adelante)." }],
-    featured: false, isNew: false, soldCount: 19, tags: ["llavero", "nfc", "regalo"],
+    faqs: [{ q: "¿Me la dejan programada?", a: "Sí, con el link que nos pases al comprar. Después la podés cambiar vos." }],
+    featured: false, isNew: false, soldCount: 19, tags: ["nfc", "placa", "negocio", "instagram"],
   },
 ];

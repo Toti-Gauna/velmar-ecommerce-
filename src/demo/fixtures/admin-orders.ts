@@ -24,7 +24,7 @@ export const orderSeeds: Seed[] = [
     lines: [{ id: "a", productSlug: "colgador-de-correa", variantId: "cdc-natural", quantity: 1, personalization: { ...txt("Kira", "Clásica", "#6b4a2b", "Grabado natural") } }],
     proof: { fileName: "qr-121.png", receivedAt: "2026-10-01T13:30:00-03:00", status: "APPROVED" }, notes: ["Silueta: ovejero alemán (confirmado por WhatsApp)."] },
   { code: "VEL-000120", createdAt: "2026-09-30T18:20:00-03:00", customer: { name: "Camila Torres", email: "cami.t@ejemplo.com", phone: "223 555-0120" }, userId: "u-sofia", status: "READY", fulfillment: "LOCAL_DELIVERY", paymentMethod: "BANK_TRANSFER", address: "Alem 2700, Mar del Plata (7600)",
-    lines: [{ id: "a", productSlug: "chapita-nfc", variantId: "nfc-hueso", quantity: 2, personalization: txt("Luna") }],
+    lines: [{ id: "a", productSlug: "placa-nfc-instagram", variantId: "pnig-blanca", quantity: 2 }],
     proof: { fileName: "transferencia-120.pdf", receivedAt: "2026-09-30T18:45:00-03:00", status: "APPROVED" } },
   { code: "VEL-000119", createdAt: "2026-09-29T09:00:00-03:00", customer: { name: "Diego Álvarez", email: "diego.a@ejemplo.com", phone: "223 555-0123" }, userId: "u-diego", status: "SHIPPED", fulfillment: "SHIPPING", paymentMethod: "CHECKOUT_PRO", address: "Mitre 900, Balcarce (7620)",
     lines: [{ id: "a", productSlug: "salchicha-geometrico", variantId: "sg-unico", quantity: 1 }, { id: "b", productSlug: "pieza-i-love-mdp", variantId: "mdp-unico", quantity: 2 }] },

@@ -239,7 +239,7 @@ html[data-theme="dark"] .bg-night { box-shadow: inset 0 0 0 1px rgb(210 173 105 
 }
 .splash-done #velmar-splash { display: none; }
 #velmar-splash .splash-glow { position: absolute; width: 70vmin; height: 70vmin; border-radius: 9999px; background: radial-gradient(closest-side, rgb(210 173 105 / 0.22), transparent); animation: glow 2.4s ease-in-out 200ms both; }
-#velmar-splash .chev { stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw 600ms var(--ease-out-expo) 150ms both; }
+#velmar-splash .chev { stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 600ms var(--ease-out-expo) 150ms both; }
 #velmar-splash .chev-2 { animation-delay: 330ms; }
 #velmar-splash .word { clip-path: inset(0 100% 0 0); animation: wipe 800ms var(--ease-out-expo) 650ms both; letter-spacing: -0.02em; }
 #velmar-splash .tag { opacity: 0; animation: fade-up 600ms var(--ease-out-expo) 1200ms both; }

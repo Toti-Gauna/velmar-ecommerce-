@@ -3,6 +3,7 @@ import { animate, motion, useMotionValue, useReducedMotion } from "motion/react"
 import { Copy, Gift, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
+import { LogoMark } from "@/components/atoms/Logo";
 import { Celebration } from "@/components/molecules/Celebration";
 import { pickSegment, prizeCoupon, rotationFor } from "@/demo/engine/wheel";
 import { formatDate } from "@/lib/date";
@@ -60,7 +61,7 @@ export function WheelSpinner({ checkout, onApplied, onSaved, onSkip }: Props) {
           <circle cx="20" cy="17" r="6" fill="#1c2016" />
         </svg>
         <div aria-hidden="true" className="absolute inset-[38%] grid place-items-center rounded-full border-4 border-brass bg-night">
-          <svg viewBox="0 0 48 44" className="h-1/2 w-1/2 text-brass"><path d="M8 22 24 8l16 14M8 36 24 22l16 14" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          <LogoMark className="h-1/2 w-1/2 text-brass" />
         </div>
       </div>
       <div aria-live="polite" className="relative w-full max-w-sm text-center">

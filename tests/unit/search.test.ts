@@ -18,7 +18,7 @@ describe("búsqueda", () => {
     expect(found).toContain("comedero-elevado-madera");
   });
   it("busca por categoría y por etiquetas", () => {
-    expect(slugs("nfc")).toEqual(expect.arrayContaining(["chapita-nfc", "llavero-nfc-huella"]));
+    expect(slugs("nfc")).toEqual(expect.arrayContaining(["placa-nfc", "placa-nfc-instagram"]));
   });
   it("sin resultados devuelve lista vacía y sugiere un término", () => {
     expect(slugs("zzzzqqq")).toEqual([]);

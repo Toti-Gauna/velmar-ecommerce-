@@ -25,7 +25,7 @@ test("ruleta: gira (sin animación con movimiento reducido), emite un cupón y s
 });
 
 test("ficha: stock bajo la imagen, cantidad desplegable, favoritos y diseño requerido", async ({ page }) => {
-  await page.goto("p/chapita-nfc/");
+  await page.goto("p/comedero-elevado-madera/");
   await expect(page.getByText(/En stock · 12 disponibles/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Completá el set/ })).toBeVisible();
   await page.getByLabel("Cantidad:").selectOption("2");
@@ -39,7 +39,7 @@ test("ficha: stock bajo la imagen, cantidad desplegable, favoritos y diseño req
   await page.getByRole("dialog", { name: "Carrito" }).getByRole("link", { name: "Ver carrito completo" }).click();
   await expect(page).toHaveURL(/carrito\/$/);
   const main = page.locator("main");
-  await expect(main.getByRole("group", { name: /Cantidad de Chapita/ }).locator("output")).toHaveText("2");
+  await expect(main.getByRole("group", { name: /Cantidad de Comedero elevado/ }).locator("output")).toHaveText("2");
   await expect(main.getByText(/“Luna”/)).toBeVisible();
   // Favoritos: el corazón guarda el producto y aparece en su pantalla (pestaña de la barra inferior)
   await page.goto("p/vela-caniche/");
@@ -113,7 +113,7 @@ test("seguimiento: el pedido arriba y el resto de productos en un modal", async 
   await page.goto("pedido/demo-velmar/");
   await expect(page.getByRole("heading", { name: "Pedido de ejemplo" })).toBeVisible();
   await page.getByRole("button", { name: /Ver 1 producto más/ }).click();
-  await expect(page.getByRole("dialog", { name: "Productos del pedido" }).getByText(/Chapita identificatoria NFC/)).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Productos del pedido" }).getByText(/Placa NFC “Seguinos en Instagram”/)).toBeVisible();
   await page.keyboard.press("Escape");
   await page.getByText("Esperando comprobante").click();
   await expect(page.getByRole("heading", { name: "Falta el comprobante" })).toBeVisible();

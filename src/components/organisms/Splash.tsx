@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { ProductArt } from "@/components/illustrations/ProductArt";
+import { LOGO_M, LOGO_STROKE, LOGO_V, LOGO_VIEWBOX } from "@/components/atoms/Logo";
 import { brand } from "@/config/brand";
 import type { ArtKey } from "@/demo/types";
 import { ThemeSplashScene } from "@/features/themes/ThemeSplashScene";
@@ -8,7 +9,7 @@ import { ThemeSplashScene } from "@/features/themes/ThemeSplashScene";
 const PIECES: { art: ArtKey; angle: number; tint?: string }[] = [
   { art: "lamp-photo", angle: -90 },
   { art: "bowl-dog", angle: -18, tint: "#e88aa0" },
-  { art: "nfc-tag", angle: 54 },
+  { art: "nfc-plate", angle: 54 },
   { art: "candle-poodle", angle: 126 },
   { art: "collar", angle: 198 },
 ];
@@ -20,7 +21,7 @@ const DUST: [number, number, number, number][] = Array.from({ length: 26 }, (_, 
 });
 
 /**
- * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: anillos dorados que se trazan, polvo de oro y rayos de luz; los chevrones
+ * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: anillos dorados que se trazan, polvo de oro y rayos de luz; la "M" y la "V" del logo
  * se trazan, aparece "Velmar", las piezas del taller entran en órbita una a una con brillo de vidrio, un destello recorre el nombre y
  * un telón la retira (sin barra de carga ni botón "Saltar", pedido de Ignacio). Durante una temática cambia de colores y suma su escena (ThemeSplashScene). Con "reducir movimiento" no se muestra.
  */
@@ -45,9 +46,9 @@ export function Splash() {
       </div>
       <ThemeSplashScene />
       <div aria-hidden="true" className="relative z-10 flex flex-col items-center">
-        <svg viewBox="0 0 48 44" className="h-14 w-14 text-brass sm:h-16 sm:w-16">
-          <path className="chev" d="M8 22 24 8l16 14" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-          <path className="chev chev-2" d="M8 36 24 22l16 14" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+        <svg viewBox={LOGO_VIEWBOX} className="h-14 w-14 text-brass sm:h-16 sm:w-16">
+          <path className="chev" pathLength={100} d={LOGO_M} fill="none" stroke="currentColor" strokeWidth={LOGO_STROKE} />
+          <path className="chev chev-2" pathLength={100} d={LOGO_V} fill="none" stroke="currentColor" strokeWidth={LOGO_STROKE} />
         </svg>
         <span className="relative mt-4">
           <span className="word font-display block text-5xl text-[#f6f1e8] sm:text-7xl">{brand.name}</span>

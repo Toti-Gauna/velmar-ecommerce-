@@ -11,8 +11,8 @@ import { useAdmin } from "@/stores/admin";
 import { ListControls, moveItem } from "./ListControls";
 import { useDemoSave } from "./useDemoSave";
 
-const LINKS = [["/crear/", "Crear mi producto"], ["/categorias/", "Categorías"], ["/c/comederos/", "Comederos"], ["/c/llaveros-nfc/", "Llaveros NFC"], ["/c/iluminacion/", "Iluminación"], ["/c/hogar/", "Aromas"], ["/preguntas/", "Preguntas"]];
-const ARTS: [ArtKey, string][] = [["lamp-photo", "Velador con foto"], ["bowl-dog", "Comedero"], ["diffuser", "Difusor"], ["nfc-tag", "Chapita NFC"], ["collar", "Collar"], ["candle-poodle", "Vela caniche"], ["dachshund", "Salchicha geométrico"]];
+const LINKS = [["/crear/", "Crear mi producto"], ["/categorias/", "Categorías"], ["/c/comederos/", "Comederos"], ["/c/placas-nfc/", "Placas NFC"], ["/c/iluminacion/", "Iluminación"], ["/c/hogar/", "Aromas"], ["/preguntas/", "Preguntas"]];
+const ARTS: [ArtKey, string][] = [["lamp-photo", "Velador con foto"], ["bowl-dog", "Comedero"], ["diffuser", "Difusor"], ["nfc-plate", "Placa NFC"], ["collar", "Collar"], ["candle-poodle", "Vela caniche"], ["dachshund", "Salchicha geométrico"]];
 
 export function SlidesEditor({ initial }: { initial: CarouselSlide[] }) {
   const saveSlides = useAdmin((s) => s.saveSlides);

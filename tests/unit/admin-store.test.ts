@@ -29,10 +29,10 @@ describe("panel demo: pagos manuales", () => {
 
 describe("panel demo: catálogo y reset", () => {
   it("editar stock actualiza los datos que lee la tienda y el reset vuelve a fixtures", () => {
-    const p = demoData().products.find((x) => x.slug === "chapita-nfc")!;
+    const p = demoData().products.find((x) => x.slug === "placa-nfc")!;
     useAdmin.getState().saveProduct({ ...p, variants: p.variants.map((v) => ({ ...v, stock: 0 })) });
-    expect(demoData().products.find((x) => x.slug === "chapita-nfc")!.variants[0]!.stock).toBe(0);
+    expect(demoData().products.find((x) => x.slug === "placa-nfc")!.variants[0]!.stock).toBe(0);
     useAdmin.getState().resetAdmin();
-    expect(demoData().products.find((x) => x.slug === "chapita-nfc")!.variants[0]!.stock).toBe(12);
+    expect(demoData().products.find((x) => x.slug === "placa-nfc")!.variants[0]!.stock).toBe(12);
   });
 });

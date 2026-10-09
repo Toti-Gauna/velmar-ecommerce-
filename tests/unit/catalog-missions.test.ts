@@ -10,11 +10,11 @@ describe("catálogo", () => {
   });
   it("distingue a pedido, en stock y sin stock", () => {
     const bowl = getProduct("comedero-elevado-madera")!;
-    expect(availability(bowl, bowl.variants[0]!)).toEqual({ kind: "in-stock", units: 3 });
+    expect(availability(bowl, bowl.variants[0]!)).toEqual({ kind: "in-stock", units: 12 });
     expect(availability(bowl, bowl.variants[1]!)).toEqual({ kind: "out-of-stock" });
     const lamp = getProduct("velador-con-foto")!;
     expect(availability(lamp, lamp.variants[0]!).kind).toBe("made-to-order");
-    expect(isPurchasable(bowl.variants[0]!, 4)).toBe(false);
+    expect(isPurchasable(bowl.variants[0]!, 13)).toBe(false);
     expect(isPurchasable(lamp.variants[0]!, 9)).toBe(true);
   });
 });

@@ -18,7 +18,7 @@ const SAMPLE_LINES: CartLine[] = [
   { id: "s1", productSlug: "collar-con-nombre", variantId: "col-m", quantity: 1, personalization: { kind: "TEXT", text: "Ñoqui", font: "Redondeada", color: "#3d4a2a", colorName: "Verde oliva", approvedAt: "2026-10-02T10:14:00Z" } },
   { id: "s2", productSlug: "vela-caniche", variantId: "vc-vainilla", quantity: 1 },
   { id: "s3", productSlug: "comedero-perro-globo", variantId: "cpg-rosa-m", quantity: 1, personalization: { kind: "TEXT", text: "Ñoqui", font: "Manuscrita", color: "#1f1f1f", colorName: "Negro", approvedAt: "2026-10-02T10:14:00Z" } },
-  { id: "s4", productSlug: "chapita-nfc", variantId: "nfc-hueso", quantity: 2, personalization: { kind: "TEXT", text: "Lola", font: "Clásica", color: "#ffffff", colorName: "Blanco", approvedAt: "2026-10-02T10:14:00Z" } },
+  { id: "s4", productSlug: "placa-nfc-instagram", variantId: "pnig-oliva", quantity: 2 },
 ];
 
 const STATE_COPY: Record<SampleStateId, { title: string; eta: string; progress: number; note: string }> = {

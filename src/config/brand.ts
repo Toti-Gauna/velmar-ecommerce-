@@ -2,7 +2,7 @@
  * Configuración de marca del cliente. En producción sale de la tabla `Setting`
  * y se aplica como variables CSS sin deploy. Acá vive la versión de demo.
  *
- * Paleta PROVISIONAL: derivada del logo (dos chevrones verde oliva sobre blanco)
+ * Paleta PROVISIONAL: derivada del logo ("M" sobre "V" en verde oliva sobre blanco)
  * y de las fotos de Instagram (madera clara). No es identidad final confirmada.
  */
 /** Tipografía display (títulos editoriales). */
