@@ -85,8 +85,10 @@ export function promiseFor(lines: CartLine[], today: string, orders: ScheduledOr
 
 /** Primera fecha con lugar para reprogramar un pedido: lo que ya está en producción o listo solo necesita un día hábil. */
 export function nextFreeDayFor(order: ScheduledOrder, today: string, orders: ScheduledOrder[], settings: WorkshopSettings): string {
-  const started = order.status === "IN_PRODUCTION" || order.status === "READY";
-  const earliest = addWorkdays(today, started ? READY_STOCK_DAYS : orderLeadDays(order.lines), calendarOf(settings));
+  const cal = calendarOf(settings);
+  // Un pedido listo no ocupa lugar del taller: solo hace falta un día hábil.
+  if (order.status === "READY") return addWorkdays(today, READY_STOCK_DAYS, cal);
+  const earliest = addWorkdays(today, order.status === "IN_PRODUCTION" ? READY_STOCK_DAYS : orderLeadDays(order.lines), cal);
   return firstAvailableDay(earliest, loadByDay(orders, order.code), settings).day;
 }
 
@@ -121,7 +123,20 @@ export interface RescheduleCheck {
 }
 
 /** Valida mover un pedido a otro día: nunca a un día pasado ni cerrado; avisa si queda sobrecargado o antes del plazo. */
+/** Entregas pendientes (sin salir del taller) comprometidas entre dos días, ambos incluidos. */
+export function pendingDeliveries(orders: ScheduledOrder[], from: string, to: string): number {
+  return orders.filter((o) => o.promisedDate && o.promisedDate >= from && o.promisedDate <= to && (CAPACITY_STATUSES.includes(o.status) || o.status === "READY")).length;
+}
+
+/** Lo que ya salió del taller o se cerró no se reprograma. */
+export const FIXED_DATE_STATUSES: OrderStatus[] = ["SHIPPED", "DELIVERED", "CANCELLED", "RETURNED", "IN_CLAIM"];
+
+export function canReschedule(status: OrderStatus): boolean {
+  return !FIXED_DATE_STATUSES.includes(status);
+}
+
 export function checkReschedule(order: ScheduledOrder, day: string, today: string, orders: ScheduledOrder[], settings: WorkshopSettings): RescheduleCheck {
+  if (!canReschedule(order.status)) return { ok: false, error: "Este pedido ya salió del taller o está cerrado: su fecha no se reprograma.", warnings: [] };
   if (day < today) return { ok: false, error: "No se puede comprometer una fecha que ya pasó.", warnings: [] };
   const closed = closureFor(day, calendarOf(settings));
   if (closed) return { ok: false, error: `${closed.reason}: el taller no trabaja ese día.`, warnings: [] };

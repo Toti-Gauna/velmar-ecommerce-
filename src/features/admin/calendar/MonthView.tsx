@@ -47,13 +47,12 @@ export function MonthView({ cursor, today, days, cal, capacity, selected, dnd, o
               return (
                 <td key={day} {...dnd.zone(day, !!closed)} data-day={day}
                   className={cn("relative h-16 rounded-xl align-top transition-colors sm:h-32",
-                    closed ? "bg-[repeating-linear-gradient(135deg,transparent_0_6px,rgb(28_32_22/0.04)_6px_12px)]" : "bg-surface shadow-[var(--shadow-card)]",
-                    outside && "opacity-45", selected === day && "ring-2 ring-primary",
-                    dnd.over === day && "bg-accent ring-2 ring-primary", dnd.dragging && closed && "cursor-not-allowed")}>
+                    dnd.over === day ? "bg-accent" : closed ? "bg-[repeating-linear-gradient(135deg,transparent_0_6px,rgb(28_32_22/0.04)_6px_12px)]" : outside ? "bg-surface/55" : "bg-surface",
+                    !closed && "shadow-[var(--shadow-card)]", (selected === day || dnd.over === day) && "ring-2 ring-primary", dnd.dragging && closed && "cursor-not-allowed")}>
                   <button type="button" onClick={() => onSelect(day)} aria-label={label} aria-pressed={selected === day}
                     className="absolute inset-0 rounded-xl sm:static sm:inset-auto sm:flex sm:w-full sm:items-center sm:gap-1 sm:px-1.5 sm:pt-1.5 sm:text-left">
                     <span className={cn("absolute left-1.5 top-1.5 grid h-6 min-w-6 place-items-center rounded-full px-1 text-xs font-extrabold tabular-nums sm:static",
-                      day === today ? "bg-night text-[#f6f1e8]" : closed ? "text-muted" : "text-ink")}>{Number(day.slice(8))}</span>
+                      day === today ? "bg-night text-[#f6f1e8]" : closed || outside ? "text-muted" : "text-ink")}>{Number(day.slice(8))}</span>
                     {!closed && day >= today && list.length > 0 && (
                       <span className={cn("ml-auto hidden rounded-full px-1.5 text-[10px] font-extrabold tabular-nums sm:inline",
                         used >= capacity ? "bg-warning-soft text-warning" : "bg-bg text-muted")}>{capacityText(used, capacity)}</span>

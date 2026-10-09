@@ -1,13 +1,11 @@
 import { isLate } from "@/demo/admin/order-groups";
 import type { AdminOrder } from "@/demo/admin/types";
-import { CAPACITY_STATUSES } from "@/demo/engine/delivery";
+import { CAPACITY_STATUSES, canReschedule } from "@/demo/engine/delivery";
 import { getProduct } from "@/demo/engine/catalog";
 import type { OrderStatus } from "@/demo/engine/orders";
 
 /** Pedidos que se dibujan en el calendario: los que tienen fecha y no se cancelaron ni devolvieron. */
 const HIDDEN: OrderStatus[] = ["CANCELLED", "RETURNED", "IN_CLAIM"];
-/** Lo que ya salió del taller no se reprograma desde el calendario. */
-const FIXED: OrderStatus[] = ["SHIPPED", "DELIVERED"];
 
 export interface Entry {
   order: AdminOrder;
@@ -26,7 +24,7 @@ export function orderSummary(order: AdminOrder): string {
 export function calendarEntries(orders: AdminOrder[], today: string): Entry[] {
   return orders
     .filter((o) => o.promisedDate && !HIDDEN.includes(o.status))
-    .map((o) => ({ order: o, day: o.promisedDate!, late: isLate(o, today), counts: CAPACITY_STATUSES.includes(o.status), movable: !FIXED.includes(o.status), summary: orderSummary(o) }))
+    .map((o) => ({ order: o, day: o.promisedDate!, late: isLate(o, today), counts: CAPACITY_STATUSES.includes(o.status), movable: canReschedule(o.status), summary: orderSummary(o) }))
     .sort((a, b) => a.day.localeCompare(b.day) || a.order.code.localeCompare(b.order.code));
 }
 

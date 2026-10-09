@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { customerRows } from "@/demo/admin/customers";
-import { defaultAdminData } from "@/demo/admin/defaults";
+import { defaultAdminData, type AdminData } from "@/demo/admin/defaults";
+import { createOrdersActions } from "@/demo/admin/orders-slice";
 import { costRows, marginPct, recipeCost, suggestedPrice, basePriceFor } from "@/demo/admin/workshop/costs";
 import { toIcs } from "@/demo/admin/workshop/ics";
 import { applyMaterialOp, committedNeeds, consumeMaterials, materialRows, orderNeeds, reorderQty } from "@/demo/admin/workshop/materials";
 import { columnOf, nextColumn, productionMove } from "@/demo/admin/workshop/production";
 import { customerReminders, nextOccurrence } from "@/demo/admin/workshop/reminders";
-import { calendarOf, checkReschedule, deliveryWindows, estimateForProduct, lineLeadDays, loadByDay, orderLeadDays, promiseFor } from "@/demo/engine/delivery";
+import { calendarOf, checkReschedule, deliveryWindows, estimateForProduct, lineLeadDays, loadByDay, nextFreeDayFor, orderLeadDays, pendingDeliveries, promiseFor } from "@/demo/engine/delivery";
 import { getProduct } from "@/demo/engine/catalog";
 import { defaultDemoData, setDemoData } from "@/demo/engine/source";
 import { addMonths, addWorkdays, closureFor, isWorkday, monthGrid, nextWorkday, prevWorkday, weekOf, workdaysBetween } from "@/demo/engine/workdays";
@@ -152,5 +153,46 @@ describe("costos, insumos, producción y recordatorios", () => {
     expect(ics).toContain("DESCRIPTION:Colgador\\; 1 u.\\nRetira");
     expect(ics).toContain("DTSTAMP:20261004T120000Z");
     expect(ics.trimEnd().endsWith("END:VCALENDAR")).toBe(true);
+  });
+});
+
+describe("casos de la revisión", () => {
+  /** Store mínimo: las acciones reales del panel sobre un estado en memoria. */
+  function harness() {
+    let state: AdminData = defaultAdminData();
+    const set = (fn: (s: AdminData) => Partial<AdminData>) => { state = { ...state, ...fn(state) }; };
+    return { actions: createOrdersActions(set, () => state), get: () => state };
+  }
+  const stock = (s: AdminData, id: string) => s.workshop.materials.find((m) => m.id === id)!.stock;
+
+  it("los insumos se descuentan una vez aunque el pedido pase por un reclamo, y conserva la etapa", () => {
+    const h = harness();
+    expect(h.actions.moveProduction("VEL-000113", "machine")).toBeNull();
+    expect(stock(h.get(), "cera")).toBe(5000 - 1080);
+    expect(h.actions.moveProduction("VEL-000113", "finishing")).toBeNull();
+    expect(h.actions.transition("VEL-000113", "IN_CLAIM")).toBe(true);
+    expect(h.actions.transition("VEL-000113", "IN_PRODUCTION")).toBe(true);
+    const o = h.get().orders.find((x) => x.code === "VEL-000113")!;
+    expect(o.stage).toBe("finishing");
+    expect(stock(h.get(), "cera")).toBe(5000 - 1080);
+  });
+  it("no reprograma lo que ya salió del taller o se cerró", () => {
+    const h = harness();
+    expect(h.actions.rescheduleOrder("VEL-000118", "2026-10-13").ok).toBe(false);
+    expect(h.actions.rescheduleOrder("VEL-000117", "2026-10-13").ok).toBe(false);
+    expect(h.actions.rescheduleOrder("VEL-000122", "2026-10-27").ok).toBe(true);
+    expect(h.get().orders.find((o) => o.code === "VEL-000122")!.promisedDate).toBe("2026-10-27");
+  });
+  it("precio sugerido exacto con cualquier margen entero", () => {
+    expect(suggestedPrice(350, 30)).toBe(500);
+    expect(suggestedPrice(450, 55)).toBe(1000);
+    expect(suggestedPrice(200, 80)).toBe(1000);
+    expect(suggestedPrice(100, 90)).toBe(1000);
+  });
+  it("un pedido listo no espera lugar del taller y las entregas cuentan desde hoy", () => {
+    const { orders, workshop } = defaultAdminData();
+    const ready = { code: "X", status: "READY" as const, promisedDate: "2026-10-02", lines: [] };
+    expect(nextFreeDayFor(ready, DEMO_TODAY, orders, workshop.settings)).toBe("2026-10-05");
+    expect(pendingDeliveries(orders, DEMO_TODAY, "2026-10-10")).toBe(8);
   });
 });

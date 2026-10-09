@@ -28,8 +28,8 @@ export function WeekView({ cursor, today, days, cal, capacity, dnd, onOpen }: Pr
         return (
           <li key={day} {...dnd.zone(day, !!closed)} data-day={day}
             className={cn("flex min-h-24 flex-col gap-2 rounded-2xl p-2.5 transition-colors lg:min-h-[22rem]",
-              closed ? "bg-[repeating-linear-gradient(135deg,transparent_0_6px,rgb(28_32_22/0.04)_6px_12px)]" : "bg-surface shadow-[var(--shadow-card)]",
-              dnd.over === day && "bg-accent ring-2 ring-primary")}>
+              dnd.over === day ? "bg-accent ring-2 ring-primary" : closed ? "bg-[repeating-linear-gradient(135deg,transparent_0_6px,rgb(28_32_22/0.04)_6px_12px)]" : "bg-surface",
+              !closed && "shadow-[var(--shadow-card)]")}>
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
               <h3 className={cn("text-sm font-extrabold first-letter:uppercase", day === today && "text-primary")}>{formatDay(day)}</h3>
               {!closed && <span className={cn("ml-auto rounded-full px-2 text-[11px] font-extrabold tabular-nums", used >= capacity ? "bg-warning-soft text-warning" : "bg-bg text-muted")}>{capacityText(used, capacity)}</span>}

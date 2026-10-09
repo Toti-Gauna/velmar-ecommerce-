@@ -8,7 +8,7 @@ import { createOrdersActions, type OrdersActions } from "@/demo/admin/orders-sli
 import type { AdminClaim } from "@/demo/admin/types";
 import { createWorkshopActions, type WorkshopActions } from "@/demo/admin/workshop-slice";
 import { setDemoData, type DemoData } from "@/demo/engine/source";
-import { demoStorage, STORAGE_PREFIX } from "./storage";
+import { ADMIN_STORE_VERSION, demoStorage, STORAGE_PREFIX } from "./storage";
 
 export type AdminState = AdminData & OrdersActions & DataActions & CatalogActions & WorkshopActions & {
   addClaim: (claim: Omit<AdminClaim, "id" | "status" | "createdAt">) => void;
@@ -37,7 +37,7 @@ export const useAdmin = create<AdminState>()(
     {
       name: `${STORAGE_PREFIX}admin`,
       // v4: taller (fechas comprometidas, etapas, insumos, recetas y fichas): la demo vuelve a los datos de muestra.
-      version: 4,
+      version: ADMIN_STORE_VERSION,
       storage: demoStorage,
       skipHydration: true,
       // Versiones viejas de la demo: se descartan y vuelven a los fixtures.

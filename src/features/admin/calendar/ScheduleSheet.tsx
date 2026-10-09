@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Sparkles, TriangleAlert } from "lucide-react";
-import { DateInput } from "@/components/atoms/DateInput";
 import { Sheet } from "@/components/motion/Sheet";
 import { StatusBadge } from "@/components/molecules/StatusBadge";
 import { LineThumb } from "@/components/organisms/LineThumb";
@@ -14,6 +13,7 @@ import type { WorkshopSettings } from "@/demo/fixtures/workshop";
 import { formatDay } from "@/lib/date";
 import { fulfillmentLabel } from "../OrderCard";
 import { capacityText } from "./MonthView";
+import { PickDate } from "./PickDate";
 
 interface Props {
   order: AdminOrder | null;
@@ -77,10 +77,7 @@ export function ScheduleSheet({ order, orders, settings, today, late, movable, w
                 {free && free !== day && (
                   <button type="button" className={step} onClick={() => move(free)}><Sparkles size={16} aria-hidden="true" className="text-brass-ink" /> Primera fecha libre: {formatDay(free)}</button>
                 )}
-                <label className="flex flex-col gap-1 text-sm font-bold">
-                  Elegir otra fecha
-                  <DateInput min={today} value={day ?? ""} onChange={(e) => e.target.value && move(e.target.value)} className="font-semibold" />
-                </label>
+                <PickDate key={`${order.code}-${day}`} id="schedule-date" label="Elegir otra fecha" min={today} value={day ?? ""} action="Mover" onPick={move} />
                 {warnings.length > 0 && (
                   <ul role="status" className="flex flex-col gap-1 rounded-2xl bg-warning-soft p-3 text-sm font-semibold text-warning">
                     {warnings.map((w) => <li key={w} className="flex gap-2"><TriangleAlert size={16} aria-hidden="true" className="mt-0.5 shrink-0" />{w}</li>)}

@@ -21,7 +21,7 @@ export function EntryRow({ entry: e, onOpen }: { entry: Entry; onOpen: (code: st
         <span className="mt-1 block text-sm font-semibold">{e.order.customer.name} <span className="font-normal text-muted">· {fulfillmentLabel(e.order.fulfillment)}</span></span>
         <span className="block text-sm text-muted">{e.summary}</span>
       </span>
-      <button type="button" onClick={() => onOpen(e.order.code)} aria-label={`Reprogramar ${e.order.code}`}
+      <button type="button" onClick={() => onOpen(e.order.code)} aria-label={`${e.movable ? "Reprogramar" : "Ver"} ${e.order.code}`}
         className="inline-flex h-10 items-center gap-1.5 rounded-full border border-ink/15 px-3.5 text-sm font-bold hover:bg-accent/50">
         <CalendarClock size={16} aria-hidden="true" /> {e.movable ? "Reprogramar" : "Ver"}
       </button>

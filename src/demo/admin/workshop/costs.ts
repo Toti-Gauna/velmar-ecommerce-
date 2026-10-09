@@ -30,8 +30,9 @@ export function recipeCost(recipe: Recipe, materials: Material[], settings: Work
 
 /** Precio que deja el margen buscado sobre el precio de venta, redondeado hacia arriba a $100. */
 export function suggestedPrice(cost: number, marginPct: number): number {
-  const m = Math.min(Math.max(marginPct, 0), 90) / 100;
-  return Math.ceil(cost / (1 - m) / 100) * 100;
+  const pct = Math.min(Math.max(Math.round(marginPct), 0), 90);
+  // En enteros (cost × 100 / (100 − %)) para que el error de coma flotante no sume $100 de más.
+  return Math.ceil((cost * 100) / (100 - pct) / 100) * 100;
 }
 
 /** Margen sobre el precio de venta, en % entero. */

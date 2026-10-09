@@ -26,7 +26,7 @@ export interface OrdersActions {
 
 /**
  * Aplica una transición válida (spec 5.2) y registra historial + auditoría. Devuelve false si no corresponde.
- * Al entrar a producción el pedido pasa a "en máquina" (salvo otra etapa) y descuenta sus insumos.
+ * Al entrar a producción desde "pagado" el pedido pasa a "en máquina" (salvo otra etapa) y descuenta sus insumos.
  */
 function move(set: Set, code: string, to: OrderStatus, trigger: TransitionTrigger, patch: (o: AdminOrder) => Partial<AdminOrder>, action: string): boolean {
   let ok = false;
@@ -37,10 +37,11 @@ function move(set: Set, code: string, to: OrderStatus, trigger: TransitionTrigge
       ok = true;
       const prevStatus = to === "IN_CLAIM" ? o.status : o.status === "IN_CLAIM" ? null : o.prevStatus;
       const next: AdminOrder = { ...o, ...patch(o), status: to, prevStatus, log: [...o.log, { at: new Date().toISOString(), from: o.status, to, note: action }] };
-      if (to === "IN_PRODUCTION") {
-        next.stage ??= "machine";
-        materials = consumeMaterials(materials, orderNeeds(o.lines, s.workshop.recipes));
-      } else if (o.status === "IN_PRODUCTION") delete next.stage;
+      if (to === "IN_PRODUCTION") next.stage ??= "machine";
+      // Los insumos se descuentan una sola vez: al pasar de pagado a producción (no al volver de un reclamo).
+      if (to === "IN_PRODUCTION" && o.status === "PAID") materials = consumeMaterials(materials, orderNeeds(o.lines, s.workshop.recipes));
+      // La etapa se conserva durante un reclamo para volver a la misma columna; se borra al salir de producción.
+      if (to !== "IN_PRODUCTION" && to !== "IN_CLAIM") delete next.stage;
       return next;
     });
     return ok ? { orders, workshop: { ...s.workshop, materials }, audit: [auditEntry(action, code), ...s.audit].slice(0, 80) } : {};

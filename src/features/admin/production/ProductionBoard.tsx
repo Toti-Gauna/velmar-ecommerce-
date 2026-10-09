@@ -66,7 +66,7 @@ function Card({ order, column, today, onMove, onDragStart }: { order: AdminOrder
       {order.notes.length > 0 && <p className="flex gap-1.5 rounded-2xl bg-bg p-2 text-xs text-muted"><MessageSquareText size={14} aria-hidden="true" className="mt-px shrink-0" />{order.notes.at(-1)}</p>}
       <div className="flex flex-wrap gap-2">
         {column === "finishing" && (
-          <button type="button" onClick={() => onMove(order.code, "machine")} className="inline-flex h-9 items-center gap-1 rounded-full border border-ink/15 px-3 text-xs font-bold hover:bg-accent/50">
+          <button type="button" onClick={() => onMove(order.code, "machine")} aria-label={`Volver ${order.code} a En máquina`} className="inline-flex h-9 items-center gap-1 rounded-full border border-ink/15 px-3 text-xs font-bold hover:bg-accent/50">
             <ArrowLeft size={14} aria-hidden="true" /> Volver a máquina
           </button>
         )}
@@ -136,7 +136,7 @@ export function ProductionBoard() {
       <div className="grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-4" onDragEnd={() => { setDragging(null); setOver(null); }}>
         {board.map((c) => (
           <section key={c.id} aria-labelledby={`col-${c.id}`} {...zone(c.id)} data-column={c.id}
-            className={cn("flex-col gap-3 rounded-[1.75rem] bg-bg p-3 ring-1 ring-ink/[0.06] transition-colors lg:flex lg:min-h-[28rem]", tab === c.id ? "flex" : "hidden", over === c.id && "bg-accent ring-2 ring-primary")}>
+            className={cn("flex-col gap-3 rounded-[1.75rem] p-3 transition-colors lg:flex lg:min-h-[28rem]", tab === c.id ? "flex" : "hidden", over === c.id ? "bg-accent ring-2 ring-primary" : "bg-bg ring-1 ring-ink/[0.06]")}>
             <header className="px-1">
               <span className="flex items-center gap-2">
                 <h2 id={`col-${c.id}`} className="whitespace-nowrap font-extrabold">{c.label}</h2>

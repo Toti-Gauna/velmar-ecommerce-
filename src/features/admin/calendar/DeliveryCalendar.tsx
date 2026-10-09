@@ -3,7 +3,7 @@ import { CalendarArrowDown, ChevronLeft, ChevronRight, SlidersHorizontal } from 
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import { toIcs } from "@/demo/admin/workshop/ics";
-import { calendarOf, CAPACITY_STATUSES } from "@/demo/engine/delivery";
+import { calendarOf, CAPACITY_STATUSES, pendingDeliveries } from "@/demo/engine/delivery";
 import { STATUS_LABEL } from "@/demo/engine/orders";
 import { addDays, addMonths, nextWorkday, weekOf } from "@/demo/engine/workdays";
 import { DEMO_TODAY } from "@/demo/fixtures/admin-orders";
@@ -48,8 +48,7 @@ export function DeliveryCalendar() {
   const entries = calendarEntries(orders, today);
   const days = byDay(entries);
   const late = entries.filter((e) => e.late);
-  const week = weekOf(today);
-  const thisWeek = entries.filter((e) => e.day >= week[0]! && e.day <= week[6]! && e.movable).length;
+  const nextDays = pendingDeliveries(orders, today, addDays(today, 6));
   const twoWeeks = Array.from({ length: 14 }, (_, i) => addDays(today, i)).filter((d) => (days.get(d) ?? []).filter((e) => e.counts).length >= settings.dailyCapacity).length;
 
   const move = (code: string, day: string) => {
@@ -93,7 +92,7 @@ export function DeliveryCalendar() {
       )}>Cada pedido en su fecha comprometida. Arrastralo a otro día o tocalo para reprogramar: los feriados y fines de semana no se pueden elegir y se avisa si un día queda sobrecargado.</AdminPageHeader>
 
       <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {kpi("Entregas esta semana", thisWeek)}
+        {kpi("Entregas próximos 7 días", nextDays)}
         {kpi("Atrasados", late.length, late.length ? "text-danger" : undefined)}
         {kpi("Días completos (14 días)", twoWeeks, twoWeeks ? "text-warning" : undefined)}
         {kpi("Capacidad", `${settings.dailyCapacity} por día`)}

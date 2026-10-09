@@ -46,7 +46,7 @@ export function SidebarContent({ onNavigate, layoutKey }: { onNavigate?: () => v
                       <span className="relative min-w-0 flex-1 truncate">{item.label}</span>
                       {count > 0 && (
                         <span className={cn("relative grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[11px] font-extrabold tabular-nums",
-                          item.badge === "payments" ? "bg-brass text-night" : item.badge === "stock" || item.badge === "materials" ? "bg-warning/80 text-night" : item.badge === "late" ? "bg-danger text-white" : "bg-white/10 text-[#e9e2d3]")}>
+                          item.badge === "payments" ? "bg-brass text-night" : item.badge === "stock" || item.badge === "materials" ? "bg-warning/80 text-night" : item.badge === "late" ? "bg-danger text-night" : "bg-white/10 text-[#e9e2d3]")}>
                           {count}<span className="sr-only"> {BADGE_TEXT[item.badge!]}</span>
                         </span>
                       )}
