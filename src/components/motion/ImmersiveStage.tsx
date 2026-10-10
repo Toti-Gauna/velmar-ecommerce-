@@ -38,8 +38,12 @@ export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a7
     const html = document.documentElement;
     html.style.overflow = "hidden";
     html.classList.add("stage-open");
-    // El foco entra al diálogo (sin anillo visible al tocar); Tab recorre los botones.
-    const t = window.setTimeout(() => (root.current?.querySelector<HTMLElement>("[data-autofocus]") ?? root.current)?.focus({ preventScroll: true }), 60);
+    // El foco entra al diálogo (sin anillo visible al tocar); Tab recorre los botones. Si ya está adentro (alguien
+    // llegó antes con Tab o con un toque), no se lo saca.
+    const t = window.setTimeout(() => {
+      if (root.current?.contains(document.activeElement)) return;
+      (root.current?.querySelector<HTMLElement>("[data-autofocus]") ?? root.current)?.focus({ preventScroll: true });
+    }, 60);
     const onKey = (e: KeyboardEvent) => {
       // Un Escape ya usado (el que cierra la pantalla de carga) no saca del escenario.
       if (e.key === "Escape" && !e.defaultPrevented && !lockRef.current) closeRef.current();

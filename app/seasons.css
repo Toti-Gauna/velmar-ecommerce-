@@ -132,6 +132,12 @@ html[data-season] #velmar-splash .splash-mark { color: var(--sp-accent, #d2ad69)
 html[data-season="san-valentin"] #velmar-splash { --vl-h: min(80vmin, 330px); --vl-w: min(96vw, 440px); --vl-up: calc(var(--vl-h) * .03 + 4px + var(--vl-w) / 4); }
 @media (min-width: 640px) { html[data-season="san-valentin"] #velmar-splash { --vl-h: min(420px, 50vh); --vl-w: min(640px, 70vh); } }
 html[data-season="san-valentin"] #velmar-splash .splash-brand { translate: 0 calc(var(--vl-up) * -1); }
+/* Escritorio o tablet apaisada con poco alto: el corazón no llega al tamaño que necesita el logo grande, así que el
+   logo va en su tamaño de celular (el mismo de las pantallas bajas). */
+@media (min-width: 640px) and (max-height: 820px) {
+  html[data-season="san-valentin"] #velmar-splash .splash-mark { width: 3.5rem; height: 3.5rem; }
+  html[data-season="san-valentin"] #velmar-splash .word { font-size: 3rem; }
+}
 /* La escena llega cuando baja su archivo (después de la carga inicial): entra fundida, no de golpe. */
 #velmar-splash .season-scene { position: absolute; inset: 0; animation: fade-in 450ms ease-out both; }
 #velmar-splash .season-tag { position: absolute; top: calc(9% + env(safe-area-inset-top)); color: var(--sp-accent); opacity: 0; animation: fade-up 700ms var(--ease-out-expo) 500ms both; }

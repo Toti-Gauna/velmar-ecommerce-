@@ -67,7 +67,8 @@ export function MothersScene() {
 }
 
 const CSS = `
-.md-bloom { --r0: clamp(108px, 30vmin, 160px); --len: clamp(62px, 18vmin, 150px); position: absolute; left: 50%; top: 50%; width: 0; height: 0; animation: md-turn 4.4s cubic-bezier(.3,0,.2,1) both; }
+/* La flor entera (radio r0 + len) no pasa del 37 % del alto: en un iPad apaisado no pisa el rótulo ni los tulipanes. */
+.md-bloom { --r0: clamp(108px, 30vmin, 160px); --len: clamp(56px, min(18vmin, calc(37vh - var(--r0))), 150px); position: absolute; left: 50%; top: 50%; width: 0; height: 0; animation: md-turn 4.4s cubic-bezier(.3,0,.2,1) both; }
 @media (min-width: 640px) and (min-height: 561px) { .md-bloom { --r0: clamp(140px, 30vmin, 160px); } }
 @media (max-height: 560px) { .md-bloom { --r0: 104px; --len: 56px; } .md-tulips { --tu: 8vh; } }
 .md-heart { position: absolute; left: calc(var(--r0) * -1.08); top: calc(var(--r0) * -1.08); width: calc(var(--r0) * 2.16); height: calc(var(--r0) * 2.16); border-radius: 9999px; background: radial-gradient(closest-side, rgb(64 14 38 / .62), rgb(64 14 38 / .38) 72%, transparent); opacity: 0; animation: md-fade 900ms ease-out both; }
@@ -80,7 +81,7 @@ const CSS = `
 .md-fall { position: absolute; top: 40%; width: 1.6vmin; height: 2.2vmin; border-radius: 60% 10%; background: #f5a8c6; opacity: 0; animation-name: md-fall; animation-timing-function: linear; animation-fill-mode: both; }
 .md-fall:nth-child(3n) { background: #ffd1dc; }
 .md-fall:nth-child(3n+1) { background: #e4577a; }
-.md-tulips { --tu: min(11vh, 16vmin); position: absolute; inset-inline: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: space-around; }
+.md-tulips { --tu: min(9vh, 16vmin); position: absolute; inset-inline: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: space-around; }
 .md-tulip { display: block; transform-origin: 50% 100%; transform: scaleY(0); animation: md-grow 1s cubic-bezier(.16,1,.3,1) both, md-sway 1.2s ease-in-out 2 alternate; }
 @keyframes md-turn { from { transform: rotate(-22deg) scale(.94); } to { transform: rotate(8deg) scale(1); } }
 @keyframes md-fade { to { opacity: 1; } }
