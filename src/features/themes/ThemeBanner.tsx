@@ -21,7 +21,8 @@ const SPOTS = [
 
 /**
  * Banner de temporada: titular, oferta con su código y decoraciones propias de la festividad.
- * Es la primera diapositiva del carrusel del inicio mientras la temática está puesta.
+ * Es la primera diapositiva del carrusel del inicio mientras la temática está puesta: el texto arranca después de la
+ * franja de las flechas del carrusel (`--hero-safe`).
  */
 export function ThemeBanner({ theme, offer }: { theme: SeasonalTheme; offer: ThemeOffer | null }) {
   const skin = skinOf(theme.id);
@@ -29,7 +30,7 @@ export function ThemeBanner({ theme, offer }: { theme: SeasonalTheme; offer: The
   const code = offer?.coupon.code;
   return (
     <section aria-labelledby="tematica-title" data-theme-banner={theme.id}
-      className="relative flex min-h-[19rem] w-full flex-col justify-center overflow-hidden px-5 pb-12 pt-8 text-white sm:min-h-[26rem] sm:px-12 sm:py-12 lg:px-16"
+      className="relative flex min-h-[19rem] w-full flex-col justify-center overflow-hidden px-5 pb-12 pt-8 text-white sm:min-h-[26rem] sm:py-12 sm:pl-[var(--hero-safe,3rem)] sm:pr-12 lg:pr-16"
       style={{ background: `radial-gradient(120% 140% at 85% 50%, ${skin.to}, ${skin.from} 70%)` }}>
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:radial-gradient(#fff_1px,transparent_1.5px)] [background-size:18px_18px]" />
       <SeasonFx id={theme.id} />

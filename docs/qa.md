@@ -129,6 +129,30 @@ Qué se hizo:
 - Las letras del collar se balancean tres veces y quedan quietas (un balanceo sin fin redibujaba el SVG en cada cuadro).
 - Se probó pausar el fondo de la temática durante el scroll: no mejoró nada medible y se descartó.
 
+## Tienda del usuario · Polish 8.2 (`tests/e2e/shop-polish.spec.ts`, `tests/unit/grid.test.ts`)
+Lote 1: carrusel principal, categorías y riel de Recomendados.
+
+| Verificación | Estado |
+|---|---|
+| Carrusel principal a 640 × 900, 820 × 1180, 1080 × 810, 1180 × 820 y 1440 × 900: se recorren todas las diapositivas (temática + 3) con las flechas y ninguna flecha pisa texto ni la imagen del producto; flechas de 44 px o más | ✅ |
+| Categorías del inicio en una sola fila a 375, 640, 820, 1080, 1180 y 1440 px; si no entran, Tab hasta la última la trae a la vista y los controles laterales llegan al final (el de atrás aparece, el de adelante se va) | ✅ |
+| `/categorias/`: filas parejas sin ninguna categoría sola en su fila; en escritorio, una sola fila | ✅ |
+| Recomendados a 1080 × 810 y 820 × 1180 con movimiento: 10 idas y vueltas con las flechas, sin tarjetas en blanco a mitad de camino, cada parada en el borde de una tarjeta y sin reacomodo 300 ms después; deslizón rápido al final y vuelta sin huecos | ✅ |
+| Reparto de columnas parejas (ninguna sola en la última fila hasta 12 categorías) | ✅ unit |
+
+Causas y arreglos:
+- **Flechas del carrusel**: estaban a 16 px del borde y el texto arrancaba a 48 px; la flecha de la izquierda tapaba
+  el título. Ahora hay una franja lateral reservada (`--hero-safe`: margen + flecha + 1 rem) y el texto y la imagen
+  empiezan después; en el celular no hay flechas (se desliza y están los puntos, ahora con 24 px de toque).
+- **Categorías**: la grilla de 4 y 8 columnas dejaba la novena sola abajo. Ahora es una fila que se desliza; en
+  escritorio los círculos se reparten el ancho y los controles laterales aparecen solo hacia donde hay más.
+- **Hueco en Recomendados**: cada tarjeta aparecía sola al entrar en pantalla (opacidad 0 hasta que el navegador
+  avisaba que se veía un 15 %). En un riel horizontal, al deslizar rápido hasta el final las del medio nunca llegaban a
+  "verse" y la que quedaba asomada tampoco: al volver aparecían en blanco (en Safari, que avisa más tarde mientras se
+  desliza, el hueco duraba más). Además las flechas movían el 80 % del ancho, que no cae en el borde de una tarjeta, y
+  el navegador corregía la posición al terminar. Ahora el riel aparece entero una sola vez, las flechas pasan de a
+  tarjetas enteras (siempre a un punto de snap), se apagan en los extremos y respetan "reducir movimiento".
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
