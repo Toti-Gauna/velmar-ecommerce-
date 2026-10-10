@@ -33,8 +33,13 @@ test("ficha: stock bajo la imagen, cantidad desplegable, favoritos y diseño req
   await page.goto("p/comedero-elevado-madera/");
   await expect(page.getByText(/En stock · 12 disponibles/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /Completá el set/ })).toBeVisible();
-  await page.getByLabel("Cantidad:").selectOption("2");
-  await expect(page.getByLabel("Cantidad:")).toHaveValue("2");
+  // Con la máquina cargada, elegir antes de que la ficha termine de hidratar se pierde (React repone el valor):
+  // se reintenta hasta que el selector responde.
+  const qty = page.getByLabel("Cantidad:");
+  await expect(async () => {
+    await qty.selectOption("2");
+    await expect(qty).toHaveValue("2", { timeout: 500 });
+  }).toPass({ timeout: 10_000 });
   // Agregar sin escribir el texto lleva el foco al campo
   const add = page.getByRole("button", { name: /Agregar al carrito/ }).filter({ visible: true });
   await add.click();
