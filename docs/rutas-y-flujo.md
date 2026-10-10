@@ -33,6 +33,10 @@
   inferior. Se habilitan con el primer toque; botón de silencio en el header (se recuerda en `velmar-sound`). En el panel no
   suenan.
 
+## Fase 6 · Estudio de contenido (pedido de Ignacio, 10/2026, fuera de la spec)
+- `/admin-demo/estudio/` (Marketing → Estudio de contenido): piezas para Instagram por fecha, exportables a imagen y video.
+  Ver `docs/panel-demo.md`. Engine en `src/demo/admin/studio/`, dibujo en canvas en `src/features/admin/studio/render/`.
+
 ## Fase 5 · Temáticas y motion (pedido de Ignacio, 10/2026, fuera de la spec)
 - Temáticas nuevas en "Probar temáticas" y en el panel: **Orgullo** (reemplaza a San Patricio), **25 de Mayo**,
   **Día de la Bandera** y **9 de Julio**, cada una con pantalla de carga, paleta, fondo, banner, cinta, cupón y ofertas.

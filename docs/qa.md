@@ -60,6 +60,22 @@ los fuegos del fondo). Con la CPU frenada 4× todo cae a 10–25, también la ti
 este entorno no representa a un iPhone, que compone `transform` y `opacity` en la GPU. **Falta la prueba en un iPhone real**
 (Safari, 60 fps y sin saltos): pantalla de carga de cada temática nueva, scroll del inicio con temática y tocar una tarjeta.
 
+## Estudio de contenido · Fase 6 (`tests/e2e/admin-studio.spec.ts`, `tests/unit/studio.test.ts`)
+| Verificación | Estado |
+|---|---|
+| Elegir la fecha muestra post, historia y carrusel con los textos, 3 productos y el cupón de la temática; cambiar de fecha los reemplaza | ✅ |
+| El texto sugerido trae el gancho del producto, la oferta, una palabra para comentar y el hashtag de la fecha; "Otra idea" cambia el gancho | ✅ |
+| PNG del post con el titular editado y una foto propia (archivo PNG válido) | ✅ |
+| Carrusel: una imagen por diapositiva (6 con 3 productos) | ✅ |
+| Video de la historia de 6 s con música (MP4 o WebM según el navegador) | ✅ |
+| Precio y precio con cupón del engine en pesos enteros; ganchos por producto; duración 6–15 s; formato de video y nombres de archivo | ✅ unit |
+
+**Video**: se graba en tiempo real con `MediaRecorder` desde el canvas a 1080 × 1080 o 1080 × 1920. Para que cada cuadro
+sea liviano, ilustraciones, tarjetas con sombra, fondo, auroras y sello se pasan a mapa de bits una sola vez y la vista
+previa se pausa mientras graba. En el Chromium de pruebas (sin GPU) el post graba a ~19 cuadros por segundo y la historia a
+~12; en un navegador con GPU (Chrome o Safari en el teléfono) se espera más. **Falta probar en Safari de iPhone** que el
+video salga en MP4 (H.264) y que "Compartir" guarde en Fotos.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
@@ -147,6 +163,12 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
   verifican qué sonido se pidió (`window.__velmarSounds`), no el audio. Probar en el iPhone que el silencio del
   sistema y el botón de la tienda se respetan.
 - **Collar**: vista previa ilustrativa (SVG), no un render 3D; materiales y recargos de muestra.
+- **Estudio de contenido**: la grabación usa el reloj real; si se cambia de pestaña, el navegador pausa la animación, así
+  que la grabación se cancela con un aviso y se vuelve a grabar. La vista previa se reproduce una vez y queda en el cuadro
+  final ("Ver animación" la repite). En el post y la historia, si el cupón tiene mínimo, la condición va debajo del sello.
+  Los fondos se guardan solo para la temática actual (Safari de iPhone limita la memoria de canvas). El Chromium de pruebas (sin códecs propietarios) graba VP9 aunque el archivo
+  diga .mp4; Chrome y Safari reales graban H.264, que es lo que acepta Instagram. Las ilustraciones son de muestra: con
+  fotos reales del producto (cargadas en el panel o subidas en el estudio) las piezas rinden más.
 - **Temáticas de la Fase 5**: la fecha de la Marcha del Orgullo se confirma cada año (2026: sábado 7 de noviembre). Las
   escenas de la pantalla de carga empiezan cuando hidrata la página; si el teléfono tarda más de 2,6 s, la escena arranca
   por la mitad para llegar a su final antes del telón. Las transiciones entre páginas usan View Transitions: en navegadores
