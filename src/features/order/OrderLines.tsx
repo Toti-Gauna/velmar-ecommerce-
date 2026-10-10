@@ -2,7 +2,7 @@
 import { LineThumb } from "@/components/organisms/LineThumb";
 import type { CartLine } from "@/demo/engine/cart-types";
 import { quoteLines } from "@/demo/engine/pricing";
-import { getProduct } from "@/demo/engine/catalog";
+import { collarLineDetail, getProduct } from "@/demo/engine/catalog";
 import { demoData } from "@/demo/engine/source";
 import { cn } from "@/lib/cn";
 import { formatARS } from "@/lib/money";
@@ -21,6 +21,7 @@ export function OrderLines({ lines, mobileLimit }: { lines: CartLine[]; mobileLi
             <div className="min-w-0 flex-1 text-sm">
               <p className="font-bold">{q.line.quantity} × {product.name}</p>
               <p className="text-muted">{variant?.label}{p?.text ? ` · “${p.text}”` : ""}{p ? " · vista previa aprobada" : ""}</p>
+              {p?.collar && <p className="text-xs text-muted">{collarLineDetail(q.line)}</p>}
             </div>
             <span className="font-bold tabular-nums">{formatARS(q.lineTotal)}</span>
           </li>

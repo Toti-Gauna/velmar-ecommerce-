@@ -12,16 +12,16 @@ export interface TextDraft {
   colorName: string;
 }
 
-interface Props { template: PersonalizationTemplate; draft: TextDraft; onChange: (d: TextDraft) => void; touched: boolean }
+interface Props { template: PersonalizationTemplate; draft: TextDraft; onChange: (d: TextDraft) => void; touched: boolean; label?: string; colorLegend?: string }
 
 /** Campos de texto, fuente y color. La vista previa en vivo se dibuja en la galería de la ficha. */
-export function TextFields({ template: tmpl, draft, onChange, touched }: Props) {
+export function TextFields({ template: tmpl, draft, onChange, touched, label = "Texto", colorLegend = "Color del texto" }: Props) {
   const max = tmpl.maxChars ?? 12;
   const error = draft.text || touched ? validateText(draft.text, max) : null;
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <Field id="p-text" label="Texto" hint={`Hasta ${max} caracteres. Acentos y ñ permitidos.`} error={error ?? undefined}>
+        <Field id="p-text" label={label} hint={`Hasta ${max} caracteres. Acentos y ñ permitidos.`} error={error ?? undefined}>
           <Input id="p-text" value={draft.text} maxLength={max + 4} autoComplete="off" aria-invalid={Boolean(error)} aria-describedby={error ? "p-text-error" : "p-text-hint"}
             onChange={(e) => onChange({ ...draft, text: e.target.value })} placeholder="Ej.: Ñoqui" />
         </Field>
@@ -39,7 +39,7 @@ export function TextFields({ template: tmpl, draft, onChange, touched }: Props) 
         </div>
       </fieldset>
       <fieldset>
-        <legend className="mb-2 text-sm font-bold">Color del texto: <span className="font-semibold text-muted">{draft.colorName}</span></legend>
+        <legend className="mb-2 text-sm font-bold">{colorLegend}: <span className="font-semibold text-muted">{draft.colorName}</span></legend>
         <div className="flex flex-wrap gap-2">
           {(tmpl.colors ?? []).map((c) => (
             <label key={c.hex} title={c.name} className={cn("grid h-11 w-11 cursor-pointer place-items-center rounded-full border-2 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary/50", draft.color === c.hex ? "border-ink" : "border-transparent")}>

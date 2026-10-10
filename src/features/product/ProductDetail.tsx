@@ -11,6 +11,7 @@ import { cn } from "@/lib/cn";
 import { formatARS, withoutNationalTaxes } from "@/lib/money";
 import { useDemoData } from "@/stores/admin";
 import { usePersonalizationDraft } from "../personalize/usePersonalizationDraft";
+import { CollarInspiration } from "./CollarInspiration";
 import { ConfigureCard } from "./ConfigureCard";
 import { DeliveryEstimate } from "./DeliveryEstimate";
 import { FavoriteButton } from "./FavoriteButton";
@@ -35,7 +36,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
   const [qty, setQty] = useState(1);
   const tmpl = product.personalization;
   const draft = usePersonalizationDraft(tmpl);
-  const price = unitPrice(product, sel.variant, Boolean(tmpl));
+  const price = unitPrice(product, sel.variant, Boolean(tmpl), draft.collar);
   const max = Math.max(1, maxQuantity(sel.variant));
   const quantity = Math.min(qty, max);
   const inactive = product.active === false;
@@ -75,6 +76,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
           <span className="w-full text-xs text-muted">Precio sin impuestos nacionales: {formatARS(withoutNationalTaxes(price, settings.nationalTaxRate))} · precio de muestra</span>
         </div>
         <ConfigureCard product={product} sel={sel} draft={draft} quantity={quantity} max={max} stockNote={stockNote(avail)} onQuantity={setQty} actions={desktopActions} />
+        {tmpl?.collar && <CollarInspiration spec={tmpl.collar} onPick={draft.applyPreset} />}
         <MissionChip units={quantity} />
         <DeliveryEstimate product={product} variant={sel.variant} />
         <ul className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-muted">

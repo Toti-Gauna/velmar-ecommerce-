@@ -1,9 +1,11 @@
 "use client";
+import { scrollBehavior } from "@/lib/scroll";
 import { useRouter } from "next/navigation";
 import type { Product, Variant } from "@/demo/types";
 import { useCart } from "@/stores/cart";
 import { useUi } from "@/stores/ui";
 import type { PersonalizationDraft } from "../personalize/usePersonalizationDraft";
+import { playSound } from "@/lib/sound";
 
 /**
  * "Agregar al carrito" y "Comprar ahora" desde la ficha. Si el producto es personalizable, primero
@@ -16,7 +18,7 @@ export function useProductPurchase(product: Product, variant: Variant, quantity:
 
   const focus = (id: string) => {
     const el = document.getElementById(id);
-    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    el?.scrollIntoView({ behavior: scrollBehavior(), block: "center" });
     window.setTimeout(() => el?.focus({ preventScroll: true }), 350);
   };
 
@@ -24,7 +26,7 @@ export function useProductPurchase(product: Product, variant: Variant, quantity:
     if (!canBuy) return;
     if (draft.tmpl) {
       draft.touch();
-      if (draft.problem) return focus(draft.tmpl.kind === "TEXT" ? "p-text" : "personalizar");
+      if (draft.problem) { playSound("error"); return focus(draft.tmpl.kind === "TEXT" ? "p-text" : "personalizar"); }
     }
     add({ productSlug: product.slug, variantId: variant.id, quantity, personalization: draft.build() });
     if (mode === "buy") router.push("/checkout/");

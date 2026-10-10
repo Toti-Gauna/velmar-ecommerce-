@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartLine } from "@/demo/engine/cart-types";
 import { demoStorage, STORAGE_PREFIX } from "./storage";
+import { playSound } from "@/lib/sound";
 
 interface CartState {
   lines: CartLine[];
@@ -21,7 +22,7 @@ export const useCart = create<CartState>()(
     (set) => ({
       lines: [],
       couponCode: null,
-      add: (line) =>
+      add: (line) => {
         set((state) => {
           // Dos personalizaciones distintas son dos ítems; sin personalización se agrupa por variante.
           const existing = !line.personalization && state.lines.find((l) => !l.personalization && l.variantId === line.variantId);
@@ -29,10 +30,12 @@ export const useCart = create<CartState>()(
             return { lines: state.lines.map((l) => (l.id === existing.id ? { ...l, quantity: Math.min(10, l.quantity + line.quantity) } : l)) };
           }
           return { lines: [...state.lines, { ...line, id: newId() }] };
-        }),
+        });
+        playSound("add");
+      },
       setQuantity: (id, quantity) => set((s) => ({ lines: s.lines.map((l) => (l.id === id ? { ...l, quantity } : l)) })),
       remove: (id) => set((s) => ({ lines: s.lines.filter((l) => l.id !== id) })),
-      setCoupon: (couponCode) => set({ couponCode }),
+      setCoupon: (couponCode) => { set({ couponCode }); if (couponCode) playSound("coupon"); },
       clear: () => set({ lines: [], couponCode: null }),
     }),
     { name: `${STORAGE_PREFIX}cart`, storage: demoStorage, skipHydration: true },

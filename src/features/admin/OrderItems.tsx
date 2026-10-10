@@ -1,7 +1,7 @@
 "use client";
 import { LineThumb } from "@/components/organisms/LineThumb";
 import type { CartLine } from "@/demo/engine/cart-types";
-import { getProduct } from "@/demo/engine/catalog";
+import { collarLineDetail, getProduct } from "@/demo/engine/catalog";
 import { quoteLines } from "@/demo/engine/pricing";
 import { demoData } from "@/demo/engine/source";
 import { formatARS } from "@/lib/money";
@@ -27,6 +27,7 @@ export function OrderItems({ lines }: { lines: CartLine[] }) {
                 <dl className="mt-1 grid grid-cols-[auto_1fr] gap-x-2">
                   <dt className="text-muted">Personalización</dt><dd className="font-semibold">{KIND[p.kind]} · aprobada</dd>
                   {p.text && (<><dt className="text-muted">Texto</dt><dd className="font-semibold">“{p.text}” · {p.font} · {p.colorName}</dd></>)}
+                  {p.collar && (<><dt className="text-muted">Collar</dt><dd className="font-semibold">{collarLineDetail(line)}</dd></>)}
                   {p.notes && (<><dt className="text-muted">Notas</dt><dd>{p.notes}</dd></>)}
                   {p.kind !== "TEXT" && !p.previewDataUrl && !p.referenceDataUrl && (<><dt className="text-muted">Archivo</dt><dd>Foto original ficticia (en producción: descarga privada en calidad completa)</dd></>)}
                 </dl>

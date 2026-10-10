@@ -38,7 +38,8 @@ export const useAdmin = create<AdminState>()(
     }),
     {
       name: `${STORAGE_PREFIX}admin`,
-      // v4: taller (fechas comprometidas, etapas, insumos, recetas y fichas): la demo vuelve a los datos de muestra.
+      // v4: taller (fechas comprometidas, etapas, insumos, recetas y fichas). v5: configurador del collar (producto nuevo).
+      // Al cambiar de versión la demo vuelve a los datos de muestra.
       version: ADMIN_STORE_VERSION,
       storage: demoStorage,
       skipHydration: true,

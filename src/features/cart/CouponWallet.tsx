@@ -19,7 +19,7 @@ const STATUS_LABEL: Record<Exclude<WalletStatus, "available">, string> = {
 export function CouponWallet({ onApplied, compact }: { onApplied?: () => void; compact?: boolean }) {
   useDemoVersion();
   const { quote, isRegistered } = useCartQuote();
-  const wheelCode = useAccount((s) => s.wheelPrize?.code ?? null);
+  const wheelCode = useAccount((s) => (s.wheelSpinning ? null : s.wheelPrize?.code ?? null));
   const { couponCode, setCoupon } = useCart();
   const toast = useToasts((s) => s.push);
   const { theme } = useCurrentTheme();

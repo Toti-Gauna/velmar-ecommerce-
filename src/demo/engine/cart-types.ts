@@ -1,3 +1,4 @@
+import type { CollarConfig } from "../fixtures/collar";
 import type { PersonalizationKind } from "../types";
 
 export interface LinePersonalization {
@@ -12,6 +13,8 @@ export interface LinePersonalization {
   /** Miniatura de la foto de referencia (solo navegador). */
   referenceDataUrl?: string;
   approvedAt: string;
+  /** Configuración del collar (solo productos con configurador). */
+  collar?: CollarConfig;
 }
 
 export interface CartLine {

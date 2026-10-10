@@ -19,6 +19,20 @@
 | `/cuenta/` | Cuenta demo: pedidos, misiones, premios (un uso), direcciones |
 | `/preguntas/`, `/terminos/`, `/privacidad/`, `/arrepentimiento/` | Ayuda y legales (textos de muestra) |
 
+## Fase 4 · Tienda (pedido de Ignacio, 09/10/2026, fuera de la spec)
+- **Configurador del collar** (`/p/collar-con-nombre/`): nombre, fuente y color de las letras; letras sueltas que cuelgan,
+  nombre de corrido o chapita hueso; color del cordón; material (paracord trenzado, biothane, nylon); dije (patita, hueso,
+  corazón, chapita con teléfono o ninguno) y **talle por contorno de cuello** (elige la variante; fuera de rango, a medida
+  por WhatsApp). Vista previa SVG en vivo con las letras balanceándose; recargos en el engine (`src/demo/engine/collar.ts`);
+  la configuración viaja al carrito, al pedido, a la cola de producción y a los emails. **Combinaciones listas** debajo del
+  configurador: un toque carga la combinación.
+- **Ruleta** (`/club/` y al ir a pagar): se gira tocándola, arrastrándola con el dedo (con la dirección y la fuerza del gesto)
+  o con Enter; frena de a poco, cada gajo hace clic y mueve el puntero, el aro tiene luces en cadena y al ganar hay confeti.
+  El premio lo sigue decidiendo el sorteo ponderado del engine.
+- **Sonidos** sintetizados con WebAudio (sin archivos): agregar al carrito, favoritos, cupón, ruleta, compra, error y barra
+  inferior. Se habilitan con el primer toque; botón de silencio en el header (se recuerda en `velmar-sound`). En el panel no
+  suenan.
+
 ## Agregados a pedido de Ignacio (04-05/10/2026, fuera de la spec original)
 Ruleta de cupones, página y selector de "Mis cupones", buscador superpuesto con búsquedas recientes, "Comprar ahora",
 historias de producto en el inicio (ilustrativas, `src/demo/fixtures/stories.ts`), paginado del panel, favoritos,

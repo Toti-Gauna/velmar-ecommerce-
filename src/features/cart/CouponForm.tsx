@@ -6,6 +6,7 @@ import { Input } from "@/components/atoms/Field";
 import { validateCoupon, normalizeCode, type CouponCheck } from "@/demo/engine/coupons";
 import { useCart } from "@/stores/cart";
 import { useUi } from "@/stores/ui";
+import { playSound } from "@/lib/sound";
 
 export function CouponForm({ subtotal, isRegistered, check }: { subtotal: number; isRegistered: boolean; check: CouponCheck | null }) {
   const setCoupon = useCart((s) => s.setCoupon);
@@ -40,6 +41,7 @@ export function CouponForm({ subtotal, isRegistered, check }: { subtotal: number
         e.preventDefault();
         const result = validateCoupon(value, { subtotal, isRegistered, now: new Date() });
         setError(result.ok ? null : result.message);
+        if (!result.ok) playSound("error");
         if (result.ok) setCoupon(normalizeCode(value));
       }}
     >

@@ -6,6 +6,7 @@ import type { TextZone } from "@/demo/fixtures/templates";
 import { formatARS } from "@/lib/money";
 import { QuantityStepper } from "@/components/molecules/QuantityStepper";
 import { LineThumb } from "./LineThumb";
+import { collarLineDetail } from "@/demo/engine/catalog";
 
 export interface CartLineView {
   id: string;
@@ -34,11 +35,15 @@ export function CartLineItem({ line, onQuantity, onRemove }: { line: CartLineVie
         <Link href={`/p/${line.slug}/`} className="line-clamp-2 pr-8 text-[15px] font-bold leading-snug hover:underline sm:text-base">{line.name}</Link>
         <p className="text-[13px] text-muted">{line.variantLabel}</p>
         {p && (
-          <p className="line-clamp-2 text-[13px]">
-            <span className="font-bold text-success">✓ Aprobada</span> · {KIND[p.kind]}
-            {p.text && <> · “{p.text}” ({p.font}, {p.colorName})</>}
-            {p.notes && <span className="block truncate text-muted">Notas: {p.notes}</span>}
-          </p>
+          <>
+            <p className="line-clamp-2 text-[13px]">
+              <span className="font-bold text-success">✓ Aprobada</span> · {KIND[p.kind]}
+              {p.text && <> · “{p.text}” ({p.font}, {p.colorName})</>}
+              {p.notes && <span className="block truncate text-muted">Notas: {p.notes}</span>}
+            </p>
+            {/* Fuera del recorte de 2 líneas: el detalle del collar es lo que se fabrica y tiene que leerse entero. */}
+            {p.collar && <p className="text-[13px] text-muted">{collarLineDetail({ productSlug: line.slug, personalization: p })}</p>}
+          </>
         )}
         <div className="mt-auto flex items-center justify-between gap-2 pt-1.5">
           <QuantityStepper size="sm" label={`Cantidad de ${line.name}`} value={line.quantity} max={line.maxQuantity} onChange={onQuantity} />

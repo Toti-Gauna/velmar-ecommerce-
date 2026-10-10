@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pickSegment, prizeCoupon, probability, rotationFor } from "@/demo/engine/wheel";
+import { landingRotation, pickSegment, prizeCoupon, probability, rotationFor, segmentAt } from "@/demo/engine/wheel";
 import { defaultWheel } from "@/demo/fixtures/wheel";
 
 describe("ruleta de cupones", () => {
@@ -24,5 +24,22 @@ describe("ruleta de cupones", () => {
   it("el premio es un cupón de un uso con vencimiento", () => {
     const c = prizeCoupon(defaultWheel.segments[4]!, "ab12z", new Date("2026-10-04T12:00:00Z"), 7);
     expect(c).toMatchObject({ code: "RULETAAB12Z", type: "FIXED", value: 3000, maxUses: 1, endsAt: "2026-10-11", minSubtotal: 25000 });
+  });
+  it("el frenado deja el gajo sorteado bajo el puntero, en los dos sentidos y desde cualquier posición", () => {
+    for (const count of [6, 8]) {
+      for (const current of [0, 37, -410, 1234.5]) {
+        for (let index = 0; index < count; index++) {
+          for (const dir of [1, -1] as const) {
+            for (const jitter of [0, 0.5, 1]) {
+              const target = landingRotation(current, index, count, dir, 4, jitter);
+              expect(segmentAt(target, count)).toBe(index);
+              // Gira hacia donde se tiró y al menos las vueltas pedidas.
+              expect(dir * (target - current)).toBeGreaterThanOrEqual(4 * 360);
+              expect(dir * (target - current)).toBeLessThan(5 * 360);
+            }
+          }
+        }
+      }
+    }
   });
 });
