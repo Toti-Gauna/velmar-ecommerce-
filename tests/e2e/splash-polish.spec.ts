@@ -64,3 +64,21 @@ test("San Valentín: Lola y Pancho cenan debajo del logo, todo centrado y sin pi
   expect(heart.y).toBeGreaterThan(0);
   expect(dinner.y + dinner.height).toBeLessThan(view.height);
 });
+
+test("al recargar a mitad de página, la pantalla de carga queda por encima de todo (capa superior)", async ({ page }) => {
+  await preview(page, "san-valentin");
+  await page.goto("p/velador-con-foto/");
+  await page.keyboard.press("Escape");
+  await page.evaluate(() => window.scrollTo({ top: 700, behavior: "instant" }));
+  await page.reload();
+  const splash = page.locator("#velmar-splash");
+  await expect(splash).toBeVisible();
+  expect(await splash.evaluate((s) => s.matches(":popover-open"))).toBe(true);
+  // En la capa superior nada de la página puede dibujarse encima, tenga el z-index que tenga; y ocupa la pantalla entera.
+  const box = (await splash.boundingBox())!;
+  const view = page.viewportSize()!;
+  expect([box.x, box.y, box.width, box.height]).toEqual([0, 0, view.width, view.height]);
+  await page.keyboard.press("Escape");
+  await expect(splash).toBeHidden();
+  expect(await splash.evaluate((s) => s.matches(":popover-open"))).toBe(false);
+});

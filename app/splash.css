@@ -18,6 +18,8 @@
      abajo de él con calc(50% ± var(--brand-h) / 2), así no lo pisan en ningún tamaño. */
   --brand-h: 120px;
   position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: hidden;
+  /* Es un popover (capa superior): se anulan los estilos del navegador para que ocupe toda la pantalla. */
+  width: auto; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; color: inherit;
   background: radial-gradient(120% 80% at 50% 40%, #262c1d 0%, #1c2016 55%, #13160e 100%);
   /* Sombra del borde de abajo: se ve recién cuando el telón sube. */
   box-shadow: 0 40px 90px -20px rgb(0 0 0 / 0.5);
