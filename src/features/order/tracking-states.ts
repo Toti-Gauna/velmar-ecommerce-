@@ -11,10 +11,13 @@ const FLOW = [
   { label: "Entregado", description: "¡Que lo disfrutes!" },
 ];
 
+/** Estados que se pueden probar en el seguimiento de demostración (solo cambian la vista, no el pedido). */
 export const SAMPLE_STATES = [
   { id: "pending", label: "Esperando comprobante", current: 0 },
   { id: "production", label: "En producción", current: 3 },
-  { id: "shipped", label: "Enviado", current: 5 },
+  { id: "ready", label: "Listo", current: 4 },
+  { id: "shipped", label: "En camino", current: 5 },
+  { id: "delivered", label: "Entregado", current: 7 },
 ] as const;
 
 export type SampleStateId = (typeof SAMPLE_STATES)[number]["id"];

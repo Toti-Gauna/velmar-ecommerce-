@@ -1,10 +1,10 @@
 "use client";
 import { useCart } from "@/stores/cart";
 import { useToasts } from "@/stores/toast";
+import { changeCoupon } from "../cart/coupon-actions";
 
 /** Copiar el código o dejarlo aplicado en el carrito (se valida igual al pagar, en el engine). */
 export function useThemeCoupon() {
-  const setCoupon = useCart((s) => s.setCoupon);
   const applied = useCart((s) => s.couponCode);
   const toast = useToasts((s) => s.push);
   const copy = (code: string) => {
@@ -12,7 +12,7 @@ export function useThemeCoupon() {
     toast({ tone: "success", title: "Código copiado", description: code });
   };
   const apply = (code: string) => {
-    setCoupon(code);
+    if (!changeCoupon(code)) return;
     toast({ tone: "success", title: "Cupón listo en tu carrito", description: `${code} se aplica al pagar si cumple las condiciones.` });
   };
   return { copy, apply, applied };

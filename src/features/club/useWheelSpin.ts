@@ -59,7 +59,7 @@ export function useWheelSpin() {
     // El premio se guarda antes de la animación (que es solo visual): salir a mitad de giro no da otro giro.
     const coupon = prizeCoupon(pick.segment, Math.random().toString(36).slice(2, 7), new Date(), wheel.validDays);
     addPrizeCoupon(coupon);
-    setWheelPrize({ code: coupon.code, label: pick.segment.label, at: new Date().toISOString() });
+    setWheelPrize({ code: coupon.code, label: pick.segment.label, at: new Date().toISOString(), choice: "won" });
     playSound("spin");
     const turns = Math.min(8, Math.max(3, Math.round(2 + speed * 2.4)));
     const target = landingRotation(rotate.get(), pick.index, count, dir, turns, Math.random());

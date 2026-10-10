@@ -7,8 +7,9 @@ import { useDemoData } from "@/stores/admin";
 import type { PaymentMethod } from "@/demo/types";
 import { useCheckout } from "@/stores/checkout";
 
-const METHODS: { value: PaymentMethod; title: string; description: string; icon: typeof CreditCard; aside?: "discount" }[] = [
-  { value: "CHECKOUT_PRO", title: "Mercado Pago", description: "Tarjeta de crédito, débito o dinero en cuenta. Se paga en la pantalla de Mercado Pago y se confirma automáticamente.", icon: CreditCard },
+const METHODS: { value: PaymentMethod; title: string; description: string; icon: typeof CreditCard; aside?: "discount" | "provider" }[] = [
+  // Las tarjetas se cobran con Mercado Pago (Checkout Pro, simulado en la demo): mismo medio de pago, nombrado como lo busca el cliente.
+  { value: "CHECKOUT_PRO", title: "Tarjetas de débito, crédito y prepagas", description: "Pagá con tarjeta de débito, crédito o prepaga de forma segura. En esta demostración no se realiza ningún cobro real.", icon: CreditCard, aside: "provider" },
   { value: "BANK_TRANSFER", title: "Transferencia bancaria", description: "Transferís al alias, subís el comprobante y Velmar confirma el ingreso.", icon: Building2, aside: "discount" },
   { value: "QR_MANUAL", title: "QR", description: "Escaneás el QR de Velmar con tu billetera, subís el comprobante y Velmar confirma el ingreso.", icon: QrCode, aside: "discount" },
 ];
@@ -24,7 +25,8 @@ export function PaymentStep({ onNext, onBack }: { onNext: () => void; onBack: ()
         <legend className="mb-1 font-bold">¿Cómo querés pagar?</legend>
         {METHODS.filter((m) => enabledMethods.includes(m.value)).map((m) => (
           <OptionCard key={m.value} name="payment" value={m.value} checked={method === m.value} onChange={(v) => { patch({ paymentMethod: v as PaymentMethod }); setMissing(false); }}
-            title={m.title} description={m.description} aside={m.aside && transferDiscountPct > 0 && <span className="text-success">{transferDiscountPct}% off</span>} icon={<m.icon size={20} aria-hidden="true" />} />
+            title={m.title} description={m.description} icon={<m.icon size={20} aria-hidden="true" />}
+            aside={m.aside === "provider" ? <span className="text-xs font-bold text-muted">vía Mercado Pago</span> : m.aside && transferDiscountPct > 0 && <span className="text-success">{transferDiscountPct}% off</span>} />
         ))}
         {missing && <p role="alert" className="text-sm font-semibold text-danger">Elegí un medio de pago.</p>}
       </fieldset>

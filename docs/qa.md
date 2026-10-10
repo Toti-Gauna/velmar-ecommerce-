@@ -129,6 +129,178 @@ Qué se hizo:
 - Las letras del collar se balancean tres veces y quedan quietas (un balanceo sin fin redibujaba el SVG en cada cuadro).
 - Se probó pausar el fondo de la temática durante el scroll: no mejoró nada medible y se descartó.
 
+## Tienda del usuario · Polish 8.2 (`tests/e2e/shop-polish.spec.ts`, `tests/unit/grid.test.ts`)
+Lote 1: carrusel principal, categorías y riel de Recomendados.
+
+| Verificación | Estado |
+|---|---|
+| Carrusel principal a 640 × 900, 820 × 1180, 1080 × 810, 1180 × 820 y 1440 × 900: se recorren todas las diapositivas (temática + 3) con las flechas y ninguna flecha pisa texto ni la imagen del producto; flechas de 44 px o más | ✅ |
+| Categorías del inicio en una sola fila a 375, 640, 820, 1080, 1180 y 1440 px; si no entran, Tab hasta la última la trae a la vista y los controles laterales llegan al final (el de atrás aparece, el de adelante se va) | ✅ |
+| `/categorias/`: filas parejas sin ninguna categoría sola en su fila; en escritorio, una sola fila | ✅ |
+| Recomendados a 1080 × 810 y 820 × 1180 con movimiento: 10 idas y vueltas con las flechas, sin tarjetas en blanco a mitad de camino, cada parada en el borde de una tarjeta y sin reacomodo 300 ms después; deslizón rápido al final y vuelta sin huecos | ✅ |
+| Reparto de columnas parejas (ninguna sola en la última fila hasta 12 categorías) | ✅ unit |
+
+Causas y arreglos:
+- **Flechas del carrusel**: estaban a 16 px del borde y el texto arrancaba a 48 px; la flecha de la izquierda tapaba
+  el título. Ahora hay una franja lateral reservada (`--hero-safe`: margen + flecha + 1 rem) y el texto y la imagen
+  empiezan después; en el celular no hay flechas (se desliza y están los puntos, ahora con 24 px de toque).
+- **Categorías**: la grilla de 4 y 8 columnas dejaba la novena sola abajo. Ahora es una fila que se desliza; en
+  escritorio los círculos se reparten el ancho y los controles laterales aparecen solo hacia donde hay más.
+- **Hueco en Recomendados**: cada tarjeta aparecía sola al entrar en pantalla (opacidad 0 hasta que el navegador
+  avisaba que se veía un 15 %). En un riel horizontal, al deslizar rápido hasta el final las del medio nunca llegaban a
+  "verse" y la que quedaba asomada tampoco: al volver aparecían en blanco (en Safari, que avisa más tarde mientras se
+  desliza, el hueco duraba más). Además las flechas movían el 80 % del ancho, que no cae en el borde de una tarjeta, y
+  el navegador corregía la posición al terminar. Ahora el riel aparece entero una sola vez, las flechas pasan de a
+  tarjetas enteras (siempre a un punto de snap), se apagan en los extremos y respetan "reducir movimiento".
+
+Lote 2: collar y volver arriba al navegar (`tests/e2e/shop-polish-collar.spec.ts`, `shop-polish-scroll.spec.ts`,
+`tests/unit/collar-styles.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| Inicio: escribir el nombre y cambiar estilo de letras (sueltas, en línea, de corrido, chapita), patrón y colores cambia la vista previa al instante; con "A" y "Bartolom" ningún texto se sale del dibujo en los cuatro estilos | ✅ |
+| Patrones de dos colores: aparece "Segundo color" y el cordón lo usa; volviendo a letras sueltas y liso desaparece el aviso de demo | ✅ |
+| Ficha: estilo, adorno y patrón llegan al carrito con su descripción y "ejemplo de la demo"; con chapita el adorno no corresponde y se oculta; otro producto personalizable (comedero) no muestra opciones de collar | ✅ |
+| Solo letras sueltas, paracord liso y dije patita (lo visto en el Instagram) van sin sello de demo; configuración vieja guardada en el navegador toma la vigente | ✅ unit |
+| Con movimiento: inicio → categoría → producto → relacionado, recomendados → producto → carrito → checkout, header y pie: cada página abre arriba, con el título debajo del header, y sigue arriba después de la transición | ✅ |
+| Link con ancla (`#personalizar`) abre en la sección, debajo del header; Atrás vuelve a donde estaba; ordenar productos no mueve la página | ✅ |
+| Sin el arreglo de scroll fallan los 3 recorridos (se probó sacándolo y volviendo a armar) | ✅ |
+| Sin desborde a lo ancho en la ficha del collar a 375, 393 y 412 px (`cross-device.spec.ts`) | ✅ |
+
+Causas y arreglos:
+- **Collar del inicio**: el probador dibujaba una ilustración genérica con una sola chapita, no el configurador real.
+  Ahora usa la misma vista previa y las mismas opciones que la ficha (salen de la configuración del producto):
+  letras sueltas que cuelgan, letras en línea que pasan por el cordón, de corrido o chapita; adorno a los costados;
+  cinco patrones del cordón con segundo color. Los nombres largos achican la letra en vez de salirse.
+- **Opciones sin confirmar**: lo único visto en el Instagram de Velmar es el collar de paracord de un color con letras
+  sueltas y patita. El resto (letras en línea, de corrido, chapita, adornos, patrones, biothane, nylon y los otros
+  dijes) lleva el sello "Demo", un aviso y "ejemplo de la demo" en el carrito y el pedido; la aprobación avisa que el
+  taller lo confirma antes por WhatsApp.
+- **Scroll al navegar**: el router de Next lleva a la vista el primer elemento de la página nueva, que quedaba debajo
+  del header fijo; con la transición entre páginas la posición se movía un cuadro después (la categoría abría a
+  141 px y el Club a 580 px). `useRouteScroll` (en `ClientShell`) lleva al inicio o al ancla en cada cambio de ruta y
+  lo sostiene durante la transición, salvo que la persona ya se esté moviendo; Atrás/Adelante y los cambios sin
+  cambio de ruta no se tocan.
+- **Desborde en el celular**: las filas de opciones que se deslizan estiraban la página a 909 px: los `fieldset` no se
+  achican por debajo de su contenido y los radios ocultos (absolutos) no los recortaba la fila. `min-w-0` y `relative`.
+
+Lotes 3 y 4: ficha del producto (`tests/e2e/shop-polish-product.spec.ts`).
+
+| Verificación | Estado |
+|---|---|
+| A 1180 × 740, 1440 × 900 y 1080 × 700, bajando de a 150 px: la galería queda fija debajo del header y entera en la pantalla mientras se recorre la compra, y nunca pasa del final de esa sección (no acompaña a los detalles ni a las recomendaciones) | ✅ |
+| En el celular la galería va en el flujo normal | ✅ |
+| Agregar al carrito, Comprar ahora y Regalar ahora en columna, mismo ancho y en ese orden, sin texto cortado; favoritos aparte, junto al título; Regalar ahora abre el regalo | ✅ |
+| Celular: Comprar y Regalar en la tarjeta y Agregar en la barra de abajo (uno solo a la vista) | ✅ |
+| Cuatro saltos seguidos de un producto a otro por las tarjetas: título del producto nuevo, arriba de todo, sin diálogos abiertos, cantidad de vuelta en 1, carrito intacto y sin capturas de la transición flotando | ✅ |
+
+Causas y arreglos:
+- **Galería "rota" al bajar (imagen 9)**: la galería tenía siempre el nombre de la transición del producto, así que
+  entraba en cada transición entre páginas como una captura aparte; en Safari esa captura podía quedar corrida y
+  borrosa encima de la ficha. Ahora el nombre se pone solo al llegar desde una tarjeta (para que la imagen vuele) y
+  se suelta enseguida.
+- **Galería fija**: acompañaba a toda la columna derecha (detalles y preguntas incluidos) y en una pantalla baja no
+  entraba entera. Ahora la ficha tiene dos partes: la compra (galería fija, alto limitado al espacio bajo el header)
+  y los detalles en flujo normal.
+- **Botones**: "Agregar al carrito" y "Comprar ahora" iban lado a lado y se partían en dos renglones; ahora van en
+  columna con "Regalar ahora" (reemplaza la tarjeta "Es para regalar").
+
+Pantalla de carga al recargar a mitad de página (pedido de Ignacio, `splash-polish.spec.ts`):
+- **Causa**: en Safari del iPad, al recargar con la página bajada, el contenido se dibujaba por encima del splash (se
+  veían las tarjetas sobre su fondo, con el logo y los corazones detrás). No era un z-index bajo: tenía 100, el más
+  alto de la app; Safari ordenaba mal las capas fijas al restaurar el scroll.
+- **Arreglo**: el splash se abre en la capa superior del navegador (popover, abierto por un script en línea apenas
+  se lee la etiqueta), donde nada de la página puede dibujarse encima. Sin soporte de popover queda como antes.
+- **Verificado**: recargando a 700 px el splash está abierto en la capa superior y ocupa la pantalla entera; Escape lo
+  cierra. En Chromium (no hay WebKit acá); falta confirmarlo en el iPad.
+
+Lote 5: checkout (`tests/e2e/shop-polish-checkout.spec.ts`, `tests/unit/checkout-discounts.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| A 1180 y 390 px: el resumen (subtotal, cupón, descuento por transferencia/QR, envío, total y productos) va debajo de las opciones y de los botones de cada paso; Atrás y Siguiente siguen primero y en el mismo orden | ✅ |
+| El total se actualiza al elegir la entrega y al cambiar entre tarjeta y transferencia; volver a tarjeta lo deja igual que antes | ✅ |
+| "Tarjetas de débito, crédito y prepagas" con la descripción pedida y "vía Mercado Pago"; siguen transferencia y QR con aprobación manual y el aviso de que nada cobra; la revisión del pedido lo nombra igual | ✅ |
+| Con tarjeta no hay descuento por transferencia; cupón + transferencia se aplican una sola vez; ida y vuelta entre medios no acumula | ✅ unit |
+
+- **Resumen**: estaba en un panel al costado (y en el celular, al final de todo). Ahora el checkout es una columna
+  centrada: paso, botones y resumen. La cuenta sale del mismo engine que antes (sin cambios de precio).
+- **Tarjetas**: es el mismo medio de pago de siempre (Mercado Pago Checkout Pro, simulado), nombrado como lo busca el
+  cliente. No hay integración nueva ni se piden datos de tarjeta.
+
+Lote 6: seguimiento, Mi cuenta y Club (`shop-polish-tracking.spec.ts`, `shop-polish-account.spec.ts`, `shop-polish-club.spec.ts`).
+
+| Verificación | Estado |
+|---|---|
+| Seguimiento: zona "Probá los estados del pedido — Demostración" con Esperando comprobante, En producción, Listo, En camino y Entregado; cada uno cambia título, nota, recorrido y etapas, y aclara que no toca pedidos ni pagos | ✅ |
+| Entregado se entiende: el rótulo de la casa pasa a "Llegó a tu casa", todas las etapas quedan hechas y, con movimiento, estalla la decoración de la temática junto a la casa | ✅ |
+| Viajero por temática (motor de temáticas): trineo en Navidad, bruja en Halloween, Pancho en Día del Padre, carta con corazones en San Valentín, huevo en Pascuas, bandera en las fechas patrias; Original conserva el punto dorado | ✅ |
+| Con movimiento el viajero recorre el camino; con movimiento reducido queda en su lugar al instante y sin estallido | ✅ |
+| En el celular los rótulos del taller y la casa van debajo del recorrido (no tapan al viajero) | ✅ captura |
+| Mi cuenta sin sesión: Iniciar sesión / Crear cuenta con estado claro, errores por campo (vacío, email inválido, nombre, largo de contraseña), mostrar/ocultar contraseña y "Entrando…" | ✅ |
+| La contraseña no queda en localStorage ni en sessionStorage, no se ofrece guardarla (sin autocompletar) y no sale ningún pedido externo | ✅ |
+| "Continuar con Google" rotulado **Simulado**: no hay OAuth ni pedidos a Google; muestra una cuenta de ejemplo y entra con la cuenta demo | ✅ |
+| Mi cuenta con sesión (pedido de Ignacio): tarjeta de perfil y cinco tarjetas (pedidos, regalos, misiones, premios, direcciones) con resumen; una sola sección a la vista; el hash (`/cuenta/#regalos`) abre la que corresponde y sobrevive a la recarga; a 1180, 820 y 390 px sin desbordes | ✅ |
+| En el celular, al elegir una tarjeta la sección se acerca sola si quedó abajo | ✅ |
+| Club: portada con métricas en tarjetas, "Tu próximo premio" con el progreso del motor de misiones, accesos "Ver mi progreso" e "Ir a la ruleta"; la ruleta mantiene su único botón y la lógica de premios no cambia | ✅ |
+| La portada del Club toma el acento y el adorno de la temática vigente (Halloween: naranja y sombrero) | ✅ |
+| Misiones: estado corto (Por empezar, En curso, ¡Completada!) y avance debajo del título; a 1280, 820 y 390 px el estado entra en una línea y el título en dos renglones como máximo | ✅ |
+| Banda del Club en el inicio (pedido de Ignacio): a 1280, 820 y 390 px deja aire a los dos costados y tiene las puntas redondeadas | ✅ |
+
+- **Mi cuenta**: antes eran cinco secciones una debajo de la otra (en el iPad había que bajar mucho). Ahora es un panel
+  de tarjetas: en el celular en grilla, en tablet en una fila y en escritorio como menú a la izquierda.
+- **Ingreso**: es de demostración. La contraseña se valida en el momento y se descarta; el nombre y el email quedan en la
+  cuenta demo de este navegador, como antes.
+- **Banda del Club**: ocupaba de borde a borde (márgenes negativos). Ahora respeta el margen de la página en todos los
+  tamaños; la portada del Club también pasó a ser una tarjeta con margen.
+
+Lote 7: premios de la ruleta, Día del Animal y regalo en modal (`shop-polish-wheel.spec.ts`, `shop-polish-gifts.spec.ts`, `tests/unit/wheel-prize.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| Estados del premio: ganado, guardado, aplicado, desactivado desde el checkout y utilizado; uno solo a la vez, calculado en el engine (`prizeStatus`) | ✅ unit |
+| Aplicado: sigue aplicado al ir del Club al carrito y al checkout, y después de recargar en cada uno | ✅ |
+| Reabrir la ruleta con el premio aplicado no da otro giro ni repite el aviso: dice "Aplicado a tu carrito" y ofrece seguir | ✅ |
+| En el checkout el cupón se ve, se quita (el total sube y la fila "Cupón" desaparece) y queda como "Quitado del pedido" en Mis cupones; se vuelve a aplicar desde "Elegir de mis cupones" sin salir del checkout | ✅ |
+| Guardado: queda en Mis cupones como "Guardado"; la ruleta reabierta ofrece aplicarlo pero no guardarlo de nuevo | ✅ |
+| Utilizado: al confirmar el pedido con el premio suma un uso; queda "Ya lo usaste en un pedido", la ruleta no ofrece aplicarlo y escribirlo a mano avisa que llegó a su límite | ✅ |
+| Un solo cupón emitido por premio (panel de cupones) y el mismo aviso no se apila dos veces | ✅ |
+| Un cupón elegido que no cumple las condiciones se puede quitar desde el carrito o el checkout | ✅ |
+| Día del Animal: el cachorro asoma por la puerta un poco más con cada golpe (orejas, ojos con brillo, parpadeo y cabeza que se ladea), apoya las patitas y se pone contento antes de abrir; ya no está la cola. Las otras 16 escenas no cambian | ✅ + capturas |
+| Modal de regalo centrado (en el celular sube desde abajo y ocupa el ancho), con vista previa en vivo (escena cerrada, para quién, mensaje, de parte de quién, sin precio) | ✅ |
+| Escape y el botón Cerrar lo cierran; el foco entra en "Para" y vuelve a "Regalar ahora"; el fondo no se scrollea; al reabrir sigue lo escrito | ✅ |
+| Validación y límites: para quién, de parte de quién, email opcional válido y mensaje de hasta 240 caracteres (avisa cuántos sobran) | ✅ |
+| El mismo modal y el mismo borrador desde "Regalar ahora" y desde "¿Es para regalo?" en el último paso del checkout; ahí se elige cuál producto es el regalo, se edita o se quita, y "Regalar y pagar ahora" pide los términos y confirma | ✅ |
+| Ningún pedido externo en el flujo del regalo (no se manda ningún email) | ✅ |
+
+- **Premio de la ruleta**: antes solo se sabía si había premio; ahora el premio guarda qué se eligió (ganado, guardado o
+  quitado) y lo demás sale del carrito y del cupón. Los premios guardados con la versión anterior se leen como guardados.
+- **Avisos**: el mismo aviso que ya está a la vista se reemplaza en lugar de apilarse.
+- **Regalo**: la barra lateral "Es para regalar" se reemplazó por el modal. El borrador vive en memoria: sobrevive a cerrar
+  y reabrir y a navegar dentro de la tienda, no a recargar.
+
+QA global de Polish 8.2 (`shop-polish-journeys.spec.ts`; emulado en Chromium, **no** en equipos reales).
+
+| Recorrido | 1600 | 1366 | 1180 (tablet horizontal) | 820 (tablet vertical) | 390 | 320 |
+|---|---|---|---|---|---|---|
+| A · Compra: inicio → categoría → producto → personalización → carrito → checkout → entrega → pago simulado → confirmación | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| B · Regalo desde la ficha (modal → carrito → checkout → revisar el regalo, sin perder la personalización) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| B · Regalo desde "¿Es para regalo?" en el checkout | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| C · Club: misiones → ruleta → premio → aplicar → checkout → quitar el cupón (el total sube) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| D · Navegación: inicio → recomendado → otro recomendado → volver → categoría → carrito (scroll arriba, flechas del riel) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| E · Seguimiento: en producción → en camino → entregado → cambio de temática (Navidad) → repetir | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+En cada pantalla de cada recorrido se controla que no haya scroll horizontal, errores de consola ni pedidos externos.
+
+- **Encontrado y corregido en el QA**: a 320 px el selector "Ordenar por" de la categoría desbordaba 6 px (ahora pasa
+  abajo del contador) y en el checkout los importes del resumen se partían en dos renglones ("−$" arriba y el número
+  abajo). El bloque "¿Es para regalo?" deja el botón debajo del texto en el celular.
+- **Barrido extra**: 19 rutas de la tienda a 320 y 360 px, con sesión y carrito con cupón: sin desbordes.
+- **Seguridad**: el diff no agrega endpoints, Server Actions, dependencias ni pedidos de red; la contraseña del ingreso
+  solo vive en el estado del formulario (no va a localStorage ni a sessionStorage, comprobado en el e2e); Google es una
+  simulación rotulada, sin OAuth; no se manda ningún email.
+- **Falta**: probar en un iPad, un iPhone y un Android reales (filas 20 a 22 de `qa-dispositivos.md`).
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

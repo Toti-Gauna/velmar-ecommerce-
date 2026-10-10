@@ -85,3 +85,17 @@
   [data-product-card] > div:first-child { transition: none; }
   .immersive-backdrop, .immersive-stage > :not(.immersive-backdrop), .gift-card > *, .gift-tile-new, .wheel-hub, .wheel-win .themed-coupon, .coupon-shine { animation: none; }
 }
+
+/* ---------- Seguimiento: el viajero de la temática (Polish 8.2.11) ---------- */
+/* Unas vueltas mientras viaja (1,6 s) y quieto al llegar: nada de animaciones permanentes. */
+.trk-fly { animation: trk-fly 0.8s ease-in-out 2 alternate; }
+.trk-walk { animation: trk-walk 0.4s ease-in-out 4 alternate; }
+.trk-hop { animation: trk-hop 0.4s cubic-bezier(.3, 0, .4, 1) 4 alternate; }
+.trk-bob { animation: trk-bob 0.8s ease-in-out 2 alternate; }
+@keyframes trk-fly { from { transform: translateY(3px) rotate(-3deg); } to { transform: translateY(-6px) rotate(3deg); } }
+@keyframes trk-walk { from { transform: rotate(-2deg); } to { transform: rotate(2deg) translateY(-2px); } }
+@keyframes trk-hop { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+@keyframes trk-bob { from { transform: translateY(0) rotate(-4deg); } to { transform: translateY(-5px) rotate(4deg); } }
+.trk-hearts::before, .trk-hearts::after { content: "♥"; position: absolute; left: -14%; color: #ff8fab; font-size: 0.8rem; opacity: 0; animation: trk-heart 1.6s ease-out 1 both; }
+.trk-hearts::after { left: -30%; top: 30%; font-size: 0.6rem; animation-delay: 0.4s; }
+@keyframes trk-heart { 20% { opacity: 1; } to { opacity: 0; transform: translate(-10px, -14px); } }

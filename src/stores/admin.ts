@@ -5,6 +5,7 @@ import { createCatalogActions, type CatalogActions } from "@/demo/admin/catalog-
 import { createDataActions, type DataActions } from "@/demo/admin/data-slice";
 import { auditEntry, defaultAdminData, type AdminData } from "@/demo/admin/defaults";
 import { createOrdersActions, type OrdersActions } from "@/demo/admin/orders-slice";
+import { withCurrentCollarSpec } from "@/demo/admin/templates";
 import type { AdminClaim } from "@/demo/admin/types";
 import { createWorkshopActions, type WorkshopActions } from "@/demo/admin/workshop-slice";
 import { createEmailActions, type EmailActions } from "@/demo/admin/emails-slice";
@@ -46,10 +47,11 @@ export const useAdmin = create<AdminState>()(
       skipHydration: true,
       // Versiones viejas de la demo: se descartan y vuelven a los fixtures.
       migrate: () => defaultAdminData(),
-      // Campos nuevos de `data` toman el valor por defecto si el estado guardado no los tiene.
+      // Campos nuevos de `data` toman el valor por defecto si el estado guardado no los tiene; la configuración del
+      // collar siempre es la del código.
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<AdminData>;
-        return { ...current, ...p, data: { ...current.data, ...(p.data ?? {}) }, workshop: { ...current.workshop, ...(p.workshop ?? {}) }, emails: { ...current.emails, ...(p.emails ?? {}) } };
+        return { ...current, ...p, data: withCurrentCollarSpec({ ...current.data, ...(p.data ?? {}) }), workshop: { ...current.workshop, ...(p.workshop ?? {}) }, emails: { ...current.emails, ...(p.emails ?? {}) } };
       },
       partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop, emails: s.emails }),
     },

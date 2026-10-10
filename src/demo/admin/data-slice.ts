@@ -20,6 +20,8 @@ export interface DataActions {
   saveCoupon: (coupon: Coupon, previousCode?: string) => void;
   saveWheel: (wheel: WheelConfig) => void;
   addPrizeCoupon: (coupon: Coupon) => void;
+  /** Un pedido confirmado usó el cupón: suma un uso (el de la ruleta queda "utilizado"). */
+  redeemCoupon: (code: string) => void;
   saveSettings: (patch: Partial<DemoSettings>) => void;
   saveZone: (zone: ShippingZone) => void;
   saveSlides: (slides: CarouselSlide[]) => void;
@@ -69,6 +71,7 @@ export function createDataActions(set: Set): DataActions {
     saveCoupon: (c, prev) => edit("Cupón guardado", c.code, (d) => ({ coupons: upsert(d.coupons, c, (x) => x.code === (prev ?? c.code)) })),
     saveWheel: (wheel) => edit("Ruleta de cupones actualizada", "Ruleta", () => ({ wheel })),
     addPrizeCoupon: (c) => edit("Premio de ruleta emitido", c.code, (d) => ({ coupons: [...d.coupons.filter((x) => x.code !== c.code), c] })),
+    redeemCoupon: (code) => edit("Cupón usado en un pedido", code, (d) => ({ coupons: d.coupons.map((c) => (c.code === code ? { ...c, usedCount: (c.usedCount ?? 0) + 1 } : c)) })),
     saveSettings: (patch) => edit("Ajustes guardados", Object.keys(patch).join(", "), (d) => ({ settings: { ...d.settings, ...patch } })),
     saveZone: (z) => edit("Zona de envío", z.name, (d) => ({ zones: upsert(d.zones, z, (x) => x.id === z.id) })),
     saveSlides: (slides) => edit("Carrusel actualizado", "Inicio", (d) => ({ content: { ...d.content, slides } })),

@@ -27,11 +27,12 @@ export function CategoryProducts({ categorySlug, hadProducts }: { categorySlug: 
   }
   return (
     <>
-      <div className="mb-5 flex items-center justify-between gap-3">
+      {/* En pantallas muy angostas (320 px) el orden pasa abajo del contador en lugar de desbordar. */}
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <p className="text-sm text-muted" aria-live="polite">{cards.length} {cards.length === 1 ? "producto" : "productos"}</p>
-        <label className="flex items-center gap-2 text-sm font-bold">
+        <label className="flex min-w-0 items-center gap-2 text-sm font-bold">
           Ordenar por
-          <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} className="min-h-11 rounded-full border border-ink/12 bg-surface pl-4 font-semibold text-ink hover:border-ink/25 focus:border-primary focus:outline-none">
+          <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} className="min-h-11 min-w-0 max-w-full rounded-full border border-ink/12 bg-surface pl-4 font-semibold text-ink hover:border-ink/25 focus:border-primary focus:outline-none">
             {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </label>

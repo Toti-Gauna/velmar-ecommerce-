@@ -1,3 +1,15 @@
+/** Último toque en una tarjeta: la galería de la ficha nueva toma el nombre de la transición solo si llega de ahí. */
+let heroAt = 0;
+
+/**
+ * ¿La ficha que se está abriendo viene de tocar una tarjeta? Solo entonces la galería lleva `view-transition-name`
+ * (y por un momento): con el nombre puesto siempre, la galería fija entraba en cada transición entre páginas como
+ * una captura aparte y Safari podía dejarla corrida y borrosa encima de la ficha.
+ */
+export function heroArrivedRecently(): boolean {
+  return Date.now() - heroAt < 2500;
+}
+
 /**
  * La imagen de la tarjeta tocada "vuela" hasta la galería de la ficha (View Transitions). El nombre se pone solo
  * en esa tarjeta y en el momento del toque: un producto repetido en dos rieles no duplica el nombre (si se
@@ -13,5 +25,6 @@ export function markProductHero(card: Element | null | undefined, e?: { button: 
   document.querySelectorAll<HTMLElement>("[data-vt-hero]").forEach((el) => { el.style.viewTransitionName = "none"; });
   document.querySelectorAll<HTMLElement>("[data-card-visual]").forEach((el) => { el.style.viewTransitionName = ""; });
   visual.style.viewTransitionName = "product-hero";
+  heroAt = Date.now();
   window.setTimeout(() => { visual.style.viewTransitionName = ""; }, 4000);
 }

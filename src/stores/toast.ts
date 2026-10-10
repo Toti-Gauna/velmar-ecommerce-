@@ -22,7 +22,9 @@ export const useToasts = create<ToastState>()((set, get) => ({
   push: (toast) => {
     if (toast.tone === "error") playSound("error");
     const id = ++seq;
-    set((s) => ({ toasts: [...s.toasts.slice(-2), { ...toast, id }] }));
+    // El mismo aviso no se apila: si ya está a la vista, se reemplaza (con su tiempo de nuevo).
+    const same = (t: Toast) => t.title === toast.title && t.description === toast.description;
+    set((s) => ({ toasts: [...s.toasts.filter((t) => !same(t)).slice(-2), { ...toast, id }] }));
     setTimeout(() => get().dismiss(id), 5000);
   },
   dismiss: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),

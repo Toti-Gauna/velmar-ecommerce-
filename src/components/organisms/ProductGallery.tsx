@@ -1,11 +1,12 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
-import { useState, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useState, type PointerEvent, type ReactNode } from "react";
 import { Sparkles } from "lucide-react";
 import type { ArtKey, ArtView } from "@/demo/types";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { ProductVisual } from "@/components/illustrations/ProductVisual";
 import { cn } from "@/lib/cn";
+import { heroArrivedRecently } from "@/lib/viewTransition";
 
 const VIEW_LABEL: Record<ArtView, string> = { front: "Frente", detail: "Detalle", context: "En casa" };
 
@@ -19,6 +20,13 @@ interface Props {
 export function ProductGallery({ art, views, tint, name, photoUrl, alt, live }: Props) {
   const [active, setActive] = useState(live ? -1 : 0);
   const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null);
+  // Nombre de la transición solo al llegar desde una tarjeta, y se suelta cuando la imagen ya aterrizó.
+  const [hero, setHero] = useState(heroArrivedRecently);
+  useEffect(() => {
+    if (!hero) return;
+    const t = window.setTimeout(() => setHero(false), 900);
+    return () => window.clearTimeout(t);
+  }, [hero]);
   const showLive = Boolean(live) && active === -1;
   const view = views[Math.max(0, active)] ?? "front";
   const onMove = (e: PointerEvent<HTMLDivElement>) => {
@@ -26,10 +34,12 @@ export function ProductGallery({ art, views, tint, name, photoUrl, alt, live }: 
     const r = e.currentTarget.getBoundingClientRect();
     setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
   };
-  if (photoUrl && !live) return <div data-vt-hero className="vt-hero"><ProductVisual art={art} photoUrl={photoUrl} label={alt || name} className="aspect-square rounded-[2rem] shadow-[var(--shadow-card)]" /></div>;
+  if (photoUrl && !live) return <div data-vt-hero className={cn(hero && "vt-hero")}><ProductVisual art={art} photoUrl={photoUrl} label={alt || name} className="aspect-square rounded-[2rem] shadow-[var(--shadow-card)]" /></div>;
   return (
-    <div className="flex flex-col gap-3 lg:flex-row-reverse">
-      <div data-vt-hero onPointerMove={onMove} onPointerLeave={() => setZoom(null)} className={cn("vt-hero relative aspect-square flex-1 overflow-hidden rounded-[2rem] bg-accent shadow-[var(--shadow-card)]", !showLive && "lg:cursor-zoom-in")}>
+    <div className="flex flex-col gap-3 lg:flex-row-reverse lg:justify-end">
+      {/* En escritorio la galería queda fija mientras se eligen las opciones: su alto no pasa del espacio que deja el
+          header (si no, en una pantalla baja la parte de abajo nunca se ve). */}
+      <div data-vt-hero onPointerMove={onMove} onPointerLeave={() => setZoom(null)} className={cn("relative aspect-square flex-1 overflow-hidden rounded-[2rem] bg-accent shadow-[var(--shadow-card)] lg:max-w-[calc(100dvh-12rem)]", hero && "vt-hero", !showLive && "lg:cursor-zoom-in")}>
         {showLive && (
           <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-night px-3 py-1.5 text-xs font-bold text-[#f6f1e8] shadow-[var(--shadow-card)]">
             <Sparkles size={13} aria-hidden="true" className="text-brass" />Vista previa en vivo

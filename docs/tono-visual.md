@@ -93,7 +93,8 @@ muestra nada; ahí se le quita la apariencia del sistema, se dibuja el ícono de
   halo dorado, los chevrones se trazan, "Velmar" se revela con un barrido, cinco piezas del taller entran en órbita una
   por una y un telón la retira. Sin barra de carga ni botón "Saltar" (lo pidió Ignacio): Escape la cierra antes;
   sin JS se va sola. No reaparece al navegar dentro del sitio.
-- Tienda: header con vidrio que se compacta al hacer scroll, aparición escalonada al entrar en pantalla (`Reveal`),
+- Tienda: header con vidrio que se compacta al hacer scroll, aparición escalonada al entrar en pantalla (`Reveal`;
+  nunca por tarjeta dentro de un riel horizontal: el riel aparece entero, ver Polish 8.2 en `docs/qa.md`),
   contadores, tarjetas con segunda vista al hover y "agregar rápido", drawer del carrito, galería con zoom por cursor,
   medidor de stock, barra de envío gratis y misión, ruleta del club con giro desacelerado, check animado en la confirmación
   y recorrido animado en el seguimiento.

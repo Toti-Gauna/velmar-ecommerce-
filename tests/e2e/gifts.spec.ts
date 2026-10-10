@@ -20,7 +20,7 @@ async function checkout(page: Page) {
 test("regalar: ficha → carrito → checkout → link que se abre a golpes, sin precio", async ({ page }) => {
   const assertNoExternal = guardNetwork(page);
   await page.goto("p/home-spray/");
-  await page.getByRole("button", { name: "Es para regalar" }).click();
+  await page.getByRole("button", { name: "Regalar ahora" }).click();
   const sheet = page.getByRole("dialog", { name: "Es para regalar" });
   // Sin "para quién" no se puede seguir y el foco vuelve al campo
   await sheet.getByRole("button", { name: "Agregar regalo al carrito" }).click();
@@ -81,7 +81,8 @@ test("regalo en la cuenta y con código: se abre sin el link", async ({ page }) 
   await expect(stage.getByText("¡Feliz día, ma!", { exact: false })).toBeVisible();
   await expect(stage.getByRole("link", { name: "Está en mis regalos" })).toBeVisible();
   await stage.getByRole("button", { name: "Salir" }).click();
-  await page.goto("cuenta/");
+  // El hash abre directo la tarjeta de regalos.
+  await page.goto("cuenta/#regalos");
   await expect(page.getByRole("link", { name: /Abierto · de Lucía/ })).toBeVisible();
 
   // Con el código escrito a mano (minúsculas, sin guiones) también abre; uno inventado avisa

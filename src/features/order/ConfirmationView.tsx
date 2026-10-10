@@ -22,7 +22,7 @@ import { summaryRows } from "../checkout/CheckoutSummary";
 import { OrderLines } from "./OrderLines";
 import { PaymentInstructions } from "./PaymentInstructions";
 
-const PAY_TITLE = { CHECKOUT_PRO: "Pagar con Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "Pago con QR (muestra)" };
+const PAY_TITLE = { CHECKOUT_PRO: "Pagar con tarjeta, vía Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "Pago con QR (muestra)" };
 
 export function ConfirmationView() {
   const hydrated = useHydrated();

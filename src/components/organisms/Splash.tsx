@@ -26,10 +26,15 @@ const DUST: [number, number, number, number][] = Array.from({ length: 26 }, (_, 
  * línea, las piezas del taller entran en órbita montadas sobre el aro y un telón la retira (sin barra de carga ni
  * botón "Saltar", pedido de Ignacio). Estilos y por qué todo es transform/opacity: app/splash.css. Durante una
  * temática cambia de colores y suma su escena (ThemeSplashScene). Con "reducir movimiento" no se muestra.
+ *
+ * Va en la capa superior del navegador (popover, abierto por el script de abajo apenas se lee la etiqueta, antes de
+ * pintar): ahí no compite con ningún z-index. En Safari del iPad, al recargar a mitad de página, el contenido se
+ * dibujaba por encima del splash (se veían las tarjetas sobre su fondo, con el logo y los corazones detrás).
  */
 export function Splash() {
   return (
-    <div id="velmar-splash" role="presentation">
+    <>
+    <div id="velmar-splash" role="presentation" popover="manual">
       <div aria-hidden="true" className="splash-center splash-glow" />
       <div aria-hidden="true" className="splash-center splash-rays" />
       <div aria-hidden="true" className="splash-center splash-halo"><span className="splash-sweep" /><span className="splash-comet" /></div>
@@ -55,10 +60,15 @@ export function Splash() {
       </div>
       <p aria-hidden="true" className="splash-city eyebrow">Objetos con alma · {brand.city}</p>
     </div>
+    <script dangerouslySetInnerHTML={{ __html: splashOpenScript }} />
+    </>
   );
 }
+
+/** Abre el splash en la capa superior; sin soporte de popover (o con "reducir movimiento") queda como antes. */
+const splashOpenScript = `(function(){var s=document.getElementById("velmar-splash");if(!s||!s.showPopover||document.documentElement.classList.contains("splash-done"))return;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;try{s.showPopover()}catch(e){}})();`;
 
 /** Cierra la pantalla de carga con Escape (si no hay JS, igual se va sola a los 5 s). */
 // Si la pantalla de carga está a la vista, el Escape que la cierra queda "usado" (preventDefault) y no cierra además lo
 // que esté abierto debajo. Oculta (ya terminó o "reducir movimiento"), el Escape sigue de largo: listas y diálogos nativos.
-export const splashScript = `(function(){var d=document.documentElement;function hide(){d.classList.add("splash-done")}document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var s=document.getElementById("velmar-splash");if(s&&!d.classList.contains("splash-done")&&getComputedStyle(s).display!=="none")e.preventDefault();hide()});setTimeout(hide,5200)})();`;
+export const splashScript = `(function(){var d=document.documentElement;function hide(){d.classList.add("splash-done");var s=document.getElementById("velmar-splash");try{if(s&&s.matches(":popover-open"))s.hidePopover()}catch(e){}}document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var s=document.getElementById("velmar-splash");if(s&&!d.classList.contains("splash-done")&&getComputedStyle(s).display!=="none")e.preventDefault();hide()});setTimeout(hide,5200)})();`;

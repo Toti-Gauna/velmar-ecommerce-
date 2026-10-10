@@ -14,6 +14,22 @@ hidratación de React), título que no aparece, scroll horizontal, la palabra "a
 | Android | 412 × 915 |
 | Escritorio | 1440 × 900 |
 
+**Polish 8.2** suma `tests/e2e/shop-polish-journeys.spec.ts`: los recorridos A–E de la spec (compra, regalo desde la
+ficha y desde el checkout, Club con cupón, navegación y seguimiento con cambio de temática) en seis tamaños, también
+emulados en Chromium. Falla si hay error de consola, pedido externo o scroll horizontal.
+
+| Tamaño emulado | Toque |
+|---|---|
+| Escritorio ancho 1600 × 1000 | no |
+| Notebook 1366 × 768 | no |
+| Tablet horizontal 1180 × 820 (iPad Air) | sí |
+| Tablet vertical 820 × 1180 | sí |
+| Celular 390 × 844 | sí |
+| Celular chico 320 × 568 | sí |
+
+En 320 px encontró que el orden de la categoría desbordaba 6 px y que en el checkout los importes se partían en dos
+renglones; las dos cosas están corregidas.
+
 **Qué encontró:** el carrusel del inicio mostraba un botón distinto en el servidor y en el cliente cuando el teléfono
 tiene "reducir movimiento" activado (React rehacía toda la portada). Está corregido y el test lo vigila.
 
@@ -45,6 +61,9 @@ Abrir la demo publicada en cada equipo. Marcar ✅ o anotar qué pasó.
 | 17 | Regalo: "Compartir" y WhatsApp desde la confirmación llevan el link y el código | | |
 | 18 | Ruleta: a pantalla completa entra entera sin scroll (también en iPhone SE); al ganar, el cupón y sus tres botones se ven sin scrollear | | |
 | 19 | Pantallas de carga (Polish 8.1): al recargar no asoma la tienda clara; el aro, el logo y "Velmar" se animan suaves sin cortarse; en Día de la Madre el logo queda dentro de la flor y en San Valentín se ve la cena de Lola y Pancho completa (probar con "Probar temáticas") | | |
+| 20 | Polish 8.2 en el **iPad** (de ahí salieron las capturas): recargar a mitad de una página no deja ver la tienda detrás de la pantalla de carga; la galería de la ficha queda fija y nítida al bajar; Mi cuenta en tarjetas; la banda del Club con aire a los costados | | |
+| 21 | Regalo en modal: se abre centrado (en el celular sube desde abajo), el teclado no tapa los botones y Escape / Cerrar lo cierran | | |
+| 22 | Premio de la ruleta aplicado: sigue aplicado al recargar; quitarlo en el checkout sube el total | | |
 
 ### Escritorio (Chrome, Safari y Firefox)
 | # | Qué mirar | Resultado |

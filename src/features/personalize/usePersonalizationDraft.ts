@@ -3,7 +3,7 @@ import type Konva from "konva";
 import { useEffect, useRef, useState } from "react";
 import type { LinePersonalization } from "@/demo/engine/cart-types";
 import { defaultCollarConfig, type CollarConfig, type CollarPreset } from "@/demo/fixtures/collar";
-import { sizeInSpec } from "@/demo/engine/collar";
+import { resolveCollar, sizeInSpec } from "@/demo/engine/collar";
 import { validateText } from "@/demo/engine/personalization";
 import type { PersonalizationTemplate } from "@/demo/types";
 import type { PhotoDraft } from "./PhotoControls";
@@ -50,7 +50,7 @@ export function usePersonalizationDraft(tmpl: PersonalizationTemplate | undefine
     /** Carga una combinación lista de la galería de inspiración. */
     applyPreset: (p: CollarPreset) => {
       setTextState((t) => ({ ...t, text: p.name, font: p.font, color: p.letterColor, colorName: p.letterColorName }));
-      setCollar(p.config);
+      setCollar(tmpl?.collar ? resolveCollar(tmpl.collar, p.config) : p.config);
     },
     setText: setTextState,
     setPhoto: setPhotoState,

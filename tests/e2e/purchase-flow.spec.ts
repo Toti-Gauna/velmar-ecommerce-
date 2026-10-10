@@ -100,7 +100,7 @@ test("checkout con cuenta demo, retiro y Mercado Pago simulado", async ({ page }
   await page.getByRole("button", { name: "Continuar a la entrega" }).click();
   await page.getByText("Retiro en persona").click();
   await page.getByRole("button", { name: "Continuar al pago" }).click();
-  await page.getByText("Mercado Pago", { exact: true }).click();
+  await page.getByText("Tarjetas de débito, crédito y prepagas", { exact: true }).click();
   await page.getByRole("button", { name: "Revisar pedido" }).click();
   await page.getByRole("checkbox", { name: /Acepto los/ }).check();
   await page.getByRole("button", { name: "Confirmar pedido de demostración" }).click();

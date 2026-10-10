@@ -35,8 +35,9 @@
   suenan.
 
 ## Fase 8 · Regalos, ruleta a pantalla completa y rendimiento (pedido de Ignacio, 10/2026, fuera de la spec)
-- **Regalar** (la spec lo tenía como "regalá uno", fuera de alcance): en la ficha, "Es para regalar" pide para quién, de
-  parte de quién, email (opcional), mensaje y ocasión. La línea del carrito dice "Regalo para…". Al confirmar el pedido
+- **Regalar** (la spec lo tenía como "regalá uno", fuera de alcance): en la ficha, "Regalar ahora" (y "¿Es para regalo?"
+  en el último paso del checkout) abre un modal que pide para quién, de parte de quién, email (opcional), mensaje y
+  ocasión, con vista previa. La línea del carrito dice "Regalo para…". Al confirmar el pedido
   cada regalo recibe un código `REGALO-XXXX-XXXX` (con dígito verificador) y un link; la confirmación los muestra con
   WhatsApp, Compartir (celular) o Copiar link, y "Ver cómo lo recibe". Quien lo recibe **nunca ve el precio**.
 - **Abrir el regalo**: todo se oscurece y aparece el objeto de la ocasión con "Golpeá el regalo para abrirlo"; cinco

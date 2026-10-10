@@ -73,8 +73,9 @@ tus productos.
 Mientras graba el video, no cambies de pestaña: si lo hacés, se corta y se repite.
 
 ### …que mis clientes regalen
-No hay que hacer nada: en cada producto aparece **"Es para regalar"**. Quien compra escribe para quién es, de parte de
-quién y un mensaje; al confirmar le damos un link y un código para mandarle. Quien lo recibe lo abre a golpes con una
+No hay que hacer nada: en cada producto aparece **"Regalar ahora"** (y en el último paso del checkout, **"¿Es para
+regalo?"**). Se abre una ventana donde quien compra escribe para quién es, de parte de quién y un mensaje, y ve cómo lo
+va a recibir; al confirmar le damos un link y un código para mandarle. Quien lo recibe lo abre a golpes con una
 escena de la fecha (en el Día de la Madre, una flor que se abre) y ve el producto y el mensaje, **nunca el precio**. En
 el pedido del panel figura como regalo para que lo envuelvas. En la demo el link funciona en cualquier teléfono; el
 código, en el navegador donde se compró.

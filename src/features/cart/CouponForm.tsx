@@ -7,9 +7,10 @@ import { validateCoupon, normalizeCode, type CouponCheck } from "@/demo/engine/c
 import { useCart } from "@/stores/cart";
 import { useUi } from "@/stores/ui";
 import { playSound } from "@/lib/sound";
+import { changeCoupon } from "./coupon-actions";
 
-export function CouponForm({ subtotal, isRegistered, check }: { subtotal: number; isRegistered: boolean; check: CouponCheck | null }) {
-  const setCoupon = useCart((s) => s.setCoupon);
+/** Cupón del pedido: elegir de Mis cupones, escribir un código, quitarlo o cambiarlo (en el carrito y en el checkout). */
+export function CouponForm({ subtotal, isRegistered, check, where = "tienda" }: { subtotal: number; isRegistered: boolean; check: CouponCheck | null; where?: "checkout" | "tienda" }) {
   const code = useCart((s) => s.couponCode);
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,7 @@ export function CouponForm({ subtotal, isRegistered, check }: { subtotal: number
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-2 rounded-2xl bg-success-soft p-3 text-sm">
           <span className="flex items-center gap-2 font-bold text-success"><TicketPercent size={18} aria-hidden="true" /> {code}: {check.coupon.description}</span>
-          <button type="button" onClick={() => setCoupon(null)} aria-label={`Quitar cupón ${code}`} className="grid h-9 w-9 place-items-center rounded-full hover:bg-surface"><X size={16} aria-hidden="true" /></button>
+          <button type="button" onClick={() => changeCoupon(null, where)} aria-label={`Quitar cupón ${code}`} className="grid h-9 w-9 place-items-center rounded-full hover:bg-surface"><X size={16} aria-hidden="true" /></button>
         </div>
         <button type="button" onClick={() => setCoupons(true)} className="text-left text-sm font-bold text-primary underline underline-offset-4">Cambiar por otro de mis cupones</button>
       </div>
@@ -34,6 +35,13 @@ export function CouponForm({ subtotal, isRegistered, check }: { subtotal: number
   }
   return (
     <div className="flex flex-col gap-3">
+    {/* Un cupón elegido que no cumple las condiciones (mínimo, cuenta, vencido) se puede quitar igual. */}
+    {code && check && !check.ok && (
+      <div className="flex items-center justify-between gap-2 rounded-2xl bg-warning-soft p-3 text-sm">
+        <span className="font-bold">{code} no se aplica a este pedido</span>
+        <button type="button" onClick={() => changeCoupon(null, where)} aria-label={`Quitar cupón ${code}`} className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-surface"><X size={16} aria-hidden="true" /></button>
+      </div>
+    )}
     {picker}
     <form
       className="flex flex-col gap-2"
@@ -42,7 +50,7 @@ export function CouponForm({ subtotal, isRegistered, check }: { subtotal: number
         const result = validateCoupon(value, { subtotal, isRegistered, now: new Date() });
         setError(result.ok ? null : result.message);
         if (!result.ok) playSound("error");
-        if (result.ok) setCoupon(normalizeCode(value));
+        if (result.ok) changeCoupon(normalizeCode(value), where);
       }}
     >
       <label htmlFor="coupon" className="text-sm font-bold">¿Tenés un código?</label>

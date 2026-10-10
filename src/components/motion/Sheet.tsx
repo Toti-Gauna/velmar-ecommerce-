@@ -9,19 +9,21 @@ interface SheetProps {
   open: boolean;
   onClose: () => void;
   title: string;
-  side?: "right" | "left" | "bottom" | "center" | "top";
+  side?: "right" | "left" | "bottom" | "center" | "top" | "dialog";
   children: ReactNode;
   className?: string;
 }
 
 const noop = () => () => {};
-const OFFSET = { right: { x: "100%" }, left: { x: "-100%" }, bottom: { y: "100%" }, top: { y: "-100%" }, center: { opacity: 0, scale: 0.94, y: 20 } };
+const OFFSET = { right: { x: "100%" }, left: { x: "-100%" }, bottom: { y: "100%" }, top: { y: "-100%" }, center: { opacity: 0, scale: 0.94, y: 20 }, dialog: { opacity: 0, scale: 0.96, y: 24 } };
 const PLACE = {
   right: "inset-y-0 right-0 w-full max-w-md",
   left: "inset-y-0 left-0 w-full max-w-sm",
   bottom: "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-[2rem]",
   top: "inset-x-0 top-0 max-h-[100dvh] rounded-b-[2rem] sm:mx-auto sm:mt-4 sm:max-h-[88dvh] sm:w-[min(94vw,760px)] sm:rounded-[2rem]",
   center: "inset-0 m-auto h-fit max-h-[94dvh] w-[min(94vw,540px)] overflow-y-auto rounded-[2rem]",
+  // Modal ancho y centrado; en el celular ocupa el ancho y sube desde abajo, con su propio scroll.
+  dialog: "inset-x-0 bottom-0 max-h-[94dvh] overflow-hidden rounded-t-[2rem] sm:inset-0 sm:m-auto sm:h-fit sm:max-h-[90dvh] sm:w-[min(94vw,920px)] sm:rounded-[2rem]",
 };
 
 /**

@@ -16,6 +16,7 @@ import { useCart } from "@/stores/cart";
 import { useCheckout } from "@/stores/checkout";
 import { useGifts } from "@/stores/gifts";
 import { useHydrated } from "@/stores/hydration";
+import { CouponForm } from "../cart/CouponForm";
 import { useCartQuote } from "../cart/useCartQuote";
 import { CheckoutSummary } from "./CheckoutSummary";
 import { ConfirmStep } from "./ConfirmStep";
@@ -30,7 +31,7 @@ export function CheckoutView() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const heading = useRef<HTMLHeadingElement>(null);
-  const { quote } = useCartQuote();
+  const { quote, couponCheck, isRegistered } = useCartQuote();
   const lines = useCart((s) => s.lines);
   const clearCart = useCart((s) => s.clear);
   const isAccount = useAccount((s) => s.user !== null);
@@ -43,9 +44,8 @@ export function CheckoutView() {
   }, [step]);
 
   if (!hydrated) return (
-    <div role="status" aria-label="Cargando checkout" className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-      <div className="flex flex-col gap-4"><Skeleton className="h-10 w-full rounded-full" /><Skeleton className="h-72 w-full rounded-3xl" /></div>
-      <Skeleton className="h-64 w-full rounded-3xl" />
+    <div role="status" aria-label="Cargando checkout" className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+      <Skeleton className="h-10 w-full rounded-full" /><Skeleton className="h-72 w-full rounded-3xl" /><Skeleton className="h-48 w-full rounded-3xl" />
     </div>
   );
   if (lines.length === 0 && !checkout.lastOrder?.code) {
@@ -57,6 +57,8 @@ export function CheckoutView() {
 
   const confirm = () => {
     const now = new Date();
+    // El carrito se lee en el momento: desde "¿Es para regalo?" se puede marcar un regalo y confirmar en el mismo toque.
+    const lines = useCart.getState().lines;
     // Cada línea marcada como regalo genera su código y su link; la fecha estimada sale del calendario del taller.
     const { orders, workshop } = useAdmin.getState();
     const gifts = giftsFromLines(lines, { orderCode: DEMO_ORDER_CODE, now, eta: promiseFor(lines, DEMO_TODAY, orders, workshop.settings, DEMO_ORDER_CODE).day, random: Math.random });
@@ -68,23 +70,29 @@ export function CheckoutView() {
     };
     checkout.placeOrder(order);
     useAdmin.getState().syncShopOrder(order); // aparece en el panel demo de este navegador
+    // El cupón aplicado suma un uso: el premio de la ruleta (un uso) queda como utilizado y no se puede volver a aplicar.
+    if (couponCheck?.ok) useAdmin.getState().redeemCoupon(couponCheck.coupon.code);
     clearCart();
     router.push("/checkout/confirmacion/");
   };
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="flex flex-col gap-5">
-        <StepIndicator steps={STEPS} current={step} />
-        <h2 ref={heading} tabIndex={-1} className="text-xl font-extrabold focus:outline-none">{STEPS[step]}</h2>
-        <div key={step} className="animate-fade-up">
-          {step === 0 && <ContactStep onNext={() => setStep(1)} />}
-          {step === 1 && <DeliveryStep onNext={() => setStep(2)} onBack={() => setStep(0)} freeShipping={missingForFreeShipping(quote.subtotal) === 0} />}
-          {step === 2 && <PaymentStep onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-          {step === 3 && <ConfirmStep onBack={() => setStep(2)} onConfirm={confirm} onEdit={setStep} />}
-        </div>
+    // Una columna: las opciones del paso, sus botones Atrás/Siguiente (en el lugar y orden de siempre) y debajo el
+    // resumen con el total, que se actualiza al cambiar entrega, cupón o medio de pago (8.2.9).
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
+      <StepIndicator steps={STEPS} current={step} />
+      <h2 ref={heading} tabIndex={-1} className="text-xl font-extrabold focus:outline-none">{STEPS[step]}</h2>
+      <div key={step} className="animate-fade-up">
+        {step === 0 && <ContactStep onNext={() => setStep(1)} />}
+        {step === 1 && <DeliveryStep onNext={() => setStep(2)} onBack={() => setStep(0)} freeShipping={missingForFreeShipping(quote.subtotal) === 0} />}
+        {step === 2 && <PaymentStep onNext={() => setStep(3)} onBack={() => setStep(1)} />}
+        {step === 3 && <ConfirmStep onBack={() => setStep(2)} onConfirm={confirm} onEdit={setStep} />}
       </div>
-      <aside className="lg:sticky lg:top-24 lg:self-start"><CheckoutSummary quote={quote} /></aside>
+      {/* El cupón se puede quitar o cambiar hasta confirmar; quitar el de la ruleta lo deja guardado (8.2.14). */}
+      <section aria-label="Cupón del pedido" className="rounded-3xl bg-surface p-4 shadow-[var(--shadow-card)] sm:p-5">
+        <CouponForm subtotal={quote.subtotal} isRegistered={isRegistered} check={couponCheck} where="checkout" />
+      </section>
+      <CheckoutSummary quote={quote} />
     </div>
   );
 }
