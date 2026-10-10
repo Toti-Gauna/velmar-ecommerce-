@@ -54,7 +54,7 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Emails automáticos: editor por bloques con fichas de datos, activar o pausar cada uno, cumpleaños de mascota y bandeja (los emails de cada cambio de estado **ya están en la spec**, sección 9) | 3 | Plantillas editables en la base y disparadores por estado; el envío usa React Email + Nodemailer de la spec | L | |
 | Estudio de contenido para Instagram (post, historia, carrusel, PNG y video, texto sugerido) | 6 | Nada de servidor: se dibuja y graba en el navegador | M | |
 | Inicio del panel con variación, gráficos y rendimiento del club (**"embudo de métricas" excluido en la sección 18**) | previa | Consultas agregadas en el servidor | M | |
-| Guía de primera sesión, buscador global y paginado | previa, 1 | Nada de servidor (el paginado, en el servidor) | S | |
+| Buscador global y paginado (la guía de primera sesión se retiró en Polish 8.3.11) | previa, 1 | Nada de servidor (el paginado, en el servidor) | S | |
 
 ## Cambios a la spec que hay que decidir
 1. **Aprobación del diseño**: ya no es una casilla; se confirma al agregar al carrito.

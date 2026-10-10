@@ -5,14 +5,15 @@
 
 ## Cómo funciona
 - Rutas estáticas (export de Next) bajo `app/admin-demo/`, con layout propio (`AdminShell`):
-  - Escritorio: barra lateral fija a todo el alto (marca, secciones agrupadas en Ventas, Taller, Catálogo, Marketing y Ajustes,
+  - Escritorio con mouse (desde 1024 px, Polish 8.3.2): barra lateral **colapsada en íconos**; se despliega encima del
+    contenido al pasar el mouse o al entrar con el teclado, y "Fijar el menú abierto" la deja abierta ocupando su lugar
+    (se recuerda en `velmar-ui:admin-sidebar`). Lleva la marca, secciones agrupadas en Ventas, Taller, Catálogo, Marketing y Ajustes,
     contadores de pedidos en marcha, comprobantes por revisar, reclamos abiertos, variantes para reponer, pedidos atrasados e insumos para reponer, y la "cuenta" demo con acceso a la tienda)
     + barra superior con la señal "Panel de demostración · datos ficticios", migas (Panel › área › sección), **buscador global ⌘K / Ctrl+K**
     (secciones, acciones, pedidos, productos y clientes), "Ver tienda" y "Reiniciar demo".
-  - Celular: la misma barra superior con **menú hamburguesa**, y **pestañas inferiores** (Inicio, Pedidos, Pagos, Productos, Más).
-  - **Guía de primera sesión**: al entrar al inicio del panel por primera vez en el navegador aparece una guía de 7 pasos
-    (recorte sobre cada zona, flecha, tarjeta con Anterior / Siguiente, Escape para cerrar). Se vuelve a ver con el botón "?"
-    de la barra superior. Se recuerda en `velmar-tour:admin` (no se borra con "Reiniciar demo").
+  - Tablets y celulares (táctiles, sin hover): la misma barra superior con **menú hamburguesa**, y **pestañas inferiores**
+    (Inicio, Pedidos, Pagos, Productos, Más).
+  - Sin guía de bienvenida (Polish 8.3.11): el panel abre directo. Quedan la señal de demo y las ayudas de cada pantalla.
   - **Tablas de CRM** (`DataTable`, pedido de Ignacio, fuera de la spec): búsqueda sin tildes, orden por columna, pestañas de filtro con
     contador, selección múltiple con acciones en lote, columnas visibles y densidad (recordadas en `velmar-demo:tables`), vista rápida
     lateral, exportar a Excel (.xlsx real, lo filtrado o lo seleccionado) y tarjetas en el celular.

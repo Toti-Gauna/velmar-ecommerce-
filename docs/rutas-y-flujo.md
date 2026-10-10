@@ -73,7 +73,7 @@
 ## Agregados a pedido de Ignacio (04-05/10/2026, fuera de la spec original)
 Ruleta de cupones, página y selector de "Mis cupones", buscador superpuesto con búsquedas recientes, "Comprar ahora",
 historias de producto en el inicio (ilustrativas, `src/demo/fixtures/stories.ts`), paginado del panel, favoritos,
-barra inferior, autoplay del carrusel, pantalla de carga de 5 s, guía del panel y confeti de compra. **Cambio a revisar en la
+barra inferior, autoplay del carrusel, pantalla de carga de 5 s y confeti de compra (la guía del panel se retiró en Polish 8.3.11). **Cambio a revisar en la
 spec:** la aprobación "Así lo quiero" ya no es una casilla; se confirma al agregar al carrito. Antes de llevarlos a
 producción hay que sumarlos a la especificación de Notion.
 
@@ -102,5 +102,5 @@ afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
 Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`, `:gifts`; y
-`velmar-tour:admin` para no repetir la guía del panel; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
+`velmar-ui:admin-sidebar` para recordar la barra lateral fija; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
 navegador. "Reiniciar demo" (banner y pie) borra todo.

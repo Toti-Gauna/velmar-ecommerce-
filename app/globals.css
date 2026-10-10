@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 /*
+ * Escritorio con mouse (Polish 8.3.2): desde 1024 px y con puntero fino que puede pasar por encima. Ahí el panel usa
+ * la barra lateral colapsable; tablets y celulares (táctiles, sin hover) usan menú hamburguesa y barra inferior.
+ */
+@custom-variant desk (@media (width >= 64rem) and (hover: hover) and (pointer: fine));
+
+/*
  * Sistema visual (PROVISIONAL). Valores de marca llegan como variables CSS desde
  * src/config/brand.ts (en producción: tabla Setting). Display: Fraunces. Texto: Manrope.
  */

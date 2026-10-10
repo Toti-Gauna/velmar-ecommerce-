@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowUpRight, ChevronRight, CircleHelp, FlaskConical, Menu, RotateCcw, Search } from "lucide-react";
+import { ArrowUpRight, ChevronRight, FlaskConical, Menu, RotateCcw, Search } from "lucide-react";
 import { resetDemo } from "@/stores/hydration";
 import { useToasts } from "@/stores/toast";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle";
@@ -11,7 +11,7 @@ import { currentSection } from "./nav";
  * Barra superior del panel. Lleva la señal persistente de demo (abierto a propósito, datos ficticios, sin
  * seguridad real), la sección actual y las acciones. En el celular suma el botón del menú hamburguesa.
  */
-export function AdminTopbar({ onMenu, onHelp, onSearch }: { onMenu: () => void; onHelp: () => void; onSearch: () => void }) {
+export function AdminTopbar({ onMenu, onSearch }: { onMenu: () => void; onSearch: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const toast = useToasts((s) => s.push);
@@ -30,7 +30,7 @@ export function AdminTopbar({ onMenu, onHelp, onSearch }: { onMenu: () => void; 
         <span>Panel de demostración · datos ficticios<span className="hidden font-semibold sm:inline"> · Sin login a propósito: no es seguro ni sirve como acceso real.</span></span>
       </p>
       <div className="flex h-14 items-center gap-3 px-4 lg:h-16 lg:px-10">
-        <button type="button" onClick={onMenu} aria-label="Abrir menú del panel" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-night text-brass shadow-[var(--shadow-card)] lg:hidden">
+        <button type="button" onClick={onMenu} aria-label="Abrir menú del panel" className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-night text-brass shadow-[var(--shadow-card)] desk:hidden">
           <Menu size={20} aria-hidden="true" />
         </button>
         <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -46,10 +46,7 @@ export function AdminTopbar({ onMenu, onHelp, onSearch }: { onMenu: () => void; 
           Ver tienda <ArrowUpRight size={15} aria-hidden="true" />
         </Link>
         <ThemeToggle className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-muted hover:bg-accent/60 hover:text-ink" />
-        <button type="button" onClick={onHelp} aria-label="Ver guía del panel" data-tour="help" className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-muted transition-colors hover:bg-accent/60 hover:text-ink">
-          <CircleHelp size={19} aria-hidden="true" />
-        </button>
-        <button type="button" onClick={reset} aria-label="Reiniciar demo" data-tour="reset" className="flex h-10 shrink-0 items-center gap-2 rounded-full border border-ink/15 bg-surface px-3 text-sm font-bold transition-colors hover:border-ink/30 sm:px-4">
+        <button type="button" onClick={reset} aria-label="Reiniciar demo" className="flex h-10 shrink-0 items-center gap-2 rounded-full border border-ink/15 bg-surface px-3 text-sm font-bold transition-colors hover:border-ink/30 sm:px-4">
           <RotateCcw size={15} aria-hidden="true" /><span className="hidden sm:inline">Reiniciar demo</span>
         </button>
       </div>

@@ -301,6 +301,25 @@ En cada pantalla de cada recorrido se controla que no haya scroll horizontal, er
   simulación rotulada, sin OAuth; no se manda ningún email.
 - **Falta**: probar en un iPad, un iPhone y un Android reales (filas 20 a 22 de `qa-dispositivos.md`).
 
+## Panel admin · Polish 8.3 (`tests/e2e/admin-polish-*.spec.ts`; matriz completa en `docs/polish-8.3-status.md`)
+
+Lote 1: base responsive, navegación e inicio.
+
+| Verificación | Estado |
+|---|---|
+| 8.3.1 Cada barra de "Ventas por día" es un botón (clic, toque, Enter): muestra fecha, cantidad, total y los pedidos del día con acceso a su ficha; un día sin ventas muestra su estado vacío | ✅ |
+| 8.3.1 La suma de los pedidos del detalle es la de la barra; "Ver como tabla" usa los mismos días y su total es el KPI "Ventas últimos 7 días"; elegir un día desde la tabla también lo marca | ✅ + unit |
+| 8.3.1 Recorrido: barra → pedido del día → ficha → Atrás vuelve al inicio | ✅ |
+| 8.3.2 Escritorio con mouse (1440, 1280, 1024): riel de íconos de 72 px; con el mouse o el teclado se despliega a 280 px encima del contenido, que no se corre; "Fijar el menú abierto" lo deja abierto y se recuerda al recargar; un clic en un ícono navega y el riel se vuelve a cerrar | ✅ emulado |
+| 8.3.2 Táctil (1024 horizontal, 768 vertical, 390, 360): sin riel; hamburguesa con los grupos y la sección actual marcada; pestañas Inicio, Pedidos, Pagos, Productos y Más; la barra no tapa el final del contenido; sin desborde | ✅ emulado |
+| 8.3.3 Últimos pedidos, Club Velmar y Actividad reciente, una debajo de la otra a todo el ancho (1440, 1024, 390); cada pedido en una fila con código en una línea, cliente, estado e importe | ✅ emulado |
+| 8.3.11 Sin guía de bienvenida la primera vez ni después de "Reiniciar demo"; sin botón "Ver guía"; la señal de demo sigue | ✅ |
+
+- **Sidebar:** el corte es "1024 px **y** mouse" (variante `desk:` en `globals.css`). Un iPad en horizontal (1024 o 1180 px,
+  táctil) usa hamburguesa y pestañas, como pide la ficha. Falta confirmarlo en un iPad real con Safari.
+- **Guía:** se quitaron el componente, sus pasos y las marcas `data-tour`. La clave vieja `velmar-tour:admin` queda donde
+  esté (no se borra nada del navegador) y ya no se lee.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
