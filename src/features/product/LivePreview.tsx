@@ -3,6 +3,7 @@ import { ImagePlus } from "lucide-react";
 import { CollarPreview } from "@/components/illustrations/CollarPreview";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { TextPreview } from "@/components/organisms/TextPreview";
+import { demoChoices } from "@/demo/engine/collar";
 import { FONT_FAMILIES } from "@/demo/fixtures/templates";
 import type { Product } from "@/demo/types";
 import { useDemoData } from "@/stores/admin";
@@ -14,7 +15,8 @@ export function LivePreview({ product, tint, draft }: { product: Product; tint?:
   const zone = useDemoData((d) => d.textZones[product.art]) ?? { x: 100, y: 180, w: 200, h: 40, cover: "#ffffff" };
   const kind = draft.tmpl?.kind;
   if (draft.collar) {
-    return <CollarPreview text={draft.text.text} font={FONT_FAMILIES[draft.text.font] ?? FONT_FAMILIES.Redondeada!} letterColor={draft.text.color} config={draft.collar} className="h-full w-full" />;
+    const demo = demoChoices(draft.tmpl?.collar, draft.collar).length > 0;
+    return <CollarPreview text={draft.text.text} font={FONT_FAMILIES[draft.text.font] ?? FONT_FAMILIES.Redondeada!} letterColor={draft.text.color} config={draft.collar} className="h-full w-full" note={demo ? "Con ejemplos de la demo" : undefined} />;
   }
   if (kind === "TEXT") {
     return (

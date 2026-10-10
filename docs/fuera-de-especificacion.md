@@ -34,7 +34,7 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Ficha todo en uno y **aprobación al agregar al carrito** | previa | **Cambio a la spec:** "Así lo quiero" ya no es una casilla; se guarda `approvedAt` al agregar | S | |
 | Regalos: "Es para regalar" en la ficha, código `REGALO-XXXX-XXXX` y link, apertura a golpes con 17 escenas, Mis regalos (**excluido en la sección 18**: "regalá uno") | 8 | Regalos como modelo con clave al azar (link y código), email a quien lo recibe, vista sin precio y canje una sola vez, validados en el servidor | L | |
 | ¿Cuándo llega? (usa el calendario del taller) | 2 | Plazos y capacidad del taller en el servidor | M | |
-| Configurador del collar (letras, cordón, material, dije, talle por cuello) | 4 | Opciones y recargos como datos; precio calculado en el servidor | L | |
+| Configurador del collar (letras, cordón, material, dije, talle por cuello); desde Polish 8.2, estilos de letras (sueltas, en línea, de corrido, chapita), adorno, patrón del cordón con segundo color y probador completo en el inicio. Solo lo visto en el Instagram (letras sueltas, paracord liso, patita) va como confirmado; el resto se muestra como **ejemplo de la demo** | 4 y Polish 8.2 | Opciones y recargos como datos; precio calculado en el servidor; Velmar confirma qué estilos y patrones fabrica | L | |
 | Sonidos sintetizados con botón de silencio | 4 | Nada (navegador) | S | |
 | Pantalla de carga de 5 s y confeti de compra | previa | Nada (navegador) | S | |
 | Temáticas (16 fechas con paleta, fondo, pantalla de carga, cinta, cupón y ofertas) | previa, 5 | Tabla de temporadas con fechas y cupón; vigencia validada en el servidor | M | |

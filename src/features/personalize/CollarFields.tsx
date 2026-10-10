@@ -1,30 +1,11 @@
 "use client";
 import { Ruler } from "lucide-react";
-import { useId, useState } from "react";
-import { neckRange, sizeForNeck } from "@/demo/engine/collar";
-import type { CollarConfig, CollarOption, CollarSpec } from "@/demo/fixtures/collar";
+import { useState } from "react";
+import { demoChoices, neckRange, optionsFor, resolveCollar, sizeForNeck } from "@/demo/engine/collar";
+import type { CollarConfig, CollarSpec } from "@/demo/fixtures/collar";
 import type { Product } from "@/demo/types";
 import { cn } from "@/lib/cn";
-import { formatARS } from "@/lib/money";
-
-function Choices<T extends string>({ legend, options, value, onChange }: { legend: string; options: CollarOption<T>[]; value: T; onChange: (v: T) => void }) {
-  const name = useId();
-  const current = options.find((o) => o.id === value);
-  return (
-    <fieldset>
-      <legend className="mb-2 flex w-full items-baseline justify-between gap-2 text-sm"><span className="font-bold">{legend}</span><span className="text-right font-semibold text-muted">{current?.hint}</span></legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map((o) => (
-          <label key={o.id} className={cn("flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full border px-4 text-sm font-bold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary/50",
-            value === o.id ? "border-ink bg-ink text-bg" : "border-ink/15 bg-surface hover:border-ink/35")}>
-            <input type="radio" name={name} className="sr-only" checked={value === o.id} onChange={() => onChange(o.id)} />
-            {o.name}{o.delta > 0 && <span className={value === o.id ? "text-bg/75" : "text-muted"}>+{formatARS(o.delta)}</span>}
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
+import { ColorDots, DemoChoicesNote, OptionChips, PatternChips } from "./CollarChoices";
 
 interface Props {
   spec: CollarSpec;
@@ -36,34 +17,33 @@ interface Props {
   onSize: (variantId: string) => void;
 }
 
-/** Opciones del collar: formato del nombre, color del cordón, material, dije y talle por centímetros de cuello. */
+/**
+ * Opciones del collar: estilo de las letras, adorno (si el estilo lo admite), color y patrón del cordón, material,
+ * dije y talle por centímetros de cuello. Todo sale de la configuración del producto (`spec`); cada cambio deja la
+ * configuración coherente (`resolveCollar`) y las opciones sin confirmar llevan el sello de demo.
+ */
 export function CollarFields({ spec, product, config, onChange, variantId, onSize }: Props) {
   // El texto del campo sigue a la configuración: si cambia desde afuera (combinación lista, talle elegido a mano) se actualiza.
   const [neck, setNeck] = useState(config.neckCm ? String(config.neckCm) : "");
   const [seen, setSeen] = useState(config.neckCm);
   if (config.neckCm !== seen) { setSeen(config.neckCm); setNeck(config.neckCm ? String(config.neckCm).replace(".", ",") : ""); }
-  const cordName = useId();
   const cm = Number(neck.replace(",", "."));
   const fit = neck ? sizeForNeck(spec, product, cm) : null;
   const range = neckRange(spec, variantId);
-  const set = (p: Partial<CollarConfig>) => onChange({ ...config, ...p });
+  const c = resolveCollar(spec, config);
+  const set = (p: Partial<CollarConfig>) => onChange(resolveCollar(spec, { ...c, ...p }));
+  const designs = optionsFor(spec.designs, c.format);
+  const twoTone = spec.patterns.find((o) => o.id === c.pattern)?.twoTone;
   return (
     <div className="flex flex-col gap-5">
-      <Choices legend="Cómo va el nombre" options={spec.formats} value={config.format} onChange={(format) => set({ format })} />
-      <fieldset>
-        <legend className="mb-2 text-sm font-bold">Color del cordón: <span className="font-semibold text-muted">{config.cordColorName}</span></legend>
-        <div className="flex flex-wrap gap-2">
-          {spec.cordColors.map((c) => (
-            <label key={c.hex} title={c.name} className={cn("grid h-11 w-11 cursor-pointer place-items-center rounded-full border-2 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary/50", config.cordColor === c.hex ? "border-ink" : "border-transparent")}>
-              <input type="radio" name={cordName} className="sr-only" checked={config.cordColor === c.hex} onChange={() => set({ cordColor: c.hex, cordColorName: c.name })} />
-              <span aria-hidden="true" className="h-8 w-8 rounded-full border border-black/15 bg-[repeating-linear-gradient(135deg,rgb(0_0_0/0.12)_0_3px,transparent_3px_6px)]" style={{ backgroundColor: c.hex }} />
-              <span className="sr-only">{c.name}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      <Choices legend="Material" options={spec.materials} value={config.material} onChange={(material) => set({ material })} />
-      <Choices legend="Dije" options={spec.charms} value={config.charm} onChange={(charm) => set({ charm })} />
+      <OptionChips legend="Estilo de las letras" options={spec.formats} value={c.format} onChange={(format) => set({ format })} />
+      {designs.length > 1 && <OptionChips legend="Adorno" options={designs} value={c.design} onChange={(design) => set({ design })} />}
+      <ColorDots legend="Color del cordón" colors={spec.cordColors} value={c.cordColor} valueName={c.cordColorName} onChange={(x) => set({ cordColor: x.hex, cordColorName: x.name })} />
+      <PatternChips patterns={spec.patterns} config={c} onChange={(pattern) => set({ pattern })} />
+      {twoTone && <ColorDots legend="Segundo color" colors={spec.cordColors.filter((x) => x.hex !== c.cordColor)} value={c.accentColor} valueName={c.accentColorName} onChange={(x) => set({ accentColor: x.hex, accentColorName: x.name })} />}
+      <OptionChips legend="Material" options={spec.materials} value={c.material} onChange={(material) => set({ material })} />
+      <OptionChips legend="Dije" options={spec.charms} value={c.charm} onChange={(charm) => set({ charm })} />
+      <DemoChoicesNote names={demoChoices(spec, c)} />
       <div className="rounded-2xl bg-bg p-3">
         <label htmlFor="p-neck" className="flex items-center gap-2 text-sm font-bold"><Ruler size={16} aria-hidden="true" className="text-primary" /> Contorno de cuello</label>
         <div className="mt-2 flex items-center gap-2">

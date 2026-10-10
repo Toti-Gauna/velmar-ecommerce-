@@ -2,6 +2,7 @@
 import { BadgeCheck, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import { VariantPicker } from "@/components/molecules/VariantPicker";
+import { demoChoices } from "@/demo/engine/collar";
 import type { Product } from "@/demo/types";
 import { formatARS } from "@/lib/money";
 import { CollarFields } from "../personalize/CollarFields";
@@ -68,7 +69,9 @@ export function ConfigureCard({ product, sel, draft, quantity, max, stockNote, o
       {tmpl && (
         <p className="-mt-2 flex items-start gap-2 text-[13px] text-muted">
           <BadgeCheck size={16} aria-hidden="true" className="mt-0.5 shrink-0 text-success" />
-          <span>Al agregarlo confirmás <strong className="text-ink">“Así lo quiero”</strong>: el taller fabrica exactamente la vista previa que ves.</span>
+          <span>Al agregarlo confirmás <strong className="text-ink">“Así lo quiero”</strong>: {demoChoices(tmpl.collar, draft.collar).length
+            ? "el taller fabrica la vista previa que ves; lo marcado como demo te lo confirma antes por WhatsApp."
+            : "el taller fabrica exactamente la vista previa que ves."}</span>
         </p>
       )}
       <div className="hidden sm:block">{actions}</div>

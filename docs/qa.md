@@ -153,6 +153,37 @@ Causas y arreglos:
   el navegador corregía la posición al terminar. Ahora el riel aparece entero una sola vez, las flechas pasan de a
   tarjetas enteras (siempre a un punto de snap), se apagan en los extremos y respetan "reducir movimiento".
 
+Lote 2: collar y volver arriba al navegar (`tests/e2e/shop-polish-collar.spec.ts`, `shop-polish-scroll.spec.ts`,
+`tests/unit/collar-styles.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| Inicio: escribir el nombre y cambiar estilo de letras (sueltas, en línea, de corrido, chapita), patrón y colores cambia la vista previa al instante; con "A" y "Bartolom" ningún texto se sale del dibujo en los cuatro estilos | ✅ |
+| Patrones de dos colores: aparece "Segundo color" y el cordón lo usa; volviendo a letras sueltas y liso desaparece el aviso de demo | ✅ |
+| Ficha: estilo, adorno y patrón llegan al carrito con su descripción y "ejemplo de la demo"; con chapita el adorno no corresponde y se oculta; otro producto personalizable (comedero) no muestra opciones de collar | ✅ |
+| Solo letras sueltas, paracord liso y dije patita (lo visto en el Instagram) van sin sello de demo; configuración vieja guardada en el navegador toma la vigente | ✅ unit |
+| Con movimiento: inicio → categoría → producto → relacionado, recomendados → producto → carrito → checkout, header y pie: cada página abre arriba, con el título debajo del header, y sigue arriba después de la transición | ✅ |
+| Link con ancla (`#personalizar`) abre en la sección, debajo del header; Atrás vuelve a donde estaba; ordenar productos no mueve la página | ✅ |
+| Sin el arreglo de scroll fallan los 3 recorridos (se probó sacándolo y volviendo a armar) | ✅ |
+| Sin desborde a lo ancho en la ficha del collar a 375, 393 y 412 px (`cross-device.spec.ts`) | ✅ |
+
+Causas y arreglos:
+- **Collar del inicio**: el probador dibujaba una ilustración genérica con una sola chapita, no el configurador real.
+  Ahora usa la misma vista previa y las mismas opciones que la ficha (salen de la configuración del producto):
+  letras sueltas que cuelgan, letras en línea que pasan por el cordón, de corrido o chapita; adorno a los costados;
+  cinco patrones del cordón con segundo color. Los nombres largos achican la letra en vez de salirse.
+- **Opciones sin confirmar**: lo único visto en el Instagram de Velmar es el collar de paracord de un color con letras
+  sueltas y patita. El resto (letras en línea, de corrido, chapita, adornos, patrones, biothane, nylon y los otros
+  dijes) lleva el sello "Demo", un aviso y "ejemplo de la demo" en el carrito y el pedido; la aprobación avisa que el
+  taller lo confirma antes por WhatsApp.
+- **Scroll al navegar**: el router de Next lleva a la vista el primer elemento de la página nueva, que quedaba debajo
+  del header fijo; con la transición entre páginas la posición se movía un cuadro después (la categoría abría a
+  141 px y el Club a 580 px). `useRouteScroll` (en `ClientShell`) lleva al inicio o al ancla en cada cambio de ruta y
+  lo sostiene durante la transición, salvo que la persona ya se esté moviendo; Atrás/Adelante y los cambios sin
+  cambio de ruta no se tocan.
+- **Desborde en el celular**: las filas de opciones que se deslizan estiraban la página a 909 px: los `fieldset` no se
+  achican por debajo de su contenido y los radios ocultos (absolutos) no los recortaba la fila. `min-w-0` y `relative`.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
