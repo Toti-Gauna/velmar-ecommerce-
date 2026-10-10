@@ -184,6 +184,36 @@ Causas y arreglos:
 - **Desborde en el celular**: las filas de opciones que se deslizan estiraban la página a 909 px: los `fieldset` no se
   achican por debajo de su contenido y los radios ocultos (absolutos) no los recortaba la fila. `min-w-0` y `relative`.
 
+Lotes 3 y 4: ficha del producto (`tests/e2e/shop-polish-product.spec.ts`).
+
+| Verificación | Estado |
+|---|---|
+| A 1180 × 740, 1440 × 900 y 1080 × 700, bajando de a 150 px: la galería queda fija debajo del header y entera en la pantalla mientras se recorre la compra, y nunca pasa del final de esa sección (no acompaña a los detalles ni a las recomendaciones) | ✅ |
+| En el celular la galería va en el flujo normal | ✅ |
+| Agregar al carrito, Comprar ahora y Regalar ahora en columna, mismo ancho y en ese orden, sin texto cortado; favoritos aparte, junto al título; Regalar ahora abre el regalo | ✅ |
+| Celular: Comprar y Regalar en la tarjeta y Agregar en la barra de abajo (uno solo a la vista) | ✅ |
+| Cuatro saltos seguidos de un producto a otro por las tarjetas: título del producto nuevo, arriba de todo, sin diálogos abiertos, cantidad de vuelta en 1, carrito intacto y sin capturas de la transición flotando | ✅ |
+
+Causas y arreglos:
+- **Galería "rota" al bajar (imagen 9)**: la galería tenía siempre el nombre de la transición del producto, así que
+  entraba en cada transición entre páginas como una captura aparte; en Safari esa captura podía quedar corrida y
+  borrosa encima de la ficha. Ahora el nombre se pone solo al llegar desde una tarjeta (para que la imagen vuele) y
+  se suelta enseguida.
+- **Galería fija**: acompañaba a toda la columna derecha (detalles y preguntas incluidos) y en una pantalla baja no
+  entraba entera. Ahora la ficha tiene dos partes: la compra (galería fija, alto limitado al espacio bajo el header)
+  y los detalles en flujo normal.
+- **Botones**: "Agregar al carrito" y "Comprar ahora" iban lado a lado y se partían en dos renglones; ahora van en
+  columna con "Regalar ahora" (reemplaza la tarjeta "Es para regalar").
+
+Pantalla de carga al recargar a mitad de página (pedido de Ignacio, `splash-polish.spec.ts`):
+- **Causa**: en Safari del iPad, al recargar con la página bajada, el contenido se dibujaba por encima del splash (se
+  veían las tarjetas sobre su fondo, con el logo y los corazones detrás). No era un z-index bajo: tenía 100, el más
+  alto de la app; Safari ordenaba mal las capas fijas al restaurar el scroll.
+- **Arreglo**: el splash se abre en la capa superior del navegador (popover, abierto por un script en línea apenas
+  se lee la etiqueta), donde nada de la página puede dibujarse encima. Sin soporte de popover queda como antes.
+- **Verificado**: recargando a 700 px el splash está abierto en la capa superior y ocupa la pantalla entera; Escape lo
+  cierra. En Chromium (no hay WebKit acá); falta confirmarlo en el iPad.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

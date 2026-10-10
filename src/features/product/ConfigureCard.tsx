@@ -74,7 +74,7 @@ export function ConfigureCard({ product, sel, draft, quantity, max, stockNote, o
             : "el taller fabrica exactamente la vista previa que ves."}</span>
         </p>
       )}
-      <div className="hidden sm:block">{actions}</div>
+      {actions}
     </section>
   );
 }

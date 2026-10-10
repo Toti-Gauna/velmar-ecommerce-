@@ -20,7 +20,7 @@ async function checkout(page: Page) {
 test("regalar: ficha → carrito → checkout → link que se abre a golpes, sin precio", async ({ page }) => {
   const assertNoExternal = guardNetwork(page);
   await page.goto("p/home-spray/");
-  await page.getByRole("button", { name: "Es para regalar" }).click();
+  await page.getByRole("button", { name: "Regalar ahora" }).click();
   const sheet = page.getByRole("dialog", { name: "Es para regalar" });
   // Sin "para quién" no se puede seguir y el foco vuelve al campo
   await sheet.getByRole("button", { name: "Agregar regalo al carrito" }).click();

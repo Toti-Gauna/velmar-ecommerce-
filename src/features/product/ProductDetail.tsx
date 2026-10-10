@@ -53,54 +53,61 @@ export function ProductDetail({ product: initial }: { product: Product }) {
   const category = getCategory(product.categorySlug);
   const live = tmpl && tmpl.kind !== "PHOTO_REFERENCE" ? <LivePreview product={product} tint={sel.variant.colorHex} draft={draft} /> : undefined;
 
-  const desktopActions = (
-    <div className="flex gap-3">
-      <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14" />
-      <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="flex-1"><ShoppingBag size={18} aria-hidden="true" />Agregar al carrito</Button>
-      <Button size="lg" variant="dark" disabled={!canBuy} onClick={() => purchase("buy")} className="flex-1"><Zap size={18} aria-hidden="true" className="text-brass" />Comprar ahora</Button>
+  // Botones en columna, del mismo ancho (8.2.7). En el celular "Agregar al carrito" vive en la barra flotante de abajo,
+  // así no se repite; desde tablet va primero en la tarjeta. Favoritos es aparte, junto al título.
+  const actions = (
+    <div className="flex flex-col gap-3">
+      <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="w-full max-sm:hidden"><ShoppingBag size={18} aria-hidden="true" />Agregar al carrito</Button>
+      <Button size="lg" variant="dark" disabled={!canBuy} onClick={() => purchase("buy")} className="w-full"><Zap size={18} aria-hidden="true" className="text-brass" />Comprar ahora</Button>
+      <Button size="lg" variant="secondary" disabled={!canBuy} onClick={() => ready() && setGiftOpen(true)} className="w-full"><Gift size={18} aria-hidden="true" className="text-brass-ink" />Regalar ahora</Button>
+      <p className="text-center text-xs text-muted">Para regalar: le mandás un link o un código y lo abre a golpes, sin ver el precio.</p>
     </div>
   );
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
-      <div className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
-        <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} photoUrl={product.photoDataUrl} alt={product.imageAlt} live={live} />
-        {inactive ? (
-          <p role="status" className="rounded-2xl bg-warning-soft p-3 text-sm font-bold text-warning">Este producto está pausado desde el panel demo y no se puede comprar.</p>
-        ) : <StockMeter availability={avail} />}
+    <div className="flex flex-col gap-12 lg:gap-16">
+      {/* Sección de compra: la galería queda fija mientras se recorren precio, opciones y botones, y se suelta al
+          terminar esta sección (no acompaña a los detalles ni invade las recomendaciones). En el celular, flujo natural. */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
+        <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
+          <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} photoUrl={product.photoDataUrl} alt={product.imageAlt} live={live} />
+          {inactive ? (
+            <p role="status" className="rounded-2xl bg-warning-soft p-3 text-sm font-bold text-warning">Este producto está pausado desde el panel demo y no se puede comprar.</p>
+          ) : <StockMeter availability={avail} />}
+        </div>
+        <div className="flex flex-col gap-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="eyebrow text-brass-ink">{category?.name}{tmpl ? ` · ${KIND_LABEL[tmpl.kind]}` : ""}{product.isNew ? " · Nuevo" : ""}</p>
+              <h1 className="font-display mt-3 text-[clamp(2.1rem,4.5vw,3.4rem)] leading-[1.02]">{product.name}</h1>
+              <p className="mt-3 text-lg text-muted">{product.short}</p>
+              {product.soldCount > 0 && <p className="mt-2 text-sm font-semibold text-muted">+{product.soldCount} vendidos (muestra)</p>}
+            </div>
+            <FavoriteButton slug={product.slug} name={product.name} className="mt-6 h-12 w-12 max-sm:hidden" />
+          </div>
+          <div className="flex flex-wrap items-end gap-x-4 gap-y-1">
+            <span className="text-4xl font-extrabold tabular-nums tracking-tight"><span key={price} className="animate-num">{formatARS(price)}</span></span>
+            {settings.transferDiscountPct > 0 && <span className="mb-1 rounded-full bg-success-soft px-3 py-1 text-sm font-bold text-success">{formatARS(transferPrice)} con transferencia o QR</span>}
+            <span className="w-full text-xs text-muted">Precio sin impuestos nacionales: {formatARS(withoutNationalTaxes(price, settings.nationalTaxRate))} · precio de muestra</span>
+          </div>
+          <ConfigureCard product={product} sel={sel} draft={draft} quantity={quantity} max={max} stockNote={stockNote(avail)} onQuantity={setQty} actions={actions} />
+          {giftOpen && (
+            <GiftSheet open onClose={() => setGiftOpen(false)} productName={product.name} fromName={user?.name.split(" ")[0]} occasion={theme?.id ?? "velmar"}
+              onSubmit={(gift, mode) => { setGiftOpen(false); purchase(mode, gift); }} />
+          )}
+        </div>
       </div>
-      <div className="flex flex-col gap-6">
-        <div>
-          <p className="eyebrow text-brass-ink">{category?.name}{tmpl ? ` · ${KIND_LABEL[tmpl.kind]}` : ""}{product.isNew ? " · Nuevo" : ""}</p>
-          <h1 className="font-display mt-3 text-[clamp(2.1rem,4.5vw,3.4rem)] leading-[1.02]">{product.name}</h1>
-          <p className="mt-3 text-lg text-muted">{product.short}</p>
-          {product.soldCount > 0 && <p className="mt-2 text-sm font-semibold text-muted">+{product.soldCount} vendidos (muestra)</p>}
+      {/* Detalles: ideas (collar), entrega, confianza y la descripción, en flujo normal. */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-x-14">
+        {tmpl?.collar && <div className="lg:col-start-1"><CollarInspiration spec={tmpl.collar} onPick={draft.applyPreset} /></div>}
+        <div className="flex flex-col gap-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          <MissionChip units={quantity} />
+          <DeliveryEstimate product={product} variant={sel.variant} />
+          <ul className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-muted">
+            {TRUST.map(({ icon: Icon, t }) => <li key={t} className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-3"><Icon size={18} aria-hidden="true" className="text-primary" />{t}</li>)}
+          </ul>
         </div>
-        <div className="flex flex-wrap items-end gap-x-4 gap-y-1">
-          <span className="text-4xl font-extrabold tabular-nums tracking-tight"><span key={price} className="animate-num">{formatARS(price)}</span></span>
-          {settings.transferDiscountPct > 0 && <span className="mb-1 rounded-full bg-success-soft px-3 py-1 text-sm font-bold text-success">{formatARS(transferPrice)} con transferencia o QR</span>}
-          <span className="w-full text-xs text-muted">Precio sin impuestos nacionales: {formatARS(withoutNationalTaxes(price, settings.nationalTaxRate))} · precio de muestra</span>
-        </div>
-        <ConfigureCard product={product} sel={sel} draft={draft} quantity={quantity} max={max} stockNote={stockNote(avail)} onQuantity={setQty} actions={desktopActions} />
-        <button type="button" disabled={!canBuy} onClick={() => ready() && setGiftOpen(true)}
-          className="group flex items-center gap-4 rounded-[1.6rem] border border-dashed border-brass-ink/45 bg-surface p-4 text-left transition hover:border-brass-ink hover:bg-accent/40 disabled:opacity-45">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-night text-brass transition-transform group-hover:-rotate-6 group-hover:scale-105"><Gift size={22} aria-hidden="true" /></span>
-          <span className="min-w-0">
-            <span className="block font-bold">Es para regalar</span>
-            <span className="block text-sm text-muted">Le mandás un link o un código y lo abre a golpes. No ve el precio.</span>
-          </span>
-        </button>
-        {giftOpen && (
-          <GiftSheet open onClose={() => setGiftOpen(false)} productName={product.name} fromName={user?.name.split(" ")[0]} occasion={theme?.id ?? "velmar"}
-            onSubmit={(gift, mode) => { setGiftOpen(false); purchase(mode, gift); }} />
-        )}
-        {tmpl?.collar && <CollarInspiration spec={tmpl.collar} onPick={draft.applyPreset} />}
-        <MissionChip units={quantity} />
-        <DeliveryEstimate product={product} variant={sel.variant} />
-        <ul className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-muted">
-          {TRUST.map(({ icon: Icon, t }) => <li key={t} className="flex flex-col items-center gap-2 rounded-2xl bg-surface p-3"><Icon size={18} aria-hidden="true" className="text-primary" />{t}</li>)}
-        </ul>
-        <ProductAccordions product={product} />
+        <div className="lg:col-start-1"><ProductAccordions product={product} /></div>
       </div>
       <div data-buy-bar className={cn(FLOATING_BAR, "z-30 sm:hidden")}>
         <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14 shrink-0" />
