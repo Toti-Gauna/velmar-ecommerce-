@@ -3,7 +3,7 @@ import { horizontalOverflow } from "./helpers";
 
 /**
  * QA cruzado (Fase 7): recorre todas las rutas de la tienda y del panel en los tamaños de pantalla que va a usar el
- * dueño y sus clientes. Chromium emula el tamaño, el toque y el agente de usuario; **no reemplaza** la prueba en un
+ * dueño y sus clientes. Chromium emula el tamaño y el toque; **no reemplaza** la prueba en un
  * iPhone y un Android reales (ver docs/qa-dispositivos.md).
  */
 const DEVICES = [
