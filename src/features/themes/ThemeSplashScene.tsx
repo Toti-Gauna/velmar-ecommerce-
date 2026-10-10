@@ -35,7 +35,8 @@ function clocked(Scene: ComponentType): ComponentType {
     return <SceneClock.Provider value={offset}><Scene /></SceneClock.Provider>;
   };
 }
-const lazy = (load: () => Promise<ComponentType>) => dynamic(() => load().then(clocked), { ssr: false });
+// Si el archivo no llega (red cortada, versión vieja abierta), la escena simplemente no aparece: es decorativa.
+const lazy = (load: () => Promise<ComponentType>) => dynamic(() => load().then(clocked, () => function NoScene() { return null; }), { ssr: false });
 
 /** Una escena distinta por festividad (motion graphics); cada visita descarga solo la de su fecha. */
 const SCENES: Record<SeasonId, ComponentType> = {

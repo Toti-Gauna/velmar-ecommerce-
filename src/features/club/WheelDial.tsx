@@ -30,7 +30,7 @@ export function WheelDial({ state, discRef, segments, className }: {
         })}
       </svg>
       {state ? (
-        <motion.div ref={discRef} style={{ rotate: state.rotate, touchAction: "pan-y" }} role="button" tabIndex={canSpin ? 0 : -1}
+        <motion.div ref={discRef} style={{ rotate: state.rotate, touchAction: "none" }} role="button" tabIndex={canSpin ? 0 : -1}
           aria-label={canSpin ? "Ruleta: tocala o arrastrala para girar" : "Ruleta"} aria-disabled={!canSpin} {...state.handlers}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); void state.spin(); } }}
           className={cn("absolute inset-0 rounded-full focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#f3dca6]", canSpin && "cursor-grab active:cursor-grabbing")}>

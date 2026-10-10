@@ -43,7 +43,7 @@
   golpes (toque, clic o tecla) con sacudón, sonido y vibración (Android) y una escena única por festividad (flor que se
   abre pétalo a pétalo, huevo de Pascua, regalo de Papá Noel, calabaza, prisma, caja fuerte, sidra, carta, cucha de
   Pancho, caja con mecha, paraguas de 1810, bandera, Casa de Tucumán, caja de herramientas, Pancho y Lola, piñata y la caja
-  de Velmar). Después: el producto, el mensaje escrito a mano, cuándo está listo, "Guardar en mis regalos" y "Ver el producto".
+  de Velmar). Después: el producto, el mensaje escrito a mano, cuándo está listo, "Guardar en mis regalos" y "Conocer Velmar" (a la tienda, no a la ficha: ahí se ve el precio).
 - **En la cuenta**: si el email del regalo es el de la cuenta, aparece en Mis regalos sin abrir el link (la cuenta demo
   trae uno de muestra, de Lucía para Sofía).
 - **Demo vs. producción**: el link lleva el regalo adentro (base64url, versionado y validado: un link cortado o editado no

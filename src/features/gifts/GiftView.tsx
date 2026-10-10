@@ -28,16 +28,12 @@ function findByCode(code: string, pools: Gift[][]): Gift | null {
 export function GiftView() {
   const params = useSearchParams();
   const hydrated = useHydrated();
-  const { sent, saved, opened, save, markOpened } = useGifts();
-  const user = useAccount((s) => s.user);
+  const { sent, saved } = useGifts();
   const preview = params.get("vista") === "previa";
   const param = params.get("g");
   const codeParam = params.get("c");
   const code = codeParam ? normalizeGiftCode(codeParam) : null;
   const gift = param ? decodeGift(param) : code ? findByCode(code, [demoGifts, sent, saved]) : null;
-  const [stage, setStage] = useState(true);
-  // La apertura a golpes es la primera vez; después (o en la vista previa repetida) se ve directo lo de adentro.
-  const [open, setOpen] = useState<boolean | null>(null);
   if (!hydrated) return <HeroSkeleton label="Cargando regalo" />;
 
   const failed = (param && !gift) || (codeParam && !gift);
@@ -59,6 +55,16 @@ export function GiftView() {
     );
   }
 
+  return <GiftExperience key={gift.code} gift={gift} preview={preview} />;
+}
+
+/** Un regalo abierto en el escenario. Con `key` por código: otro regalo arranca de cero (golpes y escenario). */
+function GiftExperience({ gift, preview }: { gift: Gift; preview: boolean }) {
+  const { saved, opened, save, markOpened } = useGifts();
+  const user = useAccount((s) => s.user);
+  const [stage, setStage] = useState(true);
+  // La apertura a golpes es la primera vez; después se ve directo lo de adentro ("Abrirlo otra vez" la repite).
+  const [open, setOpen] = useState<boolean | null>(null);
   const wasOpened = opened.includes(gift.code);
   const isOpen = open ?? (wasOpened && !preview);
   // Ya está en la cuenta si se guardó o si llegó al email de la cuenta abierta.
@@ -76,7 +82,7 @@ export function GiftView() {
         ) : (
           <>
             <p className="font-display mb-4 max-w-sm text-center text-[clamp(1.5rem,6vw,2.1rem)] leading-tight">{gift.to}, {gift.from} te mandó un regalo</p>
-            <GiftOpener key={String(open)} scene={gift.occasion} accent={colors.accent} onOpened={done} />
+            <GiftOpener key={String(open)} scene={gift.occasion} accent={colors.accent} onOpened={done} autoFocus={open === false} />
           </>
         )}
       </ImmersiveStage>

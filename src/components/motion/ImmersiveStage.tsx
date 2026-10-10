@@ -45,8 +45,13 @@ export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a7
       if (e.key !== "Tab" || !root.current) return;
       const items = [...root.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea, [tabindex='0']")];
       const first = items[0], last = items[items.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      const active = document.activeElement;
+      // Si el foco quedó en el escenario mismo o se cayó al <body> (un botón que se desmontó o se deshabilitó),
+      // Tab vuelve adentro en vez de escaparse a la página de atrás.
+      const outside = !active || active === root.current || !root.current.contains(active);
+      if (outside) { e.preventDefault(); (e.shiftKey ? last : first)?.focus(); }
+      else if (e.shiftKey && active === first) { e.preventDefault(); last?.focus(); }
+      else if (!e.shiftKey && active === last) { e.preventDefault(); first?.focus(); }
     };
     document.addEventListener("keydown", onKey);
     return () => {
@@ -69,8 +74,10 @@ export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a7
           <X size={18} aria-hidden="true" /> {exitLabel}
         </button>
       )}
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(4.5rem,calc(env(safe-area-inset-top)+3.5rem))]">
-        {children}
+      {/* Con el celular apaisado puede no entrar: se scrollea adentro del escenario (centrado con márgenes automáticos
+          para que no se corte arriba). */}
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col items-center overflow-y-auto px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(4.5rem,calc(env(safe-area-inset-top)+3.5rem))]">
+        <div className="my-auto flex w-full flex-col items-center">{children}</div>
       </div>
     </div>,
     document.body,

@@ -35,7 +35,7 @@ export function ThemedCoupon({ coupon, label, occasion }: { coupon: Coupon | und
           <span className="relative flex flex-col items-center gap-1">
             {coupon && <RewardGlyph kind={glyphFor(coupon.type, coupon.description)} size={34} color="var(--c-accent)" />}
             <span className="font-display text-[clamp(1.6rem,7vw,2.1rem)] leading-none" style={{ color: "var(--c-accent)" }}>{value}</span>
-            {coupon?.type === "PERCENT" && <span className="text-[10px] font-bold tracking-[0.24em] opacity-80">OFF</span>}
+            {coupon?.type === "PERCENT" && <span className="text-[10px] font-bold tracking-[0.24em]">OFF</span>}
           </span>
         </div>
         <div aria-hidden="true" className="relative w-0">
@@ -45,9 +45,9 @@ export function ThemedCoupon({ coupon, label, occasion }: { coupon: Coupon | und
         </div>
         <div className="flex min-w-0 flex-1 flex-col justify-between gap-3 p-4 pl-5">
           <div>
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] opacity-80">Cupón de la ruleta</p>
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.2em]">Cupón de la ruleta</p>
             <p className="mt-1 font-bold leading-snug">{coupon?.description ?? label}</p>
-            <p className="mt-1 text-xs opacity-80">{coupon?.endsAt ? `Vence ${formatDate(coupon.endsAt)} · ` : ""}1 uso</p>
+            <p className="mt-1 text-xs">{coupon?.endsAt ? `Vence ${formatDate(coupon.endsAt)} · ` : ""}1 uso</p>
           </div>
           {code && (
             <button type="button" onClick={copy} aria-label={`Copiar código ${code}`}

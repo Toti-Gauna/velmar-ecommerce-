@@ -59,7 +59,7 @@ export function CheckoutView() {
     const now = new Date();
     // Cada línea marcada como regalo genera su código y su link; la fecha estimada sale del calendario del taller.
     const { orders, workshop } = useAdmin.getState();
-    const gifts = giftsFromLines(lines, { orderCode: DEMO_ORDER_CODE, now, eta: promiseFor(lines, DEMO_TODAY, orders, workshop.settings).day, random: Math.random });
+    const gifts = giftsFromLines(lines, { orderCode: DEMO_ORDER_CODE, now, eta: promiseFor(lines, DEMO_TODAY, orders, workshop.settings, DEMO_ORDER_CODE).day, random: Math.random });
     if (gifts.length) useGifts.getState().addSent(gifts);
     const order = {
       code: DEMO_ORDER_CODE, token: DEMO_TRACKING_TOKEN, createdAt: now.toISOString(), contact: checkout.contact,

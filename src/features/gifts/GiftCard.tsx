@@ -3,7 +3,7 @@ import { BookmarkCheck, CalendarCheck, RotateCcw, ShoppingBag } from "lucide-rea
 import Link from "next/link";
 import { useEffect, useRef, type CSSProperties } from "react";
 import { ProductArt } from "@/components/illustrations/ProductArt";
-import { getProduct, productHref } from "@/demo/engine/catalog";
+import { getProduct } from "@/demo/engine/catalog";
 import type { Gift } from "@/demo/engine/gifts";
 import { formatDay } from "@/lib/date";
 
@@ -52,11 +52,10 @@ export function GiftCard({ gift, saved, preview, onSave, onReplay }: Props) {
             <BookmarkCheck size={18} aria-hidden="true" /> Guardar en mis regalos
           </button>
         )}
-        {product && (
-          <Link href={productHref(product.slug)} className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/10 px-6 font-bold text-[#f6f1e8] ring-1 ring-white/15 hover:bg-white/20">
-            <ShoppingBag size={18} aria-hidden="true" /> Ver el producto
-          </Link>
-        )}
+        {/* A la tienda, no a la ficha: la ficha muestra el precio y quien recibe nunca lo ve. */}
+        <Link href="/" className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/10 px-6 font-bold text-[#f6f1e8] ring-1 ring-white/15 hover:bg-white/20">
+          <ShoppingBag size={18} aria-hidden="true" /> Conocer Velmar
+        </Link>
         <button type="button" onClick={onReplay} className="mt-1 flex items-center justify-center gap-2 text-sm font-semibold text-[#cfc6b3] hover:text-white">
           <RotateCcw size={15} aria-hidden="true" /> Abrirlo otra vez
         </button>

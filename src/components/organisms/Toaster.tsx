@@ -9,7 +9,7 @@ const ICONS = { success: CheckCircle2, info: Info, error: TriangleAlert };
 export function Toaster() {
   const { toasts, dismiss } = useToasts();
   return (
-    <div aria-live="polite" aria-atomic="false" className="pointer-events-none fixed inset-x-0 top-20 z-50 flex flex-col items-center gap-2 px-4">
+    <div aria-live="polite" aria-atomic="false" className="pointer-events-none fixed inset-x-0 top-20 z-[90] flex flex-col items-center gap-2 px-4">
       {toasts.map((t) => {
         const Icon = ICONS[t.tone];
         return (

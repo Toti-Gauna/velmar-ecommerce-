@@ -38,6 +38,13 @@
 /* ---------- Rendimiento ---------- */
 /* Secciones de más abajo: no se dibujan hasta acercarse a la pantalla; el tamaño estimado evita saltos del scroll. */
 .cv-auto { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+/* content-visibility recorta lo que sale de su caja: dentro del <main>, la caja llega al borde de la pantalla (y un poco
+   arriba y abajo) para que los rieles que sangran hasta el borde y las sombras no queden cortados. */
+.cv-bleed { margin: -2rem -1rem; padding: 2rem 1rem; }
+@media (min-width: 640px) { .cv-bleed { margin-inline: -1.5rem; padding-inline: 1.5rem; } }
+/* Segunda vista de la tarjeta: se monta con el mouse encima, así que entra con su fundido desde cero. */
+@keyframes fade-from-0 { from { opacity: 0; } }
+.fade-from-0 { animation: fade-from-0 500ms ease-out; }
 
 /* ---------- Escenario a pantalla completa (ruleta y regalos) ---------- */
 /* Casi negro con la luz de la temática desde abajo y arriba; entra con un fundido corto. */
@@ -49,6 +56,8 @@
   animation: stage-in 320ms ease-out both;
 }
 .immersive-stage > :not(.immersive-backdrop) { animation: stage-rise 520ms var(--ease-out-expo) 80ms both; }
+/* Sobre el fondo casi negro, el anillo de foco va en crema (el de la tienda, oliva, no llega a 3:1). */
+.immersive-stage :focus-visible { outline-color: #f3dca6; }
 @keyframes stage-in { from { opacity: 0; } }
 @keyframes stage-rise { from { opacity: 0; transform: translateY(14px) scale(0.98); } }
 /* Con el escenario abierto, los fondos animados de la tienda se pausan (no se ven y gastan batería). */

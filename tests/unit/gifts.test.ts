@@ -21,7 +21,10 @@ describe("código de regalo", () => {
     const body = gift.code.slice(7).replace("-", "");
     expect(normalizeGiftCode(body.toLowerCase())).toBe(gift.code);
     expect(normalizeGiftCode(`regalo ${body.slice(0, 4)} ${body.slice(4)}`)).toBe(gift.code);
-    expect(normalizeGiftCode("REGALO-P3XE-1KCP".replace("0", "O"))).toBe("REGALO-P3XE-1KCP");
+    const withZero = makeGiftCode(seq([0, 0.5, 0.9, 0.3, 0.7, 0.2, 0.6]));
+    expect(withZero.charAt(7)).toBe("0");
+    expect(normalizeGiftCode(withZero.replace(/0/g, "O"))).toBe(withZero);
+    expect(normalizeGiftCode(withZero.replace(/1/g, "l"))).toBe(withZero);
     const last = body.at(-1) === "0" ? "1" : "0";
     expect(normalizeGiftCode(body.slice(0, 7) + last)).toBeNull();
     expect(normalizeGiftCode("REGALO-123")).toBeNull();

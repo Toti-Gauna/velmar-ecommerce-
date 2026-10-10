@@ -8,28 +8,38 @@ function Loading() {
   return <div aria-hidden="true" className="h-full w-full rounded-full bg-[radial-gradient(closest-side,rgb(243_220_166/0.25),transparent)]" />;
 }
 
+/** Si la escena no llega (red cortada), queda un regalo simple que igual se abre: nunca se rompe la página. */
+function Fallback({ hits, total, opened }: GiftSceneProps) {
+  return (
+    <div className="grid h-full w-full place-items-center">
+      <span aria-hidden="true" className="text-[8rem] leading-none transition-transform duration-300" style={{ transform: `scale(${opened ? 1.25 : 1 + (hits / total) * 0.15})` }}>{opened ? "✨" : "🎁"}</span>
+    </div>
+  );
+}
+const orFallback = (p: Promise<{ default: ComponentType<GiftSceneProps> }>) => p.catch(() => ({ default: Fallback }));
+
 /**
  * Una escena por festividad, cada una en su propio archivo: se descarga solo la del regalo que se abre.
  * (next/dynamic necesita el import literal en cada entrada.)
  */
 export const GIFT_SCENES: Record<GiftSceneId, ComponentType<GiftSceneProps>> = {
-  velmar: dynamic(() => import("./velmar"), { ssr: false, loading: Loading }),
-  "dia-de-la-madre": dynamic(() => import("./madre"), { ssr: false, loading: Loading }),
-  pascuas: dynamic(() => import("./pascuas"), { ssr: false, loading: Loading }),
-  navidad: dynamic(() => import("./navidad"), { ssr: false, loading: Loading }),
-  halloween: dynamic(() => import("./halloween"), { ssr: false, loading: Loading }),
-  orgullo: dynamic(() => import("./orgullo"), { ssr: false, loading: Loading }),
-  "black-friday": dynamic(() => import("./black-friday"), { ssr: false, loading: Loading }),
-  "ano-nuevo": dynamic(() => import("./ano-nuevo"), { ssr: false, loading: Loading }),
-  "san-valentin": dynamic(() => import("./san-valentin"), { ssr: false, loading: Loading }),
-  "dia-del-animal": dynamic(() => import("./animal"), { ssr: false, loading: Loading }),
-  "hot-sale": dynamic(() => import("./hot-sale"), { ssr: false, loading: Loading }),
-  "revolucion-de-mayo": dynamic(() => import("./mayo"), { ssr: false, loading: Loading }),
-  "dia-del-padre": dynamic(() => import("./padre"), { ssr: false, loading: Loading }),
-  "dia-de-la-bandera": dynamic(() => import("./bandera"), { ssr: false, loading: Loading }),
-  "dia-de-la-independencia": dynamic(() => import("./independencia"), { ssr: false, loading: Loading }),
-  "dia-del-amigo": dynamic(() => import("./amigo"), { ssr: false, loading: Loading }),
-  "dia-del-nino": dynamic(() => import("./nino"), { ssr: false, loading: Loading }),
+  velmar: dynamic(() => orFallback(import("./velmar")), { ssr: false, loading: Loading }),
+  "dia-de-la-madre": dynamic(() => orFallback(import("./madre")), { ssr: false, loading: Loading }),
+  pascuas: dynamic(() => orFallback(import("./pascuas")), { ssr: false, loading: Loading }),
+  navidad: dynamic(() => orFallback(import("./navidad")), { ssr: false, loading: Loading }),
+  halloween: dynamic(() => orFallback(import("./halloween")), { ssr: false, loading: Loading }),
+  orgullo: dynamic(() => orFallback(import("./orgullo")), { ssr: false, loading: Loading }),
+  "black-friday": dynamic(() => orFallback(import("./black-friday")), { ssr: false, loading: Loading }),
+  "ano-nuevo": dynamic(() => orFallback(import("./ano-nuevo")), { ssr: false, loading: Loading }),
+  "san-valentin": dynamic(() => orFallback(import("./san-valentin")), { ssr: false, loading: Loading }),
+  "dia-del-animal": dynamic(() => orFallback(import("./animal")), { ssr: false, loading: Loading }),
+  "hot-sale": dynamic(() => orFallback(import("./hot-sale")), { ssr: false, loading: Loading }),
+  "revolucion-de-mayo": dynamic(() => orFallback(import("./mayo")), { ssr: false, loading: Loading }),
+  "dia-del-padre": dynamic(() => orFallback(import("./padre")), { ssr: false, loading: Loading }),
+  "dia-de-la-bandera": dynamic(() => orFallback(import("./bandera")), { ssr: false, loading: Loading }),
+  "dia-de-la-independencia": dynamic(() => orFallback(import("./independencia")), { ssr: false, loading: Loading }),
+  "dia-del-amigo": dynamic(() => orFallback(import("./amigo")), { ssr: false, loading: Loading }),
+  "dia-del-nino": dynamic(() => orFallback(import("./nino")), { ssr: false, loading: Loading }),
 };
 
 /** Nombre corto de lo que se abre en cada escena (para el texto de la apertura y el lector de pantalla). */
@@ -52,3 +62,9 @@ export const GIFT_SCENE_NAMES: Record<GiftSceneId, string> = {
   "dia-del-amigo": "El regalo de Pancho y Lola",
   "dia-del-nino": "Una piñata",
 };
+
+/** El nombre dentro de una frase ("se abre como: una flor…"), sin pasar a minúscula los nombres propios. */
+export function sceneLabel(id: GiftSceneId): string {
+  const name = GIFT_SCENE_NAMES[id];
+  return name.charAt(0).toLowerCase() + name.slice(1);
+}

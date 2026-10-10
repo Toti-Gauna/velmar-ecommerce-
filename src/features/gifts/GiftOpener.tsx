@@ -12,6 +12,8 @@ interface Props {
   accent: string;
   /** Se llama cuando terminó la apertura (para mostrar qué había adentro). */
   onOpened: () => void;
+  /** Lleva el foco al regalo al montarse (al abrirlo otra vez; la primera vez el foco queda en el escenario). */
+  autoFocus?: boolean;
 }
 
 const PROMPTS = ["Golpeá el regalo para abrirlo", "¡Otra vez!", "¡Más fuerte!", "¡Ya casi!", "¡Uno más!"];
@@ -29,12 +31,14 @@ const punch = (dir: number): Keyframe[] => [
  * golpe con sacudón, sonido y vibración (Android); la escena de la festividad deja una huella en cada uno y se abre
  * en el último. Accesible: es un botón, anuncia cuántos golpes faltan y ofrece abrirlo de una vez.
  */
-export function GiftOpener({ scene, accent, onOpened }: Props) {
+export function GiftOpener({ scene, accent, onOpened, autoFocus }: Props) {
   const reduce = useReducedMotion() === true;
   const [hits, setHits] = useState(0);
   const [impacts, setImpacts] = useState<{ id: number; x: number; y: number }[]>([]);
   const [idle, setIdle] = useState(false);
   const box = useRef<HTMLDivElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
+  useEffect(() => { if (autoFocus) button.current?.focus({ preventScroll: true }); }, [autoFocus]);
   const done = useRef<() => void>(onOpened);
   useEffect(() => { done.current = onOpened; }, [onOpened]);
   const opened = hits >= GIFT_HITS;
@@ -54,6 +58,7 @@ export function GiftOpener({ scene, accent, onOpened }: Props) {
     return () => { window.clearTimeout(s); window.clearTimeout(t); };
   }, [opened, reduce]);
 
+  // Con aria-disabled (y no disabled) el botón conserva el foco tras el último golpe: no se cae al fondo de la página.
   const hit = (e: MouseEvent<HTMLButtonElement>) => {
     if (opened) return;
     const next = hits + 1;
@@ -76,9 +81,9 @@ export function GiftOpener({ scene, accent, onOpened }: Props) {
     <div className="flex w-full max-w-md flex-col items-center">
       <SceneStyle id="kit" css={KIT_CSS + OPENER_CSS} />
       <p className="min-h-[1.5rem] text-center text-sm font-extrabold uppercase tracking-[0.18em] text-[#f3dca6] sm:text-base" aria-hidden="true">{opened ? "¡Se abrió!" : PROMPTS[Math.min(hits, PROMPTS.length - 1)]}</p>
-      <button type="button" onClick={hit} disabled={opened}
+      <button ref={button} type="button" onClick={hit} aria-disabled={opened}
         aria-label={opened ? "Regalo abierto" : `Golpeá el regalo para abrirlo. Faltan ${left} ${left === 1 ? "golpe" : "golpes"}.`}
-        className="gift-hit relative mt-3 aspect-square w-[min(80vw,46dvh,380px)] touch-manipulation rounded-[2rem] outline-none focus-visible:ring-4 focus-visible:ring-[#f3dca6]/70 disabled:cursor-default">
+        className="gift-hit relative mt-3 aspect-square w-[min(80vw,46dvh,380px)] touch-manipulation rounded-[2rem] outline-none focus-visible:ring-4 focus-visible:ring-[#f3dca6]/70 aria-disabled:cursor-default">
         <div ref={box} className="h-full w-full will-change-transform">
           <Scene hits={hits} total={GIFT_HITS} opened={opened} reduce={reduce} />
         </div>
@@ -105,7 +110,7 @@ export function GiftOpener({ scene, accent, onOpened }: Props) {
 
 const OPENER_CSS = `
 .gift-hit { -webkit-tap-highlight-color: transparent; cursor: pointer; }
-.gift-hit:not(:disabled) .gift-scene { animation: gift-hint 2.6s ease-in-out 1.2s 3; }
+.gift-hit:not([aria-disabled="true"]) .gift-scene { animation: gift-hint 2.6s ease-in-out 1.2s 3; }
 @keyframes gift-hint { 0%, 70%, 100% { transform: rotate(0); } 76% { transform: rotate(-4deg); } 82% { transform: rotate(4deg); } 88% { transform: rotate(-2deg); } 94% { transform: rotate(1deg); } }
 .gift-impact { width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 9999px; border: 3px solid var(--accent); box-shadow: 0 0 18px var(--accent); animation: gift-impact 600ms cubic-bezier(.16,1,.3,1) both; }
 @keyframes gift-impact { 0% { opacity: 1; transform: scale(.3); } 100% { opacity: 0; transform: scale(5); } }

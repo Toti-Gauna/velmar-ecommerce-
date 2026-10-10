@@ -1,6 +1,7 @@
 "use client";
 import { BookmarkPlus, ShoppingBag } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { ImmersiveStage } from "@/components/motion/ImmersiveStage";
 import { Celebration } from "@/components/molecules/Celebration";
 import { useCart } from "@/stores/cart";
@@ -25,6 +26,9 @@ export default function WheelStagePanel({ open, checkout, onClose }: { open: boo
   const setCoupon = useCart((s) => s.setCoupon);
   const toast = useToasts((s) => s.push);
   const { shown, prize, spinning, justWon, wheel } = state;
+  const applyBtn = useRef<HTMLButtonElement>(null);
+  // Al frenar, el disco desaparece: el foco pasa a "Aplicar ahora" (si no, se caería al fondo de la página).
+  useEffect(() => { if (justWon) applyBtn.current?.focus({ preventScroll: true }); }, [justWon]);
   const next = () => { onClose(); if (checkout) router.push("/checkout/"); };
   const apply = () => {
     if (!shown) return;
@@ -39,14 +43,16 @@ export default function WheelStagePanel({ open, checkout, onClose }: { open: boo
   };
   return (
     <ImmersiveStage open={open} onClose={onClose} label="Ruleta de cupones" glow={[colors.from, colors.to]} lockExit={spinning}>
+      {/* Siempre montado, para que el lector de pantalla anuncie el giro y el premio. */}
+      <p aria-live="polite" className="sr-only">{spinning ? "Girando…" : justWon && shown ? `Te tocó: ${shown.label}` : ""}</p>
       {shown ? (
-        <div aria-live="polite" className="wheel-win relative flex w-full max-w-md flex-col items-center text-center">
+        <div className="wheel-win relative flex w-full max-w-md flex-col items-center text-center">
           {justWon && <Celebration />}
           <p className="eyebrow text-[#f3dca6]">{justWon ? "¡Ganaste!" : "Tu premio"}</p>
           <h2 className="font-display mb-6 mt-2 text-[clamp(1.9rem,8vw,2.6rem)] leading-tight">{shown.label}</h2>
           <ThemedCoupon coupon={prize} label={shown.label} occasion={occasion} />
           <div className="mt-7 grid w-full gap-2">
-            <button type="button" onClick={apply} className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#f3dca6] px-6 text-base font-bold text-night hover:brightness-105">
+            <button ref={applyBtn} type="button" onClick={apply} className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#f3dca6] px-6 text-base font-bold text-night hover:brightness-105">
               <ShoppingBag size={18} aria-hidden="true" /> Aplicar ahora
             </button>
             <button type="button" onClick={keep} className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/10 px-6 font-bold text-[#f6f1e8] ring-1 ring-white/15 hover:bg-white/20">
@@ -60,7 +66,7 @@ export default function WheelStagePanel({ open, checkout, onClose }: { open: boo
           <p className="eyebrow text-[#f3dca6]">{checkout ? "Antes de pagar" : "Club Velmar"}</p>
           <h2 className="font-display mt-1 text-[clamp(1.7rem,7vw,2.4rem)] leading-tight">{checkout ? "Probá tu suerte" : "Girá y ganá"}</h2>
           <WheelDial state={state} discRef={state.bindDisc} segments={wheel.segments} className="mt-8 w-[min(80vw,52dvh,440px)]" />
-          <p aria-live="polite" className="mt-8 min-h-[1.25rem] text-sm font-semibold text-[#cfc6b3]">
+          <p className="mt-8 min-h-[1.25rem] text-sm font-semibold text-[#cfc6b3]">
             {spinning ? "Girando…" : wheel.active ? "Tocá el centro o arrastrá la ruleta para girarla" : "La ruleta está pausada"}
           </p>
           {checkout && !spinning && <button type="button" onClick={next} className="mt-2 min-h-11 rounded-full px-5 text-sm font-semibold text-[#cfc6b3] underline-offset-4 hover:text-white hover:underline">Continuar sin girar</button>}

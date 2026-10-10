@@ -20,7 +20,7 @@ import type { ReactNode } from "react";
 
 /** Sección de más abajo: el navegador no la dibuja hasta que se acerca a la pantalla (menos trabajo al cargar y al scrollear). */
 function Later({ size, children }: { size: number; children: ReactNode }) {
-  return <div className="cv-auto" style={{ containIntrinsicSize: `auto ${size}px` }}>{children}</div>;
+  return <div className="cv-auto cv-bleed" style={{ containIntrinsicSize: `auto ${size}px` }}>{children}</div>;
 }
 
 /** Inicio de tienda: carrusel (con la temática vigente primero), ofertas de la temática, beneficios, categorías, recomendados, más vendidos, historias y novedades. */

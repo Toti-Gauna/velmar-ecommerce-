@@ -7,7 +7,7 @@ import type { Gift as GiftData } from "@/demo/engine/gifts";
 import { withBase } from "@/lib/base-path";
 import { formatDay } from "@/lib/date";
 import { useToasts } from "@/stores/toast";
-import { GIFT_SCENE_NAMES } from "./scenes";
+import { sceneLabel } from "./scenes";
 
 const noop = () => () => {};
 const canShare = () => typeof navigator !== "undefined" && typeof navigator.share === "function";
@@ -22,6 +22,8 @@ export function GiftShare({ gift, compact }: { gift: GiftData; compact?: boolean
   const toast = useToasts((s) => s.push);
   const share = useSyncExternalStore(noop, canShare, () => false);
   const text = (url: string) => `¡${gift.to}, ${gift.from} te mandó un regalo de Velmar! 🎁 Abrilo acá: ${url} (o con el código ${gift.code})`;
+  // La hoja de compartir del celular lleva el link aparte: el texto no lo repite.
+  const shareText = `¡${gift.to}, ${gift.from} te mandó un regalo de Velmar! 🎁 También se abre con el código ${gift.code}.`;
   const copy = async (value: string, title: string) => {
     try { await navigator.clipboard.writeText(value); toast({ tone: "success", title, description: value.length > 40 ? undefined : value }); }
     catch { toast({ tone: "error", title: "No se pudo copiar", description: "Copialo a mano: " + value }); }
@@ -34,7 +36,7 @@ export function GiftShare({ gift, compact }: { gift: GiftData; compact?: boolean
           <div className="min-w-0">
             <p className="eyebrow text-brass">Regalo listo para mandar</p>
             <p className="mt-1 font-bold">Para {gift.to} · {gift.item.name}</p>
-            <p className="mt-0.5 text-sm text-[#cfc6b3]">Se abre como: {GIFT_SCENE_NAMES[gift.occasion].toLowerCase()}.{gift.eta ? ` Listo para entregar el ${formatDay(gift.eta)}.` : ""}</p>
+            <p className="mt-0.5 text-sm text-[#cfc6b3]">Se abre como: {sceneLabel(gift.occasion)}.{gift.eta ? ` Listo para entregar el ${formatDay(gift.eta)}.` : ""}</p>
           </div>
         </div>
       )}
@@ -48,7 +50,7 @@ export function GiftShare({ gift, compact }: { gift: GiftData; compact?: boolean
           <MessageCircle size={17} aria-hidden="true" /> WhatsApp
         </a>
         {share ? (
-          <button type="button" onClick={() => void navigator.share({ title: "Un regalo de Velmar", text: text(""), url: giftUrl(gift) }).catch(() => {})}
+          <button type="button" onClick={() => void navigator.share({ title: "Un regalo de Velmar", text: shareText, url: giftUrl(gift) }).catch(() => {})}
             className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#fffdf8] px-4 text-sm font-bold text-night hover:bg-white">
             <Share2 size={17} aria-hidden="true" /> Compartir
           </button>

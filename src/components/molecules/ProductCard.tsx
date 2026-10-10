@@ -47,7 +47,7 @@ export function ProductCard({ product, priority }: { product: ProductCardData; p
         </div>
         {hovered && product.secondView && !product.photoUrl && (
           <ProductArt art={product.art} view={product.secondView} tint={product.tint} label="" showBadge={false}
-            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 [&>svg]:h-full [&>svg]:object-cover" />
+            className="fade-from-0 pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 [&>svg]:h-full [&>svg]:object-cover" />
         )}
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           {product.deal && <span className="rounded-full px-2.5 py-1 text-[11px] font-extrabold shadow-sm" style={{ background: product.deal.bg, color: product.deal.ink }}>{product.deal.label}</span>}

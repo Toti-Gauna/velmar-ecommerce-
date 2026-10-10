@@ -9,7 +9,7 @@ import type { LineGift } from "@/demo/engine/cart-types";
 import { GIFT_LIMITS, cleanGift, giftProblem, isOccasion } from "@/demo/engine/gifts";
 import { seasonalThemes } from "@/demo/fixtures/themes";
 import type { GiftOccasion } from "@/demo/types";
-import { GIFT_SCENE_NAMES } from "./scenes";
+import { sceneLabel } from "./scenes";
 
 interface Props {
   open: boolean;
@@ -65,18 +65,18 @@ export function GiftSheet({ open, onClose, productName, fromName, occasion: init
             <Input id="gift-email" type="email" inputMode="email" autoComplete="off" value={draft.toEmail} onChange={(e) => set({ toEmail: e.target.value })}
               aria-invalid={Boolean(error?.includes("email"))} aria-describedby={describedBy("gift-email", error?.includes("email") ? error : undefined, true)} />
           </Field>
-          <Field id="gift-message" label="Mensaje" hint={`${left} ${left === 1 ? "carácter disponible" : "caracteres disponibles"}`} error={error?.includes("caracteres") ? error : undefined}>
-            <Textarea id="gift-message" value={draft.message} maxLength={GIFT_LIMITS.message} placeholder="¡Feliz día! Para que lo disfrutes." onChange={(e) => set({ message: e.target.value })}
+          <Field id="gift-message" label="Mensaje" hint={left >= 0 ? `${left} ${left === 1 ? "carácter disponible" : "caracteres disponibles"}` : `${-left} de más`} error={error?.includes("caracteres") ? error : undefined}>
+            {/* Sin maxLength: el navegador cuenta los emojis como dos y trabaría el campo antes del tope real. */}
+            <Textarea id="gift-message" value={draft.message} placeholder="¡Feliz día! Para que lo disfrutes." onChange={(e) => set({ message: e.target.value })}
               aria-describedby={describedBy("gift-message", undefined, true)} />
           </Field>
-          <Field id="gift-occasion" label="Ocasión" hint={`Se abre como: ${GIFT_SCENE_NAMES[draft.occasion].toLowerCase()}.`}>
+          <Field id="gift-occasion" label="Ocasión" hint={`Se abre como: ${sceneLabel(draft.occasion)}.`}>
             <Select id="gift-occasion" value={draft.occasion} onChange={(e) => isOccasion(e.target.value) && set({ occasion: e.target.value })} aria-describedby="gift-occasion-hint">
               <option value="velmar">Sin fecha especial (caja de Velmar)</option>
               {seasonalThemes.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </Select>
           </Field>
         </div>
-        {error && <p role="alert" className="sr-only">{error}</p>}
         <div className="mt-8 flex flex-col gap-2">
           <Button type="submit" size="lg"><Gift size={18} aria-hidden="true" /> Agregar regalo al carrito</Button>
           <Button variant="dark" size="lg" onClick={() => submit("buy")()}>Regalar y pagar ahora</Button>
