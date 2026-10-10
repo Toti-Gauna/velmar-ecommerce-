@@ -35,7 +35,7 @@ export function Lola({ pose = "stand", outfit = {}, flip, pup, animated, classNa
           <PoodleLeg x={40} fill={SKIN} className={legClass(pose, "back-near")} />
           {pose !== "wave" && frontNear}
           <Fluff dots={[[80, 50, 11], [86, 43, 8], [76, 41, 7], [83, 58, 8]]} />
-          <g className="pup-head" transform={pup ? "translate(-26 -10) scale(1.28)" : undefined}>
+          <g transform={pup ? "translate(-26 -10) scale(1.28)" : undefined}><g className="pup-head">
             <circle cx="92" cy="32" r="11" fill={SKIN} />
             <Fluff dots={[[90, 18, 8], [83, 21, 6.5], [97, 20, 6.5], [92, 12, 5.5]]} />
             <path d="M98 29C106 28 112 32 112 35.5C112 39 106 41 100 40C97 39 96 33 98 29Z" fill="#f0d0a3" />
@@ -48,7 +48,7 @@ export function Lola({ pose = "stand", outfit = {}, flip, pup, animated, classNa
               <path d="M0 0-6-4v8zM0 0l6-4v8z" fill={outfit.bow ?? "#e4577a"} /><circle r="1.8" fill={outfit.bow ?? "#e4577a"} stroke="#000" strokeOpacity=".15" />
             </g>
             {outfit.hat && <Hat kind={outfit.hat} x={91} y={11} tilt={-12} />}
-          </g>
+          </g></g>
           <path d="M83 41Q87 50 97 45" stroke={OLIVE} strokeWidth="3.4" fill="none" strokeLinecap="round" />
           {outfit.bandana && <Bandana x={90} y={47} color={outfit.bandana} />}
           {outfit.tie ? <Tie x={90} y={47} color={outfit.tie} /> : !outfit.bandana && <circle cx="89" cy="48.5" r="2.6" fill={BRASS} />}

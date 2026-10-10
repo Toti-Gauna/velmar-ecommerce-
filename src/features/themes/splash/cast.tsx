@@ -95,7 +95,7 @@ export function FathersScene() {
           <Decor kind="gift" className="h-full w-full" />
         </motion.span>
       </motion.div>
-      {phase > 0 && <Burst x="44%" y="62%" delay={0.1} colors={["#e9c27a", "#fff4d6", "#a9c6e6"]} count={18} radius={26} />}
+      <Burst x="44%" y="62%" delay={2.4} colors={["#e9c27a", "#fff4d6", "#a9c6e6"]} count={18} radius={26} />
     </>
   );
 }

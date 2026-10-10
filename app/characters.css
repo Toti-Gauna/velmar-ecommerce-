@@ -3,7 +3,9 @@
  * quietos (regla global de globals.css) y "Pausar animaciones" de la cinta los frena.
  */
 .pup { overflow: visible; }
-.pup g, .pup path, .pup ellipse { transform-box: fill-box; }
+/* fill-box solo en las partes animadas: ninguna lleva atributo transform (si lo llevaran, el CSS lo pisaría y
+   fill-box le cambiaría el origen). Las posiciones y espejos van en grupos envolventes sin estas clases. */
+.pup-tail, .pup-eye, .pup-ear, .pup-head, .pup-leg, .pup-body, .pup-shadow, .pup-hat { transform-box: fill-box; }
 .pup-anim .pup-tail { transform-origin: 100% 100%; animation: pup-wag 0.42s ease-in-out infinite alternate; }
 .pup-anim .pup-eye { transform-origin: 50% 50%; animation: pup-blink 4.2s ease-in-out infinite; }
 .pup-anim .pup-ear { transform-origin: 60% 0; animation: pup-ear 2.6s ease-in-out infinite alternate; }
@@ -32,10 +34,10 @@
 @keyframes pup-tip { 0% { transform: none; } 40%, 70% { transform: translate(-4px, -9px) rotate(-28deg); } 100% { transform: none; } }
 /* En el banner (permanente) las partes del SVG se mueven solo unos segundos al aparecer: animar el interior de un
    SVG lo redibuja en cada cuadro. Después el personaje "respira" con transform del contenedor (compuesto, barato). */
-.pup-brief .pup-tail { animation-iteration-count: 12; }
-.pup-brief .pup-eye { animation-iteration-count: 2; }
-.pup-brief .pup-ear, .pup-brief .pup-head, .pup-brief .pup-wave { animation-iteration-count: 4; }
-.pup-brief .pup-body, .pup-brief .pup-shadow { animation-iteration-count: 6; }
+.pup-anim.pup-brief .pup-tail { animation-iteration-count: 12; }
+.pup-anim.pup-brief .pup-eye { animation-iteration-count: 2; }
+.pup-anim.pup-brief .pup-ear, .pup-anim.pup-brief .pup-head, .pup-anim.pup-brief .pup-wave, .pup-anim.pup-brief .pup-leg { animation-iteration-count: 4; }
+.pup-anim.pup-brief .pup-body, .pup-anim.pup-brief .pup-shadow { animation-iteration-count: 6; }
 .pup-idle { animation: pup-idle 3.4s ease-in-out infinite alternate; transform-origin: 50% 100%; }
 @keyframes pup-idle { from { transform: translateY(0) scale(1); } to { transform: translateY(-3px) scale(1.012); } }
 .amb-paused .pup-idle { animation-play-state: paused; }

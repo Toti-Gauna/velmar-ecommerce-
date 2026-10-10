@@ -29,6 +29,8 @@ test.describe("temáticas de la Fase 5", () => {
     await page.goto("");
     await expect(page.locator("#velmar-splash .season-scene svg.pup")).toHaveCount(2);
     await page.keyboard.press("Escape");
+    // Al cerrar la pantalla de carga la escena se desmonta (sus animaciones en bucle no siguen escondidas).
+    await expect(page.locator("#velmar-splash .season-scene")).toHaveCount(0);
     await expect(page.locator("[data-theme-banner='dia-del-amigo'] svg.pup")).toHaveCount(2);
     await preview(page, "dia-del-padre");
     await page.reload();
@@ -41,6 +43,7 @@ test("con movimiento reducido no queda ninguna animación corriendo en una temá
   await preview(page, "dia-del-amigo");
   await page.goto("");
   await expect(page.locator("#velmar-splash")).toBeHidden();
+  await expect(page.locator("#velmar-splash .season-scene")).toHaveCount(0);
   await expect(page.locator("[data-theme-banner='dia-del-amigo'] svg.pup").first()).toBeVisible();
   await page.waitForTimeout(800);
   const running = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running" && a instanceof CSSAnimation).map((a) => (a as CSSAnimation).animationName));
@@ -88,4 +91,6 @@ test("microinteracciones: la cantidad rueda sin duplicar el número y el corazó
   await expect(stepper.locator("output")).toHaveText("2");
   await expect(stepper.locator("span[aria-hidden='true']")).toHaveCount(1);
   await expect(stepper.locator("span[aria-hidden='true']")).toHaveText("2");
+  // La bolsa del header se sacude sin duplicarse.
+  await expect(page.getByRole("button", { name: /^Carrito, 2 productos/ }).locator("svg")).toHaveCount(1);
 });

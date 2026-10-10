@@ -16,11 +16,11 @@ export function PrideScene() {
   const at = useAt();
   return (
     <>
-      <svg viewBox="0 0 200 120" preserveAspectRatio="xMinYMin slice" className="absolute inset-x-0 top-0 h-[58%] w-full overflow-visible">
+      <svg viewBox="0 0 200 120" preserveAspectRatio="xMinYMin slice" className="absolute inset-x-0 top-[13%] h-[44%] w-full overflow-visible">
         <motion.path d="M-10 46 L52 30" stroke="#fff" strokeWidth="1.4" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 3px #fff)" }}
           initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.7, delay: at(0.2), ease: "easeIn" }} />
         <motion.path d="M54 14 L70 42 L38 42 Z" fill="rgb(255 255 255 / 0.08)" stroke="rgb(255 255 255 / 0.75)" strokeWidth="0.8" strokeLinejoin="round"
-          initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: EASE }} style={{ transformOrigin: "54px 32px" }} />
+          initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: EASE }} style={{ transformOrigin: "54px 32px", transformBox: "view-box" }} />
         {PRIDE.map((c, i) => (
           <motion.path key={c} d={`M60 ${32 + i * 0.9} L214 ${8 + i * 13}`} stroke={c} strokeWidth="3.2" strokeLinecap="round" style={{ filter: `drop-shadow(0 0 2.5px ${c})` }}
             initial={{ pathLength: 0, opacity: 0.95 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: at(0.85 + i * 0.06), ease: EASE }} />

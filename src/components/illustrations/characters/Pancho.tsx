@@ -23,7 +23,7 @@ export function Pancho({ pose = "stand", outfit = {}, flip, pup, animated, class
           <ellipse cx="86" cy="72" rx="9" ry="9" fill={TAN} />
           <Leg x={x0 + 4} y={74} h={21} fill={COAT} paw={TAN} className={legClass(pose, "back-near")} />
           {pose !== "wave" && frontNear}
-          <g className="pup-head" transform={pup ? "translate(-30 -2) scale(1.3)" : "translate(0 10)"}>
+          <g transform={pup ? "translate(-35 -2) scale(1.3)" : "translate(0 10)"}><g className="pup-head">
             <path d="M84 50C85 40 92 33 99 34L103 50C97 55 89 56 84 50Z" fill={COAT} />
             <ellipse cx="100" cy="36" rx="14" ry="12.5" fill={COAT} />
             <path d="M106 34C114 33 122 37 123 42C123 47 117 49 110 48C105 47 103 42 106 34Z" fill={TAN} />
@@ -34,7 +34,7 @@ export function Pancho({ pose = "stand", outfit = {}, flip, pup, animated, class
             <ellipse cx="102" cy="26.5" rx="2" ry="1.2" fill={TAN} />
             <path className="pup-ear" d="M93 26C84 26 80 40 82 52C83 58 90 58 92 52C95 44 97 34 93 26Z" fill={DARK} />
             {outfit.hat && <Hat kind={outfit.hat} x={99} y={23} tilt={-10} />}
-          </g>
+          </g></g>
           <path d="M85 55Q89 67 101 62" stroke={OLIVE} strokeWidth="4" fill="none" strokeLinecap="round" />
           {outfit.bandana && <Bandana x={93} y={64} color={outfit.bandana} />}
           {outfit.tie ? <Tie x={93} y={64} color={outfit.tie} /> : !outfit.bandana && <circle cx="92" cy="66.5" r="3" fill={BRASS} />}

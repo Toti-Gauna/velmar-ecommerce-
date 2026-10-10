@@ -39,6 +39,8 @@ describe("temáticas", () => {
     const now = at("2026-10-05");
     expect(currentTheme(now, "navidad")?.id).toBe("navidad");
     expect(currentTheme(now, "original")).toBeNull();
+    // Una vista previa que ya no existe (San Patricio, guardada antes de la Fase 5) no tapa la temática del día.
+    expect(currentTheme(now, "san-patricio" as never)?.id).toBe("dia-de-la-madre");
     setDemoData({ ...demoData(), themeSettings: { mode: "fixed", fixedId: "orgullo", showTryButton: true } });
     expect(currentTheme(now, null)?.id).toBe("orgullo");
     setDemoData({ ...demoData(), themeSettings: { mode: "off", fixedId: "orgullo", showTryButton: true } });

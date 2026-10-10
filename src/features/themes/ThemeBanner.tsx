@@ -34,13 +34,14 @@ export function ThemeBanner({ theme, offer }: { theme: SeasonalTheme; offer: The
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:radial-gradient(#fff_1px,transparent_1.5px)] [background-size:18px_18px]" />
       <SeasonFx id={theme.id} />
       <AmbientField layers={AMBIENT[theme.id]} className="absolute inset-0" />
-      {skin.decor.map((kind, i) => (skin.cast && i === 0 ? null : (
+      {/* Con personajes, la protagonista y la decoración de abajo a la derecha dejan lugar al elenco. */}
+      {skin.decor.map((kind, i) => (skin.cast && (i === 0 || i === 4) ? null : (
         <span key={`${kind}-${i}`} aria-hidden="true" className={`animate-fade-up pointer-events-none absolute ${SPOTS[i]}`} style={{ animationDelay: `${120 + i * 110}ms` }}>
           <Decor kind={kind} className="h-full w-full drop-shadow-[0_14px_20px_rgb(0_0_0/0.35)]" />
         </span>
       )))}
       {skin.cast && (
-        <div aria-hidden="true" className="pointer-events-none absolute bottom-3 right-[2%] flex items-end sm:bottom-8 sm:right-[7%]">
+        <div aria-hidden="true" className="pointer-events-none absolute bottom-14 right-[2%] flex items-end sm:bottom-10 sm:right-[7%]">
           {skin.cast.map((c, i) => (
             <span key={i} className={`animate-fade-up block ${c.pup ? "w-[21vw] max-w-36" : "w-[27vw] max-w-56"} ${i ? "-ml-5 sm:-ml-10" : ""}`} style={{ animationDelay: `${150 + i * 140}ms` }}>
               <span className="pup-idle block" style={{ animationDelay: `${-i * 1.3}s` }}>

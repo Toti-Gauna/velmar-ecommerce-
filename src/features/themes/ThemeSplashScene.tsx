@@ -1,4 +1,5 @@
 "use client";
+import { useReducedMotion } from "motion/react";
 import type { ComponentType } from "react";
 import { useState, useSyncExternalStore } from "react";
 import { seasonalThemes, themeCoupons } from "@/demo/fixtures/themes";
@@ -17,6 +18,17 @@ import { AnimalScene, KidsScene } from "./splash/play";
 
 const noop = () => () => {};
 const readSeason = () => (document.documentElement.dataset.season as SeasonId | undefined) ?? null;
+
+/** ¿Ya cayó el telón? (fin de la animación, o `splash-done` que pone el script a los 5,2 s o con Escape). */
+function subscribeCurtain(cb: () => void) {
+  const mo = new MutationObserver(cb);
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  const splash = document.getElementById("velmar-splash");
+  splash?.addEventListener("animationend", cb);
+  return () => { mo.disconnect(); splash?.removeEventListener("animationend", cb); };
+}
+const readCurtain = () => document.documentElement.classList.contains("splash-done")
+  || Boolean(document.getElementById("velmar-splash")?.getAnimations?.().some((a) => (a as CSSAnimation).animationName === "splash-curtain" && a.playState === "finished"));
 const hotSalePct = themeCoupons.find((c) => c.themeId === "hot-sale")?.value ?? 30;
 
 /** Una escena distinta por festividad (motion graphics). */
@@ -36,7 +48,11 @@ export function ThemeSplashScene() {
   const id = useSyncExternalStore(noop, readSeason, () => null);
   // Se mide una sola vez, al montar la escena en el cliente (ver SceneClock).
   const [offset] = useState(splashElapsed);
-  if (!id || !SKINS[id]) return null;
+  // Al caer el telón (o con "reducir movimiento") la escena se desmonta: sus animaciones en bucle no siguen
+  // corriendo escondidas el resto de la visita.
+  const done = useSyncExternalStore(subscribeCurtain, readCurtain, () => false);
+  const reduce = useReducedMotion();
+  if (!id || !SKINS[id] || done || reduce) return null;
   const Scene = SCENES[id];
   const name = seasonalThemes.find((t) => t.id === id)?.name ?? "";
   return (

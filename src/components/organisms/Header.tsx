@@ -40,6 +40,13 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const count = hydrated ? units : 0;
+  // La bolsa se sacude solo cuando entra algo con la página ya cargada (no al recuperar el carrito guardado).
+  const [prev, setPrev] = useState({ count, hydrated });
+  const [jiggle, setJiggle] = useState(0);
+  if (prev.count !== count || prev.hydrated !== hydrated) {
+    if (prev.hydrated && hydrated && count > prev.count) setJiggle((j) => j + 1);
+    setPrev({ count, hydrated });
+  }
   const icon = "grid h-11 w-11 place-items-center rounded-full text-ink transition-colors hover:bg-ink/5";
   return (
     <header ref={ref} data-shop-header className={cn(stuck && "max-lg:bleed-top", "sticky top-[env(safe-area-inset-top)] z-40 bg-surface lg:glass border-b transition-[border-color,box-shadow] duration-300", compact ? "border-line shadow-[0_8px_30px_-20px_rgb(28_32_22/0.35)]" : "border-transparent")}>
@@ -62,8 +69,8 @@ export function Header() {
           <Link href="/favoritos/" aria-label="Favoritos" className={cn(icon, "max-lg:hidden")}><Heart size={21} aria-hidden="true" /></Link>
           <Link href="/cuenta/" aria-label="Mi cuenta (demo)" className={cn(icon, "max-sm:hidden")}><UserRound size={21} aria-hidden="true" /></Link>
           <button type="button" onClick={() => openCart()} aria-label={`Carrito, ${count} ${count === 1 ? "producto" : "productos"}`} className={cn(icon, "relative")}>
-            <ShoppingBag key={count} size={21} aria-hidden="true" className={count ? "animate-bag" : undefined} />
-            {count > 0 && <span key={count} className="animate-pop absolute right-0.5 top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[11px] font-extrabold text-on-primary">{count}</span>}
+            <ShoppingBag key={`bag-${jiggle}`} size={21} aria-hidden="true" className={jiggle ? "animate-bag" : undefined} />
+            {count > 0 && <span key={`badge-${count}`} className="animate-pop absolute right-0.5 top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[11px] font-extrabold text-on-primary">{count}</span>}
           </button>
         </div>
       </div>

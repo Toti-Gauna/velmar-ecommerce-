@@ -1,3 +1,4 @@
+import { PageSwap } from "@/components/motion/PageSwap";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/templates/PageHeader";
@@ -23,9 +24,9 @@ export default async function CategoryPage({ params }: Props) {
   if (!category) notFound();
   const list = productsInCategory(slug);
   return (
-    <>
+    <PageSwap id={slug}>
       <PageHeader title={category.name} crumbs={[{ href: "/categorias/", label: "Categorías" }]}>{category.description}</PageHeader>
       <CategoryProducts categorySlug={slug} hadProducts={list.length > 0} />
-    </>
+    </PageSwap>
   );
 }

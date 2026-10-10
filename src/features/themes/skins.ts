@@ -43,7 +43,7 @@ export const SKINS: Record<SeasonId, ThemeSkin> = {
     from: "#22381f", to: "#4a6a2c", accent: "#f3dca6", accentInk: "#22381f", topper: "mate", decor: ["mate", "heart", "paw", "star", "mate"],
     cast: [{ who: "pancho", pose: "wave", outfit: { bandana: "#b7d68f" } }, { who: "lola", pose: "wave", outfit: { bandana: "#ef9b6a" }, flip: true }],
   },
-  "dia-del-nino": { from: "#0b4468", to: "#1f7fb3", accent: "#ffd34d", accentInk: "#0b4468", topper: "party-hat", decor: ["balloon", "kite", "star", "balloon", "party-hat"] },
+  "dia-del-nino": { from: "#0b4468", to: "#1b74a6", accent: "#ffd34d", accentInk: "#0b4468", topper: "party-hat", decor: ["balloon", "kite", "star", "balloon", "party-hat"] },
 };
 
 export function skinOf(id: SeasonId): ThemeSkin {
