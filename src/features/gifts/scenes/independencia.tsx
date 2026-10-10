@@ -156,7 +156,7 @@ const CSS = `
 @keyframes in-flood { 0% { opacity: 0; transform: scale(.2); } 35% { opacity: .95; } 100% { opacity: .45; transform: scale(1); } }
 .in-flag.is-open { transform-box: fill-box; transform-origin: 0% 50%; animation: in-flutter .9s ease-in-out 200ms both; }
 @keyframes in-flutter { 25% { transform: skewY(-6deg) scaleX(.94); } 55% { transform: skewY(5deg); } 80% { transform: skewY(-2deg); } 100% { transform: none; } }
-.in-trail { opacity: 0; animation: in-trail 280ms ease-in both; }
+.in-trail { opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; animation: in-trail 280ms ease-in both; }
 @keyframes in-trail { 0% { opacity: 0; transform: translateY(110px); } 30% { opacity: 1; } 100% { opacity: 0; transform: none; } }
 .in-fw { opacity: 0; transform-box: view-box; transform-origin: 0 0; animation: in-fw 950ms cubic-bezier(.16,1,.3,1) both; }
 @keyframes in-fw { 0% { opacity: 0; transform: scale(.1); } 12% { opacity: 1; } 65% { opacity: 1; } 100% { opacity: 0; transform: scale(1.15) translateY(8px); } }

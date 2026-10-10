@@ -124,7 +124,7 @@ export default function FatherGift({ hits, total, opened, reduce }: GiftScenePro
 
 const CSS = `
 .pd-lid { transform-box: view-box; transform-origin: 150px 156px; transition: transform 420ms cubic-bezier(.34,1.56,.64,1); }
-.pd-handle { transition: transform 420ms cubic-bezier(.34,1.56,.64,1); }
+.pd-handle { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 420ms cubic-bezier(.34,1.56,.64,1); }
 .pd-screw { transform-box: fill-box; transform-origin: 50% 50%; }
 .pd-screw.is-out:not(.is-last) { animation: pd-pop 850ms cubic-bezier(.3,.6,.5,1) both; }
 .pd-screw.is-out.is-last { opacity: 0; }
@@ -137,12 +137,12 @@ const CSS = `
 @keyframes pd-inner { 0% { opacity: 0; } 40%, 100% { opacity: 1; } }
 .pd-handle.is-open { transform-box: fill-box; transform-origin: 50% 100%; animation: pd-handle 300ms ease-in 80ms both; }
 @keyframes pd-handle { to { transform: translateY(-10px) scaleY(.2); opacity: 0; } }
-.pd-prize { animation: pd-rise 900ms cubic-bezier(.34,1.45,.64,1) 260ms both; }
+.pd-prize { transform-box: view-box; transform-origin: 150px 110px; animation: pd-rise 900ms cubic-bezier(.34,1.45,.64,1) 260ms both; }
 @keyframes pd-rise { 0% { transform: translateY(120px); } 100% { transform: none; } }
 .pd-spark { transform-box: fill-box; transform-origin: 50% 50%; animation: pd-spark 700ms cubic-bezier(.34,1.56,.64,1) both; }
 @keyframes pd-spark { 0% { opacity: 0; transform: scale(0) rotate(-90deg); } 60% { opacity: 1; transform: scale(1.4) rotate(10deg); } 100% { opacity: .9; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .pd-lid, .pd-handle { transition: none; }
+  .pd-lid, .pd-handle { transform-box: fill-box; transform-origin: 50% 100%; transition: none; }
   .pd-screw.is-out:not(.is-last) { animation: none; opacity: 0; }
   .pd-lid.is-open { animation: none; transform: translateY(-2px) scaleY(-.62); }
   .pd-lid.is-open .pd-inner { animation: none; opacity: 1; }

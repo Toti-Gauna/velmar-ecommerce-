@@ -129,6 +129,7 @@ export default function MayoGift({ hits, total, opened, reduce }: GiftSceneProps
 
 const CSS = `
 .my-canopy { transform-box: view-box; transform-origin: 150px ${TOP}px; transition: transform 650ms cubic-bezier(.34,1.56,.64,1); }
+.my-runner, .my-rain { transform-box: fill-box; transform-origin: 50% 50%; }
 .my-runner { transition: transform 650ms cubic-bezier(.34,1.56,.64,1); }
 .my-shadow { transform-box: fill-box; transform-origin: 50% 50%; transition: transform 650ms cubic-bezier(.34,1.56,.64,1); }
 .my-ribs, .my-pinch { transition: opacity 400ms; }

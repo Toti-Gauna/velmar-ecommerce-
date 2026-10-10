@@ -140,7 +140,7 @@ const CSS = `
 .am-lid { transform-box: fill-box; transform-origin: 50% 50%; }
 .am-lid.is-open { animation: am-lid 900ms cubic-bezier(.3,.7,.4,1) 160ms both; }
 @keyframes am-lid { 0% { transform: none; } 28% { transform: translate(-14px, -46px) rotate(-14deg); } 100% { transform: translate(-120px, -150px) rotate(-80deg) scale(.8); opacity: 0; } }
-.am-rise { animation: am-rise 900ms cubic-bezier(.34,1.45,.64,1) 320ms both; }
+.am-rise { transform-box: fill-box; transform-origin: 50% 100%; animation: am-rise 900ms cubic-bezier(.34,1.45,.64,1) 320ms both; }
 @keyframes am-rise { 0% { transform: translateY(90px); } 100% { transform: none; } }
 .am-heart { transform-box: fill-box; transform-origin: 50% 50%; animation: am-heart 900ms cubic-bezier(.34,1.3,.64,1) both; }
 @keyframes am-heart { 0% { opacity: 0; transform: translate(var(--fx), var(--fy)) scale(.3); } 25% { opacity: 1; } 100% { opacity: 1; transform: none; } }

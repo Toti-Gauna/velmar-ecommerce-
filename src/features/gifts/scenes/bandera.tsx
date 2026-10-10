@@ -6,7 +6,7 @@ const CELESTE = "#74acdf", WHITE = "#f7f9fc", GOLD = "#f6cf5a";
 const HOIST = 99, W = 142, H = 90, TOP = 58; // bandera izada: borde de la driza, tamaño y altura final
 // Altura y despliegue por golpe (0 = plegada abajo).
 const STEP = [{ y: 144, s: 0.16 }, { y: 124, s: 0.32 }, { y: 106, s: 0.5 }, { y: 90, s: 0.66 }, { y: 74, s: 0.82 }];
-const SLICES = 14, SUN = { x: HOIST + W / 2, y: TOP + H / 2 };
+const SLICES = 20, SUN = { x: HOIST + W / 2, y: TOP + H / 2 };
 const CONFETTI = Array.from({ length: 30 }, (_, i) => ({ x: 14 + rand(i + 300) * 272, y: 40 + rand(i + 340) * 190, c: [CELESTE, WHITE, GOLD][i % 3] }));
 const ray = (r: number, a: number) => `${(SUN.x + r * Math.cos(a)).toFixed(1)} ${(SUN.y + r * Math.sin(a)).toFixed(1)}`;
 
@@ -74,7 +74,7 @@ export default function FlagGift({ hits, total, opened, reduce }: GiftSceneProps
       <g className="bd-flag" style={{ transform: `translateY(${st.y - TOP}px)` }}>
         <g className="bd-unfurl" style={{ transform: `scaleX(${st.s})` }}>
           {Array.from({ length: SLICES }, (_, i) => (
-            <g key={i} className={opened ? "bd-slice is-open" : "bd-slice"} style={{ animationDelay: `${160 + i * 28}ms` }}>
+            <g key={i} className={opened ? "bd-slice is-open" : "bd-slice"} style={{ animationDelay: `${160 + i * 20}ms` }}>
               <g clipPath={`url(#bd-c${i})`}><use href="#bd-art" /></g>
             </g>
           ))}
@@ -99,7 +99,7 @@ export default function FlagGift({ hits, total, opened, reduce }: GiftSceneProps
 }
 
 const CSS = `
-.bd-flag { transition: transform 650ms cubic-bezier(.34,1.4,.64,1); }
+.bd-flag { transform-box: view-box; transform-origin: 0 0; transition: transform 650ms cubic-bezier(.34,1.4,.64,1); }
 .bd-unfurl { transform-box: view-box; transform-origin: ${HOIST}px 0; transition: transform 650ms cubic-bezier(.34,1.56,.64,1); }
 .bd-pleats { transition: opacity 600ms; }
 .bd-pulley { transform-box: view-box; transform-origin: 93px 46px; transition: transform 650ms cubic-bezier(.16,1,.3,1); }
