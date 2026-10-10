@@ -119,15 +119,28 @@ html[data-season] #velmar-splash {
   background: radial-gradient(120% 85% at 50% 35%, var(--sp-to, #262c1d) 0%, var(--sp-from, #1c2016) 58%, #050505 125%);
 }
 html[data-season] #velmar-splash > .splash-orbit, html[data-season] #velmar-splash .splash-city,
-html[data-season] #velmar-splash .splash-rays, html[data-season] #velmar-splash .splash-ring, html[data-season] #velmar-splash .splash-dust { display: none; }
+html[data-season] #velmar-splash .splash-rays, html[data-season] #velmar-splash .splash-halo, html[data-season] #velmar-splash .splash-dust { display: none; }
 /* Año Nuevo: el logo espera a que termine la cuenta regresiva. */
-html[data-season="ano-nuevo"] #velmar-splash .chev { animation-delay: 1.65s; }
-html[data-season="ano-nuevo"] #velmar-splash .chev-2 { animation-delay: 1.8s; }
+html[data-season="ano-nuevo"] #velmar-splash .mark-m { animation-delay: 1.65s; }
+html[data-season="ano-nuevo"] #velmar-splash .mark-v { animation-delay: 1.8s; }
+html[data-season="ano-nuevo"] #velmar-splash .splash-mark::after { animation-delay: 2.1s; }
 html[data-season="ano-nuevo"] #velmar-splash .word { animation-delay: 1.95s; }
-html[data-season="ano-nuevo"] #velmar-splash .word-sheen { animation-delay: 2.9s; }
 html[data-season] #velmar-splash .splash-glow { background: radial-gradient(closest-side, color-mix(in srgb, var(--sp-accent, #d2ad69) 30%, transparent), transparent); }
-html[data-season] #velmar-splash .chev { stroke: var(--sp-accent, #d2ad69); }
-#velmar-splash .season-scene { position: absolute; inset: 0; }
+html[data-season] #velmar-splash .splash-mark { color: var(--sp-accent, #d2ad69); }
+/* San Valentín: el logo sube para que el grupo (corazón con el logo + la cena de Lola y Pancho) quede centrado.
+   Está acá y no en la escena porque tiene que valer desde el primer cuadro, antes de que la escena se descargue. */
+html[data-season="san-valentin"] #velmar-splash { --vl-h: min(80vmin, 330px); --vl-w: min(96vw, 440px); --vl-up: calc(var(--vl-h) * .03 + 4px + var(--vl-w) / 4); }
+@media (min-width: 640px) { html[data-season="san-valentin"] #velmar-splash { --vl-h: min(420px, 50vh); --vl-w: min(640px, 70vh); } }
+html[data-season="san-valentin"] #velmar-splash .splash-brand { translate: 0 calc(var(--vl-up) * -1); }
+/* Escritorio o tablet apaisada con poco alto: el corazón no llega al tamaño que necesita el logo grande, así que el
+   logo va en su tamaño de celular (el mismo de las pantallas bajas). */
+@media (min-width: 640px) and (max-height: 820px) {
+  html[data-season="san-valentin"] #velmar-splash { --brand-h: 120px; }
+  html[data-season="san-valentin"] #velmar-splash .splash-mark { width: 3.5rem; height: 3.5rem; }
+  html[data-season="san-valentin"] #velmar-splash .word { font-size: 3rem; }
+}
+/* La escena llega cuando baja su archivo (después de la carga inicial): entra fundida, no de golpe. */
+#velmar-splash .season-scene { position: absolute; inset: 0; animation: fade-in 450ms ease-out both; }
 #velmar-splash .season-tag { position: absolute; top: calc(9% + env(safe-area-inset-top)); color: var(--sp-accent); opacity: 0; animation: fade-up 700ms var(--ease-out-expo) 500ms both; }
 .scene-glow { animation: scene-glow 1.8s ease-in-out infinite alternate; }
 .scene-fog { position: absolute; inset-inline: -10%; bottom: -6%; height: 34%; filter: blur(18px); background: radial-gradient(50% 60% at 30% 70%, rgb(200 180 230 / 0.22), transparent), radial-gradient(45% 55% at 75% 75%, rgb(200 180 230 / 0.18), transparent); animation: fog 6s ease-in-out infinite alternate; }

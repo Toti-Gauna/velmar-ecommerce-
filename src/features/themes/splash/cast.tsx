@@ -29,8 +29,9 @@ export function FriendsScene() {
   return (
     <>
       {[-1, 1].map((side, i) => (
-        <motion.svg key={side} viewBox="0 0 100 100" className="absolute left-1/2 top-[42%] h-[48vmin] w-[48vmin] -translate-y-1/2 overflow-visible"
-          initial={{ x: `${-50 + side * 160}%`, opacity: 0 }} animate={{ x: `${-50 + side * 12}%`, opacity: 0.8 }} transition={{ duration: 1.6, delay: at(0.2), ease: EASE }}>
+        // Los anillos rodean el logo (su tamaño sale del alto del logo): "Velmar" entra en la zona donde se cruzan.
+        <motion.svg key={side} viewBox="0 0 100 100" className="absolute left-1/2 top-1/2 -translate-y-1/2 overflow-visible" style={{ width: "calc(var(--brand-h) * 2.5)", height: "calc(var(--brand-h) * 2.5)" }}
+          initial={{ x: `${-50 + side * 160}%`, opacity: 0 }} animate={{ x: `${-50 + side * 12.5}%`, opacity: 0.8 }} transition={{ duration: 1.6, delay: at(0.2), ease: EASE }}>
           <motion.circle cx="50" cy="50" r="46" fill="none" stroke={i ? "#f3dca6" : "#b7d68f"} strokeWidth="1" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.8, delay: at(0.3), ease: EASE }}
             style={{ filter: `drop-shadow(0 0 4px ${i ? "#f3dca6" : "#b7d68f"})` }} />
         </motion.svg>
@@ -44,7 +45,7 @@ export function FriendsScene() {
       <motion.div className="absolute bottom-[6%] left-1/2 w-[34vmin]" initial={{ x: "150vw" }} animate={{ x: "-4%" }} transition={{ duration: 1.65, delay: at(0.2), ease: [0.25, 0.6, 0.35, 1] }}>
         <Lola pose={pose} animated flip outfit={{ bandana: "#ef9b6a" }} className="w-full" />
       </motion.div>
-      <motion.span className="absolute bottom-[30%] left-1/2 h-[12vmin] w-[12vmin] -translate-x-1/2" initial={{ scale: 0, y: 20 }} animate={{ scale: [0, 1.2, 1], y: 0 }} transition={{ duration: 0.7, delay: at(1.95), ease: EASE }}>
+      <motion.span className="absolute bottom-[calc(6%+15vmin)] left-1/2 h-[9vmin] w-[9vmin] -translate-x-1/2" initial={{ scale: 0, y: 20 }} animate={{ scale: [0, 1.2, 1], y: 0 }} transition={{ duration: 0.7, delay: at(1.95), ease: EASE }}>
         <svg viewBox="0 0 40 40" className="absolute -top-[80%] left-[10%] h-[80%] w-[80%] overflow-visible">
           {[0, 1, 2].map((k) => (
             <motion.path key={k} d={`M${12 + k * 8} 38 C${6 + k * 8} 30 ${18 + k * 8} 24 ${12 + k * 8} 14 C${8 + k * 8} 8 ${16 + k * 8} 4 ${12 + k * 8} 0`} fill="none" stroke="#f6f1e8" strokeWidth="1.4" strokeLinecap="round"

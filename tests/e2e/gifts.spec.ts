@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { sampleGifts } from "../../src/demo/fixtures/gifts";
 import { guardNetwork, horizontalOverflow } from "./helpers";
 
 /** Checkout de demostración como invitado, con retiro y transferencia (lo mínimo para confirmar). */
@@ -98,4 +99,15 @@ test("un link de regalo cortado o editado no abre nada", async ({ page }) => {
   await page.goto("regalo/?g=eyJ2IjoxfQ");
   await expect(page.getByRole("heading", { level: 1, name: "No pudimos abrir ese regalo" })).toBeVisible();
   await expect(page.getByRole("dialog")).toHaveCount(0);
+});
+
+test("los 17 regalos de prueba se abren con su código, cada uno con su escena", async ({ page }) => {
+  test.setTimeout(120_000);
+  for (const g of sampleGifts) {
+    await page.goto(`regalo/?c=${g.code}`);
+    const stage = page.getByRole("dialog", { name: `Regalo de ${g.from} para ${g.to}` });
+    await stage.getByRole("button", { name: "Abrirlo de una vez" }).click();
+    await expect(stage.getByText(g.message, { exact: false }), g.occasion).toBeVisible();
+    await expect(stage.getByRole("heading", { name: g.item.name })).toBeVisible();
+  }
 });

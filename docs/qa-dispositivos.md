@@ -44,6 +44,7 @@ Abrir la demo publicada en cada equipo. Marcar ✅ o anotar qué pasó.
 | 16 | Regalo: abrir el link en otro teléfono; golpear cinco veces con el dedo (sacudón, sonido y vibración en Android) y ver el producto y el mensaje sin precio | | |
 | 17 | Regalo: "Compartir" y WhatsApp desde la confirmación llevan el link y el código | | |
 | 18 | Ruleta: a pantalla completa entra entera sin scroll (también en iPhone SE); al ganar, el cupón y sus tres botones se ven sin scrollear | | |
+| 19 | Pantallas de carga (Polish 8.1): al recargar no asoma la tienda clara; el aro, el logo y "Velmar" se animan suaves sin cortarse; en Día de la Madre el logo queda dentro de la flor y en San Valentín se ve la cena de Lola y Pancho completa (probar con "Probar temáticas") | | |
 
 ### Escritorio (Chrome, Safari y Firefox)
 | # | Qué mirar | Resultado |

@@ -27,7 +27,8 @@ export function AnimalScene() {
       </motion.span>
       <Layer>
         {Array.from({ length: 8 }, (_, i) => (
-          <motion.span key={i} className="absolute h-[6vmin] w-[6vmin]" style={{ left: `${rand(i + 3) * 100}%` }} initial={{ top: "105%", rotate: 0 }}
+          // Los huesitos suben por los costados (0–35 % y 65–100 %): por el medio pasaban detrás del logo.
+          <motion.span key={i} className="absolute h-[6vmin] w-[6vmin]" style={{ left: `${rand(i + 3) < 0.5 ? rand(i + 3) * 70 : 30 + rand(i + 3) * 70}%` }} initial={{ top: "105%", rotate: 0 }}
             animate={{ top: "-10%", rotate: 180 }} transition={{ duration: 4.5, delay: at(rand(i) * 1.5), ease: "linear" }}>
             <Decor kind="bone" className="h-full w-full opacity-60" />
           </motion.span>

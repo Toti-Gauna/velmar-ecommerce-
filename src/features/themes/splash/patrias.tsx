@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "motion/react";
+import type { CSSProperties } from "react";
 import { Decor } from "@/components/illustrations/seasonal/Decor";
 import { CELESTE } from "@/components/illustrations/seasonal/patrias";
 import { Burst, EASE, Firework, Layer, Letters, rand, useAt } from "./kit";
@@ -13,7 +14,8 @@ const PATRIA = [CELESTE, "#ffffff", "#f6c54c"];
 export function MayoScene() {
   const at = useAt();
   return (
-    <>
+    // --u: un "vmin" que achica el Sol y el Cabildo cuando la pantalla es baja, para que entren debajo del logo.
+    <div className="absolute inset-0" style={{ "--u": "min(1vmin, calc((36vh - var(--brand-h) / 2 - 16px) / 48))" } as CSSProperties}>
       <Layer>
         {Array.from({ length: 42 }, (_, i) => (
           <motion.span key={i} className="absolute h-[5vmin] w-[0.25vmin] rounded-full bg-[linear-gradient(transparent,rgb(200_225_245/0.8))]" style={{ left: `${rand(i) * 100}%`, rotate: "12deg" }}
@@ -21,11 +23,11 @@ export function MayoScene() {
         ))}
       </Layer>
       <Letters text="1810" delay={0.6} className="font-display absolute left-1/2 top-[15%] -translate-x-1/2 text-[11vmin] leading-none text-[#f6c54c] [text-shadow:0_4px_24px_rgb(0_0_0/0.35)]" />
-      <motion.span className="absolute bottom-[14%] left-1/2 h-[48vmin] w-[48vmin] -translate-x-1/2" initial={{ y: "40%", opacity: 0 }} animate={{ y: 0, opacity: 1, rotate: 25 }}
+      <motion.span className="absolute bottom-[14%] left-1/2 h-[calc(var(--u)*48)] w-[calc(var(--u)*48)] -translate-x-1/2" initial={{ y: "40%", opacity: 0 }} animate={{ y: 0, opacity: 1, rotate: 25 }}
         transition={{ y: { duration: 1.2, delay: at(2.1), ease: EASE }, opacity: { duration: 0.8, delay: at(2.1) }, rotate: { duration: 5, delay: at(2.1), ease: "linear" } }}>
         <Decor kind="sol-de-mayo" className="h-full w-full [filter:drop-shadow(0_0_30px_rgb(246_197_76/0.7))]" />
       </motion.span>
-      <motion.span className="absolute bottom-[5%] left-1/2 h-[40vmin] w-[58vmin] -translate-x-1/2" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1, delay: at(0.5), ease: EASE }}>
+      <motion.span className="absolute bottom-[5%] left-1/2 h-[calc(var(--u)*40)] w-[calc(var(--u)*58)] -translate-x-1/2" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1, delay: at(0.5), ease: EASE }}>
         <Decor kind="cabildo" className="h-full w-full [filter:drop-shadow(0_16px_24px_rgb(0_0_0/0.35))]" />
       </motion.span>
       <div className="absolute inset-x-0 bottom-[2%] flex justify-around px-[2%]">
@@ -47,7 +49,7 @@ export function MayoScene() {
         </motion.span>
       ))}
       <Burst x="50%" y="72%" delay={2.9} colors={PATRIA} count={22} radius={36} />
-    </>
+    </div>
   );
 }
 
@@ -101,7 +103,7 @@ export function IndependenciaScene() {
         <Firework key={i} x={x as string} y={y as string} delay={d as number} colors={[colors[i % 3]!, colors[(i + 1) % 3]!, CELESTE]} />
       ))}
       <Letters text="1816" delay={0.6} className="font-display absolute left-1/2 top-[15%] -translate-x-1/2 text-[11vmin] leading-none text-[#f3d27a] [text-shadow:0_0_30px_rgb(243_210_122/0.45)]" />
-      <motion.span className="absolute bottom-[3%] left-1/2 h-[50vmin] w-[50vmin] -translate-x-1/2" initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2, delay: at(0.2), ease: EASE }}>
+      <motion.span className="absolute bottom-[3%] left-1/2 -translate-x-1/2" style={{ width: "min(50vmin, calc(47vh - var(--brand-h) / 2 - 16px))", aspectRatio: "1" }} initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1.2, delay: at(0.2), ease: EASE }}>
         <Decor kind="casa-tucuman" className="h-full w-full [filter:drop-shadow(0_18px_30px_rgb(0_0_0/0.5))]" />
         <motion.span className="absolute bottom-[1%] left-1/2 h-[34%] w-[20%] -translate-x-1/2 rounded-t-full bg-[radial-gradient(60%_80%_at_50%_100%,rgb(255_214_130/0.85),transparent)] mix-blend-screen"
           initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.75] }} transition={{ duration: 1.2, delay: at(1.1) }} />

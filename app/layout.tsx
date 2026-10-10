@@ -3,6 +3,7 @@ import "@fontsource-variable/fraunces/opsz.css";
 import "@fontsource-variable/fraunces/opsz-italic.css";
 import "@fontsource/caveat/600.css";
 import "./globals.css";
+import "./splash.css";
 import "./seasons.css";
 import "./characters.css";
 import "./motion.css";

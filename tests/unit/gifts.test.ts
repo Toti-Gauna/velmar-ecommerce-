@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { decodeGift, encodeGift } from "@/demo/engine/gift-link";
 import { cleanGift, giftProblem, giftsFor, giftsFromLines, makeGiftCode, normalizeGiftCode, type Gift } from "@/demo/engine/gifts";
-import { demoGifts } from "@/demo/fixtures/gifts";
+import { getProduct } from "@/demo/engine/catalog";
+import { demoGifts, sampleGifts } from "@/demo/fixtures/gifts";
+import { GIFT_SCENE_NAMES } from "@/features/gifts/scenes";
 
 const seq = (values: number[]) => { let i = 0; return () => values[i++ % values.length]!; };
 const gift: Gift = {
@@ -89,5 +91,19 @@ describe("regalos de un pedido", () => {
     expect(gifts[0]).toMatchObject({ to: "Sofi", from: "Lu", occasion: "navidad", orderCode: "VEL-1", eta: "2026-10-16", item: { slug: "home-spray", name: "Home spray Velmar" } });
     expect(gifts[1]!.item.detail).toBe("Texto: “Toby”");
     for (const g of gifts) { expect(normalizeGiftCode(g.code)).toBe(g.code); expect(JSON.stringify(g)).not.toMatch(/price|precio/i); }
+  });
+});
+
+describe("regalos de prueba", () => {
+  it("hay uno por cada escena, con código válido y único, producto y variante del catálogo, sin cuenta", () => {
+    expect(new Set(sampleGifts.map((g) => g.occasion))).toEqual(new Set(Object.keys(GIFT_SCENE_NAMES)));
+    const codes = [...demoGifts, ...sampleGifts].map((g) => g.code);
+    expect(new Set(codes).size).toBe(codes.length);
+    for (const g of sampleGifts) {
+      expect(normalizeGiftCode(g.code)).toBe(g.code);
+      expect(g.toEmail).toBeUndefined();
+      expect(getProduct(g.item.slug)?.variants.some((v) => v.label === g.item.variant)).toBe(true);
+      expect(decodeGift(encodeGift(g))).toEqual(g);
+    }
   });
 });

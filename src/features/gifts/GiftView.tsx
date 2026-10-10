@@ -6,7 +6,7 @@ import { HeroSkeleton } from "@/components/atoms/Skeleton";
 import { ImmersiveStage } from "@/components/motion/ImmersiveStage";
 import { decodeGift } from "@/demo/engine/gift-link";
 import { normalizeGiftCode, type Gift } from "@/demo/engine/gifts";
-import { demoGifts } from "@/demo/fixtures/gifts";
+import { demoGifts, sampleGifts } from "@/demo/fixtures/gifts";
 import { useAccount } from "@/stores/account";
 import { useGifts } from "@/stores/gifts";
 import { useHydrated } from "@/stores/hydration";
@@ -33,7 +33,7 @@ export function GiftView() {
   const param = params.get("g");
   const codeParam = params.get("c");
   const code = codeParam ? normalizeGiftCode(codeParam) : null;
-  const gift = param ? decodeGift(param) : code ? findByCode(code, [demoGifts, sent, saved]) : null;
+  const gift = param ? decodeGift(param) : code ? findByCode(code, [demoGifts, sampleGifts, sent, saved]) : null;
   if (!hydrated) return <HeroSkeleton label="Cargando regalo" />;
 
   const failed = (param && !gift) || (codeParam && !gift);
