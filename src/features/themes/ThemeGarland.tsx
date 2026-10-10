@@ -1,4 +1,6 @@
 "use client";
+import { CELESTE } from "@/components/illustrations/seasonal/patrias";
+import { PRIDE } from "@/components/illustrations/seasonal/pride";
 import { skinOf } from "./skins";
 import { useCurrentTheme } from "./useCurrentTheme";
 import type { SeasonId } from "@/demo/types";
@@ -6,12 +8,16 @@ import type { SeasonId } from "@/demo/types";
 /** Guirnalda que cuelga debajo del header: luces en las fiestas de fin de año, banderines en el resto. */
 const LIGHTS: SeasonId[] = ["navidad", "ano-nuevo", "black-friday", "hot-sale", "halloween"];
 const W = 1200, H = 34, N = 24;
+/** Banderines propios: arcoíris en el Orgullo, celeste y blanco en las fechas patrias. */
+const FLAGS: Partial<Record<SeasonId, string[]>> = {
+  orgullo: PRIDE, "revolucion-de-mayo": [CELESTE, "#ffffff"], "dia-de-la-bandera": [CELESTE, "#ffffff"], "dia-de-la-independencia": [CELESTE, "#ffffff", "#f3d27a"],
+};
 
 export function ThemeGarland() {
   const { theme } = useCurrentTheme();
   if (!theme) return null;
   const skin = skinOf(theme.id);
-  const colors = theme.id === "navidad" ? ["#e5544a", "#f3c84c", "#4fb36a", "#8fd3ff"] : theme.id === "halloween" ? ["#ff8a1f", "#a77be0", "#ffd34d"] : [skin.accent, skin.to, "#ffffff", skin.from];
+  const colors = theme.id === "navidad" ? ["#e5544a", "#f3c84c", "#4fb36a", "#8fd3ff"] : theme.id === "halloween" ? ["#ff8a1f", "#a77be0", "#ffd34d"] : FLAGS[theme.id] ?? [skin.accent, skin.to, "#ffffff", skin.from];
   const lights = LIGHTS.includes(theme.id);
   const y = (x: number) => 6 + Math.sin((x / W) * Math.PI * 6 - Math.PI / 2) * -5 + 5;
   const wire = Array.from({ length: 121 }, (_, i) => `${i === 0 ? "M" : "L"}${(i / 120) * W} ${y((i / 120) * W).toFixed(2)}`).join("");

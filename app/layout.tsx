@@ -4,6 +4,7 @@ import "@fontsource-variable/fraunces/opsz-italic.css";
 import "@fontsource/caveat/600.css";
 import "./globals.css";
 import "./seasons.css";
+import "./characters.css";
 import type { Metadata, Viewport } from "next";
 import type { CSSProperties, ReactNode } from "react";
 import { brand, brandCssVariables } from "@/config/brand";

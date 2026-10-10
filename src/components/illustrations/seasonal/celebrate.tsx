@@ -1,7 +1,7 @@
 import { useId } from "react";
 import type { DecorProps } from "./types";
 
-/** Año Nuevo, San Valentín, San Patricio y Pascuas. */
+/** Año Nuevo, San Valentín y Pascuas. */
 const HEART = "M32 32C24 27 17 22 17 15.5 17 11 20.5 8 24.5 8c3.5 0 6.5 2.5 7.5 5.5C33 10.5 36 8 39.5 8c4 0 7.5 3 7.5 7.5C47 22 40 27 32 32z";
 
 export function Champagne({ className }: DecorProps) {
@@ -64,38 +64,6 @@ export function LoveLetter({ className }: DecorProps) {
       <rect x="6" y="16" width="52" height="36" rx="4" fill="#fbe3e8" />
       <path d="M7 18l25 19 25-19" stroke="#e4a3b4" strokeWidth="2.5" fill="none" strokeLinejoin="round" />
       <path d={HEART} fill="#d33a5a" transform="translate(21.3 21) scale(.33)" />
-    </svg>
-  );
-}
-
-export function Shamrock({ className }: DecorProps) {
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden="true" className={className}>
-      <path d="M32 33q3 14 12 25" stroke="#2f7a3a" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-      {[0, 120, 240].map((r) => <path key={r} d={HEART} transform={`rotate(${r} 32 32)`} fill="#3fa65a" />)}
-      <circle cx="32" cy="32" r="3" fill="#2f7a3a" />
-    </svg>
-  );
-}
-
-export function LeprechaunHat({ className }: DecorProps) {
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden="true" className={className}>
-      <ellipse cx="32" cy="51" rx="27" ry="6.5" fill="#1f6b3a" />
-      <path d="M18 50l3-36h22l3 36z" fill="#2a8a4c" />
-      <path d="M19.6 36h24.8l.6 8H19z" fill="#1a1a1a" />
-      <rect x="27.5" y="34.5" width="9" height="11" rx="1.2" fill="none" stroke="#f6c84c" strokeWidth="2.6" />
-      <path d="M41 20q4-6 8-3-3 1-5 5z" fill="#3fa65a" />
-    </svg>
-  );
-}
-
-export function PotOfGold({ className }: DecorProps) {
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden="true" className={className}>
-      {[[20, 24], [30, 20], [40, 23], [26, 27], [36, 27]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r="6" fill="#f6c84c" stroke="#c99a1e" strokeWidth="1.5" />)}
-      <path d="M13 31h38c0 4-2 6-4 7 3 4 4 8 3 12-1 6-8 9-18 9s-17-3-18-9c-1-4 0-8 3-12-2-1-4-3-4-7z" fill="#22262b" />
-      <rect x="9" y="28" width="46" height="6" rx="3" fill="#353b43" />
     </svg>
   );
 }

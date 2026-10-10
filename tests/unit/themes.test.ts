@@ -15,6 +15,19 @@ describe("temáticas", () => {
     expect(themeForDate(demoData().themes, at("2026-09-10"))).toBeNull();
   });
 
+  it("Orgullo y las fechas patrias tienen su semana; el Día del Padre deja el fin de semana a la bandera", () => {
+    const id = (iso: string) => themeForDate(demoData().themes, at(iso))?.id;
+    expect(id("2026-11-07")).toBe("orgullo");
+    expect(id("2027-05-25")).toBe("revolucion-de-mayo");
+    expect(id("2027-06-17")).toBe("dia-del-padre");
+    expect(id("2027-06-20")).toBe("dia-de-la-bandera");
+    expect(id("2027-07-09")).toBe("dia-de-la-independencia");
+    expect(demoData().themes.some((t) => (t.id as string) === "san-patricio")).toBe(false);
+    // Ninguna fecha cae en dos temáticas a la vez (la primera ocultaría a la otra en el modo automático).
+    const days = Array.from({ length: 366 }, (_, i) => new Date(2028, 0, 1 + i));
+    for (const day of days) expect(demoData().themes.filter((t) => inSeason(t, day)).length, day.toDateString()).toBeLessThanOrEqual(1);
+  });
+
   it("contempla rangos que cruzan el año", () => {
     const range = { startsOn: "2026-12-26", endsOn: "2027-01-06" };
     expect(inSeason(range, at("2026-12-31"))).toBe(true);
@@ -26,16 +39,16 @@ describe("temáticas", () => {
     const now = at("2026-10-05");
     expect(currentTheme(now, "navidad")?.id).toBe("navidad");
     expect(currentTheme(now, "original")).toBeNull();
-    setDemoData({ ...demoData(), themeSettings: { mode: "fixed", fixedId: "san-patricio", showTryButton: true } });
-    expect(currentTheme(now, null)?.id).toBe("san-patricio");
-    setDemoData({ ...demoData(), themeSettings: { mode: "off", fixedId: "san-patricio", showTryButton: true } });
+    setDemoData({ ...demoData(), themeSettings: { mode: "fixed", fixedId: "orgullo", showTryButton: true } });
+    expect(currentTheme(now, null)?.id).toBe("orgullo");
+    setDemoData({ ...demoData(), themeSettings: { mode: "off", fixedId: "orgullo", showTryButton: true } });
     expect(currentTheme(now, null)).toBeNull();
   });
 
   it("una temática deshabilitada no entra en el modo automático", () => {
     setDemoData({ ...demoData(), themes: demoData().themes.map((t) => (t.id === "halloween" ? { ...t, active: false } : t)) });
     expect(themeForDate(demoData().themes, at("2026-10-25"))).toBeNull();
-    expect(nextTheme(at("2026-10-20"))?.id).toBe("black-friday");
+    expect(nextTheme(at("2026-10-20"))?.id).toBe("orgullo");
   });
 
   it("arma la oferta desde su cupón y calcula el precio con descuento", () => {

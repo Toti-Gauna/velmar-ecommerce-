@@ -132,8 +132,9 @@ export interface CarouselSlide {
 
 /** Festividades comerciales con temática propia (pedido de Ignacio, fuera de la especificación). */
 export type SeasonId =
-  | "san-valentin" | "san-patricio" | "pascuas" | "dia-del-animal" | "hot-sale" | "dia-del-padre" | "dia-del-amigo"
-  | "dia-del-nino" | "dia-de-la-madre" | "halloween" | "black-friday" | "navidad" | "ano-nuevo";
+  | "san-valentin" | "pascuas" | "dia-del-animal" | "hot-sale" | "revolucion-de-mayo" | "dia-del-padre" | "dia-de-la-bandera"
+  | "dia-de-la-independencia" | "dia-del-amigo" | "dia-del-nino" | "dia-de-la-madre" | "halloween" | "orgullo" | "black-friday"
+  | "navidad" | "ano-nuevo";
 
 /** Contenido editable de una temática. Lo visual (colores y decoraciones) es fijo por festividad. */
 export interface SeasonalTheme {

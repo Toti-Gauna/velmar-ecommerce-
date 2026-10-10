@@ -28,7 +28,10 @@ export const PALETTES: Record<SeasonId, Pair> = {
   navidad: immersive("#f3c84c #f7d777 #10251b #173a2b #0b1f16 #12291e #f1efe4 #aebfae #22412f #06140d #0e2219 #f3c84c", "#21503b #183d2d #10291f"),
   "ano-nuevo": immersive("#f3dca6 #f8e8c4 #0d1330 #1b2448 #0a0f24 #121a36 #eeecf6 #aab0cc #263162 #05081a #0c1230 #f3dca6", "#28346f #1d2756 #131b3d"),
   "black-friday": immersive("#f3dca6 #f8e8c4 #0b0b0d #1b1b1f #070708 #111113 #f2efe8 #a8a49b #2a2a2f #000000 #0e0e10 #f3dca6", "#2c2c31 #1d1d21 #121214"),
-  "san-patricio": immersive("#f6c84c #f9d777 #08140d #16301f #08160e #0f2216 #e9f4ea #a3bea9 #1f3f2a #040c07 #0a1a10 #f6c84c", "#1f4d31 #173b26 #0f2a1a"),
+  // Orgullo: noche violeta para que el arcoíris de las decoraciones y del fondo brille.
+  orgullo: immersive("#ff9fd0 #ffbadd #2b0d22 #2a2145 #100c1e #19142c #f5f0fb #bcb2d2 #342b52 #07050f #140f26 #ffd27a", "#2f2656 #231c42 #18132f"),
+  // 9 de Julio: noche azul de la Casa de Tucumán con fuegos celestes y dorados.
+  "dia-de-la-independencia": immersive("#a6d4f5 #c3e2f8 #071a2e #18264a #0a1424 #111d33 #eef3fa #a6b4c9 #22324f #040912 #0b1530 #f3d27a", "#1e3358 #172947 #111e36"),
   "dia-de-la-madre": {
     light: p("light", "#9b3563 #842c54 #fff7fa #f7dce7 #fbeaf1 #fff7fa #2a1520 #6e5060 #efd0dd #4a1830 #5e2440 #8a3d62", "#fbe3ec #f3d0de #e8bccd"),
     dark: p("dark", "#f5a8c6 #f8c0d6 #3a1226 #301a24 #160b10 #211118 #f7e9ef #c7a9b6 #3e2330 #0c0508 #1c0d14 #f3b3cd", "#3a1d2a #2e1621 #221018"),
@@ -48,6 +51,16 @@ export const PALETTES: Record<SeasonId, Pair> = {
   "hot-sale": {
     light: p("light", "#b23a0a #963108 #fff8f3 #fbdcc7 #fdeee3 #fff8f3 #24140d #6b5246 #f3d3bf #3d0f06 #5e1508 #a3360a", "#fde6d6 #f8d2b8 #efbb98"),
     dark: p("dark", "#ff9f6b #ffb78d #2a0c04 #321a10 #160b07 #22110a #f8ebe3 #c9ab9b #422417 #0d0503 #1d0c06 #ffb78d", "#4a2414 #3a1b0f #2a130a"),
+  },
+  // 25 de Mayo: papel colonial (el Cabildo encalado) con celeste profundo.
+  "revolucion-de-mayo": {
+    light: p("light", "#1f5c8a #184b72 #f7fbff #e3eef6 #f6f1e6 #fffcf5 #1d1f24 #5c5a52 #e6dccb #18324a #21425f #8a5a12", "#efe6d4 #e4d8c0 #d6c6a6"),
+    dark: p("dark", "#9fd2f5 #bde0f8 #06233a #1c2633 #0f1216 #171c22 #ece8df #ada796 #2a323d #07090c #111820 #f3c95a", "#26313d #1e2731 #161d25"),
+  },
+  // 20 de Junio: cielo celeste y blanco de la bandera.
+  "dia-de-la-bandera": {
+    light: p("light", "#1b4f7c #153f63 #f8fcff #d8e9f6 #ebf4fb #f8fcff #102030 #4a5d6e #cfe1ef #0d3557 #134670 #8a5a12", "#e1effa #cfe4f5 #b6d5ee"),
+    dark: p("dark", "#8ec7f0 #aed7f5 #052038 #132a3f #071421 #0d1d2e #e6f1fa #9db6ca #1c3650 #030a12 #0a1a2a #f6cf5a", "#16334f #10283f #0b1e30"),
   },
   "dia-del-padre": {
     light: p("light", "#2b4560 #22374d #f8fafc #dbe3eb #eef2f6 #fafcfd #161d24 #525c66 #d5dde5 #16222f #22344a #7a5c26", "#e7edf3 #d8e1ea #c6d2de"),
