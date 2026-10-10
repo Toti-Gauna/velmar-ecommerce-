@@ -167,6 +167,16 @@ muestra nada; ahí se le quita la apariencia del sistema, se dibuja el ícono de
   fideo se mueven con los mismos tiempos, así el fideo queda pegado a las bocas.
 - **Pantallas bajas** (celular apaisado, menos de 560 px de alto): logo más chico y sin rótulos, para que el aro, la flor
   o la cena no lo pisen.
+- **Ninguna escena pisa el logo** (revisadas las 17 en celular, iPad apaisado y escritorio). `--brand-h` (en
+  `#velmar-splash`) es el alto del logo con "Velmar"; las escenas se ubican arriba o abajo con `calc(50% ± var(--brand-h) / 2)`
+  y achican lo que haga falta cuando la pantalla es baja:
+  - 9 de Julio: la Casa de Tucumán entra debajo del logo.
+  - Día del Amigo: los dos anillos rodean el logo, que queda donde se cruzan; el mate va entre Pancho y Lola.
+  - Halloween: la luna va arriba del logo (detrás, el logo naranja no se leía).
+  - Hot Sale: el descuento va debajo del logo y las llamas no le llegan.
+  - 25 de Mayo: el Sol y el Cabildo se achican hasta entrar debajo del logo.
+  - Orgullo: el abanico del prisma sale hacia arriba.
+  - Día del Animal: los huesitos suben por los costados.
 - Revisado con capturas cuadro a cuadro en 390 × 844, 820 × 1180, 1440 × 900 y 844 × 390, con video en tiempo real y
   con los cuadros reales del compositor (`Page.startScreencast`) alrededor del telón.
 

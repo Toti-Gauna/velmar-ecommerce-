@@ -135,6 +135,7 @@ html[data-season="san-valentin"] #velmar-splash .splash-brand { translate: 0 cal
 /* Escritorio o tablet apaisada con poco alto: el corazón no llega al tamaño que necesita el logo grande, así que el
    logo va en su tamaño de celular (el mismo de las pantallas bajas). */
 @media (min-width: 640px) and (max-height: 820px) {
+  html[data-season="san-valentin"] #velmar-splash { --brand-h: 120px; }
   html[data-season="san-valentin"] #velmar-splash .splash-mark { width: 3.5rem; height: 3.5rem; }
   html[data-season="san-valentin"] #velmar-splash .word { font-size: 3rem; }
 }

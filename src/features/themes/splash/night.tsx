@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "motion/react";
+import type { CSSProperties } from "react";
 import { Decor } from "@/components/illustrations/seasonal/Decor";
 import { Moon, SantaSleigh, WitchOnBroom } from "@/components/illustrations/seasonal/scenes";
 import { EASE, Layer, rand, useAt } from "./kit";
@@ -48,15 +49,18 @@ export function ChristmasScene() {
 export function HalloweenScene() {
   const at = useAt();
   return (
-    <>
-      <motion.span className="absolute left-1/2 top-[12%] h-[40vmin] w-[40vmin] -translate-x-1/2 [filter:drop-shadow(0_0_60px_rgb(255_150_50/0.6))]" initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4, ease: EASE }}>
+    // La luna va entera arriba del logo (antes le quedaba detrás y el logo naranja no se leía): su tamaño sale del
+    // espacio libre entre el rótulo y el logo.
+    <div className="absolute inset-0" style={{ "--moon": "min(40vmin, calc(37vh - var(--brand-h) / 2 - 16px))", "--moon-top": "calc(50% - var(--brand-h) / 2 - 16px - var(--moon))" } as CSSProperties}>
+      <motion.span className="absolute left-1/2 -translate-x-1/2 [filter:drop-shadow(0_0_60px_rgb(255_150_50/0.6))]" style={{ top: "var(--moon-top)", width: "var(--moon)", height: "var(--moon)" }}
+        initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.4, ease: EASE }}>
         <Moon className="h-full w-full" tint="#ffa94d" />
       </motion.span>
       {[0, 1].map((i) => (
-        <motion.span key={i} className="absolute h-[9vmin] w-[46vmin] rounded-full bg-[radial-gradient(closest-side,rgb(60_36_80/0.85),transparent)] blur-[6px]" style={{ top: `${24 + i * 9}%` }}
+        <motion.span key={i} className="absolute h-[9vmin] w-[46vmin] rounded-full bg-[radial-gradient(closest-side,rgb(60_36_80/0.85),transparent)] blur-[6px]" style={{ top: `calc(var(--moon-top) + var(--moon) * ${0.3 + i * 0.3})` }}
           initial={{ x: i ? "110vw" : "-40vw", opacity: 0.85 }} animate={{ x: i ? "-40vw" : "110vw" }} transition={{ duration: 5, ease: "linear" }} />
       ))}
-      <div className="absolute left-1/2 top-[30%]">
+      <div className="absolute left-1/2" style={{ top: "calc(var(--moon-top) + var(--moon) / 2)" }}>
         {Array.from({ length: 16 }, (_, i) => {
           const a = rand(i + 7) * Math.PI * 2;
           const d = 40 + rand(i) * 40;
@@ -69,7 +73,7 @@ export function HalloweenScene() {
           );
         })}
       </div>
-      <motion.span className="absolute left-0 top-[18%] w-[min(46vmin,320px)]" initial={{ x: "-50vw", y: "5vh" }} animate={{ x: "120vw", y: ["5vh", "-4vh", "1vh"] }} transition={{ duration: 3, delay: at(1.3), ease: [0.45, 0.05, 0.35, 1] }}>
+      <motion.span className="absolute left-0 w-[min(46vmin,320px)]" style={{ top: "calc(var(--moon-top) + var(--moon) * 0.15)" }} initial={{ x: "-50vw", y: "5vh" }} animate={{ x: "120vw", y: ["5vh", "-4vh", "1vh"] }} transition={{ duration: 3, delay: at(1.3), ease: [0.45, 0.05, 0.35, 1] }}>
         <WitchOnBroom className="w-full" />
       </motion.span>
       <motion.svg viewBox="0 0 1200 260" preserveAspectRatio="none" className="absolute inset-x-0 bottom-0 h-[28%] w-full" initial={{ y: "50%" }} animate={{ y: 0 }} transition={{ duration: 1.3, ease: EASE }}>
@@ -83,6 +87,6 @@ export function HalloweenScene() {
           <Decor kind="pumpkin" className="scene-glow h-full w-full" />
         </motion.span>
       ))}
-    </>
+    </div>
   );
 }

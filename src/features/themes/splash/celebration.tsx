@@ -75,13 +75,13 @@ export function HotSaleScene({ discount }: { discount: number }) {
       <motion.div className="absolute inset-x-0 bottom-0 h-[55%] bg-[radial-gradient(70%_80%_at_50%_100%,rgb(255_120_40/0.55),transparent_70%)]" animate={{ opacity: [0.6, 1, 0.7, 1] }} transition={{ duration: 1.2, repeat: Infinity }} />
       <div className="absolute inset-x-0 bottom-[-4%] flex items-end justify-center gap-[1vmin]">
         {[0.7, 1, 1.4, 1.1, 1.6, 1.2, 0.9, 1.3, 0.75].map((s, i) => (
-          <motion.span key={i} className="block origin-bottom" style={{ width: `${s * 12}vmin`, height: `${s * 16}vmin` }}
+          <motion.span key={i} className="block origin-bottom" style={{ width: `calc(${s} * min(12vmin, 10.5vh))`, height: `calc(${s} * min(16vmin, 14vh))` }}
             initial={{ scaleY: 0 }} animate={{ scaleY: [0, 1.1, 0.92, 1.05, 0.95] }} transition={{ duration: 2.6, delay: at(0.2 + i * 0.08), ease: "easeOut" }}>
             <Decor kind="flame" className="h-full w-full" />
           </motion.span>
         ))}
       </div>
-      <motion.span className="font-display absolute top-[64%] left-1/2 -translate-x-1/2 whitespace-nowrap text-[9vmin] text-[#ffd34d] [text-shadow:0_0_30px_rgb(255_120_40/0.8)]"
+      <motion.span className="font-display absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-[9vmin] leading-none text-[#ffd34d] [text-shadow:0_0_30px_rgb(255_120_40/0.8)]" style={{ top: "calc(50% + var(--brand-h) / 2 + 4vh)" }}
         initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: [0.6, 1.1, 1] }} transition={{ duration: 0.8, delay: at(1.1) }}>{label}</motion.span>
     </>
   );

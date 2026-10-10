@@ -14,6 +14,9 @@
   /* Radio del aro: las piezas van montadas sobre él, como cuentas. */
   --orbit: min(36vmin, 250px);
   --piece: clamp(64px, 17vmin, 120px);
+  /* Alto del logo + "Velmar" (56 + 16 + 48 px; 64 + 16 + 72 en pantallas grandes): las escenas se ubican arriba o
+     abajo de él con calc(50% ± var(--brand-h) / 2), así no lo pisan en ningún tamaño. */
+  --brand-h: 120px;
   position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: hidden;
   background: radial-gradient(120% 80% at 50% 40%, #262c1d 0%, #1c2016 55%, #13160e 100%);
   /* Sombra del borde de abajo: se ve recién cuando el telón sube. */
@@ -68,6 +71,8 @@
 #velmar-splash .splash-word { display: block; overflow: hidden; margin: calc(1rem - 0.1em) -0.08em -0.16em; padding: 0.1em 0.08em 0.16em; }
 #velmar-splash .word { letter-spacing: -0.02em; animation: word-up 950ms var(--ease-out-expo) 620ms both; }
 #velmar-splash .splash-city { position: absolute; bottom: calc(6% + env(safe-area-inset-bottom)); color: rgb(216 207 189 / 0.7); opacity: 0; animation: fade-in 500ms ease-out 900ms both; }
+
+@media (min-width: 640px) and (min-height: 561px) { #velmar-splash { --brand-h: 152px; } }
 
 /* Pantallas bajas (celular apaisado): logo más chico y sin los rótulos, así el aro, las piezas y las escenas no lo pisan. */
 @media (max-height: 560px) {
