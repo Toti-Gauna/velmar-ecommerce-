@@ -11,7 +11,8 @@ import { cn } from "@/lib/cn";
 import { formatARS, withoutNationalTaxes } from "@/lib/money";
 import { useAccount } from "@/stores/account";
 import { useDemoData } from "@/stores/admin";
-import { GiftSheet } from "../gifts/GiftSheet";
+import { GiftModal } from "../gifts/GiftModal";
+import { useGiftDraft } from "@/stores/giftDraft";
 import { useCurrentTheme } from "../themes/useCurrentTheme";
 import { usePersonalizationDraft } from "../personalize/usePersonalizationDraft";
 import { CollarInspiration } from "./CollarInspiration";
@@ -49,6 +50,12 @@ export function ProductDetail({ product: initial }: { product: Product }) {
   const [giftOpen, setGiftOpen] = useState(false);
   const user = useAccount((s) => s.user);
   const { theme } = useCurrentTheme();
+  // El borrador del regalo es el mismo que usa el checkout: al reabrir sigue lo escrito (8.2.16).
+  const openGift = () => {
+    if (!ready()) return;
+    useGiftDraft.getState().prime({ from: user?.name.split(" ")[0], occasion: theme?.id ?? "velmar" });
+    setGiftOpen(true);
+  };
   const transferPrice = Math.round(price * (1 - settings.transferDiscountPct / 100));
   const category = getCategory(product.categorySlug);
   const live = tmpl && tmpl.kind !== "PHOTO_REFERENCE" ? <LivePreview product={product} tint={sel.variant.colorHex} draft={draft} /> : undefined;
@@ -59,7 +66,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
     <div className="flex flex-col gap-3">
       <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="w-full max-sm:hidden"><ShoppingBag size={18} aria-hidden="true" />Agregar al carrito</Button>
       <Button size="lg" variant="dark" disabled={!canBuy} onClick={() => purchase("buy")} className="w-full"><Zap size={18} aria-hidden="true" className="text-brass" />Comprar ahora</Button>
-      <Button size="lg" variant="secondary" disabled={!canBuy} onClick={() => ready() && setGiftOpen(true)} className="w-full"><Gift size={18} aria-hidden="true" className="text-brass-ink" />Regalar ahora</Button>
+      <Button size="lg" variant="secondary" disabled={!canBuy} onClick={openGift} className="w-full"><Gift size={18} aria-hidden="true" className="text-brass-ink" />Regalar ahora</Button>
       <p className="text-center text-xs text-muted">Para regalar: le mandás un link o un código y lo abre a golpes, sin ver el precio.</p>
     </div>
   );
@@ -91,10 +98,8 @@ export function ProductDetail({ product: initial }: { product: Product }) {
             <span className="w-full text-xs text-muted">Precio sin impuestos nacionales: {formatARS(withoutNationalTaxes(price, settings.nationalTaxRate))} · precio de muestra</span>
           </div>
           <ConfigureCard product={product} sel={sel} draft={draft} quantity={quantity} max={max} stockNote={stockNote(avail)} onQuantity={setQty} actions={actions} />
-          {giftOpen && (
-            <GiftSheet open onClose={() => setGiftOpen(false)} productName={product.name} fromName={user?.name.split(" ")[0]} occasion={theme?.id ?? "velmar"}
-              onSubmit={(gift, mode) => { setGiftOpen(false); purchase(mode, gift); }} />
-          )}
+          <GiftModal open={giftOpen} onClose={() => setGiftOpen(false)} productName={product.name}
+            onSubmit={(gift, mode) => { setGiftOpen(false); purchase(mode, gift); }} />
         </div>
       </div>
       {/* Detalles: ideas (collar), entrega, confianza y la descripción, en flujo normal. */}

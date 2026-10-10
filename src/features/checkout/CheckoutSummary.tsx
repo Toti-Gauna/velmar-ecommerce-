@@ -22,7 +22,7 @@ export function CheckoutSummary({ quote }: { quote: Quote }) {
           const product = getProduct(q.line.productSlug);
           return (
             <li key={q.line.id} className="flex justify-between gap-2">
-              <span className="min-w-0 truncate">{q.line.quantity} × {product?.name}{q.line.personalization ? " (personalizado)" : ""}</span>
+              <span className="min-w-0 truncate">{q.line.quantity} × {product?.name}{q.line.personalization ? " (personalizado)" : ""}{q.line.gift ? ` · regalo para ${q.line.gift.to}` : ""}</span>
               <span className="tabular-nums">{formatARS(q.lineTotal)}</span>
             </li>
           );

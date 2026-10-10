@@ -16,6 +16,7 @@ import { useCart } from "@/stores/cart";
 import { useCheckout } from "@/stores/checkout";
 import { useGifts } from "@/stores/gifts";
 import { useHydrated } from "@/stores/hydration";
+import { CouponForm } from "../cart/CouponForm";
 import { useCartQuote } from "../cart/useCartQuote";
 import { CheckoutSummary } from "./CheckoutSummary";
 import { ConfirmStep } from "./ConfirmStep";
@@ -30,7 +31,7 @@ export function CheckoutView() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const heading = useRef<HTMLHeadingElement>(null);
-  const { quote } = useCartQuote();
+  const { quote, couponCheck, isRegistered } = useCartQuote();
   const lines = useCart((s) => s.lines);
   const clearCart = useCart((s) => s.clear);
   const isAccount = useAccount((s) => s.user !== null);
@@ -56,6 +57,8 @@ export function CheckoutView() {
 
   const confirm = () => {
     const now = new Date();
+    // El carrito se lee en el momento: desde "¿Es para regalo?" se puede marcar un regalo y confirmar en el mismo toque.
+    const lines = useCart.getState().lines;
     // Cada línea marcada como regalo genera su código y su link; la fecha estimada sale del calendario del taller.
     const { orders, workshop } = useAdmin.getState();
     const gifts = giftsFromLines(lines, { orderCode: DEMO_ORDER_CODE, now, eta: promiseFor(lines, DEMO_TODAY, orders, workshop.settings, DEMO_ORDER_CODE).day, random: Math.random });
@@ -67,6 +70,8 @@ export function CheckoutView() {
     };
     checkout.placeOrder(order);
     useAdmin.getState().syncShopOrder(order); // aparece en el panel demo de este navegador
+    // El cupón aplicado suma un uso: el premio de la ruleta (un uso) queda como utilizado y no se puede volver a aplicar.
+    if (couponCheck?.ok) useAdmin.getState().redeemCoupon(couponCheck.coupon.code);
     clearCart();
     router.push("/checkout/confirmacion/");
   };
@@ -83,6 +88,10 @@ export function CheckoutView() {
         {step === 2 && <PaymentStep onNext={() => setStep(3)} onBack={() => setStep(1)} />}
         {step === 3 && <ConfirmStep onBack={() => setStep(2)} onConfirm={confirm} onEdit={setStep} />}
       </div>
+      {/* El cupón se puede quitar o cambiar hasta confirmar; quitar el de la ruleta lo deja guardado (8.2.14). */}
+      <section aria-label="Cupón del pedido" className="rounded-3xl bg-surface p-4 shadow-[var(--shadow-card)] sm:p-5">
+        <CouponForm subtotal={quote.subtotal} isRegistered={isRegistered} check={couponCheck} where="checkout" />
+      </section>
       <CheckoutSummary quote={quote} />
     </div>
   );

@@ -5,13 +5,47 @@ import type { GiftSceneProps } from "./types";
 
 const DOOR = "M124 256V214A22 22 0 0 1 168 214V256Z";
 const ROOF = "M146 70L56 150Q53 158 61 161L146 89L231 161Q239 158 236 150Z";
+/** Cuánto baja la cabeza del cachorro dentro de la puerta según los golpes (0 = asomado del todo). */
+const PEEK = [44, 26, 14, 6, 0];
 /** Huellitas en el piso: una por golpe, caminando hacia la cucha. */
 const PRINTS = [[32, 282, 70], [54, 268, 100], [78, 284, 75], [100, 270, 105]];
 const BONES = [[-120, -120, -200], [130, -110, 240], [-150, -10, -160], [150, -20, 200], [-40, -160, 120], [60, -165, -140]];
 const bone = <><rect x="-8" y="-2.6" width="16" height="5.2" fill="#f3dca6" />{[[-8, -2.6], [-8, 2.6], [8, -2.6], [8, 2.6]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r="3.3" fill="#f3dca6" />)}</>;
 const paw = <><ellipse cy="2" rx="4.6" ry="3.8" /><circle cx="-4.6" cy="-3.4" r="1.9" /><circle cx="-1.6" cy="-5.8" r="1.9" /><circle cx="1.8" cy="-5.8" r="1.9" /><circle cx="4.8" cy="-3.4" r="1.9" /></>;
 
-/** Día del Animal: la cucha de Pancho. Se sacude, aparecen huellitas y asoma la cola; al abrir se levanta el techo y sale Pancho. */
+/** Cara del cachorro (colores de Pancho): orejas caídas que se mueven, ojos con brillo y, contento, la lengua afuera. */
+function PeekingPup({ happy, beat }: { happy: boolean; beat: string }) {
+  return (
+    <g transform="translate(146 230) scale(1.15)">
+      {[1, -1].map((side) => (
+        <g key={side} transform={`scale(${side} 1)`}>
+          <g className={beat && `an-cu-ear-${beat}`} style={{ transformOrigin: "-10px -9px" }}>
+            <path d="M-10-10C-20-11-24 0-20 11C-18 16-12 14-11 8C-10 3-9-4-10-10Z" fill="#6e3f26" />
+          </g>
+        </g>
+      ))}
+      <ellipse rx="14" ry="13" fill="#a8743f" />
+      <path d="M-9-11Q0-17 9-11" stroke="#8a5232" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      <ellipse cy="6.5" rx="8.5" ry="6.5" fill="#d9a16b" />
+      {happy ? (
+        <>
+          <path d="M-8.5-2.5Q-5.5-6-2.5-2.5M2.5-2.5Q5.5-6 8.5-2.5" stroke="#1a120b" strokeWidth="2" fill="none" strokeLinecap="round" />
+          <path d="M-2.4 9.5Q0 17 2.4 9.5Z" fill="#e86a7c" />
+          <circle cx="-10" cy="4" r="2.4" fill="#e86a7c" opacity=".45" /><circle cx="10" cy="4" r="2.4" fill="#e86a7c" opacity=".45" />
+        </>
+      ) : (
+        <g className={beat && `an-cu-blink-${beat}`}>
+          <circle cx="-5.5" cy="-3" r="2.9" fill="#1a120b" /><circle cx="5.5" cy="-3" r="2.9" fill="#1a120b" />
+          <circle cx="-6.4" cy="-4" r="1" fill="#fff" /><circle cx="4.6" cy="-4" r="1" fill="#fff" />
+        </g>
+      )}
+      <ellipse cy="3.2" rx="3.6" ry="2.6" fill="#2a1a0f" /><ellipse cx="-1" cy="2.4" rx="1.1" ry=".7" fill="#fff" opacity=".6" />
+      <path d="M-3.5 8.6Q0 11.4 3.5 8.6" stroke="#2a1a0f" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+    </g>
+  );
+}
+
+/** Día del Animal: la cucha de Pancho. Se sacude, aparecen huellitas y un cachorro asoma por la puerta; al abrir se levanta el techo y sale Pancho. */
 export default function AnimalGift({ hits, total, opened, reduce }: GiftSceneProps) {
   const pick = (v: number[]) => (opened ? v[4] : v[Math.min(hits, 4)]) ?? 0;
   const beat = hits > 0 && !opened ? (hits % 2 ? "a" : "b") : "";
@@ -72,10 +106,16 @@ export default function AnimalGift({ hits, total, opened, reduce }: GiftScenePro
         {[163, 176, 189, 202, 215, 228, 241].map((y) => <path key={y} d={`M84 ${y}H208`} stroke="#6e4527" strokeOpacity=".35" strokeWidth="1.2" />)}
         <rect x="84" y="150" width="124" height="5" fill="#6e4527" /><rect x="84" y="150" width="6" height="106" fill="#6e4527" opacity=".7" /><rect x="202" y="150" width="6" height="106" fill="#5a381f" opacity=".8" />
         <path d={DOOR} fill="url(#an-cu-hole)" stroke="#6e4527" strokeWidth="4" />
+        {/* Un cachorro asoma por la puerta: con cada golpe sube un poco más, mira, mueve las orejas y al final se pone contento. */}
         <g clipPath="url(#an-cu-door)">
-          <g className="an-cu-tailpos" style={{ transform: `translateY(${opened ? 40 : [40, 16, 9, 4, 0][hits] ?? 0}px)` }}>
-            <g className={beat && `an-cu-wag-${beat}`}><path d="M140 260C134 247 135 232 145 221C148 218 151 220 149 224C142 234 143 247 152 260Z" fill="#8a5232" /><path d="M143 250C140 241 141 233 145 227" stroke="#a86a42" strokeWidth="1.6" strokeLinecap="round" fill="none" /></g>
+          <g className="an-cu-peek" data-peek={opened ? "out" : Math.min(hits, 4)} style={{ transform: `translateY(${opened ? 46 : PEEK[Math.min(hits, 4)] ?? 0}px)` }}>
+            <g className={beat && `an-cu-tilt-${beat}`}><PeekingPup happy={hits >= 3} beat={beat} /></g>
           </g>
+        </g>
+        {/* Las patitas se apoyan en el umbral cuando ya asomó la cara. */}
+        <g className={`an-cu-paws ${hits >= 2 && !opened ? "is-on" : ""}`} fill="#a8743f" stroke="#6e3f26" strokeWidth="1.2">
+          <ellipse cx="136" cy="254" rx="6.5" ry="4" /><ellipse cx="156" cy="254" rx="6.5" ry="4" />
+          <path d="M133 254v2.4M136 254.4v2.6M139 254v2.4M153 254v2.4M156 254.4v2.6M159 254v2.4" stroke="#6e3f26" strokeWidth=".9" strokeLinecap="round" />
         </g>
         <g className="an-cu-sign" style={{ transform: `rotate(${opened ? -3 : pick([-2, 4, -6, 7, -9])}deg)` }}>
           <rect x="108" y="161" width="76" height="21" rx="3" fill="#f3dca6" stroke="#8a6a2e" strokeWidth="1.5" />
@@ -114,7 +154,9 @@ const CSS = `
 .an-cu-print.is-on { opacity: .75; transform: none; }
 .an-cu-sign { transform-box: view-box; transform-origin: 146px 162px; transition: transform 500ms cubic-bezier(.34,1.56,.64,1); }
 .an-cu-roof { transform-box: view-box; transform-origin: 146px 152px; transition: transform 380ms cubic-bezier(.34,1.56,.64,1); }
-.an-cu-tailpos { transition: transform 450ms cubic-bezier(.34,1.56,.64,1); }
+.an-cu-peek { transition: transform 450ms cubic-bezier(.34,1.56,.64,1); }
+.an-cu-paws { opacity: 0; transform: translateY(4px); transition: opacity 250ms, transform 350ms cubic-bezier(.34,1.56,.64,1); }
+.an-cu-paws.is-on { opacity: 1; transform: none; }
 /* Cada golpe reinicia su animación alternando dos nombres iguales (a/b) sin remontar. */
 .an-cu-shake-a, .an-cu-shake-b { transform-box: view-box; transform-origin: 146px 256px; }
 .an-cu-shake-a { animation: an-cu-shake 520ms ease-out both; }
@@ -125,11 +167,21 @@ const CSS = `
 .an-cu-rattle-b { animation: an-cu-rattle2 480ms cubic-bezier(.3,.7,.4,1) both; }
 @keyframes an-cu-rattle { 0%, 100% { transform: none; } 30% { transform: translateY(-9px); } 60% { transform: translateY(1px); } }
 @keyframes an-cu-rattle2 { 0%, 100% { transform: none; } 30% { transform: translateY(-9px); } 60% { transform: translateY(1px); } }
-.an-cu-wag-a, .an-cu-wag-b { transform-box: view-box; transform-origin: 146px 258px; }
-.an-cu-wag-a { animation: an-cu-wag 260ms ease-in-out 4 alternate both; }
-.an-cu-wag-b { animation: an-cu-wag2 260ms ease-in-out 4 alternate both; }
-@keyframes an-cu-wag { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
-@keyframes an-cu-wag2 { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
+/* El cachorro ladea la cabeza, sacude las orejas y parpadea con cada golpe (una vez, sin quedar en loop). */
+.an-cu-tilt-a, .an-cu-tilt-b { transform-box: view-box; transform-origin: 146px 246px; }
+.an-cu-tilt-a { animation: an-cu-tilt 640ms cubic-bezier(.34,1.56,.64,1) both; }
+.an-cu-tilt-b { animation: an-cu-tilt2 640ms cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes an-cu-tilt { 0%, 100% { transform: none; } 40% { transform: rotate(-9deg); } 75% { transform: rotate(3deg); } }
+@keyframes an-cu-tilt2 { 0%, 100% { transform: none; } 40% { transform: rotate(9deg); } 75% { transform: rotate(-3deg); } }
+.an-cu-ear-a { animation: an-cu-ear 300ms ease-in-out 2 alternate both; }
+.an-cu-ear-b { animation: an-cu-ear2 300ms ease-in-out 2 alternate both; }
+@keyframes an-cu-ear { from { rotate: 0deg; } to { rotate: -16deg; } }
+@keyframes an-cu-ear2 { from { rotate: 0deg; } to { rotate: -16deg; } }
+.an-cu-blink-a, .an-cu-blink-b { transform-box: fill-box; transform-origin: 50% 50%; }
+.an-cu-blink-a { animation: an-cu-blink 360ms ease-in-out 280ms both; }
+.an-cu-blink-b { animation: an-cu-blink2 360ms ease-in-out 280ms both; }
+@keyframes an-cu-blink { 0%, 100% { transform: none; } 50% { transform: scaleY(.1); } }
+@keyframes an-cu-blink2 { 0%, 100% { transform: none; } 50% { transform: scaleY(.1); } }
 .an-cu-hop-a { animation: an-cu-hop 520ms cubic-bezier(.3,.7,.4,1) both; }
 .an-cu-hop-b { animation: an-cu-hop2 520ms cubic-bezier(.3,.7,.4,1) both; }
 @keyframes an-cu-hop { 0%, 100% { transform: none; } 35% { transform: translateY(-14px); } 65% { transform: translateY(1px); } }
@@ -143,8 +195,8 @@ const CSS = `
 .an-cu-heart { background: #ff8fa3; clip-path: path('M7 12.6C1.4 8.4 0 5.6 0 3.6 0 1.4 1.7 0 3.6 0 5 0 6.2.8 7 2.1 7.8.8 9 0 10.4 0 12.3 0 14 1.4 14 3.6 14 5.6 12.6 8.4 7 12.6Z'); opacity: 0; animation: an-cu-heart 2s ease-out both; }
 @keyframes an-cu-heart { 0% { opacity: 0; transform: translate(0,0) scale(.5); } 15% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--drift), -110px) scale(1.1); } }
 @media (prefers-reduced-motion: reduce) {
-  .an-cu-print, .an-cu-sign, .an-cu-roof, .an-cu-tailpos { transition: opacity 200ms; }
-  .an-cu-shake-a, .an-cu-shake-b, .an-cu-rattle-a, .an-cu-rattle-b, .an-cu-wag-a, .an-cu-wag-b, .an-cu-hop-a, .an-cu-hop-b, .an-cu-pup { animation: none; }
+  .an-cu-print, .an-cu-sign, .an-cu-roof, .an-cu-peek, .an-cu-paws { transition: opacity 200ms; }
+  .an-cu-shake-a, .an-cu-shake-b, .an-cu-rattle-a, .an-cu-rattle-b, .an-cu-tilt-a, .an-cu-tilt-b, .an-cu-ear-a, .an-cu-ear-b, .an-cu-blink-a, .an-cu-blink-b, .an-cu-hop-a, .an-cu-hop-b, .an-cu-pup { animation: none; }
   .an-cu-roof.is-open { animation: none; opacity: 0; }
 }
 `;

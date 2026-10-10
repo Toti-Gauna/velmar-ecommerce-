@@ -254,6 +254,31 @@ Lote 6: seguimiento, Mi cuenta y Club (`shop-polish-tracking.spec.ts`, `shop-pol
 - **Banda del Club**: ocupaba de borde a borde (márgenes negativos). Ahora respeta el margen de la página en todos los
   tamaños; la portada del Club también pasó a ser una tarjeta con margen.
 
+Lote 7: premios de la ruleta, Día del Animal y regalo en modal (`shop-polish-wheel.spec.ts`, `shop-polish-gifts.spec.ts`, `tests/unit/wheel-prize.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| Estados del premio: ganado, guardado, aplicado, desactivado desde el checkout y utilizado; uno solo a la vez, calculado en el engine (`prizeStatus`) | ✅ unit |
+| Aplicado: sigue aplicado al ir del Club al carrito y al checkout, y después de recargar en cada uno | ✅ |
+| Reabrir la ruleta con el premio aplicado no da otro giro ni repite el aviso: dice "Aplicado a tu carrito" y ofrece seguir | ✅ |
+| En el checkout el cupón se ve, se quita (el total sube y la fila "Cupón" desaparece) y queda como "Quitado del pedido" en Mis cupones; se vuelve a aplicar desde "Elegir de mis cupones" sin salir del checkout | ✅ |
+| Guardado: queda en Mis cupones como "Guardado"; la ruleta reabierta ofrece aplicarlo pero no guardarlo de nuevo | ✅ |
+| Utilizado: al confirmar el pedido con el premio suma un uso; queda "Ya lo usaste en un pedido", la ruleta no ofrece aplicarlo y escribirlo a mano avisa que llegó a su límite | ✅ |
+| Un solo cupón emitido por premio (panel de cupones) y el mismo aviso no se apila dos veces | ✅ |
+| Un cupón elegido que no cumple las condiciones se puede quitar desde el carrito o el checkout | ✅ |
+| Día del Animal: el cachorro asoma por la puerta un poco más con cada golpe (orejas, ojos con brillo, parpadeo y cabeza que se ladea), apoya las patitas y se pone contento antes de abrir; ya no está la cola. Las otras 16 escenas no cambian | ✅ + capturas |
+| Modal de regalo centrado (en el celular sube desde abajo y ocupa el ancho), con vista previa en vivo (escena cerrada, para quién, mensaje, de parte de quién, sin precio) | ✅ |
+| Escape y el botón Cerrar lo cierran; el foco entra en "Para" y vuelve a "Regalar ahora"; el fondo no se scrollea; al reabrir sigue lo escrito | ✅ |
+| Validación y límites: para quién, de parte de quién, email opcional válido y mensaje de hasta 240 caracteres (avisa cuántos sobran) | ✅ |
+| El mismo modal y el mismo borrador desde "Regalar ahora" y desde "¿Es para regalo?" en el último paso del checkout; ahí se elige cuál producto es el regalo, se edita o se quita, y "Regalar y pagar ahora" pide los términos y confirma | ✅ |
+| Ningún pedido externo en el flujo del regalo (no se manda ningún email) | ✅ |
+
+- **Premio de la ruleta**: antes solo se sabía si había premio; ahora el premio guarda qué se eligió (ganado, guardado o
+  quitado) y lo demás sale del carrito y del cupón. Los premios guardados con la versión anterior se leen como guardados.
+- **Avisos**: el mismo aviso que ya está a la vista se reemplaza en lugar de apilarse.
+- **Regalo**: la barra lateral "Es para regalar" se reemplazó por el modal. El borrador vive en memoria: sobrevive a cerrar
+  y reabrir y a navegar dentro de la tienda, no a recargar.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

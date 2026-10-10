@@ -4,12 +4,18 @@ import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import { useDemoData } from "@/stores/admin";
 import { useCheckout } from "@/stores/checkout";
+import { CheckoutGift } from "./CheckoutGift";
 
 const PAY_LABEL = { CHECKOUT_PRO: "Tarjeta de débito, crédito o prepaga, vía Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "QR (muestra)" };
 
 export function ConfirmStep({ onBack, onConfirm, onEdit }: { onBack: () => void; onConfirm: () => void; onEdit: (step: number) => void }) {
   const { contact, address, fulfillment, paymentMethod, acceptedTerms, patch } = useCheckout();
   const [error, setError] = useState(false);
+  // "Regalar y pagar ahora" desde el modal: confirma igual que el botón (con los términos aceptados).
+  const payNow = () => {
+    if (!useCheckout.getState().acceptedTerms) { setError(true); document.getElementById("terms")?.focus(); return; }
+    onConfirm();
+  };
   const zone = useDemoData((d) => d.zones.find((z) => z.type === fulfillment));
   const rows = [
     { step: 0, label: "Datos", value: `${contact.name} · ${contact.email} · ${contact.phone}` },
@@ -26,8 +32,9 @@ export function ConfirmStep({ onBack, onConfirm, onEdit }: { onBack: () => void;
           </div>
         ))}
       </dl>
+      <CheckoutGift onPayNow={payNow} />
       <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-surface p-4 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary/50">
-        <input type="checkbox" checked={acceptedTerms} onChange={(e) => { patch({ acceptedTerms: e.target.checked }); setError(false); }} className="mt-1 h-5 w-5 accent-[var(--color-primary)]" aria-describedby={error ? "terms-error" : undefined} />
+        <input id="terms" type="checkbox" checked={acceptedTerms} onChange={(e) => { patch({ acceptedTerms: e.target.checked }); setError(false); }} className="mt-1 h-5 w-5 accent-[var(--color-primary)]" aria-describedby={error ? "terms-error" : undefined} />
         <span className="text-sm">
           Acepto los <Link href="/terminos/" target="_blank" className="font-bold text-primary underline">términos y condiciones</Link> y la{" "}
           <Link href="/privacidad/" target="_blank" className="font-bold text-primary underline">política de privacidad</Link> (textos de muestra).

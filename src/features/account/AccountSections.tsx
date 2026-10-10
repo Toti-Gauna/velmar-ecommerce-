@@ -9,6 +9,14 @@ import { demoAccountProgress } from "@/demo/fixtures/commerce";
 import { useDemoData } from "@/stores/admin";
 import { formatARS } from "@/lib/money";
 import type { DemoOrder } from "@/stores/checkout";
+import { useWheelPrize } from "../club/useWheelPrize";
+import { WheelPrizeTicket } from "../club/WheelPrizeTicket";
+
+/** El premio de la ruleta, con su estado, primero en los premios de la cuenta (8.2.14). */
+function WheelPrizeItem() {
+  const { coupon } = useWheelPrize();
+  return coupon ? <li className="sm:col-span-2"><WheelPrizeTicket badge="Ganado en la ruleta" /></li> : null;
+}
 
 export function OrdersSection({ lastOrder }: { lastOrder: DemoOrder | null }) {
   const orders = [
@@ -54,6 +62,7 @@ export const availableRewards = (used: string[]) => REWARDS.filter((r) => !r.exp
 export function RewardsSection({ used, onUse }: { used: string[]; onUse: (id: string) => void }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2">
+      <WheelPrizeItem />
       {REWARDS.map((r) => {
         const isUsed = used.includes(r.id);
         return (

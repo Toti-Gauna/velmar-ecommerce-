@@ -26,13 +26,13 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 
 | Agregado | Fase | En producción necesita | Tamaño | Decisión |
 |---|---|---|---|---|
-| Ruleta de cupones (física, con gajos, sonido y confeti; desde la Fase 8 a pantalla completa con cupón de la festividad) | previa, 4 y 8 | Sorteo ponderado y cupón `RULETA…` de un uso, con vencimiento y un giro por cuenta, decididos en el servidor | M | |
+| Ruleta de cupones (física, con gajos, sonido y confeti; desde la Fase 8 a pantalla completa con cupón de la festividad; desde Polish 8.2 el premio conserva su estado: ganado, guardado, aplicado, quitado o usado) | previa, 4, 8 y Polish 8.2 | Sorteo ponderado y cupón `RULETA…` de un uso, con vencimiento y un giro por cuenta, decididos en el servidor | M | |
 | Mis cupones (pantalla y selector en el carrito) | previa | Cupones por cuenta, estados (vencido, mínimo, solo con cuenta) | S | |
 | Buscador superpuesto con recientes y lo más buscado (la búsqueda tolerante a errores **ya está en la spec**) | previa | Búsqueda en Postgres (spec); recientes por dispositivo | S | |
 | Favoritos y su pantalla | previa | Tabla de favoritos por cuenta (hoy por navegador) | S | |
 | "Comprar ahora", barra inferior de vidrio, carrusel con pausa, historias de producto | previa y 0 | Solo contenido editable | S | |
 | Ficha todo en uno y **aprobación al agregar al carrito** | previa | **Cambio a la spec:** "Así lo quiero" ya no es una casilla; se guarda `approvedAt` al agregar | S | |
-| Regalos: "Es para regalar" en la ficha, código `REGALO-XXXX-XXXX` y link, apertura a golpes con 17 escenas, Mis regalos (**excluido en la sección 18**: "regalá uno") | 8 | Regalos como modelo con clave al azar (link y código), email a quien lo recibe, vista sin precio y canje una sola vez, validados en el servidor | L | |
+| Regalos: "Regalar ahora" en la ficha y "¿Es para regalo?" en el checkout (desde Polish 8.2, en un modal con vista previa), código `REGALO-XXXX-XXXX` y link, apertura a golpes con 17 escenas, Mis regalos (**excluido en la sección 18**: "regalá uno") | 8 y Polish 8.2 | Regalos como modelo con clave al azar (link y código), email a quien lo recibe, vista sin precio y canje una sola vez, validados en el servidor | L | |
 | ¿Cuándo llega? (usa el calendario del taller) | 2 | Plazos y capacidad del taller en el servidor | M | |
 | Configurador del collar (letras, cordón, material, dije, talle por cuello); desde Polish 8.2, estilos de letras (sueltas, en línea, de corrido, chapita), adorno, patrón del cordón con segundo color y probador completo en el inicio. Solo lo visto en el Instagram (letras sueltas, paracord liso, patita) va como confirmado; el resto se muestra como **ejemplo de la demo** | 4 y Polish 8.2 | Opciones y recargos como datos; precio calculado en el servidor; Velmar confirma qué estilos y patrones fabrica | L | |
 | Seguimiento con el viajero de cada temática (trineo, bruja, Pancho y Lola…), estallido al entregar y zona para probar los estados del pedido | Polish 8.2 | Nada: los estados reales salen del pedido en el servidor; la zona de prueba es solo de la demo | S | |

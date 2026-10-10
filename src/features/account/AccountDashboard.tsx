@@ -9,6 +9,7 @@ import { useAccount } from "@/stores/account";
 import { useDemoData } from "@/stores/admin";
 import { useCheckout } from "@/stores/checkout";
 import { useGifts } from "@/stores/gifts";
+import { useWheelPrize } from "../club/useWheelPrize";
 import { AccountGifts } from "../gifts/AccountGifts";
 import { AddressesSection, MissionsSection, OrdersSection, RewardsSection, availableRewards } from "./AccountSections";
 import { useAccountTab, type AccountTab } from "./useAccountTab";
@@ -29,13 +30,14 @@ export function AccountDashboard({ user }: { user: { name: string; email: string
   const { sent, saved, opened } = useGifts();
   const received = giftsFor(user.email, { addressed: [...demoGifts, ...sent], saved });
   const unopened = received.filter((g) => !opened.includes(g.code)).length;
-  const rewards = availableRewards(usedRewards);
+  const { status: prizeStatus } = useWheelPrize();
+  const rewards = availableRewards(usedRewards) + (prizeStatus && prizeStatus !== "utilizado" ? 1 : 0);
   const [tab, select] = useAccountTab();
   const sections: Section[] = [
     { id: "pedidos", title: "Mis pedidos", icon: Package, summary: plural(lastOrder ? 2 : 1, "pedido", "pedidos"), intro: "Seguí cada pedido paso a paso.", body: <OrdersSection lastOrder={lastOrder} /> },
     { id: "regalos", title: "Mis regalos", icon: Gift, summary: unopened ? plural(unopened, "sin abrir", "sin abrir") : plural(received.length, "regalo", "regalos"), intro: "Los que te mandaron se abren sin el link; los que hiciste, para volver a mandarlos.", body: <AccountGifts email={user.email} /> },
     { id: "misiones", title: "Misiones", icon: Sparkles, summary: plural(missions.length, "activa", "activas"), intro: "Tus compras suman a cada misión (progreso de ejemplo).", body: <MissionsSection /> },
-    { id: "premios", title: "Premios", icon: Trophy, summary: rewards ? plural(rewards, "disponible", "disponibles") : "Sin premios para usar", intro: "Premios de las misiones, de un solo uso.", body: <RewardsSection used={usedRewards} onUse={markRewardUsed} /> },
+    { id: "premios", title: "Premios", icon: Trophy, summary: rewards ? plural(rewards, "disponible", "disponibles") : "Sin premios para usar", intro: "El premio de la ruleta y los de las misiones, de un solo uso.", body: <RewardsSection used={usedRewards} onUse={markRewardUsed} /> },
     { id: "direcciones", title: "Direcciones", icon: MapPin, summary: "1 guardada", intro: "Donde te llegan los pedidos.", body: <AddressesSection /> },
   ];
   const current = sections.find((s) => s.id === tab)!;
