@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import type { CarouselSlide } from "@/demo/types";
 import { cn } from "@/lib/cn";
+import { useHydrated } from "@/stores/hydration";
 
 /** Fondos que rotan por diapositiva: noche, oliva (mezcla de noche y primario: oscuro en cualquier temática) y arcilla. */
 const TONES = [
@@ -26,7 +27,9 @@ export function HeroCarousel({ slides, lead }: { slides: CarouselSlide[]; lead?:
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [hold, setHold] = useState(false);
-  const reduce = useReducedMotion();
+  // Hasta hidratar se muestra lo mismo que el servidor; si no, con "reducir movimiento" React rehace todo el árbol.
+  const hydrated = useHydrated();
+  const reduce = useReducedMotion() === true && hydrated;
   const total = slides.length + (lead ? 1 : 0);
   const offset = lead ? 1 : 0;
   const auto = !paused && !hold && !reduce && total > 1;
