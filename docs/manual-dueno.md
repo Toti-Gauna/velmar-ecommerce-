@@ -35,7 +35,7 @@ los pedidos y usá la acción de arriba. Cada cambio avisa al cliente con el ema
 
 ### …saber cuándo puedo entregar
 **Calendario de entregas**: cada pedido está en su día. Los días completos y los feriados se marcan.
-- Para **mover** un pedido, arrastralo (compu) o abrí su ficha y elegí "primer día con lugar" o una fecha.
+- Para **mover** un pedido, arrastralo (compu) o abrí su ficha y elegí "Primera fecha libre", el día hábil anterior o siguiente, u otra fecha.
 - **Capacidad y feriados**: cuántos pedidos hacés por día, si trabajás sábados o domingos y tus días cerrados.
 - **Exportar a Google Calendar** te baja un archivo que se abre con tu calendario.
 - La tienda usa este mismo calendario para decirle al cliente "llega el…".

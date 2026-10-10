@@ -2,7 +2,7 @@
 
 Pedido de Ignacio, Fase 7 (VEL-70), fuera de la especificación. Va de **lo que más le duele al dueño** (chats, Excel,
 entregas) a **lo que lo enamora** (la tienda en el celular y el contenido para Instagram). Todo lo que se muestra
-existe en la demo; nada es una maqueta.
+funciona en la demo, con datos y envíos simulados.
 
 ## Antes de entrar (5 minutos antes)
 1. Abrir la demo en **el celular del dueño** y en la **compu**, con la batería cargada y el brillo alto.
@@ -23,7 +23,7 @@ existe en la demo; nada es una maqueta.
 | 4:30 | **Entregas**: ¿cuándo puedo prometer? | Calendario de entregas: pedidos en su fecha, capacidad por día, feriados cerrados. **Arrastrar** un pedido a un feriado (no lo deja) y a un día libre. Exportar a Google Calendar | Calendario |
 | 5:30 | **Costos**: ¿gano plata con esto? | Cola de producción (pasar a máquina descuenta insumos) y Costos y margen: "Usar precio sugerido" cambia el precio en la tienda | Producción → Costos |
 | 6:30 | **Lo que enamora**: la tienda | Pasar al **celular**. Inicio con la temática, barra inferior de vidrio. Abrir el **collar con nombre**: letras sueltas, cordón, material y talle; la vista previa cambia el precio. Abrir el **velador con foto**: subir una foto y ver "Tu diseño". Mostrar **¿Cuándo llega?** (usa el calendario del taller) | Tienda `/` |
-| 8:00 | **Lo que enamora**: comprar y ganar | Agregar al carrito (suena), ir a pagar y **girar la ruleta**. Elegir transferencia, aceptar términos y llegar al "Pedido de demostración". Volver al panel: **el pedido y el email ya están ahí** | Carrito → Checkout → Panel |
+| 8:00 | **Lo que enamora**: comprar y ganar | Agregar al carrito (suena), ir a pagar y **girar la ruleta**. Elegir transferencia, aceptar términos y llegar a la pantalla de confirmación (demo). Volver al panel: **el pedido y el email ya están ahí** | Carrito → Checkout → Panel |
 | 9:00 | **Instagram**: qué publico hoy | Estudio de contenido: elegir **Día de la Madre**, mostrar post, historia y carrusel con fondo animado, y el texto sugerido. Exportar la historia y compartirla desde el celular | Estudio |
 | 9:45 | Cierre | "Esto es la demo: los datos son de muestra. Lo que sigue es conectar su catálogo real, sus fotos y sus medios de pago." | — |
 

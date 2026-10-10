@@ -3,8 +3,8 @@
 La demo se probó de dos maneras. **Esta página dice cuál es cuál**, para no confundir una con la otra.
 
 ## 1. Emulado y automático (hecho)
-`tests/e2e/cross-device.spec.ts` abre **todas las rutas de la tienda (19) y del panel (22)** en Chromium con el tamaño, el
-toque y el agente de usuario de cada equipo, y falla si hay: error de la página o de la consola (incluye errores de
+`tests/e2e/cross-device.spec.ts` abre **las 19 rutas principales de la tienda y las 22 del panel** (sin las pantallas de edición, la ficha de cliente ni el alias viejo de `/crear/[slug]/`) en Chromium con el tamaño y el
+toque de cada equipo, y con «reducir movimiento» activado como en todos los e2e, y falla si hay: error de la página o de la consola (incluye errores de
 hidratación de React), título que no aparece, scroll horizontal, la palabra "acreditado" o falta de la señal de demo.
 
 | Equipo emulado | Tamaño |
