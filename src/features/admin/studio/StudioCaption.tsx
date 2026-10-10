@@ -2,7 +2,8 @@
 import { Copy, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
-import { Textarea } from "@/components/atoms/Field";
+import { inputClass } from "@/components/atoms/Field";
+import { cn } from "@/lib/cn";
 import { STUDIO_TIPS } from "@/demo/fixtures/studio";
 import { useToasts } from "@/stores/toast";
 
@@ -13,9 +14,14 @@ export function StudioCaption({ text, hookName, onAnother }: { text: string; hoo
   const [value, setValue] = useState(text);
   const [seen, setSeen] = useState(text);
   if (text !== seen) { setSeen(text); setValue(text); }
-  const copy = () => {
-    void navigator.clipboard?.writeText(value);
-    toast({ tone: "success", title: "Texto copiado", description: "Pegalo en Instagram al publicar." });
+  const copy = async () => {
+    try {
+      if (!navigator.clipboard) throw new Error("sin portapapeles");
+      await navigator.clipboard.writeText(value);
+      toast({ tone: "success", title: "Texto copiado", description: "Pegalo en Instagram al publicar." });
+    } catch {
+      toast({ tone: "error", title: "No se pudo copiar", description: "Seleccioná el texto y copialo a mano." });
+    }
   };
   return (
     <section aria-labelledby="st-caption" className="rounded-3xl border border-line bg-surface p-5">
@@ -24,9 +30,9 @@ export function StudioCaption({ text, hookName, onAnother }: { text: string; hoo
         <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold text-primary">Gancho: {hookName}</span>
       </div>
       <label htmlFor="st-caption-text" className="sr-only">Texto para el posteo</label>
-      <Textarea id="st-caption-text" value={value} onChange={(e) => setValue(e.target.value)} rows={11} className="mt-3 font-mono text-sm leading-relaxed" />
+      <textarea id="st-caption-text" value={value} onChange={(e) => setValue(e.target.value)} rows={11} className={cn(inputClass.replace("text-base", "text-sm"), "mt-3 min-h-28 py-2.5 font-mono leading-relaxed")} />
       <div className="mt-3 flex flex-wrap gap-2">
-        <Button size="sm" onClick={copy}><Copy size={16} aria-hidden="true" />Copiar texto</Button>
+        <Button size="sm" onClick={() => void copy()}><Copy size={16} aria-hidden="true" />Copiar texto</Button>
         <Button size="sm" variant="secondary" onClick={onAnother}><RefreshCw size={16} aria-hidden="true" />Otra idea</Button>
       </div>
       <ul className="mt-4 flex flex-col gap-1.5 text-xs text-muted">

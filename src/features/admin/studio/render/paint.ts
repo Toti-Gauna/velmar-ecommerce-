@@ -1,4 +1,5 @@
 import { LOGO_M, LOGO_STROKE, LOGO_V } from "@/components/atoms/Logo";
+import { brand } from "@/config/brand";
 import { CARD_PAD, cardSprite } from "./sprites";
 import type { Img } from "./types";
 
@@ -56,10 +57,24 @@ export function drawLines(ctx: CanvasRenderingContext2D, lines: string[], x: num
   return y + lines.length * lineHeight;
 }
 
-/** Píldora con texto (CTA, sello de oferta, "Deslizá"). Devuelve su ancho. */
-export function drawPill(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, opts: { bg: string; ink: string; size?: number; align?: "left" | "center" | "right"; padX?: number; h?: number }) {
-  const size = opts.size ?? 30, padX = opts.padX ?? 34, h = opts.h ?? size * 2.2;
+/** Recorta una línea con "…" para que entre en `maxWidth` (con la fuente ya puesta). */
+export function fitLine(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
+  if (ctx.measureText(text).width <= maxWidth) return text;
+  const chars = Array.from(text);
+  while (chars.length > 1 && ctx.measureText(`${chars.join("")}…`).width > maxWidth) chars.pop();
+  return `${chars.join("").trimEnd()}…`;
+}
+
+/** Bajada con letras espaciadas: separa por caracteres reales (los emojis no se parten). */
+export const spaced = (text: string) => Array.from(text.toUpperCase()).join("\u200a");
+
+/** Píldora con texto (CTA, sello de oferta, "Deslizá"). Achica la letra si no entra en `maxWidth`. Devuelve su ancho. */
+export function drawPill(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, opts: { bg: string; ink: string; size?: number; align?: "left" | "center" | "right"; padX?: number; h?: number; maxWidth?: number }) {
+  const padX = opts.padX ?? 34;
+  let size = opts.size ?? 30;
   ctx.font = `800 ${size}px ${SANS}`;
+  while (opts.maxWidth && size > 16 && ctx.measureText(text).width + padX * 2 > opts.maxWidth) { size -= 1; ctx.font = `800 ${size}px ${SANS}`; }
+  const h = opts.h ?? (opts.size ?? 30) * 2.2;
   const w = ctx.measureText(text).width + padX * 2;
   const left = opts.align === "center" ? x - w / 2 : opts.align === "right" ? x - w : x;
   roundRect(ctx, left, y, w, h, h / 2);
@@ -90,5 +105,5 @@ export function drawLogo(ctx: CanvasRenderingContext2D, x: number, y: number, h:
   ctx.font = `500 ${h * 1.05}px ${DISPLAY}`;
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
-  ctx.fillText("Velmar", x + h * 1.42, y + h * 0.52);
+  ctx.fillText(brand.name, x + h * 1.42, y + h * 0.52);
 }

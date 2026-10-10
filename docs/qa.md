@@ -163,8 +163,10 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
   verifican qué sonido se pidió (`window.__velmarSounds`), no el audio. Probar en el iPhone que el silencio del
   sistema y el botón de la tienda se respetan.
 - **Collar**: vista previa ilustrativa (SVG), no un render 3D; materiales y recargos de muestra.
-- **Estudio de contenido**: la grabación usa el reloj real; si se cambia de pestaña, el navegador pausa la animación y el
-  video sale cortado (se avisa en pantalla). El Chromium de pruebas (sin códecs propietarios) graba VP9 aunque el archivo
+- **Estudio de contenido**: la grabación usa el reloj real; si se cambia de pestaña, el navegador pausa la animación, así
+  que la grabación se cancela con un aviso y se vuelve a grabar. La vista previa se reproduce una vez y queda en el cuadro
+  final ("Ver animación" la repite). En el post y la historia, si el cupón tiene mínimo, la condición va debajo del sello.
+  Los fondos se guardan solo para la temática actual (Safari de iPhone limita la memoria de canvas). El Chromium de pruebas (sin códecs propietarios) graba VP9 aunque el archivo
   diga .mp4; Chrome y Safari reales graban H.264, que es lo que acepta Instagram. Las ilustraciones son de muestra: con
   fotos reales del producto (cargadas en el panel o subidas en el estudio) las piezas rinden más.
 - **Temáticas de la Fase 5**: la fecha de la Marcha del Orgullo se confirma cada año (2026: sábado 7 de noviembre). Las

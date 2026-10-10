@@ -65,8 +65,11 @@ export function StudioControls(p: StudioControlsProps) {
           })}
         </div>
         <div className="mt-4 rounded-2xl bg-bg p-3">
-          <label htmlFor="st-photo" className="inline-flex cursor-pointer items-center gap-2 text-sm font-bold text-primary"><ImagePlus size={18} aria-hidden="true" />Usar una foto propia</label>
-          <input id="st-photo" type="file" accept="image/*" className="sr-only" onChange={(e) => p.onPhoto(e.target.files?.[0] ?? null)} />
+          <label htmlFor="st-photo" className="inline-flex cursor-pointer items-center gap-2 rounded-full px-1 text-sm font-bold text-primary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary/50">
+            <ImagePlus size={18} aria-hidden="true" />Usar una foto propia
+            {/* Se vacía después de elegir: así se puede volver a elegir la misma foto después de quitarla. */}
+            <input id="st-photo" type="file" accept="image/*" className="sr-only" onChange={(e) => { p.onPhoto(e.target.files?.[0] ?? null); e.target.value = ""; }} />
+          </label>
           <p className="mt-1 text-xs text-muted">Reemplaza la imagen del primer producto. Las fotos reales rinden más que las ilustraciones; no sale de tu navegador.</p>
           {p.photoUrl && (
             <div className="mt-2 flex items-center gap-3">
@@ -88,7 +91,8 @@ export function StudioControls(p: StudioControlsProps) {
           <Field id="st-subtitle" label="Texto"><Textarea id="st-subtitle" value={p.texts.subtitle} maxLength={120} rows={3} onChange={(e) => set({ subtitle: e.target.value })} /></Field>
           <Field id="st-cta" label="Cierre"><Input id="st-cta" value={p.texts.cta} maxLength={44} onChange={(e) => set({ cta: e.target.value })} /></Field>
           <Switch checked={p.showPrice} onChange={p.onShowPrice} label="Mostrar el precio" />
-          <Switch checked={p.showOffer && p.hasOffer} onChange={p.onShowOffer} label="Mostrar la oferta" description={p.hasOffer ? "El cupón de la temática y el precio con descuento." : "Esta fecha no tiene un cupón activo."} />
+          {p.hasOffer ? <Switch checked={p.showOffer} onChange={p.onShowOffer} label="Mostrar la oferta" description="El cupón de la temática, su condición y el precio con descuento." />
+            : <p className="text-xs text-muted">Esta fecha no tiene un cupón activo: la pieza sale sin oferta.</p>}
         </div>
       </section>
       <section className={card} aria-labelledby="st-video">

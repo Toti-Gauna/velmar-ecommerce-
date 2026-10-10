@@ -3,6 +3,8 @@
  * Reels y carruseles tomados de la página "Mejoras y diferenciación" de Notion, y textos fijos de marca.
  * Los ganchos son propuestas sin testear: el dueño mide cuál retiene más en los primeros 3 segundos.
  */
+import { brand } from "@/config/brand";
+
 export type StudioFormat = "post" | "story" | "carousel";
 
 export const STUDIO_FORMATS: { id: StudioFormat; name: string; size: [number, number]; ratio: string; hint: string }[] = [
@@ -51,4 +53,9 @@ export const STUDIO_TIPS = [
   "El link de la bio va a la tienda, no a WhatsApp.",
 ];
 
-export const STUDIO_BRAND = { eyebrow: "Velmar · Mar del Plata", title: "Objetos con alma", subtitle: "Hechos a mano en Mar del Plata, con el nombre o la foto que quieras.", cta: "Pedilo en la tienda · link en la bio" };
+/** Textos de marca (nombre y ciudad salen de la configuración de la marca; en producción, de la tabla Setting). */
+export const STUDIO_BRAND = {
+  name: brand.name, city: brand.city, eyebrow: `${brand.name} · ${brand.city}`, title: "Objetos con alma",
+  subtitle: `Hechos a mano en ${brand.city}, con el nombre o la foto que quieras.`, cta: "Pedilo en la tienda · link en la bio",
+  handMade: "Hecho a mano", closing: "Link en la bio · Envíos y retiro: mirá las opciones en la tienda.",
+};

@@ -1,4 +1,5 @@
 import type { DecorKind } from "@/components/illustrations/seasonal/Decor";
+import { brand } from "@/config/brand";
 import type { StudioProduct, StudioTexts } from "@/demo/admin/studio/content";
 import type { ThemeOffer } from "@/demo/engine/themes";
 import { STUDIO_FORMATS, STUDIO_STEPS, type StudioFormat } from "@/demo/fixtures/studio";
@@ -8,8 +9,8 @@ import { skinOf, type ThemeSkin } from "@/features/themes/skins";
 import type { AssetRequest, StudioAssets } from "./assets";
 import type { StudioLook, StudioScene } from "./render/types";
 
-/** Sin temática: la noche de la marca con polvo dorado. */
-const BRAND_SKIN: Pick<ThemeSkin, "from" | "to" | "accent" | "accentInk"> = { from: "#151a10", to: "#3a4527", accent: "#d2ad69", accentInk: "#1c2016" };
+/** Sin temática: la noche de la marca (colores de la configuración) con polvo dorado. */
+const BRAND_SKIN: Pick<ThemeSkin, "from" | "to" | "accent" | "accentInk"> = { from: brand.colors.text, to: brand.colors.primary, accent: "#d2ad69", accentInk: brand.colors.text };
 const BRAND_LAYERS: AmbientLayer[] = [{ particles: [{ dot: "#d2ad69" }, { dot: "#f6e7c4" }], motion: "twinkle", count: 18, size: [3, 7], duration: [3, 6], opacity: 0.8 }];
 
 export function layersFor(themeId: SeasonId | null): AmbientLayer[] {

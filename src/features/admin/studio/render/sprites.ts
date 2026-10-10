@@ -13,6 +13,20 @@ function canvas(w: number, h: number): HTMLCanvasElement {
   return c;
 }
 
+/** Contexto 2D o un contexto que no dibuja nada: si Safari llegó a su tope de memoria de canvas, la pieza sale sin ese detalle en vez de romperse. */
+function ctx2d(c: HTMLCanvasElement): CanvasRenderingContext2D | null {
+  return c.getContext("2d");
+}
+
+/** Saca la entrada más vieja y libera su memoria (ancho 0). */
+function evict(map: Map<string, HTMLCanvasElement>, max: number) {
+  while (map.size > max) {
+    const [k, c] = map.entries().next().value!;
+    c.width = 0; c.height = 0;
+    map.delete(k);
+  }
+}
+
 const rasters = new WeakMap<Source, Map<string, HTMLCanvasElement>>();
 
 /** La ilustración (SVG) pasada a mapa de bits al tamaño en que se dibuja. */
@@ -21,7 +35,7 @@ export function raster(img: Source, w: number, h: number): HTMLCanvasElement {
   let byImg = rasters.get(img);
   if (!byImg) { byImg = new Map(); rasters.set(img, byImg); }
   let c = byImg.get(key);
-  if (!c) { c = canvas(w, h); c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height); byImg.set(key, c); }
+  if (!c) { c = canvas(w, h); ctx2d(c)?.drawImage(img, 0, 0, c.width, c.height); byImg.set(key, c); }
   return c;
 }
 
@@ -38,7 +52,9 @@ export function cardSprite(img: Img | null, w: number, h: number, radius: number
   let c = byImg.get(key);
   if (!c) {
     c = canvas(w + CARD_PAD * 2, h + CARD_PAD * 2);
-    const ctx = c.getContext("2d")!;
+    byImg.set(key, c);
+    const ctx = ctx2d(c);
+    if (!ctx) return c;
     ctx.translate(CARD_PAD, CARD_PAD);
     ctx.shadowColor = "rgba(0,0,0,0.38)"; ctx.shadowBlur = 60; ctx.shadowOffsetY = 28;
     ctx.beginPath(); ctx.roundRect(0, 0, w, h, radius);
@@ -46,7 +62,6 @@ export function cardSprite(img: Img | null, w: number, h: number, radius: number
     ctx.shadowColor = "transparent";
     ctx.clip();
     if (img) cover(ctx, img, w, h);
-    byImg.set(key, c);
   }
   return c;
 }
@@ -59,13 +74,16 @@ export function backgroundSprite(from: string, to: string, W: number, H: number)
   let c = backgrounds.get(key);
   if (!c) {
     c = canvas(W, H);
-    const ctx = c.getContext("2d")!;
-    const g = ctx.createRadialGradient(W * 0.82, H * 0.42, 0, W * 0.82, H * 0.42, Math.max(W, H) * 1.05);
-    g.addColorStop(0, to); g.addColorStop(0.72, from); g.addColorStop(1, from);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
+    const ctx = ctx2d(c);
+    if (ctx) {
+      const g = ctx.createRadialGradient(W * 0.82, H * 0.42, 0, W * 0.82, H * 0.42, Math.max(W, H) * 1.05);
+      g.addColorStop(0, to); g.addColorStop(0.72, from); g.addColorStop(1, from);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    }
     backgrounds.set(key, c);
-    if (backgrounds.size > 24) backgrounds.delete(backgrounds.keys().next().value!);
+    // Solo la temática actual en sus tres formatos (cada fondo a tamaño real pesa varios MB).
+    evict(backgrounds, 3);
   }
   return c;
 }
@@ -77,12 +95,15 @@ export function blobSprite(color: string): HTMLCanvasElement {
   let c = blobs.get(color);
   if (!c) {
     c = canvas(256, 256);
-    const ctx = c.getContext("2d")!;
-    const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-    g.addColorStop(0, color); g.addColorStop(1, "transparent");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, 256, 256);
+    const ctx = ctx2d(c);
+    if (ctx) {
+      const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+      g.addColorStop(0, color); g.addColorStop(1, "transparent");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 256, 256);
+    }
     blobs.set(color, c);
+    evict(blobs, 12);
   }
   return c;
 }
@@ -94,9 +115,10 @@ export function sealSprite(key: string, size: number, paint: (ctx: CanvasRenderi
   let c = seals.get(key);
   if (!c) {
     c = canvas(size, size);
-    paint(c.getContext("2d")!);
+    const ctx = ctx2d(c);
+    if (ctx) paint(ctx);
     seals.set(key, c);
-    if (seals.size > 24) seals.delete(seals.keys().next().value!);
+    evict(seals, 8);
   }
   return c;
 }

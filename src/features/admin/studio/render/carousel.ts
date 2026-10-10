@@ -1,3 +1,4 @@
+import { STUDIO_BRAND } from "@/demo/fixtures/studio";
 import { formatARS } from "@/lib/money";
 import { drawBackdrop } from "./backdrop";
 import { DISPLAY, SANS, drawCard, drawLines, drawLogo, drawPill, wrap } from "./paint";
@@ -80,7 +81,7 @@ function offer(ctx: CanvasRenderingContext2D, s: StudioScene) {
   ctx.fillText(s.texts.eyebrow.toUpperCase(), s.W / 2, 380);
   ctx.fillStyle = "#ffffff";
   ctx.font = `600 ${o ? 170 : 104}px ${DISPLAY}`;
-  ctx.fillText(o ? o.label : "Hecho a mano", s.W / 2, o ? 590 : 560);
+  ctx.fillText(o ? o.label : STUDIO_BRAND.handMade, s.W / 2, o ? 590 : 560);
   ctx.font = `500 44px ${SANS}`;
   ctx.fillStyle = "rgba(255,255,255,0.88)";
   if (o) {
@@ -92,7 +93,7 @@ function offer(ctx: CanvasRenderingContext2D, s: StudioScene) {
       ctx.textBaseline = "alphabetic";
       ctx.fillText(o.condition, s.W / 2, 940);
     }
-  } else ctx.fillText("en Mar del Plata", s.W / 2, 650);
+  } else ctx.fillText(`en ${STUDIO_BRAND.city}`, s.W / 2, 650);
   drawPill(ctx, s.texts.cta, s.W / 2, s.H - 300, { bg: "#ffffff", ink: "#1c2016", size: 32, align: "center" });
   if (s.cast.length) s.cast.forEach((img, i) => ctx.drawImage(raster(img, 260, 200), s.W / 2 - 270 + i * 280, s.H - 215));
   else if (s.hero) ctx.drawImage(raster(s.hero, 170, 170), s.W / 2 - 85, s.H - 190);
@@ -100,9 +101,10 @@ function offer(ctx: CanvasRenderingContext2D, s: StudioScene) {
 
 export function drawSlide(ctx: CanvasRenderingContext2D, s: StudioScene, index: number, t: number) {
   const slides = carouselSlides(s);
-  const slide = slides[Math.min(index, slides.length - 1)]!;
+  const i = Math.min(Math.max(0, index), slides.length - 1);
+  const slide = slides[i]!;
   drawBackdrop(ctx, s.look, t, s.W, s.H);
-  counter(ctx, s, index, slides.length);
+  counter(ctx, s, i, slides.length);
   if (slide.kind === "cover") cover(ctx, s);
   else if (slide.kind === "product") product(ctx, s, slide.index);
   else if (slide.kind === "steps") steps(ctx, s);

@@ -50,6 +50,10 @@ describe("estudio de contenido", () => {
     expect(new Set(ids).size).toBe(hooksFor(lamp).length);
     expect(buildCaption({ theme: null, offer: null, products: lamp, format: "carousel", variant: 0 }).text).toContain("Cómo pedir el tuyo: 1)");
     expect(themeHashtag(theme("dia-de-la-independencia"))).toBe("#9DeJulio");
+    // El texto sigue a la pieza: sin precio ni oferta si se apagaron.
+    const quiet = buildCaption({ theme: madre, offer, products: lamp, format: "post", variant: 0, showPrice: false, showOffer: false }).text;
+    expect(quiet).not.toContain("$");
+    expect(quiet).not.toContain("MAMA15");
   });
 
   it("tiempos: duración entre 6 y 15 s, entradas en orden y productos uno por uno en la historia", () => {

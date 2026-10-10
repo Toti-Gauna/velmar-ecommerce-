@@ -40,41 +40,61 @@ export function videoSupport(): ReturnType<typeof pickVideoFormat> {
   return pickVideoFormat((m) => MediaRecorder.isTypeSupported(m));
 }
 
+/** Libera la memoria del canvas de exportación (Safari de iPhone limita el total de canvas abiertos). */
+export function releaseCanvas(canvas: HTMLCanvasElement) {
+  canvas.width = 0;
+  canvas.height = 0;
+}
+
 /**
  * Graba `duration` segundos: dibuja cada cuadro con `draw(t)` y captura el canvas a 30 cuadros por segundo.
- * `onProgress` recibe los segundos grabados. Devuelve el video y su extensión.
+ * Antes de grabar dibuja la pieza entera una vez (arma los mapas de bits y evita saltos). Si se cambia de pestaña, el
+ * navegador pausa la animación: la grabación se cancela con un aviso. Siempre libera grabador, pistas y audio.
  */
 export async function recordVideo(canvas: HTMLCanvasElement, draw: (t: number) => void, duration: number, music: StudioMusic, onProgress: (s: number) => void): Promise<{ blob: Blob; ext: string }> {
   const format = videoSupport();
   if (!format) throw new Error("Este navegador no puede grabar video");
+  for (let t = 0; t <= duration; t += 0.5) draw(t);
   const stream = canvas.captureStream(30);
-  let audio: AudioContext | null = null, stopMusic = () => {};
-  if (music !== "none") {
-    audio = new AudioContext();
-    const dest = audio.createMediaStreamDestination();
-    stopMusic = playJingle(audio, dest, music, duration);
-    dest.stream.getAudioTracks().forEach((track) => stream.addTrack(track));
+  let audio: AudioContext | null = null, stopMusic = () => {}, rec: MediaRecorder | null = null, hidden = false;
+  const onHide = () => { if (document.hidden) hidden = true; };
+  document.addEventListener("visibilitychange", onHide);
+  try {
+    if (music !== "none") {
+      audio = new AudioContext();
+      const dest = audio.createMediaStreamDestination();
+      stopMusic = playJingle(audio, dest, music, duration);
+      dest.stream.getAudioTracks().forEach((track) => stream.addTrack(track));
+    }
+    rec = new MediaRecorder(stream, { mimeType: format.mimeType, videoBitsPerSecond: 6_000_000 });
+    const chunks: Blob[] = [];
+    rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    const stopped = new Promise<void>((resolve) => { rec!.onstop = () => resolve(); });
+    draw(0);
+    rec.start(250);
+    const start = performance.now();
+    await new Promise<void>((resolve, reject) => {
+      const tick = () => {
+        try {
+          if (hidden) throw new Error("Se canceló la grabación: la pestaña quedó en segundo plano. Volvé a grabar sin cambiar de pestaña.");
+          const t = (performance.now() - start) / 1000;
+          draw(Math.min(t, duration));
+          onProgress(Math.min(t, duration));
+          if (t >= duration) resolve(); else requestAnimationFrame(tick);
+        } catch (e) { reject(e); }
+      };
+      requestAnimationFrame(tick);
+    });
+    rec.stop();
+    await stopped;
+    const blob = new Blob(chunks, { type: format.mimeType.split(";")[0] });
+    if (!blob.size) throw new Error("El video salió vacío. Probá de nuevo o con otro navegador.");
+    return { blob, ext: format.ext };
+  } finally {
+    document.removeEventListener("visibilitychange", onHide);
+    if (rec && rec.state !== "inactive") rec.stop();
+    stopMusic();
+    stream.getTracks().forEach((track) => track.stop());
+    await audio?.close().catch(() => {});
   }
-  const rec = new MediaRecorder(stream, { mimeType: format.mimeType, videoBitsPerSecond: 6_000_000 });
-  const chunks: Blob[] = [];
-  rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
-  const done = new Promise<void>((resolve) => { rec.onstop = () => resolve(); });
-  draw(0);
-  rec.start(250);
-  const start = performance.now();
-  await new Promise<void>((resolve) => {
-    const tick = () => {
-      const t = (performance.now() - start) / 1000;
-      draw(Math.min(t, duration));
-      onProgress(Math.min(t, duration));
-      if (t >= duration) resolve(); else requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  });
-  rec.stop();
-  await done;
-  stopMusic();
-  stream.getTracks().forEach((track) => track.stop());
-  await audio?.close();
-  return { blob: new Blob(chunks, { type: format.mimeType.split(";")[0] }), ext: format.ext };
 }

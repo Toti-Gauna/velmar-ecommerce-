@@ -31,7 +31,9 @@ export function useFontsReady(): boolean {
  * Vista previa en canvas a escala. `animate` la reproduce en bucle (con "reducir movimiento" queda en el cuadro
  * final, el mismo que se exporta como imagen).
  */
-export function StudioPreview({ scene, slide = 0, animate, scale, label, className }: { scene: StudioScene; slide?: number; animate: boolean; scale: number; label: string; className?: string }) {
+export function StudioPreview({ scene, slide = 0, animate, replay = 0, scale, label, decorative, className }: {
+  scene: StudioScene; slide?: number; animate: boolean; replay?: number; scale: number; label: string; decorative?: boolean; className?: string;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
   const reduce = useReducedMotion();
   const fonts = useFontsReady();
@@ -43,11 +45,17 @@ export function StudioPreview({ scene, slide = 0, animate, scale, label, classNa
     canvas.height = Math.round(scene.H * scale);
     const paint = (t: number) => { ctx.setTransform(scale, 0, 0, scale, 0, 0); drawFrame(ctx, scene, t, slide); };
     if (!animate || reduce) { paint(scene.duration); return; }
+    // Se reproduce una vez y queda en el cuadro final (sin animaciones permanentes); "Ver animación" la repite.
     let raf = 0;
     const start = performance.now();
-    const loop = () => { paint(((performance.now() - start) / 1000) % (scene.duration + 1)); raf = requestAnimationFrame(loop); };
+    const loop = () => {
+      const t = (performance.now() - start) / 1000;
+      paint(Math.min(t, scene.duration));
+      if (t < scene.duration) raf = requestAnimationFrame(loop);
+    };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [scene, slide, animate, reduce, scale, fonts]);
-  return <canvas ref={ref} role="img" aria-label={label} className={cn("block h-auto w-full rounded-2xl bg-night shadow-[var(--shadow-card)]", className)} style={{ aspectRatio: `${scene.W} / ${scene.H}` }} />;
+  }, [scene, slide, animate, replay, reduce, scale, fonts]);
+  return <canvas ref={ref} role={decorative ? undefined : "img"} aria-hidden={decorative || undefined} aria-label={decorative ? undefined : label}
+    className={cn("block h-auto w-full rounded-2xl bg-night shadow-[var(--shadow-card)]", className)} style={{ aspectRatio: `${scene.W} / ${scene.H}` }} />;
 }
