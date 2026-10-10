@@ -54,8 +54,8 @@
   vigente) con "Aplicar ahora", "Guardar para después" y "Salir". En el club, la ruleta se muestra quieta y la abre su botón.
 - **Rendimiento**: escenas de la pantalla de carga, ruleta, carrito, cupones y buscador se descargan cuando hacen falta;
   la segunda vista de cada tarjeta se dibuja recién al pasar el mouse; las secciones de más abajo del inicio, las
-  recomendaciones de la ficha y el pie no se dibujan hasta acercarse; el fondo de la temática se detiene mientras se
-  scrollea; las letras del collar se balancean tres veces y quedan quietas. Ver `docs/qa.md`.
+  recomendaciones de la ficha y el pie no se dibujan hasta acercarse; las letras del collar se balancean tres veces y
+  quedan quietas. Ver `docs/qa.md`.
 
 ## Fase 6 · Estudio de contenido (pedido de Ignacio, 10/2026, fuera de la spec)
 - `/admin-demo/estudio/` (Marketing → Estudio de contenido): piezas para Instagram por fecha, exportables a imagen y video.

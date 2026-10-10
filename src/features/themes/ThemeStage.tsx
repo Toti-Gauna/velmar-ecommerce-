@@ -26,19 +26,6 @@ export function ThemeStage() {
     } else html.removeAttribute("data-season");
   }, [id, ready]);
   useEffect(() => () => document.documentElement.removeAttribute("data-season"), []);
-  // Durante el scroll el fondo se detiene (clase `is-scrolling`, ver motion.css) y sigue apenas se suelta.
-  useEffect(() => {
-    if (!id) return;
-    const html = document.documentElement;
-    let t = 0;
-    const onScroll = () => {
-      if (!t) html.classList.add("is-scrolling");
-      window.clearTimeout(t);
-      t = window.setTimeout(() => { html.classList.remove("is-scrolling"); t = 0; }, 180);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { window.removeEventListener("scroll", onScroll); window.clearTimeout(t); html.classList.remove("is-scrolling"); };
-  }, [id]);
   if (!theme) return null;
   const skin = skinOf(theme.id);
   const dark = isImmersive(theme.id);

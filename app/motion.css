@@ -38,8 +38,6 @@
 /* ---------- Rendimiento ---------- */
 /* Secciones de más abajo: no se dibujan hasta acercarse a la pantalla; el tamaño estimado evita saltos del scroll. */
 .cv-auto { content-visibility: auto; contain-intrinsic-size: auto 600px; }
-/* Mientras se scrollea, los fondos animados de la temática se detienen (vuelven al soltar): el scroll va primero. */
-.is-scrolling .season-backdrop *, .is-scrolling .garland * { animation-play-state: paused !important; }
 
 /* ---------- Escenario a pantalla completa (ruleta y regalos) ---------- */
 /* Casi negro con la luz de la temática desde abajo y arriba; entra con un fundido corto. */

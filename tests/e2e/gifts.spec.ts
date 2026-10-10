@@ -7,7 +7,7 @@ async function checkout(page: Page) {
   await page.getByLabel("Email").fill("lucia@ejemplo.com");
   await page.getByLabel("Teléfono / WhatsApp").fill("223 555-1234");
   await page.getByRole("button", { name: "Continuar a la entrega" }).click();
-  await page.getByText("Retiro en Mar del Plata").first().click();
+  await page.getByText("Retiro en persona").first().click();
   await page.getByRole("button", { name: "Continuar al pago" }).click();
   await page.getByText("Transferencia bancaria").click();
   await page.getByRole("button", { name: "Revisar pedido" }).click();
@@ -40,12 +40,13 @@ test("regalar: ficha → carrito → checkout → link que se abre a golpes, sin
   await checkout(page);
 
   // Confirmación: el regalo listo para mandar con su código y su link
-  await expect(page.getByRole("heading", { name: "Tu regalo, listo para mandar" })).toBeVisible();
-  const code = (await page.getByRole("button", { name: /Copiar código REGALO-/ }).textContent())!.trim();
+  const ready = page.getByRole("region", { name: "Tu regalo, listo para mandar" });
+  await expect(ready).toBeVisible();
+  const code = (await ready.getByRole("button", { name: /Copiar código REGALO-/ }).textContent())!.trim();
   expect(code).toMatch(/^REGALO-[0-9A-Z]{4}-[0-9A-Z]{4}$/);
-  const whatsapp = await page.getByRole("link", { name: "WhatsApp" }).getAttribute("href");
+  const whatsapp = await ready.getByRole("link", { name: "WhatsApp", exact: true }).getAttribute("href");
   expect(decodeURIComponent(whatsapp!)).toContain(code);
-  const href = await page.getByRole("link", { name: "Ver cómo lo recibe" }).getAttribute("href");
+  const href = await ready.getByRole("link", { name: "Ver cómo lo recibe" }).getAttribute("href");
   const link = href!.replace("&vista=previa", "");
 
   // Quien lo recibe (otro navegador): todo oscuro, el regalo y "Golpeá el regalo para abrirlo"
