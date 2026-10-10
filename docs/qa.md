@@ -320,6 +320,29 @@ Lote 1: base responsive, navegación e inicio.
 - **Guía:** se quitaron el componente, sus pasos y las marcas `data-tour`. La clave vieja `velmar-tour:admin` queda donde
   esté (no se borra nada del navegador) y ya no se lee.
 
+Lote 2: tablas universales, vista Excel y catálogo unificado (`admin-polish-tables.spec.ts`, `admin-polish-catalog.spec.ts`,
+`tests/unit/admin-tables-83.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.4 Pedidos, Clientes, Productos, Variantes, Costos, Insumos y Categorías a 1440 (mouse), 1024 y 390 (táctil): buscar, "Buscar", "Reiniciar filtros" y todos los filtros a mano (los que no entran, en "Más filtros"); sin desborde | ✅ emulado |
+| 8.3.4 Diez por página con "página N de M"; filtrar estando en la página 2 deja una página válida; Reiniciar limpia búsqueda, filtros y URL | ✅ + unit |
+| 8.3.4 Toda la fila abre la entidad correcta (pedido, cliente, producto desde producto o variante, costo, insumo, categoría); checkbox, switch de visibilidad y botones de stock no navegan | ✅ |
+| 8.3.4 Vista Excel con los mismos filtros y filas; pedidos de solo lectura (nada se edita, sin "Guardar"); Atrás vuelve a la tabla con el filtro; el `.xlsx` lleva las 17 filas sin filtro (la página muestra 10) y las filtradas con filtro | ✅ |
+| 8.3.18 Insumos: buscar pasa a la vista Excel; "Piden los pedidos" no se edita; −3 marca error; 4.200 se guarda una vez, la tabla muestra 4200 y sigue al recargar; filtro de estado y Reiniciar | ✅ |
+| 8.3.18 Salir con cambios pide confirmar; recargar recupera el borrador; "Descartar y volver" lo limpia | ✅ |
+| 8.3.19 Menú con "Productos y stock" y sin Stock, Planilla ni Importar; el aviso de reposición filtra la misma pantalla; `/admin-demo/stock/?vista=reponer` y `/admin-demo/planilla/` llegan a la vista correcta; "Importar Excel" sigue en el módulo | ✅ |
+| 8.3.19 "A pedido": mismas variantes en la tabla y en la vista Excel, que las muestra como "a pedido" | ✅ + unit |
+| 8.3.22 Modal "Nueva categoría": foco en el nombre, Escape cierra y devuelve el foco, el borrador sigue al reabrir, nombre vacío da error, el repetido avisa, crear suma exactamente una, se limpia y aparece en el editor de productos | ✅ |
+| 8.3.22 Con filtros no hay Subir/Bajar (aviso); en el orden de la tienda, Subir mueve y se guarda; el switch de la fila no navega; la fila abre el detalle con productos y destacada | ✅ |
+| 8.3.22 Vista Excel: renombrar se guarda y el lugar en la tienda no cambia | ✅ + unit |
+
+- **Filtros que entran:** container queries sobre el ancho real de la tabla (no del viewport): el primero desde 50rem, el
+  segundo desde 62rem y el tercero desde 73rem; del cuarto en adelante, siempre en "Más filtros". Con la barra lateral fijada
+  entra uno menos.
+- **Buscar:** filtra mientras escribís (como antes); "Buscar" confirma y cierra el teclado del celular.
+- **Reclamos, cupones y pagos** son listas de tarjetas, no tablas: siguen con su paginado y se revisan en los Lotes 3 y 6.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
@@ -335,10 +358,10 @@ Lote 1: base responsive, navegación e inicio.
 | Transiciones de pedido válidas/ inválidas (spec 5.2) y acciones del store | ✅ unit |
 | Importar Excel: columnas con otros nombres se reconocen, vista previa marca errores (centavos), importa, la categoría nueva abre en la tienda y se deshace con aviso | ✅ |
 | Importar CSV con `;` y montos con `$` actualiza precio y stock | ✅ |
-| Pedidos: pestañas por etapa, cambio de estado en lote (solo transiciones válidas), vista rápida y exportar `.xlsx` | ✅ |
+| Pedidos: filtro de etapa, cambio de estado en lote (solo transiciones válidas), ficha completa desde la fila, Atrás con el filtro puesto y exportar `.xlsx` | ✅ |
 | Stock: sumar en la tabla se refleja en la ficha de la tienda | ✅ |
 | ⌘K / Ctrl+K abre un pedido por código | ✅ |
-| Planilla (escritorio): validar al escribir, pegar celdas de Excel, Ctrl+Z / Ctrl+Y, guardar y ver en la tienda | ✅ |
+| Vista Excel de Productos y stock (escritorio, entrando por la ruta vieja de la Planilla): validar al escribir, pegar celdas de Excel, Ctrl+Z / Ctrl+Y, guardar y ver en la tienda | ✅ |
 | Lectura de celdas (montos, stock, sí/no, CSV), mapeo de columnas, plan de importación, orden, búsqueda, stock en lote, clientes y TSV | ✅ unit |
 | 21 rutas del panel (con calendario, producción, costos, insumos y ficha de cliente) abren directo y al refrescar | ✅ |
 | Calendario (escritorio): arrastrar un pedido a un feriado no se aplica; a un día hábil sí; a un día completo avisa "sobrecargado"; el .ics se descarga | ✅ |

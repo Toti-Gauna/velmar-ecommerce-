@@ -102,5 +102,5 @@ afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
 Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`, `:gifts`; y
-`velmar-ui:admin-sidebar` para recordar la barra lateral fija; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
+`velmar-ui:admin-sidebar` para recordar la barra lateral fija; `velmar-ui:sheet:*` en `sessionStorage` para el borrador de una vista Excel sin guardar; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
 navegador. "Reiniciar demo" (banner y pie) borra todo.

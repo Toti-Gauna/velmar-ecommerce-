@@ -14,6 +14,8 @@ export interface DataActions {
   toggleProductActive: (slug: string) => void;
   moveCategory: (slug: string, dir: -1 | 1) => void;
   toggleCategoryFeatured: (slug: string) => void;
+  /** Guarda varias categorías de una vez (vista Excel): una sola línea de auditoría. */
+  updateCategories: (categories: DemoData["categories"], action: string) => void;
   saveTemplate: (template: PersonalizationTemplate) => void;
   saveTextZone: (art: string, zone: TextZone) => void;
   saveMission: (mission: Mission) => void;
@@ -64,6 +66,7 @@ export function createDataActions(set: Set): DataActions {
       [sorted[i], sorted[j]] = [sorted[j]!, sorted[i]!];
       return { categories: sorted.map((c, k) => ({ ...c, sortOrder: k + 1 })) };
     }),
+    updateCategories: (categories, action) => edit(action, "Categorías", () => ({ categories })),
     toggleCategoryFeatured: (slug) => edit("Categoría destacada", slug, (d) => ({ categories: d.categories.map((c) => (c.slug === slug ? { ...c, featured: !c.featured } : c)) })),
     saveTemplate: (t) => edit("Plantilla de personalización", t.name, (d) => ({ products: d.products.map((p) => (p.personalization?.id === t.id ? { ...p, personalization: t } : p)) })),
     saveTextZone: (art, zone) => edit("Zona de texto", art, (d) => ({ textZones: { ...d.textZones, [art]: zone } })),

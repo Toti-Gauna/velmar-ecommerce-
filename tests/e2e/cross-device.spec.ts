@@ -25,7 +25,7 @@ const SHOP = [
 const ADMIN = [
   ["admin-demo/", "Buen día, Velmar"], ["admin-demo/pedidos/", "Pedidos"], ["admin-demo/pedidos/detalle/?codigo=VEL-000123", "VEL-000123"],
   ["admin-demo/pagos/", "Pagos manuales"], ["admin-demo/productos/", "Productos y stock"], ["admin-demo/categorias/", "Categorías y personalización"],
-  ["admin-demo/stock/", "Stock"], ["admin-demo/planilla/", "Planilla"], ["admin-demo/importar/", "Importar desde Excel"],
+  ["admin-demo/stock/", "Productos y stock"], ["admin-demo/planilla/", "Productos y stock · formato Excel"], ["admin-demo/importar/", "Importar desde Excel"],
   ["admin-demo/misiones/", "Misiones y premios"], ["admin-demo/cupones/", "Cupones"], ["admin-demo/emails/", "Emails automáticos"],
   ["admin-demo/calendario/", "Calendario de entregas"], ["admin-demo/produccion/", "Cola de producción"], ["admin-demo/costos/", "Costos y margen"],
   ["admin-demo/insumos/", "Insumos"], ["admin-demo/usuarios/", "Clientes"], ["admin-demo/reclamos/", "Reclamos"],

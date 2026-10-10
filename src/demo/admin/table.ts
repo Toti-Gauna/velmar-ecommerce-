@@ -65,3 +65,34 @@ export function exportFileName(entity: string, now = new Date()): string {
   const day = new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10);
   return `velmar-${normalize(entity).replace(/\s+/g, "-")}-${day}.xlsx`;
 }
+
+/**
+ * Filtro de una tabla (8.3.4): un select o una fecha que deja pasar las filas que cumplen `test`.
+ * El valor vacío significa "sin filtrar"; así la URL solo guarda lo que el usuario eligió.
+ */
+export interface FilterSpec<T> {
+  id: string;
+  label: string;
+  kind?: "select" | "date";
+  /** Opciones del select, sin la de "todas" (la agrega la tabla con `allLabel`). */
+  options?: { value: string; label: string }[];
+  allLabel?: string;
+  test: (row: T, value: string) => boolean;
+}
+
+export type FilterValues = Record<string, string>;
+
+export function applyFilters<T>(rows: T[], specs: FilterSpec<T>[], values: FilterValues): T[] {
+  const active = specs.filter((s) => values[s.id]);
+  return active.length ? rows.filter((r) => active.every((s) => s.test(r, values[s.id]!))) : rows;
+}
+
+/** Cuántas filas quedarían si ese filtro tomara `value`, con el resto de los filtros como están. */
+export function facetCount<T>(rows: T[], specs: FilterSpec<T>[], values: FilterValues, id: string, value: string): number {
+  return applyFilters(rows, specs, { ...values, [id]: value }).length;
+}
+
+/** Filtros + búsqueda: lo mismo que ven la tabla, la vista Excel y la exportación. */
+export function filterRows<T>(rows: T[], specs: FilterSpec<T>[], values: FilterValues, query: string, searchText: (row: T) => string): T[] {
+  return applyFilters(rows, specs, values).filter((r) => matchesQuery(query, searchText(r)));
+}

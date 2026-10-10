@@ -13,6 +13,8 @@ export interface WorkshopActions {
   saveMaterial: (material: Material) => void;
   createMaterial: (name: string) => string;
   adjustMaterials: (ids: string[], op: MaterialOp, label: string) => void;
+  /** Guarda varios insumos de una vez (vista Excel): una sola línea de auditoría. */
+  updateMaterials: (materials: Material[], action: string) => void;
   saveRecipe: (slug: string, recipe: Recipe) => void;
   /** Lleva el precio "desde" del producto a `price` (las variantes conservan su diferencia). */
   applyPrice: (slug: string, price: number) => void;
@@ -46,6 +48,7 @@ export function createWorkshopActions(set: Set): WorkshopActions {
       return id;
     },
     adjustMaterials: (ids, op, label) => edit(label, `${ids.length} insumos`, (w) => ({ materials: applyMaterialOp(w.materials, ids, op) })),
+    updateMaterials: (materials, action) => edit(action, "Insumos", () => ({ materials })),
     saveRecipe: (slug, recipe) => edit("Receta de costo guardada", slug, (w) => ({ recipes: { ...w.recipes, [slug]: recipe } })),
     applyPrice: (slug, price) =>
       set((s) => ({

@@ -40,34 +40,41 @@ test("importar un CSV propio con ; y montos con $", async ({ page }) => {
   await page.getByRole("button", { name: /Ver vista previa/ }).click();
   await expect(page.getByRole("cell", { name: /Precio \$\s?11\.900 → \$\s?12\.900/ })).toBeVisible();
   await page.getByRole("button", { name: /Importar 1 fila/ }).click();
-  await page.goto("admin-demo/stock/");
-  await page.getByLabel("Buscar variante").fill("lavanda");
+  await page.goto("admin-demo/productos/?ver=variantes");
+  await page.getByLabel("Buscar producto o variante").fill("lavanda");
   await expect(page.getByLabel("Unidades de Vela caniche · Lavanda").first()).toHaveValue("15");
 });
 
-test("pedidos: pestañas por etapa, cambio en lote, vista rápida y exportar a Excel", async ({ page }) => {
+test("pedidos: filtro de etapa, cambio en lote, ficha completa y exportar a Excel", async ({ page }) => {
   await page.goto("admin-demo/pedidos/");
-  await page.getByRole("button", { name: /^Para producir/ }).click();
+  const stage = page.getByRole("combobox", { name: "Etapa" });
+  await page.getByRole("button", { name: "Más filtros" }).click();
+  await stage.selectOption("to-make");
   await page.getByLabel("Seleccionar VEL-000122").first().check();
   await page.getByRole("region", { name: "Acciones en lote" }).getByRole("button", { name: "Pasar a En producción" }).click();
   await expect(status(page, /1 pedido pasó a “En producción”/)).toBeVisible();
-  await page.getByRole("button", { name: /^En producción/ }).click();
+  await stage.selectOption("making");
   await page.getByRole("button", { name: /VEL-000122/ }).first().click();
-  const peek = page.getByRole("dialog", { name: "Pedido VEL-000122" });
-  await expect(peek.getByText("En producción").first()).toBeVisible();
-  await page.keyboard.press("Escape");
-
-  await page.getByRole("button", { name: /^Todos/ }).click();
+  await expect(page.getByRole("heading", { level: 1, name: /VEL-000122/ })).toBeVisible();
+  await expect(page.getByText("En producción").first()).toBeVisible();
+  // Atrás vuelve a la tabla con el filtro puesto (vive en la URL).
+  await page.goBack();
+  await expect(page).toHaveURL(/etapa=making/);
+  await page.getByRole("button", { name: "Más filtros" }).click();
+  await expect(stage).toHaveValue("making");
+  await page.getByRole("button", { name: "Reiniciar filtros" }).click();
+  await expect(stage).toHaveValue("");
+  await expect(page).not.toHaveURL(/etapa=/);
   const download = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Exportar", exact: true }).click();
+  await page.getByRole("button", { name: "Descargar Excel (.xlsx)" }).click();
   const file = await download;
   expect(file.suggestedFilename()).toMatch(/^velmar-pedidos-\d{4}-\d{2}-\d{2}\.xlsx$/);
   expect(readFileSync((await file.path())!).subarray(0, 2).toString()).toBe("PK");
 });
 
 test("stock: sumar en la tabla se refleja en la ficha de la tienda", async ({ page }) => {
-  await page.goto("admin-demo/stock/");
-  await page.getByLabel("Buscar variante").fill("caniche vainilla");
+  await page.goto("admin-demo/productos/?ver=variantes");
+  await page.getByLabel("Buscar producto o variante").fill("caniche vainilla");
   await page.getByRole("button", { name: "Sumar 1 a Vela caniche · Vainilla" }).first().click();
   await expect(page.getByLabel("Unidades de Vela caniche · Vainilla").first()).toHaveValue("9");
   await page.goto("p/vela-caniche/");
@@ -83,12 +90,14 @@ test("buscador del panel con Ctrl+K abre un pedido", async ({ page }) => {
   await expect(page).toHaveURL(/pedidos\/detalle\/\?codigo=VEL-000124/);
 });
 
-test.describe("planilla en escritorio", () => {
+test.describe("vista Excel de Productos y stock en escritorio", () => {
   test.use({ viewport: { width: 1280, height: 900 }, isMobile: false, hasTouch: false });
 
   test("editar con teclado, validar, pegar desde Excel, deshacer y guardar", async ({ page }) => {
+    // La ruta vieja de la Planilla lleva a la vista Excel del módulo unificado.
     await page.goto("admin-demo/planilla/");
-    await page.getByLabel("Buscar en la planilla").fill("vela caniche");
+    await expect(page.getByRole("heading", { level: 1, name: /Productos y stock · formato Excel/ })).toBeVisible();
+    await page.getByLabel("Buscar producto o variante").fill("vela caniche");
     const row = (text: string) => page.getByRole("row").filter({ hasText: text });
     const stock = row("Vainilla").getByRole("gridcell").nth(4);
     await stock.click();
@@ -103,7 +112,7 @@ test.describe("planilla en escritorio", () => {
     await page.evaluate(() => {
       const dt = new DataTransfer();
       dt.setData("text/plain", "$ 13.500\t7\n");
-      document.getElementById("sheet-grid")!.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
+      document.getElementById("sheet-catalog")!.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
     });
     await expect(page.getByText("3 cambios sin guardar")).toBeVisible();
     await page.keyboard.press("Control+z");

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { SortDir, SortValue } from "@/demo/admin/table";
+import type { FilterSpec, FilterValues, SortDir, SortValue } from "@/demo/admin/table";
 
 /** Columna de DataTable. Es ordenable si tiene `sortValue` y se exporta si tiene `exportValue`. */
 export interface Column<T> {
@@ -9,6 +9,8 @@ export interface Column<T> {
   sortValue?: (row: T) => SortValue;
   exportValue?: (row: T) => string | number;
   align?: "left" | "right" | "center";
+  /** En la vista Excel se muestra como pesos. */
+  money?: boolean;
   /** Ancho mínimo u otras clases de la celda. */
   className?: string;
   /** Celda que abre el detalle de la fila (se vuelve un botón). */
@@ -25,11 +27,19 @@ export interface Sort {
 }
 
 export type Density = "comfortable" | "compact";
+export type TableView = "table" | "excel";
 
 /** Estado de la tabla (lo maneja useTableState en el panel; la tabla solo lo muestra). */
 export interface TableState {
   query: string;
   setQuery: (q: string) => void;
+  filters: FilterValues;
+  setFilter: (id: string, value: string) => void;
+  /** Hay búsqueda, filtros u orden distinto del inicial: "Reiniciar" tiene algo que hacer. */
+  dirty: boolean;
+  reset: () => void;
+  view: TableView;
+  setView: (view: TableView) => void;
   sort: Sort | null;
   setSort: (s: Sort | null) => void;
   page: number;
@@ -67,13 +77,18 @@ export interface DataTableProps<T> {
   searchPlaceholder?: string;
   state: TableState;
   pageSize?: number;
-  /** Filtros propios de la pantalla, al lado del buscador. */
-  filters?: ReactNode;
-  /** Vistas guardadas u otros controles a la derecha de la barra. */
+  /** Filtros de la pantalla (estado incluido): los que entran se ven en la barra; el resto, en "Más filtros". */
+  filters?: FilterSpec<T>[];
+  /** Controles de vista a la derecha del contador (por ejemplo, Productos | Variantes). */
   toolbarEnd?: ReactNode;
   bulkActions?: (rows: T[], clear: () => void) => ReactNode;
+  /** Página completa de la fila (8.3.4): toda la fila la abre; los controles de adentro no navegan. */
+  rowHref?: (row: T) => string;
+  /** Detalle en un panel o modal, para lo que no tiene página propia. */
   onRowOpen?: (row: T) => void;
   onExport?: (sheet: ExportSheet, scope: "selected" | "filtered") => void;
+  /** "Ver en formato Excel" al pie: la pantalla cambia a su vista Excel (normalmente `state.setView("excel")`). */
+  onExcel?: () => void;
   /** Tarjeta para el celular; sin ella se ve la tabla con scroll horizontal. */
   renderCard?: (props: RowCardProps<T>) => ReactNode;
   /** Fila destacada (por ejemplo, stock bajo). */

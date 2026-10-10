@@ -1,13 +1,11 @@
 "use client";
-import { useSearchParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
-import { useState } from "react";
-import { DateInput } from "@/components/atoms/DateInput";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { StatusBadge } from "@/components/molecules/StatusBadge";
-import { DataTable } from "@/components/organisms/data-table/DataTable";
+import { DataTable, toSheet } from "@/components/organisms/data-table/DataTable";
 import type { RowCardProps } from "@/components/organisms/data-table/types";
 import { BULK_TARGETS, inTab, ORDER_TABS, tabForStatus, type OrderTabId } from "@/demo/admin/order-groups";
+import type { FilterSpec } from "@/demo/admin/table";
 import type { AdminOrder } from "@/demo/admin/types";
 import { canTransition, STATUS_LABEL } from "@/demo/engine/orders";
 import { formatDateTime, toDayKey } from "@/lib/date";
@@ -15,11 +13,12 @@ import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { useToasts } from "@/stores/toast";
 import { AdminPageHeader } from "../AdminPageHeader";
-import { BulkButton, TabFilter } from "../table/TabFilter";
+import { fulfillmentLabel, paymentLabel } from "../OrderCard";
+import { BulkButton } from "../table/TabFilter";
+import { specFromColumns, TableExcel } from "../table/TableExcel";
 import { useExport } from "../table/useExport";
 import { useTableState } from "../table/useTableState";
 import { orderColumns, PromisedCell } from "./orderColumns";
-import { OrderPeek } from "./OrderPeek";
 
 function OrderRowCard({ row: o, selected, onToggle, onOpen }: RowCardProps<AdminOrder>) {
   return (
@@ -38,19 +37,30 @@ function OrderRowCard({ row: o, selected, onToggle, onOpen }: RowCardProps<Admin
   );
 }
 
-/** Pedidos como en un CRM: pestañas por etapa, fechas, búsqueda, orden, acciones en lote, Excel y vista rápida. */
+const PAYMENTS = ["BANK_TRANSFER", "QR_MANUAL", "CHECKOUT_PRO"] as const;
+const FULFILLMENTS = ["PICKUP", "LOCAL_DELIVERY", "SHIPPING"] as const;
+/** Etapa (los estados agrupados por lo que hay que hacer), fechas, medio de pago y entrega. */
+const FILTERS: FilterSpec<AdminOrder>[] = [
+  { id: "etapa", label: "Etapa", allLabel: "Todas", options: ORDER_TABS.filter((t) => t.id !== "all").map((t) => ({ value: t.id, label: t.label })), test: (o, v) => inTab(o, v as OrderTabId) },
+  { id: "desde", label: "Desde", kind: "date", test: (o, v) => toDayKey(o.createdAt) >= v },
+  { id: "hasta", label: "Hasta", kind: "date", test: (o, v) => toDayKey(o.createdAt) <= v },
+  { id: "pago", label: "Medio de pago", options: PAYMENTS.map((m) => ({ value: m, label: paymentLabel(m) })), test: (o, v) => o.paymentMethod === v },
+  { id: "entrega", label: "Entrega", allLabel: "Todas", options: FULFILLMENTS.map((f) => ({ value: f, label: fulfillmentLabel(f) })), test: (o, v) => o.fulfillment === v },
+];
+const search = (o: AdminOrder) => `${o.code} ${o.customer.name} ${o.customer.email}`;
+const detail = (o: AdminOrder) => `/admin-demo/pedidos/detalle/?codigo=${o.code}`;
+
+/** Pedidos como en un CRM: filtros por etapa y fechas, búsqueda, orden, acciones en lote, ficha completa y Excel. */
 export function OrdersTable() {
   const orders = useAdmin((s) => s.orders);
   const transition = useAdmin((s) => s.transition);
   const push = useToasts((s) => s.push);
   const onExport = useExport("pedidos");
-  const [tab, setTab] = useState<OrderTabId>(tabForStatus(useSearchParams().get("estado")));
-  const [range, setRange] = useState({ from: "", to: "" });
-  const [peek, setPeek] = useState<string | null>(null);
-  const state = useTableState("orders", { sort: { id: "date", dir: "desc" }, hidden: orderColumns.filter((c) => c.defaultHidden).map((c) => c.id) });
-  const inRange = orders.filter((o) => (!range.from || toDayKey(o.createdAt) >= range.from) && (!range.to || toDayKey(o.createdAt) <= range.to));
-  const rows = inRange.filter((o) => inTab(o, tab));
-  const pick = (next: OrderTabId) => { setTab(next); state.setPage(1); state.setSelected(new Set()); };
+  const state = useTableState("orders", {
+    sort: { id: "date", dir: "desc" }, hidden: orderColumns.filter((c) => c.defaultHidden).map((c) => c.id), filterIds: FILTERS.map((f) => f.id),
+    // Enlaces del inicio y del menú que todavía llegan con ?estado=PAID.
+    legacy: { params: ["estado"], read: (p): Record<string, string> => { const t = tabForStatus(p.get("estado")); return t === "all" ? {} : { etapa: t }; } },
+  });
   const bulkMove = (list: AdminOrder[], to: (typeof BULK_TARGETS)[number], clear: () => void) => {
     const ok = list.filter((o) => canTransition(o.status, to, { fulfillment: o.fulfillment, trigger: "admin", prevStatus: o.prevStatus }));
     for (const o of ok) transition(o.code, to, `Cambio en lote a ${STATUS_LABEL[to]}`);
@@ -59,25 +69,19 @@ export function OrdersTable() {
       description: skipped ? `${skipped} quedaron igual porque su estado actual no lo permite.` : "Cambio guardado solo en esta demo." });
     clear();
   };
+  const table = { searchLabel: "Código o cliente", searchPlaceholder: "VEL-000123, nombre o email", searchText: search, filters: FILTERS };
+  if (state.view === "excel") {
+    return <TableExcel id="orders" title="Pedidos" noun="pedidos" state={state} rows={orders} {...table} spec={specFromColumns(orderColumns, (o) => o.code)}
+      onExport={(rows) => onExport(toSheet(orderColumns, rows), "filtered")} />;
+  }
   return (
     <>
-      <AdminPageHeader title="Pedidos">Pedidos ficticios. Filtrá por etapa, buscá, ordená por cualquier columna, cambiá estados en lote o bajá todo a Excel.</AdminPageHeader>
-      <div className="mb-4">
-        <TabFilter label="Etapa del pedido" value={tab} onChange={pick} tabs={ORDER_TABS.map((t) => ({ id: t.id, label: t.label, count: inRange.filter((o) => inTab(o, t.id)).length }))} />
-      </div>
-      <DataTable caption="Pedidos" noun="pedidos" rows={rows} columns={orderColumns} state={state} pageSize={8}
-        rowKey={(o) => o.code} rowLabel={(o) => `Seleccionar ${o.code}`} searchText={(o) => `${o.code} ${o.customer.name} ${o.customer.email}`}
-        searchLabel="Código o cliente" searchPlaceholder="VEL-000123, nombre o email"
-        filters={(
-          <div className="flex gap-2">
-            <label className="flex w-40 flex-col gap-1 text-sm font-bold">Desde<DateInput value={range.from} onChange={(e) => { setRange({ ...range, from: e.target.value }); state.setPage(1); }} className="min-h-11" /></label>
-            <label className="flex w-40 flex-col gap-1 text-sm font-bold">Hasta<DateInput value={range.to} onChange={(e) => { setRange({ ...range, to: e.target.value }); state.setPage(1); }} className="min-h-11" /></label>
-          </div>
-        )}
+      <AdminPageHeader title="Pedidos">Pedidos ficticios. Filtrá por etapa o fecha, buscá, ordená por cualquier columna, cambiá estados en lote o abrí la ficha tocando la fila.</AdminPageHeader>
+      <DataTable caption="Pedidos" noun="pedidos" rows={orders} columns={orderColumns} state={state} {...table}
+        rowKey={(o) => o.code} rowLabel={(o) => `Seleccionar ${o.code}`}
         bulkActions={(list, clear) => BULK_TARGETS.map((to) => <BulkButton key={to} onClick={() => bulkMove(list, to, clear)}>Pasar a {STATUS_LABEL[to]}</BulkButton>)}
-        onRowOpen={(o) => setPeek(o.code)} onExport={onExport} renderCard={(p) => <OrderRowCard {...p} />}
-        empty={<EmptyState title="Ningún pedido coincide">Probá con otra etapa, código o rango de fechas.</EmptyState>} />
-      <OrderPeek order={orders.find((o) => o.code === peek) ?? null} onClose={() => setPeek(null)} />
+        rowHref={detail} onExport={onExport} onExcel={() => state.setView("excel")} renderCard={(p) => <OrderRowCard {...p} />}
+        empty={<EmptyState title="Ningún pedido coincide">Probá con otra etapa, código o rango de fechas, o tocá “Reiniciar”.</EmptyState>} />
     </>
   );
 }

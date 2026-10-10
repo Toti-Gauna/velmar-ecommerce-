@@ -38,5 +38,5 @@ export const orderColumns: Column<AdminOrder>[] = [
   { id: "payment", header: "Pago", className: "whitespace-nowrap", cell: (o) => paymentLabel(o.paymentMethod), sortValue: (o) => paymentLabel(o.paymentMethod), exportValue: (o) => paymentLabel(o.paymentMethod) },
   { id: "fulfillment", header: "Entrega", className: "whitespace-nowrap", cell: (o) => fulfillmentLabel(o.fulfillment), sortValue: (o) => fulfillmentLabel(o.fulfillment), exportValue: (o) => fulfillmentLabel(o.fulfillment) },
   { id: "promised", header: "Comprometido", className: "whitespace-nowrap", cell: (o) => <PromisedCell order={o} />, sortValue: (o) => o.promisedDate, exportValue: (o) => o.promisedDate ?? "" },
-  { id: "total", header: "Total", align: "right", cell: (o) => <strong>{formatARS(o.total)}</strong>, sortValue: (o) => o.total, exportValue: (o) => o.total },
+  { id: "total", header: "Total", align: "right", money: true, cell: (o) => <strong>{formatARS(o.total)}</strong>, sortValue: (o) => o.total, exportValue: (o) => o.total },
 ];

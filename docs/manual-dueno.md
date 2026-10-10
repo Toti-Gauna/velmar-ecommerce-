@@ -42,15 +42,23 @@ los pedidos y usá la acción de arriba. Cada cambio avisa al cliente con el ema
 - La tienda usa este mismo calendario para decirle al cliente "llega el…".
 
 ### …cargar o cambiar un producto
-**Productos** → **Crear** (queda pausado hasta que lo muestres) o tocá uno para editar nombre, descripción, precio, plazo,
-foto y variantes (color, tamaño, recargo y stock). Poné **−1 de stock** si lo hacés a pedido.
+**Productos y stock** → **Nuevo producto** (queda pausado hasta que lo muestres) o tocá cualquier parte de la fila para editar
+nombre, descripción, precio, plazo, foto y variantes (color, tamaño, recargo y stock). Poné **−1 de stock** si lo hacés a pedido.
 - **Pausar** lo oculta de la tienda sin borrarlo.
+- Arriba de la tabla elegís **Productos** o **Variantes**: en Variantes sumás o restás stock fila por fila. El aviso amarillo
+  ("necesitan reposición") te lleva a las que hay que reponer.
+
+### …encontrar algo en cualquier tabla
+Escribí en el buscador y elegí filtros; los que no entran en pantalla están en **"Más filtros"**. **"Reiniciar filtros"**
+vuelve a mostrar todo. Al pie, **"Ver en formato Excel"** abre la misma lista como planilla y **"Descargar Excel"** baja
+todo lo filtrado (no solo la página que ves).
 
 ### …actualizar precios y stock con Excel
 **Importar desde Excel**: subí tu planilla (.xlsx o .csv). Reconoce columnas con otros nombres (Rubro, Artículo,
 Cantidad…) y te muestra, fila por fila, qué cambia y qué está mal. Importás lo válido y, si te arrepentís, **Deshacer**.
-Para empezar tocá **"Bajar mi catálogo como plantilla"**, editá y volvé a subir. La **Planilla** sirve para editar como en
-Excel dentro del panel (se puede pegar desde Excel).
+Para empezar tocá **"Bajar mi catálogo como plantilla"**, editá y volvé a subir. Se entra desde **Productos y stock →
+Importar Excel**. **"Ver en formato Excel"** sirve para editar como en Excel dentro del panel (se puede pegar desde Excel);
+nada cambia hasta que tocás **Guardar cambios**.
 
 ### …saber si gano plata
 **Costos y margen**: cargá qué insumos usa cada producto y cuánto tardás. Te dice la ganancia y si el margen es bueno, bajo
