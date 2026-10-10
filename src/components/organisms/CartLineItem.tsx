@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Trash2 } from "lucide-react";
-import type { LinePersonalization } from "@/demo/engine/cart-types";
+import { Gift, Trash2 } from "lucide-react";
+import type { LineGift, LinePersonalization } from "@/demo/engine/cart-types";
 import type { ArtKey } from "@/demo/types";
 import type { TextZone } from "@/demo/fixtures/templates";
 import { formatARS } from "@/lib/money";
@@ -20,6 +20,7 @@ export interface CartLineView {
   quantity: number;
   maxQuantity: number;
   personalization?: LinePersonalization;
+  gift?: LineGift;
   zone?: TextZone;
   photoUrl?: string;
 }
@@ -34,6 +35,7 @@ export function CartLineItem({ line, onQuantity, onRemove }: { line: CartLineVie
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <Link href={`/p/${line.slug}/`} className="line-clamp-2 pr-8 text-[15px] font-bold leading-snug hover:underline sm:text-base">{line.name}</Link>
         <p className="text-[13px] text-muted">{line.variantLabel}</p>
+        {line.gift && <GiftTag gift={line.gift} />}
         {p && (
           <>
             <p className="line-clamp-2 text-[13px]">
@@ -57,5 +59,14 @@ export function CartLineItem({ line, onQuantity, onRemove }: { line: CartLineVie
         <Trash2 size={18} aria-hidden="true" />
       </button>
     </li>
+  );
+}
+
+/** Marca de regalo en la línea: para quién es y de parte de quién. */
+export function GiftTag({ gift }: { gift: LineGift }) {
+  return (
+    <p className="mt-0.5 flex items-center gap-1.5 text-[13px] font-bold text-brass-ink">
+      <Gift size={14} aria-hidden="true" /> Regalo para {gift.to} · de {gift.from}
+    </p>
   );
 }

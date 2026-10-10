@@ -8,11 +8,16 @@ test("ruleta: gira (sin animación con movimiento reducido), emite un cupón y s
   await page.getByRole("button", { name: "Agregar al carrito" }).last().click();
   await page.keyboard.press("Escape");
   await page.goto("club/");
+  // La ruleta se abre a pantalla completa y se gira con el centro "Girar"
   await page.getByRole("button", { name: "Girar la ruleta" }).click();
-  await expect(page.getByText("¡Ganaste!")).toBeVisible();
-  const code = (await page.getByRole("button", { name: /Copiar código/ }).textContent())!.trim();
+  const wheel = page.getByRole("dialog", { name: "Ruleta de cupones" });
+  await wheel.getByRole("button", { name: "Girar la ruleta" }).click();
+  await expect(wheel.getByText("¡Ganaste!")).toBeVisible();
+  await expect(wheel.getByText("Cupón de la ruleta")).toBeVisible();
+  const code = (await wheel.getByRole("button", { name: /Copiar código/ }).textContent())!.trim();
   expect(code).toMatch(/^RULETA[A-Z0-9]+$/);
-  await page.getByRole("button", { name: "Aplicar a mi carrito" }).click();
+  await wheel.getByRole("button", { name: "Aplicar ahora" }).click();
+  await expect(wheel).toBeHidden();
   await page.goto("carrito/");
   // El premio es aleatorio: puede aplicarse o pedir un mínimo de compra; en ambos casos el cupón existe y se valida.
   await expect(page.getByText(new RegExp(code)).first()).toBeVisible();
@@ -83,7 +88,7 @@ test("carrito: elegir cupón sin escribir el código y ruleta al ir a pagar", as
   await expect(wheel.getByText("Probá tu suerte")).toBeVisible();
   await wheel.getByRole("button", { name: "Girar la ruleta" }).click();
   await expect(wheel.getByText("¡Ganaste!")).toBeVisible();
-  await wheel.getByRole("button", { name: "Guardar para más tarde" }).click();
+  await wheel.getByRole("button", { name: "Guardar para después" }).click();
   await expect(page).toHaveURL(/checkout\/$/);
   // El premio quedó guardado en "Mis cupones"
   await page.goto("cupones/");

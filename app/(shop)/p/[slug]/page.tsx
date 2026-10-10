@@ -30,7 +30,7 @@ export default async function ProductPage({ params }: Props) {
     <div className="pb-36 sm:pb-0">
       <div className="mb-4"><Breadcrumbs crumbs={category ? [{ href: `/c/${category.slug}/`, label: category.name }] : []} /></div>
       <ProductDetail product={product} />
-      <div className="mt-24"><ProductRecommendations slug={slug} /></div>
+      <div className="cv-auto mt-24" style={{ containIntrinsicSize: "auto 560px" }}><ProductRecommendations slug={slug} /></div>
     </div>
     </PageSwap>
   );

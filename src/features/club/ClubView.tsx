@@ -10,7 +10,7 @@ import { useDemoData } from "@/stores/admin";
 import { MissionCard } from "./MissionCard";
 import { MissionPath } from "./MissionPath";
 import { RewardsWallet } from "./RewardsWallet";
-import { WheelSpinner } from "./WheelSpinner";
+import { WheelTeaser } from "./WheelTeaser";
 
 const RULES = ["Solo suman pedidos pagados.", "Cada premio es de un uso y vence.", "Lo que sobra pasa a la misión siguiente.", "Ilustrativo: en la tienda real se calcula en el servidor."];
 
@@ -49,7 +49,7 @@ export function ClubView() {
           <h2 id="ruleta" className="font-display mt-3 text-4xl sm:text-5xl">Girá y <span className="italic text-primary">llevate un premio</span></h2>
           <p className="mt-4 max-w-md text-muted">Envío gratis, grabado gratis, un llavero de regalo o un descuento para tu próxima compra. Todos los premios ganan.</p>
         </Reveal>
-        <WheelSpinner />
+        <WheelTeaser />
       </section>
       <section aria-labelledby="path" className="rounded-[2.5rem] bg-night p-6 text-[#f6f1e8] sm:p-10">
         <h2 id="path" className="font-display mb-6 text-3xl sm:text-4xl">Camino de premios</h2>

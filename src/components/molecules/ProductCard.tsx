@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Plus, Sparkles } from "lucide-react";
+import { useState } from "react";
 import type { ArtKey, ArtView } from "@/demo/types";
 import { getProduct } from "@/demo/engine/catalog";
 import { ProductVisual } from "@/components/illustrations/ProductVisual";
@@ -34,14 +35,17 @@ export interface ProductCardData {
 export function ProductCard({ product, priority }: { product: ProductCardData; priority?: boolean }) {
   const quickAdd = useQuickAdd();
   const full = getProduct(product.slug);
+  // La segunda vista (al pasar el mouse) se dibuja recién la primera vez que entra el mouse: en el celular no existe
+  // y en la grilla es un SVG entero de más por tarjeta.
+  const [hovered, setHovered] = useState(false);
   return (
-    <article data-product-card className="group relative flex flex-col gap-3">
+    <article data-product-card className="group relative flex flex-col gap-3" onPointerEnter={(e) => { if (e.pointerType === "mouse") setHovered(true); }}>
       <div className="relative overflow-hidden rounded-[var(--radius-card)] bg-accent shadow-[var(--shadow-card)] transition-shadow duration-500 group-hover:shadow-[var(--shadow-lift)]">
         <div data-card-visual className="overflow-hidden rounded-[var(--radius-card)]">
           <ProductVisual art={product.art} tint={product.tint} photoUrl={product.photoUrl} label={product.alt}
             className="aspect-[4/5] transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]" />
         </div>
-        {product.secondView && !product.photoUrl && (
+        {hovered && product.secondView && !product.photoUrl && (
           <ProductArt art={product.art} view={product.secondView} tint={product.tint} label="" showBadge={false}
             className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 [&>svg]:h-full [&>svg]:object-cover" />
         )}

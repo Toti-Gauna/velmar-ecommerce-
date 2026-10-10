@@ -6,6 +6,7 @@ import { ListSkeleton } from "@/components/atoms/Skeleton";
 import { useAccount } from "@/stores/account";
 import { useCheckout } from "@/stores/checkout";
 import { useHydrated } from "@/stores/hydration";
+import { AccountGifts } from "../gifts/AccountGifts";
 import { AddressesSection, MissionsSection, OrdersSection, RewardsSection } from "./AccountSections";
 
 function DemoLogin() {
@@ -30,6 +31,7 @@ export function AccountView() {
   if (!user) return <DemoLogin />;
   const sections = [
     { id: "pedidos", title: "Mis pedidos", body: <OrdersSection lastOrder={lastOrder} /> },
+    { id: "regalos", title: "Mis regalos", body: <AccountGifts email={user.email} /> },
     { id: "misiones", title: "Misiones", body: <MissionsSection /> },
     { id: "premios", title: "Premios", body: <RewardsSection used={usedRewards} onUse={markRewardUsed} /> },
     { id: "direcciones", title: "Direcciones", body: <AddressesSection /> },

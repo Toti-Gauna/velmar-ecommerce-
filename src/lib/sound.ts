@@ -4,7 +4,7 @@
  * en este navegador. En el panel no suena nada.
  */
 
-export type SoundName = "add" | "favorite" | "unfavorite" | "coupon" | "tick" | "spin" | "win" | "purchase" | "error" | "nav";
+export type SoundName = "add" | "favorite" | "unfavorite" | "coupon" | "tick" | "spin" | "win" | "purchase" | "error" | "nav" | "hit" | "open";
 
 const KEY = "velmar-sound";
 let ctx: AudioContext | null = null;
@@ -105,6 +105,13 @@ const SOUNDS: Record<SoundName, () => void> = {
   },
   error: () => { tone(196, 0, 0.1, { type: "square", gain: 0.14 }); tone(165, 0.13, 0.14, { type: "square", gain: 0.14 }); },
   nav: () => tone(1200, 0, 0.04, { gain: 0.12 }),
+  // Golpe al regalo: un "pum" grave con algo de cartón
+  hit: () => { tone(150, 0, 0.16, { gain: 0.6, slideTo: 70 }); noise(0, 0.07, { gain: 0.32, from: 900, to: 300 }); },
+  // El regalo se abre: soplido que sube y campanitas
+  open: () => {
+    noise(0, 0.45, { gain: 0.12, from: 400, to: 4200 });
+    [784, 988, 1175, 1568, 1976].forEach((f, i) => tone(f, 0.12 + i * 0.07, 0.5, { type: "triangle", gain: 0.16 }));
+  },
 };
 
 /** Registro para las pruebas automáticas (qué sonó y en qué orden). No afecta el audio. */

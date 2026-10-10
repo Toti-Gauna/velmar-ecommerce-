@@ -3,7 +3,7 @@
 La demo se probó de dos maneras. **Esta página dice cuál es cuál**, para no confundir una con la otra.
 
 ## 1. Emulado y automático (hecho)
-`tests/e2e/cross-device.spec.ts` abre **las 19 rutas principales de la tienda y las 22 del panel** (sin las pantallas de edición, la ficha de cliente ni el alias viejo de `/crear/[slug]/`) en Chromium con el tamaño y el
+`tests/e2e/cross-device.spec.ts` abre **las 20 rutas principales de la tienda y las 22 del panel** (sin las pantallas de edición, la ficha de cliente ni el alias viejo de `/crear/[slug]/`) en Chromium con el tamaño y el
 toque de cada equipo, y con «reducir movimiento» activado como en todos los e2e, y falla si hay: error de la página o de la consola (incluye errores de
 hidratación de React), título que no aparece, scroll horizontal, la palabra "acreditado" o falta de la señal de demo.
 
@@ -41,6 +41,9 @@ Abrir la demo publicada en cada equipo. Marcar ✅ o anotar qué pasó.
 | 13 | Estudio de contenido: **Compartir** abre la hoja del sistema y guarda en Fotos o abre Instagram | | |
 | 14 | Con "reducir movimiento" encendido: sin pantalla de carga, sin autoplay, sin animaciones permanentes | | |
 | 15 | Modo oscuro (menú) y letra grande del sistema: sigue legible | | |
+| 16 | Regalo: abrir el link en otro teléfono; golpear cinco veces con el dedo (sacudón, sonido y vibración en Android) y ver el producto y el mensaje sin precio | | |
+| 17 | Regalo: "Compartir" y WhatsApp desde la confirmación llevan el link y el código | | |
+| 18 | Ruleta: a pantalla completa entra entera sin scroll (también en iPhone SE); al ganar, el cupón y sus tres botones se ven sin scrollear | | |
 
 ### Escritorio (Chrome, Safari y Firefox)
 | # | Qué mirar | Resultado |

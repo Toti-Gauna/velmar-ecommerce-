@@ -5,6 +5,7 @@ import { useAdmin } from "./admin";
 import { useCart } from "./cart";
 import { useCheckout } from "./checkout";
 import { useFavorites } from "./favorites";
+import { useGifts } from "./gifts";
 import { useTablePrefs } from "./tablePrefs";
 import { clearDemoStorage } from "./storage";
 import { useThemePreview } from "./themePreview";
@@ -16,7 +17,7 @@ const listeners = new Set<() => void>();
 export function useRehydrateStores(): void {
   useEffect(() => {
     if (hydrated) return;
-    Promise.all([useCart.persist.rehydrate(), useCheckout.persist.rehydrate(), useAccount.persist.rehydrate(), useAdmin.persist.rehydrate(), useFavorites.persist.rehydrate(), useThemePreview.persist.rehydrate(), useTablePrefs.persist.rehydrate()]).finally(() => {
+    Promise.all([useCart.persist.rehydrate(), useCheckout.persist.rehydrate(), useAccount.persist.rehydrate(), useAdmin.persist.rehydrate(), useFavorites.persist.rehydrate(), useGifts.persist.rehydrate(), useThemePreview.persist.rehydrate(), useTablePrefs.persist.rehydrate()]).finally(() => {
       hydrated = true;
       listeners.forEach((l) => l());
     });
@@ -41,6 +42,7 @@ export function resetDemo(): void {
   useAccount.setState({ user: null, usedRewards: [], sort: "relevance", wheelPrize: null });
   useAdmin.getState().resetAdmin();
   useFavorites.getState().clear();
+  useGifts.getState().clear();
   useThemePreview.getState().setPreview(null);
   clearDemoStorage();
 }

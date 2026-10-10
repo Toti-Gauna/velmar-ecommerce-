@@ -15,6 +15,8 @@ import { demoAccountProgress } from "@/demo/fixtures/commerce";
 import { useAdmin, useDemoData } from "@/stores/admin";
 import { whatsappLink } from "@/lib/whatsapp";
 import { useCheckout } from "@/stores/checkout";
+import { useGifts } from "@/stores/gifts";
+import { GiftShare } from "../gifts/GiftShare";
 import { useHydrated } from "@/stores/hydration";
 import { summaryRows } from "../checkout/CheckoutSummary";
 import { OrderLines } from "./OrderLines";
@@ -27,6 +29,7 @@ export function ConfirmationView() {
   const order = useCheckout((s) => s.lastOrder);
   const missions = useDemoData((d) => d.missions);
   const syncShopOrder = useAdmin((s) => s.syncShopOrder);
+  const sentGifts = useGifts((s) => s.sent);
   // Confeti solo la primera vez que se ve la confirmación de cada pedido (no en cada recarga).
   const [celebrate, setCelebrate] = useState(false);
   useEffect(() => {
@@ -45,6 +48,7 @@ export function ConfirmationView() {
   if (!hydrated) return <HeroSkeleton label="Cargando confirmación" />;
   if (!order) return <EmptyState title="Todavía no hay un pedido de demostración" action={<ButtonLink href="/">Ir a la tienda</ButtonLink>}>Completá el checkout para ver esta pantalla.</EmptyState>;
   const mission = missions.find((m) => m.active !== false) ?? missions[0]!;
+  const gifts = sentGifts.filter((g) => order.gifts?.includes(g.code));
   const preview = previewMission(mission, demoAccountProgress[mission.id] ?? 0, { units: order.quote.units, total: order.quote.total });
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -63,6 +67,13 @@ export function ConfirmationView() {
             ))}
           </ol>
         </section>
+        {gifts.length > 0 && (
+          <section aria-labelledby="regalos" className="flex flex-col gap-3">
+            <h2 id="regalos" className="font-display text-3xl">{gifts.length === 1 ? "Tu regalo, listo para mandar" : "Tus regalos, listos para mandar"}</h2>
+            <p className="text-sm text-muted">Mandale el link o el código. Lo abre a golpes y ve el producto y tu mensaje, nunca el precio.</p>
+            {gifts.map((g) => <GiftShare key={g.code} gift={g} />)}
+          </section>
+        )}
         <section aria-labelledby="pago" className="flex flex-col gap-3">
           <h2 id="pago" className="font-display text-3xl">{PAY_TITLE[order.paymentMethod]}</h2>
           <PaymentInstructions method={order.paymentMethod} total={order.quote.total} code={order.code} />

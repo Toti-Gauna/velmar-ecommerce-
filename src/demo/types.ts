@@ -136,6 +136,9 @@ export type SeasonId =
   | "dia-de-la-independencia" | "dia-del-amigo" | "dia-del-nino" | "dia-de-la-madre" | "halloween" | "orgullo" | "black-friday"
   | "navidad" | "ano-nuevo";
 
+/** Ocasión de un regalo: una festividad o Velmar sin temática (define la escena con la que se abre). */
+export type GiftOccasion = SeasonId | "velmar";
+
 /** Contenido editable de una temática. Lo visual (colores y decoraciones) es fijo por festividad. */
 export interface SeasonalTheme {
   id: SeasonId;

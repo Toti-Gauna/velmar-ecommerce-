@@ -16,7 +16,8 @@
 | Barra inferior (celular) | Cápsula flotante de vidrio con Inicio, Categorías, Favoritos, Cupones y Mi cuenta. No aparece en ficha, carrito ni checkout (tienen su propia barra) |
 | `/cupones/` | Mis cupones: el ganado en la ruleta y los vigentes de la tienda como tickets, con "Aplicar"; estado vencido / mínimo / solo con cuenta; cómo ganar más |
 | `/favoritos/` | Pantalla de favoritos (guardados con el corazón de cada ficha, en este navegador); vacía invita a explorar la tienda. Pedido de Ignacio, fuera de la spec |
-| `/cuenta/` | Cuenta demo: pedidos, misiones, premios (un uso), direcciones |
+| `/cuenta/` | Cuenta demo: pedidos, **mis regalos** (recibidos sin abrir y los que regalé), misiones, premios (un uso), direcciones |
+| `/regalo/` | **Regalos**: con `?g=` (link) o `?c=` (código) abre el regalo a golpes en pantalla oscura; sin parámetros pide el código. `&vista=previa` es la vista de quien regala (no guarda nada) |
 | `/preguntas/`, `/terminos/`, `/privacidad/`, `/arrepentimiento/` | Ayuda y legales (textos de muestra) |
 
 ## Fase 4 · Tienda (pedido de Ignacio, 09/10/2026, fuera de la spec)
@@ -32,6 +33,29 @@
 - **Sonidos** sintetizados con WebAudio (sin archivos): agregar al carrito, favoritos, cupón, ruleta, compra, error y barra
   inferior. Se habilitan con el primer toque; botón de silencio en el header (se recuerda en `velmar-sound`). En el panel no
   suenan.
+
+## Fase 8 · Regalos, ruleta a pantalla completa y rendimiento (pedido de Ignacio, 10/2026, fuera de la spec)
+- **Regalar** (la spec lo tenía como "regalá uno", fuera de alcance): en la ficha, "Es para regalar" pide para quién, de
+  parte de quién, email (opcional), mensaje y ocasión. La línea del carrito dice "Regalo para…". Al confirmar el pedido
+  cada regalo recibe un código `REGALO-XXXX-XXXX` (con dígito verificador) y un link; la confirmación los muestra con
+  WhatsApp, Compartir (celular) o Copiar link, y "Ver cómo lo recibe". Quien lo recibe **nunca ve el precio**.
+- **Abrir el regalo**: todo se oscurece y aparece el objeto de la ocasión con "Golpeá el regalo para abrirlo"; cinco
+  golpes (toque, clic o tecla) con sacudón, sonido y vibración (Android) y una escena única por festividad (flor que se
+  abre pétalo a pétalo, huevo de Pascua, regalo de Papá Noel, calabaza, prisma, caja fuerte, sidra, carta, cucha de
+  Pancho, caja con mecha, paraguas de 1810, bandera, Casa de Tucumán, caja de herramientas, Pancho y Lola, piñata y la caja
+  de Velmar). Después: el producto, el mensaje escrito a mano, cuándo está listo, "Guardar en mis regalos" y "Ver el producto".
+- **En la cuenta**: si el email del regalo es el de la cuenta, aparece en Mis regalos sin abrir el link (la cuenta demo
+  trae uno de muestra, de Lucía para Sofía).
+- **Demo vs. producción**: el link lleva el regalo adentro (base64url, versionado y validado: un link cortado o editado no
+  abre nada) y el código se resuelve en el navegador donde se compró. En producción el link y el código son una clave al
+  azar y el servidor guarda el regalo, manda el email y valida que no se abra dos veces de más.
+- **Ruleta**: ya no es una ventana; ocupa la pantalla entera con fondo oscuro y solo la ruleta (se gira con el centro
+  "Girar", tocándola o arrastrándola). Al ganar aparece el **cupón de la festividad** (colores y decoraciones de la temática
+  vigente) con "Aplicar ahora", "Guardar para después" y "Salir". En el club, la ruleta se muestra quieta y la abre su botón.
+- **Rendimiento**: escenas de la pantalla de carga, ruleta, carrito, cupones y buscador se descargan cuando hacen falta;
+  la segunda vista de cada tarjeta se dibuja recién al pasar el mouse; las secciones de más abajo del inicio, las
+  recomendaciones de la ficha y el pie no se dibujan hasta acercarse; el fondo de la temática se detiene mientras se
+  scrollea; las letras del collar se balancean tres veces y quedan quietas. Ver `docs/qa.md`.
 
 ## Fase 6 · Estudio de contenido (pedido de Ignacio, 10/2026, fuera de la spec)
 - `/admin-demo/estudio/` (Marketing → Estudio de contenido): piezas para Instagram por fecha, exportables a imagen y video.
@@ -76,6 +100,6 @@ no se pide tarjeta, no se redirige a Mercado Pago, el QR no es escaneable, el CB
 afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
-Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`; y
+Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`, `:gifts`; y
 `velmar-tour:admin` para no repetir la guía del panel; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
 navegador. "Reiniciar demo" (banner y pie) borra todo.

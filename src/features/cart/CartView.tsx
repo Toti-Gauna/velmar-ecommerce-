@@ -28,7 +28,7 @@ export function toLineView(q: QuotedLine): CartLineView | null {
   if (!product || !variant) return null;
   return {
     id: q.line.id, slug: product.slug, name: product.name, variantLabel: variant.label, art: product.art, tint: variant.colorHex,
-    unitPrice: q.unitPrice, lineTotal: q.lineTotal, quantity: q.line.quantity, maxQuantity: maxQuantity(variant), personalization: q.line.personalization, zone: demoData().textZones[product.art],
+    unitPrice: q.unitPrice, lineTotal: q.lineTotal, quantity: q.line.quantity, maxQuantity: maxQuantity(variant), personalization: q.line.personalization, gift: q.line.gift, zone: demoData().textZones[product.art],
   };
 }
 

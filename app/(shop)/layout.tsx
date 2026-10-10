@@ -2,12 +2,10 @@ import type { ReactNode } from "react";
 import { DemoBanner } from "@/components/organisms/DemoBanner";
 import { Footer } from "@/components/organisms/Footer";
 import { Header } from "@/components/organisms/Header";
+import { LazyOverlays } from "@/components/organisms/LazyOverlays";
 import { ShopBottomNav } from "@/components/organisms/ShopBottomNav";
 import { WhatsAppFab } from "@/components/organisms/WhatsAppFab";
-import { CartDrawer } from "@/features/cart/CartDrawer";
-import { CouponsSheet } from "@/features/cart/CouponsSheet";
-import { SearchModal } from "@/features/catalog/SearchModal";
-import { WheelModal } from "@/features/club/WheelModal";
+import { WheelStage } from "@/features/club/WheelStage";
 import { ThemeRibbon } from "@/features/themes/ThemeRibbon";
 import { ThemeGarland } from "@/features/themes/ThemeGarland";
 import { ThemeStage } from "@/features/themes/ThemeStage";
@@ -26,10 +24,8 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
       <ShopBottomNav />
       <WhatsAppFab />
       <ThemeTryButton />
-      <CartDrawer />
-      <WheelModal />
-      <CouponsSheet />
-      <SearchModal />
+      <WheelStage />
+      <LazyOverlays />
     </>
   );
 }

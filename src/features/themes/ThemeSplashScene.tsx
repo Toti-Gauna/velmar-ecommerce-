@@ -7,14 +7,8 @@ import type { SeasonId } from "@/demo/types";
 import { AMBIENT } from "./ambient";
 import { AmbientField } from "./AmbientField";
 import { SKINS } from "./skins";
-import { BlackFridayScene, HotSaleScene, NewYearScene } from "./splash/celebration";
-import { EasterScene, MothersScene, ValentineScene } from "./splash/love";
-import { BanderaScene, IndependenciaScene, MayoScene } from "./splash/patrias";
+import dynamic from "next/dynamic";
 import { SceneClock, splashElapsed } from "./splash/kit";
-import { PrideScene } from "./splash/pride";
-import { ChristmasScene, HalloweenScene } from "./splash/night";
-import { FathersScene, FriendsScene } from "./splash/cast";
-import { AnimalScene, KidsScene } from "./splash/play";
 
 const noop = () => () => {};
 const readSeason = () => (document.documentElement.dataset.season as SeasonId | undefined) ?? null;
@@ -31,13 +25,36 @@ const readCurtain = () => document.documentElement.classList.contains("splash-do
   || Boolean(document.getElementById("velmar-splash")?.getAnimations?.().some((a) => (a as CSSAnimation).animationName === "splash-curtain" && a.playState === "finished"));
 const hotSalePct = themeCoupons.find((c) => c.themeId === "hot-sale")?.value ?? 30;
 
-/** Una escena distinta por festividad (motion graphics). */
+/**
+ * La escena se monta cuando ya bajó su archivo: el reloj se mide en ese momento (y no antes), así sus retrasos
+ * negativos arrancan donde corresponde y llega a su final antes del telón.
+ */
+function clocked(Scene: ComponentType): ComponentType {
+  return function ClockedScene() {
+    const [offset] = useState(splashElapsed);
+    return <SceneClock.Provider value={offset}><Scene /></SceneClock.Provider>;
+  };
+}
+const lazy = (load: () => Promise<ComponentType>) => dynamic(() => load().then(clocked), { ssr: false });
+
+/** Una escena distinta por festividad (motion graphics); cada visita descarga solo la de su fecha. */
 const SCENES: Record<SeasonId, ComponentType> = {
-  navidad: ChristmasScene, halloween: HalloweenScene, "ano-nuevo": NewYearScene, "black-friday": BlackFridayScene,
-  "hot-sale": () => <HotSaleScene discount={hotSalePct} />, "san-valentin": ValentineScene, "dia-de-la-madre": MothersScene,
-  orgullo: PrideScene, "revolucion-de-mayo": MayoScene, "dia-de-la-bandera": BanderaScene, "dia-de-la-independencia": IndependenciaScene,
-  pascuas: EasterScene, "dia-del-animal": AnimalScene, "dia-del-padre": FathersScene,
-  "dia-del-amigo": FriendsScene, "dia-del-nino": KidsScene,
+  navidad: lazy(() => import("./splash/night").then((m) => m.ChristmasScene)),
+  halloween: lazy(() => import("./splash/night").then((m) => m.HalloweenScene)),
+  "ano-nuevo": lazy(() => import("./splash/celebration").then((m) => m.NewYearScene)),
+  "black-friday": lazy(() => import("./splash/celebration").then((m) => m.BlackFridayScene)),
+  "hot-sale": lazy(() => import("./splash/celebration").then((m) => function HotSale() { return <m.HotSaleScene discount={hotSalePct} />; })),
+  "san-valentin": lazy(() => import("./splash/love").then((m) => m.ValentineScene)),
+  "dia-de-la-madre": lazy(() => import("./splash/love").then((m) => m.MothersScene)),
+  pascuas: lazy(() => import("./splash/love").then((m) => m.EasterScene)),
+  orgullo: lazy(() => import("./splash/pride").then((m) => m.PrideScene)),
+  "revolucion-de-mayo": lazy(() => import("./splash/patrias").then((m) => m.MayoScene)),
+  "dia-de-la-bandera": lazy(() => import("./splash/patrias").then((m) => m.BanderaScene)),
+  "dia-de-la-independencia": lazy(() => import("./splash/patrias").then((m) => m.IndependenciaScene)),
+  "dia-del-animal": lazy(() => import("./splash/play").then((m) => m.AnimalScene)),
+  "dia-del-nino": lazy(() => import("./splash/play").then((m) => m.KidsScene)),
+  "dia-del-padre": lazy(() => import("./splash/cast").then((m) => m.FathersScene)),
+  "dia-del-amigo": lazy(() => import("./splash/cast").then((m) => m.FriendsScene)),
 };
 
 /**
@@ -46,8 +63,6 @@ const SCENES: Record<SeasonId, ComponentType> = {
  */
 export function ThemeSplashScene() {
   const id = useSyncExternalStore(noop, readSeason, () => null);
-  // Se mide una sola vez, al montar la escena en el cliente (ver SceneClock).
-  const [offset] = useState(splashElapsed);
   // Al caer el telón (o con "reducir movimiento") la escena se desmonta: sus animaciones en bucle no siguen
   // corriendo escondidas el resto de la visita.
   const done = useSyncExternalStore(subscribeCurtain, readCurtain, () => false);
@@ -56,12 +71,10 @@ export function ThemeSplashScene() {
   const Scene = SCENES[id];
   const name = seasonalThemes.find((t) => t.id === id)?.name ?? "";
   return (
-    <SceneClock.Provider value={offset}>
-      <div aria-hidden="true" className="season-scene">
-        <AmbientField layers={AMBIENT[id]} density={1.2} className="absolute inset-0" />
-        <Scene />
-        <p className="season-tag eyebrow left-1/2 -translate-x-1/2 whitespace-nowrap">Especial {name}</p>
-      </div>
-    </SceneClock.Provider>
+    <div aria-hidden="true" className="season-scene">
+      <AmbientField layers={AMBIENT[id]} density={1.2} className="absolute inset-0" />
+      <Scene />
+      <p className="season-tag eyebrow left-1/2 -translate-x-1/2 whitespace-nowrap">Especial {name}</p>
+    </div>
   );
 }

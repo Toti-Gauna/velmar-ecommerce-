@@ -49,6 +49,7 @@ test("combinaciones listas: tocar una carga el configurador", async ({ page }) =
 
 test("ruleta: se gira arrastrándola y da un premio", async ({ page }) => {
   await page.goto("club/");
+  await page.getByRole("button", { name: "Girar la ruleta" }).click();
   const disc = page.getByRole("button", { name: "Ruleta: tocala o arrastrala para girar" });
   await disc.scrollIntoViewIfNeeded();
   const box = (await disc.boundingBox())!;
@@ -67,6 +68,7 @@ test("ruleta: se gira arrastrándola y da un premio", async ({ page }) => {
 
 test("ruleta: también se gira con un toque o con el teclado", async ({ page }) => {
   await page.goto("club/");
+  await page.getByRole("button", { name: "Girar la ruleta" }).click();
   const disc = page.getByRole("button", { name: "Ruleta: tocala o arrastrala para girar" });
   await disc.focus();
   await page.keyboard.press("Enter");
@@ -91,4 +93,27 @@ test("sonidos: suenan al agregar y en favoritos; el silencio se recuerda", async
   await page.evaluate(() => { window.__velmarSounds = []; });
   await page.getByRole("button", { name: /favoritos/i }).first().click();
   expect(await sounds(page)).toContain("unfavorite");
+});
+
+test("ruleta a pantalla completa: solo la ruleta, entera en la pantalla, y el cupón con sus tres botones", async ({ page }) => {
+  await page.goto("club/");
+  await page.getByRole("button", { name: "Girar la ruleta" }).click();
+  const stage = page.getByRole("dialog", { name: "Ruleta de cupones" });
+  const viewport = page.viewportSize()!;
+  // Hay dos "Salir" (arriba y abajo del cupón): se mide el último, el de los tres botones.
+  const inside = async (name: string) => {
+    const box = (await stage.getByRole("button", { name, exact: true }).last().boundingBox())!;
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
+    expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
+  };
+  await inside("Ruleta: tocala o arrastrala para girar");
+  // El fondo no se scrollea mientras está abierta
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflow)).toBe("hidden");
+  await stage.getByRole("button", { name: "Girar la ruleta" }).click();
+  await expect(stage.getByText("¡Ganaste!")).toBeVisible();
+  for (const name of ["Aplicar ahora", "Guardar para después", "Salir"]) await inside(name);
+  await stage.getByRole("button", { name: "Salir", exact: true }).last().click();
+  await expect(stage).toBeHidden();
+  await expect(page.getByText("Tu premio")).toBeVisible();
 });

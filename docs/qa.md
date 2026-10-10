@@ -79,7 +79,7 @@ video salga en MP4 (H.264) y que "Compartir" guarde en Fotos.
 ## QA cruzado · Fase 7 (`tests/e2e/cross-device.spec.ts`)
 | Verificación | Estado |
 |---|---|
-| Las 19 rutas de la tienda y las 22 del panel abren en iPhone SE (375), iPhone 15 (393), Android (412) y escritorio (1440) sin error de página ni de consola, con su título, sin scroll horizontal, sin «acreditado» y con la señal de demo en el panel | ✅ |
+| Las 20 rutas de la tienda y las 22 del panel abren en iPhone SE (375), iPhone 15 (393), Android (412) y escritorio (1440) sin error de página ni de consola, con su título, sin scroll horizontal, sin «acreditado» y con la señal de demo en el panel | ✅ |
 | Con «reducir movimiento» activado la portada no falla al hidratar (el botón del carrusel mostraba otro ícono en el servidor y en el cliente) | ✅ corregido |
 
 Es emulación en Chromium: **no reemplaza** la prueba en un iPhone y un Android reales. Checklist y registro en
