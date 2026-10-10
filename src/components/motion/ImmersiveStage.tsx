@@ -41,7 +41,8 @@ export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a7
     // El foco entra al diálogo (sin anillo visible al tocar); Tab recorre los botones.
     const t = window.setTimeout(() => (root.current?.querySelector<HTMLElement>("[data-autofocus]") ?? root.current)?.focus({ preventScroll: true }), 60);
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !lockRef.current) closeRef.current();
+      // Un Escape ya usado (el que cierra la pantalla de carga) no saca del escenario.
+      if (e.key === "Escape" && !e.defaultPrevented && !lockRef.current) closeRef.current();
       if (e.key !== "Tab" || !root.current) return;
       const items = [...root.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea, [tabindex='0']")];
       const first = items[0], last = items[items.length - 1];
