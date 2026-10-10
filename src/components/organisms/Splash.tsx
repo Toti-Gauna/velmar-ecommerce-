@@ -21,19 +21,18 @@ const DUST: [number, number, number, number][] = Array.from({ length: 26 }, (_, 
 });
 
 /**
- * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: anillos dorados que se trazan, polvo de oro y rayos de luz; la "M" y la "V" del logo
- * se trazan, aparece "Velmar", las piezas del taller entran en órbita una a una con brillo de vidrio, un destello recorre el nombre y
- * un telón la retira (sin barra de carga ni botón "Saltar", pedido de Ignacio). Durante una temática cambia de colores y suma su escena (ThemeSplashScene). Con "reducir movimiento" no se muestra.
+ * Pantalla de carga de marca en cada recarga (HTML + CSS; se ve aunque no haya JS). En 5 s: un aro dorado se abre y
+ * una luz lo recorre, con polvo de oro y rayos; las dos mitades del logo encastran, "Velmar" sube detrás de una
+ * línea, las piezas del taller entran en órbita montadas sobre el aro y un telón la retira (sin barra de carga ni
+ * botón "Saltar", pedido de Ignacio). Estilos y por qué todo es transform/opacity: app/splash.css. Durante una
+ * temática cambia de colores y suma su escena (ThemeSplashScene). Con "reducir movimiento" no se muestra.
  */
 export function Splash() {
   return (
     <div id="velmar-splash" role="presentation">
-      <div aria-hidden="true" className="splash-glow" />
-      <div aria-hidden="true" className="splash-rays" />
-      <svg aria-hidden="true" viewBox="0 0 200 200" className="splash-ring">
-        <circle className="ring-a" cx="100" cy="100" r="92" />
-        <circle className="ring-b" cx="100" cy="100" r="78" />
-      </svg>
+      <div aria-hidden="true" className="splash-center splash-glow" />
+      <div aria-hidden="true" className="splash-center splash-rays" />
+      <div aria-hidden="true" className="splash-center splash-halo"><span className="splash-sweep" /><span className="splash-comet" /></div>
       <div aria-hidden="true" className="splash-dust">
         {DUST.map((d, i) => <span key={i} style={{ left: `${d[0]}%`, top: `${d[1]}%`, "--d": `${d[2]}ms`, "--s": `${d[3]}px` } as CSSProperties} />)}
       </div>
@@ -45,14 +44,13 @@ export function Splash() {
         ))}
       </div>
       <ThemeSplashScene />
-      <div aria-hidden="true" className="relative z-10 flex flex-col items-center">
-        <svg viewBox={LOGO_VIEWBOX} className="h-14 w-14 text-brass sm:h-16 sm:w-16">
-          <path className="chev" pathLength={100} d={LOGO_M} fill="none" stroke="currentColor" strokeWidth={LOGO_STROKE} />
-          <path className="chev chev-2" pathLength={100} d={LOGO_V} fill="none" stroke="currentColor" strokeWidth={LOGO_STROKE} />
-        </svg>
-        <span className="relative mt-4">
+      <div aria-hidden="true" className="splash-brand relative z-10 flex flex-col items-center">
+        <span className="splash-mark h-14 w-14 text-brass sm:h-16 sm:w-16">
+          <svg viewBox={LOGO_VIEWBOX} className="mark-m"><path d={LOGO_M} fill="none" stroke="currentColor" strokeWidth={LOGO_STROKE} /></svg>
+          <svg viewBox={LOGO_VIEWBOX} className="mark-v"><path d={LOGO_V} fill="none" stroke="currentColor" strokeWidth={LOGO_STROKE} /></svg>
+        </span>
+        <span className="splash-word">
           <span className="word font-display block text-5xl text-[#f6f1e8] sm:text-7xl">{brand.name}</span>
-          <span className="word-sheen font-display absolute inset-0 text-5xl sm:text-7xl">{brand.name}</span>
         </span>
       </div>
       <p aria-hidden="true" className="splash-city eyebrow">Objetos con alma · {brand.city}</p>

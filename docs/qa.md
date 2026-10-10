@@ -109,6 +109,16 @@ JavaScript del inicio: 341 → 322 KB comprimido y HTML 449 → 398 KB, con rega
 frenada, el scroll de las temáticas varía mucho entre corridas (lo domina el dibujo por software de este entorno); la
 prueba que vale es la del teléfono real (`docs/qa-dispositivos.md`).
 
+## Pantallas de carga · Polish 8.1 (`tests/e2e/splash-polish.spec.ts`, `motion-viewports.spec.ts`, `shop-fase5.spec.ts`)
+| Verificación | Estado |
+|---|---|
+| Original: un solo aro, concéntrico con la pantalla y con el logo (±2 px), y las cinco piezas montadas sobre él (±3 px) | ✅ |
+| Mientras se ve el splash el lienzo es oscuro (no asoma la tienda clara en el primer cuadro) y vuelve a la normalidad al cerrarse | ✅ |
+| Día de la Madre: 20 pétalos; las esquinas del logo quedan dentro de la ronda de estambres (ningún pétalo lo pisa) | ✅ |
+| San Valentín: Lola y Pancho en la cena; corazón y cena centrados, el logo dentro del corazón y arriba de la cena, todo dentro de la pantalla | ✅ |
+| Con «reducir movimiento» no hay splash ni animaciones corriendo | ✅ |
+| Cuadro a cuadro en 390 × 844, 820 × 1180, 1440 × 900 y 844 × 390; video en tiempo real (el logo y el aro se animan aunque la página esté cargando) y cuadros reales del compositor alrededor del telón (sin cuadros oscuros sueltos) | ✅ revisión visual |
+
 Qué se hizo:
 - Las escenas de la pantalla de carga (16 temáticas) se descargan de a una: solo la de la fecha.
 - La ruleta, los cupones y el buscador se descargan al abrirlos (el carrito no: es lo que más se abre y tiene que responder al instante).

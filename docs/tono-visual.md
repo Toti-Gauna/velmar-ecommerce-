@@ -55,7 +55,8 @@ No hay paleta ni tipografía confirmadas por Velmar. Lo siguiente se derivó del
   Navidad (cielo estrellado, colinas nevadas, Papá Noel con estela dorada), Halloween (luna con nubes, murciélagos que
   salen de la luna, bruja, cementerio, calabazas), Año Nuevo (cuenta regresiva 3·2·1, fuegos en cadena, "¡Feliz año!"),
   Black Friday (reflectores, marco dorado que se dibuja, etiqueta que se balancea), Hot Sale (llamas y el descuento que se
-  cuenta), San Valentín (corazón que se dibuja y late), Día de la Madre (flor que se abre y tulipanes), Orgullo
+  cuenta), San Valentín (Lola y Pancho cenan del mismo plato de fideos bajo un corazón, ver Polish 8.1), Día de la Madre
+  (una flor que se abre pétalo a pétalo alrededor del logo, con tulipanes), Orgullo
   (un haz blanco entra a un prisma y sale en los seis colores; cintas onduladas y corazón arcoíris), 25 de Mayo (lluvia y
   paraguas en la plaza, el Cabildo, sale el Sol de Mayo, vuelan escarapelas, empanadas humeando, "1810"), Día de la Bandera
   (la bandera sube flameando por el mástil, Sol de Mayo, papelitos celestes y blancos), 9 de Julio (Casa de Tucumán de
@@ -63,8 +64,8 @@ No hay paleta ni tipografía confirmadas por Velmar. Lo siguiente se derivó del
   (huellas que caminan), Día del Padre (Pancho con sombrero y corbata llega con Panchito bajo el farol; el cachorro salta
   con un regalo y papá se saca el sombrero), Día del Amigo (Pancho y Lola llegan desde los costados, chocan la pata,
   aparece el mate y festejan saltando) y Día del Niño (globos y barrilete).
-- **Pantalla de carga Original**: rayos de luz, dos anillos dorados que se trazan, polvo de oro, piezas con brillo de
-  vidrio y un destello que recorre "Velmar" (CSS puro, se ve sin JS).
+- **Pantalla de carga Original**: rayos de luz, un aro dorado con una luz que lo recorre, polvo de oro, piezas con brillo
+  de vidrio montadas sobre el aro y el logo que encastra (CSS puro, se ve sin JS; detalle en Polish 8.1).
 - **Fondo con efecto propio** (`src/features/themes/backdrop/`): luces desenfocadas (Navidad, Niño), niebla (Halloween),
   fuegos en loop (Año Nuevo), haces de luz (Black Friday), arcoíris y luces (Orgullo), rayos del Sol de Mayo que giran
   (25 de Mayo), franjas celeste y blanca que flamean (Bandera), luces celestes y doradas (9 de Julio), corazón que late (San Valentín),
@@ -144,3 +145,28 @@ muestra nada; ahí se le quita la apariencia del sistema, se dibuja el ícono de
   Sin temática: noche y oliva con bronce.
 - **Movimiento**: nada en bucle; los únicos latidos (centro "Girar", regalo sin abrir en la cuenta) son de tres
   repeticiones. Con "reducir movimiento" no hay sacudón, partículas ni recorridos, y aparece "Abrirlo de una vez".
+
+## Polish 8.1 · Pantallas de carga (10/2026, pedido de Ignacio)
+- **Todo lo que se mueve es `transform` u `opacity`** (`app/splash.css` y las escenas nuevas): lo anima la placa de video
+  aunque el hilo principal esté ocupado armando la página, que en un celular de gama media es justo durante el splash.
+  Antes el aro (`stroke-dashoffset`), el nombre (`clip-path`) y el telón (`clip-path`) corrían en el hilo principal: se
+  congelaban y aparecían de golpe ("Velma" cortado, el aro a medio trazar, el telón a los saltos).
+- **Sin destello claro al arrancar**: mientras se ve el splash el lienzo (`html`) es oscuro, así un primer cuadro lento no
+  deja ver la tienda. Las capas animadas quedan armadas de principio a fin (`will-change`) para no repintar el splash
+  entero cuando una animación arranca o termina.
+- **Original**: un solo aro, concéntrico con el logo y por el centro de las piezas (antes había dos aros: uno las cortaba
+  por el borde y el otro, punteado, pasaba por el medio). Se abre y una luz lo recorre una vez. Las dos mitades del logo
+  llegan desde arriba y desde abajo y encastran; "Velmar" sube detrás de una línea. El telón sube entero.
+- **Día de la Madre** (`splash/mothers.tsx`): la flor se abre **alrededor** del logo, diez pétalos atrás y diez adelante,
+  uno por uno, con una ronda de estambres. El logo queda en el corazón de la flor sobre un fondo más hondo: ya no hay un
+  disco dorado detrás del logo dorado.
+- **San Valentín** (`splash/valentine.tsx`), guiño a "La dama y el vagabundo" con los personajes de Velmar: Lola (la
+  dama, caniche con moño) y Pancho (salchicha) cenan del mismo plato sobre un mantel a cuadros y tiran de un solo fideo,
+  tres sorbos, hasta tocarse la nariz; cierran los ojos y nace un corazón. Arriba, el logo dentro de un corazón grande. El
+  grupo entero va centrado: el logo sube con una regla de `app/seasons.css` que vale desde el primer cuadro. Perros y
+  fideo se mueven con los mismos tiempos, así el fideo queda pegado a las bocas.
+- **Pantallas bajas** (celular apaisado, menos de 560 px de alto): logo más chico y sin rótulos, para que el aro, la flor
+  o la cena no lo pisen.
+- Revisado con capturas cuadro a cuadro en 390 × 844, 820 × 1180, 1440 × 900 y 844 × 390, con video en tiempo real y
+  con los cuadros reales del compositor (`Page.startScreencast`) alrededor del telón.
+

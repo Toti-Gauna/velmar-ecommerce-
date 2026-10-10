@@ -26,6 +26,14 @@ export function splashElapsed(): number {
   return Math.min(Math.max(ms / 1000 - 0.15, 0), 2.6);
 }
 
+/**
+ * CSS propio de una escena, en su mismo archivo diferido (React lo sube al <head> una sola vez). Las escenas nuevas
+ * animan con CSS (transform/opacity, que corre en la placa de video) y corren sus retrasos con `at()`.
+ */
+export function SceneCss({ id, css }: { id: string; css: string }) {
+  return <style href={`splash-scene-${id}`} precedence="default">{css}</style>;
+}
+
 /** Pseudoaleatorio determinístico (mismas posiciones en cada visita). */
 export function rand(seed: number): number {
   const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
