@@ -48,6 +48,9 @@ const REWARDS = [
   { id: "r-viejo", title: "10% en tu próxima compra", expires: "15/09/2026", expired: true },
 ];
 
+/** Premios de misiones que todavía se pueden usar (no vencidos ni usados). */
+export const availableRewards = (used: string[]) => REWARDS.filter((r) => !r.expired && !used.includes(r.id)).length;
+
 export function RewardsSection({ used, onUse }: { used: string[]; onUse: (id: string) => void }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2">

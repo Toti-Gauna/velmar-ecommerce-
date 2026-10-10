@@ -81,7 +81,8 @@ test("regalo en la cuenta y con código: se abre sin el link", async ({ page }) 
   await expect(stage.getByText("¡Feliz día, ma!", { exact: false })).toBeVisible();
   await expect(stage.getByRole("link", { name: "Está en mis regalos" })).toBeVisible();
   await stage.getByRole("button", { name: "Salir" }).click();
-  await page.goto("cuenta/");
+  // El hash abre directo la tarjeta de regalos.
+  await page.goto("cuenta/#regalos");
   await expect(page.getByRole("link", { name: /Abierto · de Lucía/ })).toBeVisible();
 
   // Con el código escrito a mano (minúsculas, sin guiones) también abre; uno inventado avisa

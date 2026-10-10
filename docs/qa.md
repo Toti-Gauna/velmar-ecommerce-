@@ -228,6 +228,32 @@ Lote 5: checkout (`tests/e2e/shop-polish-checkout.spec.ts`, `tests/unit/checkout
 - **Tarjetas**: es el mismo medio de pago de siempre (Mercado Pago Checkout Pro, simulado), nombrado como lo busca el
   cliente. No hay integración nueva ni se piden datos de tarjeta.
 
+Lote 6: seguimiento, Mi cuenta y Club (`shop-polish-tracking.spec.ts`, `shop-polish-account.spec.ts`, `shop-polish-club.spec.ts`).
+
+| Verificación | Estado |
+|---|---|
+| Seguimiento: zona "Probá los estados del pedido — Demostración" con Esperando comprobante, En producción, Listo, En camino y Entregado; cada uno cambia título, nota, recorrido y etapas, y aclara que no toca pedidos ni pagos | ✅ |
+| Entregado se entiende: el rótulo de la casa pasa a "Llegó a tu casa", todas las etapas quedan hechas y, con movimiento, estalla la decoración de la temática junto a la casa | ✅ |
+| Viajero por temática (motor de temáticas): trineo en Navidad, bruja en Halloween, Pancho en Día del Padre, carta con corazones en San Valentín, huevo en Pascuas, bandera en las fechas patrias; Original conserva el punto dorado | ✅ |
+| Con movimiento el viajero recorre el camino; con movimiento reducido queda en su lugar al instante y sin estallido | ✅ |
+| En el celular los rótulos del taller y la casa van debajo del recorrido (no tapan al viajero) | ✅ captura |
+| Mi cuenta sin sesión: Iniciar sesión / Crear cuenta con estado claro, errores por campo (vacío, email inválido, nombre, largo de contraseña), mostrar/ocultar contraseña y "Entrando…" | ✅ |
+| La contraseña no queda en localStorage ni en sessionStorage, no se ofrece guardarla (sin autocompletar) y no sale ningún pedido externo | ✅ |
+| "Continuar con Google" rotulado **Simulado**: no hay OAuth ni pedidos a Google; muestra una cuenta de ejemplo y entra con la cuenta demo | ✅ |
+| Mi cuenta con sesión (pedido de Ignacio): tarjeta de perfil y cinco tarjetas (pedidos, regalos, misiones, premios, direcciones) con resumen; una sola sección a la vista; el hash (`/cuenta/#regalos`) abre la que corresponde y sobrevive a la recarga; a 1180, 820 y 390 px sin desbordes | ✅ |
+| En el celular, al elegir una tarjeta la sección se acerca sola si quedó abajo | ✅ |
+| Club: portada con métricas en tarjetas, "Tu próximo premio" con el progreso del motor de misiones, accesos "Ver mi progreso" e "Ir a la ruleta"; la ruleta mantiene su único botón y la lógica de premios no cambia | ✅ |
+| La portada del Club toma el acento y el adorno de la temática vigente (Halloween: naranja y sombrero) | ✅ |
+| Misiones: estado corto (Por empezar, En curso, ¡Completada!) y avance debajo del título; a 1280, 820 y 390 px el estado entra en una línea y el título en dos renglones como máximo | ✅ |
+| Banda del Club en el inicio (pedido de Ignacio): a 1280, 820 y 390 px deja aire a los dos costados y tiene las puntas redondeadas | ✅ |
+
+- **Mi cuenta**: antes eran cinco secciones una debajo de la otra (en el iPad había que bajar mucho). Ahora es un panel
+  de tarjetas: en el celular en grilla, en tablet en una fila y en escritorio como menú a la izquierda.
+- **Ingreso**: es de demostración. La contraseña se valida en el momento y se descarta; el nombre y el email quedan en la
+  cuenta demo de este navegador, como antes.
+- **Banda del Club**: ocupaba de borde a borde (márgenes negativos). Ahora respeta el margen de la página en todos los
+  tamaños; la portada del Club también pasó a ser una tarjeta con margen.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

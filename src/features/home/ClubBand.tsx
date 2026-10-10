@@ -8,14 +8,14 @@ import { useUi } from "@/stores/ui";
 import { MissionCard } from "../club/MissionCard";
 import { demoAccountProgress } from "@/demo/fixtures/commerce";
 
-/** Banda del Club en el inicio: misiones vigentes + acceso a la ruleta. */
+/** Banda del Club en el inicio: misiones vigentes + acceso a la ruleta. Va dentro del margen de la página (pedido de Ignacio, 8.2). */
 export function ClubBand() {
   const all = useDemoData((d) => d.missions);
   const wheelActive = useDemoData((d) => d.wheel.active);
   const setWheel = useUi((s) => s.setWheel);
   const missions = all.filter((m) => m.active !== false).slice(0, 3);
   return (
-    <section aria-labelledby="club" className="relative -mx-4 overflow-hidden bg-night px-6 py-16 text-[#f6f1e8] sm:-mx-6 sm:rounded-[2.5rem] sm:px-10 lg:py-20">
+    <section aria-labelledby="club" className="relative overflow-hidden rounded-[2rem] bg-night px-5 py-12 text-[#f6f1e8] sm:rounded-[2.5rem] sm:px-10 sm:py-16 lg:px-14 lg:py-20">
       <div aria-hidden="true" className="absolute -left-32 bottom-0 h-96 w-96 rounded-full bg-[radial-gradient(closest-side,rgb(210_173_105/0.18),transparent)]" />
       <Reveal className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div>

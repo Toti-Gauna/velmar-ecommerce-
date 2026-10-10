@@ -101,6 +101,7 @@ test("cupón y misión creados en el panel funcionan en la tienda", async ({ pag
   await expect(page.getByRole("listitem").filter({ hasText: "Comprá 3 velas" })).toBeVisible();
   await page.goto("cuenta/");
   await page.getByRole("button", { name: "Entrar a la cuenta demo" }).click();
+  await page.getByRole("navigation", { name: "Secciones de la cuenta" }).getByRole("link", { name: /^Misiones/ }).click();
   await expect(page.getByText("Comprá 3 velas")).toBeVisible();
 
   await page.goto("p/vela-caniche/");
