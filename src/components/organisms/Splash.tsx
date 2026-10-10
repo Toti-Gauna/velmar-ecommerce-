@@ -61,5 +61,6 @@ export function Splash() {
 }
 
 /** Cierra la pantalla de carga con Escape (si no hay JS, igual se va sola a los 5 s). */
-// El Escape que cierra la pantalla de carga queda "usado" (preventDefault): no cierra además lo que esté abierto debajo.
-export const splashScript = `(function(){var d=document.documentElement;function hide(){d.classList.add("splash-done")}document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(!d.classList.contains("splash-done"))e.preventDefault();hide()}});setTimeout(hide,5200)})();`;
+// Si la pantalla de carga está a la vista, el Escape que la cierra queda "usado" (preventDefault) y no cierra además lo
+// que esté abierto debajo. Oculta (ya terminó o "reducir movimiento"), el Escape sigue de largo: listas y diálogos nativos.
+export const splashScript = `(function(){var d=document.documentElement;function hide(){d.classList.add("splash-done")}document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var s=document.getElementById("velmar-splash");if(s&&!d.classList.contains("splash-done")&&getComputedStyle(s).display!=="none")e.preventDefault();hide()});setTimeout(hide,5200)})();`;
