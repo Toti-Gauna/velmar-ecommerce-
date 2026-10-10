@@ -1,4 +1,5 @@
 "use client";
+import { GiftTag } from "@/components/organisms/CartLineItem";
 import { LineThumb } from "@/components/organisms/LineThumb";
 import type { CartLine } from "@/demo/engine/cart-types";
 import { quoteLines } from "@/demo/engine/pricing";
@@ -22,6 +23,7 @@ export function OrderLines({ lines, mobileLimit }: { lines: CartLine[]; mobileLi
               <p className="font-bold">{q.line.quantity} × {product.name}</p>
               <p className="text-muted">{variant?.label}{p?.text ? ` · “${p.text}”` : ""}{p ? " · vista previa aprobada" : ""}</p>
               {p?.collar && <p className="text-xs text-muted">{collarLineDetail(q.line)}</p>}
+              {q.line.gift && <GiftTag gift={q.line.gift} />}
             </div>
             <span className="font-bold tabular-nums">{formatARS(q.lineTotal)}</span>
           </li>

@@ -21,6 +21,7 @@ const ROUTES = [
   ["privacidad/", "Política de privacidad"],
   ["arrepentimiento/", "Botón de arrepentimiento"],
   ["club/", "Comprás, sumás, ganás."],
+  ["regalo/", "¿Te hicieron un regalo?"],
 ] as const;
 
 test.describe("rutas directas y refresh bajo el subpath", () => {

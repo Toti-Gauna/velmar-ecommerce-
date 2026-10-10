@@ -5,12 +5,16 @@ import { ButtonLink } from "@/components/atoms/Button";
 import { Skeleton } from "@/components/atoms/Skeleton";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { StepIndicator } from "@/components/molecules/StepIndicator";
+import { promiseFor } from "@/demo/engine/delivery";
+import { giftsFromLines } from "@/demo/engine/gifts";
 import { missingForFreeShipping, totalsOf } from "@/demo/engine/pricing";
+import { DEMO_TODAY } from "@/demo/fixtures/admin-orders";
 import { DEMO_ORDER_CODE, DEMO_TRACKING_TOKEN } from "@/demo/fixtures/commerce";
 import { useAccount } from "@/stores/account";
 import { useAdmin } from "@/stores/admin";
 import { useCart } from "@/stores/cart";
 import { useCheckout } from "@/stores/checkout";
+import { useGifts } from "@/stores/gifts";
 import { useHydrated } from "@/stores/hydration";
 import { useCartQuote } from "../cart/useCartQuote";
 import { CheckoutSummary } from "./CheckoutSummary";
@@ -52,9 +56,15 @@ export function CheckoutView() {
   }
 
   const confirm = () => {
+    const now = new Date();
+    // Cada línea marcada como regalo genera su código y su link; la fecha estimada sale del calendario del taller.
+    const { orders, workshop } = useAdmin.getState();
+    const gifts = giftsFromLines(lines, { orderCode: DEMO_ORDER_CODE, now, eta: promiseFor(lines, DEMO_TODAY, orders, workshop.settings, DEMO_ORDER_CODE).day, random: Math.random });
+    if (gifts.length) useGifts.getState().addSent(gifts);
     const order = {
-      code: DEMO_ORDER_CODE, token: DEMO_TRACKING_TOKEN, createdAt: new Date().toISOString(), contact: checkout.contact,
+      code: DEMO_ORDER_CODE, token: DEMO_TRACKING_TOKEN, createdAt: now.toISOString(), contact: checkout.contact,
       fulfillment: checkout.fulfillment!, paymentMethod: checkout.paymentMethod!, lines, quote: totalsOf(quote), asAccount: isAccount,
+      ...(gifts.length ? { gifts: gifts.map((g) => g.code) } : {}),
     };
     checkout.placeOrder(order);
     useAdmin.getState().syncShopOrder(order); // aparece en el panel demo de este navegador

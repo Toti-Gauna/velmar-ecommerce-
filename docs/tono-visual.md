@@ -130,3 +130,17 @@ muestra nada; ahí se le quita la apariencia del sistema, se dibuja el ícono de
   cuadro), en el celular la aurora usa dos manchas en vez de tres, y el 9 de Julio deja los fuegos para la pantalla de carga.
   Mediciones en `docs/qa.md`.
 
+
+## Fase 8 · Escenario oscuro, regalos y ruleta (10/2026, pedido de Ignacio, fuera de la especificación)
+- **Escenario a pantalla completa** (`ImmersiveStage`): casi negro (#07080a) con la luz de la temática desde el centro y
+  desde abajo; entra con un fundido corto. No es una ventana: solo queda lo protagonista y todo entra sin scroll. Botón
+  "Salir" arriba a la derecha (se oculta mientras gira la ruleta), foco atrapado y Escape para salir.
+- **Regalos**: lienzo de 300 × 300 por escena, un archivo por festividad (`src/features/gifts/scenes/`), cargado solo
+  cuando se abre. Cada golpe deja una huella (pétalo, grieta, tornillo, cinta, luz) y la apertura dura menos de 1,4 s.
+  El escenario agrega el sacudón (Web Animations), el destello del golpe con el acento de la temática y los cinco puntos
+  de progreso. Lo de adentro entra en cascada; el mensaje va en Caveat sobre papel crema apenas inclinado.
+- **Cupón de la ruleta**: ticket con el degradé de la temática (texto claro, contraste AA de las paletas de temporada),
+  talón con guilloché y decoraciones de la fecha, perforación del color del escenario y un brillo que lo cruza una vez.
+  Sin temática: noche y oliva con bronce.
+- **Movimiento**: nada en bucle; los únicos latidos (centro "Girar", regalo sin abrir en la cuenta) son de tres
+  repeticiones. Con "reducir movimiento" no hay sacudón, partículas ni recorridos, y aparece "Abrirlo de una vez".

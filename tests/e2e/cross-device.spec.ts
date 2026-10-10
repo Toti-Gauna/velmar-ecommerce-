@@ -18,7 +18,7 @@ const SHOP = [
   ["p/velador-con-foto/", "Velador con foto"], ["p/collar-con-nombre/", "Collar con nombre"], ["crear/", "Crear mi producto personalizado"],
   ["cupones/", "Mis cupones"], ["favoritos/", "Favoritos"], ["carrito/", "Tu carrito"], ["checkout/", "Checkout de demostración"],
   ["checkout/confirmacion/", "Confirmación (demo)"], ["pedido/demo-velmar/", "Seguimiento de tu pedido"], ["cuenta/", "Mi cuenta"],
-  ["club/", "Comprás, sumás, ganás."], ["preguntas/", "Preguntas frecuentes"], ["terminos/", "Términos y condiciones"],
+  ["club/", "Comprás, sumás, ganás."], ["regalo/", "¿Te hicieron un regalo?"], ["preguntas/", "Preguntas frecuentes"], ["terminos/", "Términos y condiciones"],
   ["privacidad/", "Política de privacidad"], ["arrepentimiento/", "Botón de arrepentimiento"],
 ] as const;
 

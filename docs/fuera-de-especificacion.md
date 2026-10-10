@@ -20,17 +20,19 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | "Cola de producción con cupos" y "planificación de capacidad de fabricación"; "la tienda no calcula capacidad de fabricación ni limita pedidos por cupo" | Cola de producción, capacidad de pedidos por día en el calendario, y "¿Cuándo llega?" en la ficha que usa esa capacidad | 2 |
 | "Embudo de métricas" | Inicio del panel con variación contra la semana anterior, gráficos y rendimiento del club (la spec pide contadores y ventas del día, semana y mes) | previa |
 | "Mascota en la cuenta y premios por fecha" | Mascotas con cumpleaños en la ficha del cliente, recordatorios y email de cumpleaños | 2 y 3 |
+| "Regalá uno" | Regalos: comprar para otra persona, link y código para abrirlo a golpes con una escena por festividad, y Mis regalos en la cuenta | 8 |
 
 ## Tienda
 
 | Agregado | Fase | En producción necesita | Tamaño | Decisión |
 |---|---|---|---|---|
-| Ruleta de cupones (física, con gajos, sonido y confeti) | previa y 4 | Sorteo ponderado y cupón `RULETA…` de un uso, con vencimiento y un giro por cuenta, decididos en el servidor | M | |
+| Ruleta de cupones (física, con gajos, sonido y confeti; desde la Fase 8 a pantalla completa con cupón de la festividad) | previa, 4 y 8 | Sorteo ponderado y cupón `RULETA…` de un uso, con vencimiento y un giro por cuenta, decididos en el servidor | M | |
 | Mis cupones (pantalla y selector en el carrito) | previa | Cupones por cuenta, estados (vencido, mínimo, solo con cuenta) | S | |
 | Buscador superpuesto con recientes y lo más buscado (la búsqueda tolerante a errores **ya está en la spec**) | previa | Búsqueda en Postgres (spec); recientes por dispositivo | S | |
 | Favoritos y su pantalla | previa | Tabla de favoritos por cuenta (hoy por navegador) | S | |
 | "Comprar ahora", barra inferior de vidrio, carrusel con pausa, historias de producto | previa y 0 | Solo contenido editable | S | |
 | Ficha todo en uno y **aprobación al agregar al carrito** | previa | **Cambio a la spec:** "Así lo quiero" ya no es una casilla; se guarda `approvedAt` al agregar | S | |
+| Regalos: "Es para regalar" en la ficha, código `REGALO-XXXX-XXXX` y link, apertura a golpes con 17 escenas, Mis regalos (**excluido en la sección 18**: "regalá uno") | 8 | Regalos como modelo con clave al azar (link y código), email a quien lo recibe, vista sin precio y canje una sola vez, validados en el servidor | L | |
 | ¿Cuándo llega? (usa el calendario del taller) | 2 | Plazos y capacidad del taller en el servidor | M | |
 | Configurador del collar (letras, cordón, material, dije, talle por cuello) | 4 | Opciones y recargos como datos; precio calculado en el servidor | L | |
 | Sonidos sintetizados con botón de silencio | 4 | Nada (navegador) | S | |

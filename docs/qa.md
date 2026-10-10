@@ -79,11 +79,45 @@ video salga en MP4 (H.264) y que "Compartir" guarde en Fotos.
 ## QA cruzado · Fase 7 (`tests/e2e/cross-device.spec.ts`)
 | Verificación | Estado |
 |---|---|
-| Las 19 rutas de la tienda y las 22 del panel abren en iPhone SE (375), iPhone 15 (393), Android (412) y escritorio (1440) sin error de página ni de consola, con su título, sin scroll horizontal, sin «acreditado» y con la señal de demo en el panel | ✅ |
+| Las 20 rutas de la tienda y las 22 del panel abren en iPhone SE (375), iPhone 15 (393), Android (412) y escritorio (1440) sin error de página ni de consola, con su título, sin scroll horizontal, sin «acreditado» y con la señal de demo en el panel | ✅ |
 | Con «reducir movimiento» activado la portada no falla al hidratar (el botón del carrusel mostraba otro ícono en el servidor y en el cliente) | ✅ corregido |
 
 Es emulación en Chromium: **no reemplaza** la prueba en un iPhone y un Android reales. Checklist y registro en
 `docs/qa-dispositivos.md`.
+
+## Regalos, ruleta y rendimiento · Fase 8 (`tests/e2e/gifts.spec.ts`, `shop-fase4.spec.ts`, `gamification.spec.ts`, `tests/unit/gifts.test.ts`)
+| Verificación | Estado |
+|---|---|
+| Regalar desde la ficha: sin "para quién" no sigue y lleva el foco; la ocasión dice cómo se abre; el carrito marca "Regalo para…" | ✅ |
+| Al confirmar: código `REGALO-XXXX-XXXX`, WhatsApp con el código y el link, "Ver cómo lo recibe" | ✅ |
+| Otro navegador abre el link: escenario oscuro, "Golpeá el regalo para abrirlo", cinco golpes, producto y mensaje **sin precio**, guardar en mis regalos, sin scroll horizontal | ✅ |
+| Cuenta demo: el regalo de muestra aparece sin abrir, se abre ("Abrirlo de una vez" con movimiento reducido) y queda "Abierto" | ✅ |
+| Código escrito a mano (minúsculas, sin guiones) abre; uno inventado avisa; un link cortado o editado no abre nada | ✅ |
+| Código con dígito verificador, link sin email ni precio, límites de texto, regalos por cuenta y por pedido | ✅ unit |
+| Ruleta a pantalla completa: el disco entra entero en la pantalla, el fondo no scrollea, gira con el centro, con toque, arrastre o teclado; al ganar, cupón de la festividad con "Aplicar ahora", "Guardar para después" y "Salir" a la vista | ✅ |
+| Las 17 escenas de regalo: cada golpe deja huella, la apertura termina y el estado final queda armado (capturas golpe a golpe y con movimiento reducido) | ✅ revisión visual |
+
+**Rendimiento medido** (Chromium sin GPU, Pixel 7 emulado a 390 px, CPU frenada 4×, promedio de 2 cargas; antes → después):
+
+| Página | Bloqueo del hilo (TBT) | Tarea más larga | Nodos | Scroll |
+|---|---|---|---|---|
+| Inicio (Original) | 3474 → 1727 ms | 624 → 450 ms | 3243 → 2588 | 54 → 60 fps, saltos 2% → 0% |
+| Ficha del collar | 2424 → 1888 ms | 487 → 417 ms | 1544 → 1428 | 22 → 36 fps, saltos 52% → 15% |
+| Inicio (Navidad) | 2901 → 2350 ms | 569 → 398 ms | 4002 → 3228 | sin frenar la CPU: 53–56 fps (en la Fase 5, 39–50) |
+
+JavaScript del inicio: 341 → 322 KB comprimido y HTML 449 → 398 KB, con regalos y ruleta nueva incluidos. Con la CPU
+frenada, el scroll de las temáticas varía mucho entre corridas (lo domina el dibujo por software de este entorno); la
+prueba que vale es la del teléfono real (`docs/qa-dispositivos.md`).
+
+Qué se hizo:
+- Las escenas de la pantalla de carga (16 temáticas) se descargan de a una: solo la de la fecha.
+- La ruleta, los cupones y el buscador se descargan al abrirlos (el carrito no: es lo que más se abre y tiene que responder al instante).
+- Las escenas de regalo, de a una, al abrir un regalo.
+- La segunda vista de cada tarjeta (al pasar el mouse) se dibuja recién cuando entra el mouse: en el celular era un SVG
+  entero de más por tarjeta.
+- Las secciones de más abajo del inicio, las recomendaciones de la ficha y el pie usan `content-visibility: auto`.
+- Las letras del collar se balancean tres veces y quedan quietas (un balanceo sin fin redibujaba el SVG en cada cuadro).
+- Se probó pausar el fondo de la temática durante el scroll: no mejoró nada medible y se descartó.
 
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
@@ -172,6 +206,9 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
   verifican qué sonido se pidió (`window.__velmarSounds`), no el audio. Probar en el iPhone que el silencio del
   sistema y el botón de la tienda se respetan.
 - **Collar**: vista previa ilustrativa (SVG), no un render 3D; materiales y recargos de muestra.
+- **Regalos (demo)**: el link lleva el regalo adentro (cualquiera con el link lo ve; no lleva email ni precio) y el código
+  solo se resuelve en el navegador donde se compró o en la cuenta demo. En producción ambos son una clave al azar
+  guardada en el servidor, que también manda el email y controla el canje.
 - **Estudio de contenido**: la grabación usa el reloj real; si se cambia de pestaña, el navegador pausa la animación, así
   que la grabación se cancela con un aviso y se vuelve a grabar. La vista previa se reproduce una vez y queda en el cuadro
   final ("Ver animación" la repite). En el post y la historia, si el cupón tiene mínimo, la condición va debajo del sello.

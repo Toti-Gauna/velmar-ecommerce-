@@ -1,5 +1,5 @@
 "use client";
-import { Eye, ShieldCheck, ShoppingBag, Undo2, Zap } from "lucide-react";
+import { Eye, Gift, ShieldCheck, ShoppingBag, Undo2, Zap } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import { FLOATING_BAR } from "@/components/organisms/bottomBars";
@@ -9,7 +9,10 @@ import { availability, getCategory, isPurchasable, maxQuantity, unitPrice, type 
 import type { Product } from "@/demo/types";
 import { cn } from "@/lib/cn";
 import { formatARS, withoutNationalTaxes } from "@/lib/money";
+import { useAccount } from "@/stores/account";
 import { useDemoData } from "@/stores/admin";
+import { GiftSheet } from "../gifts/GiftSheet";
+import { useCurrentTheme } from "../themes/useCurrentTheme";
 import { usePersonalizationDraft } from "../personalize/usePersonalizationDraft";
 import { CollarInspiration } from "./CollarInspiration";
 import { ConfigureCard } from "./ConfigureCard";
@@ -42,7 +45,10 @@ export function ProductDetail({ product: initial }: { product: Product }) {
   const inactive = product.active === false;
   const canBuy = !inactive && isPurchasable(sel.variant, quantity);
   const avail = availability(product, sel.variant);
-  const { purchase } = useProductPurchase(product, sel.variant, quantity, canBuy, draft);
+  const { purchase, ready } = useProductPurchase(product, sel.variant, quantity, canBuy, draft);
+  const [giftOpen, setGiftOpen] = useState(false);
+  const user = useAccount((s) => s.user);
+  const { theme } = useCurrentTheme();
   const transferPrice = Math.round(price * (1 - settings.transferDiscountPct / 100));
   const category = getCategory(product.categorySlug);
   const live = tmpl && tmpl.kind !== "PHOTO_REFERENCE" ? <LivePreview product={product} tint={sel.variant.colorHex} draft={draft} /> : undefined;
@@ -76,6 +82,18 @@ export function ProductDetail({ product: initial }: { product: Product }) {
           <span className="w-full text-xs text-muted">Precio sin impuestos nacionales: {formatARS(withoutNationalTaxes(price, settings.nationalTaxRate))} · precio de muestra</span>
         </div>
         <ConfigureCard product={product} sel={sel} draft={draft} quantity={quantity} max={max} stockNote={stockNote(avail)} onQuantity={setQty} actions={desktopActions} />
+        <button type="button" disabled={!canBuy} onClick={() => ready() && setGiftOpen(true)}
+          className="group flex items-center gap-4 rounded-[1.6rem] border border-dashed border-brass-ink/45 bg-surface p-4 text-left transition hover:border-brass-ink hover:bg-accent/40 disabled:opacity-45">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-night text-brass transition-transform group-hover:-rotate-6 group-hover:scale-105"><Gift size={22} aria-hidden="true" /></span>
+          <span className="min-w-0">
+            <span className="block font-bold">Es para regalar</span>
+            <span className="block text-sm text-muted">Le mandás un link o un código y lo abre a golpes. No ve el precio.</span>
+          </span>
+        </button>
+        {giftOpen && (
+          <GiftSheet open onClose={() => setGiftOpen(false)} productName={product.name} fromName={user?.name.split(" ")[0]} occasion={theme?.id ?? "velmar"}
+            onSubmit={(gift, mode) => { setGiftOpen(false); purchase(mode, gift); }} />
+        )}
         {tmpl?.collar && <CollarInspiration spec={tmpl.collar} onPick={draft.applyPreset} />}
         <MissionChip units={quantity} />
         <DeliveryEstimate product={product} variant={sel.variant} />

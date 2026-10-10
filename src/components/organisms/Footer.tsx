@@ -5,14 +5,14 @@ import { Logo } from "@/components/atoms/Logo";
 import { ResetDemoButton } from "./ResetDemoButton";
 
 const COLS = [
-  { title: "Tienda", links: [["/categorias/", "Todas las categorías"], ["/crear/", "Crear el tuyo"], ["/club/", "Club Velmar"], ["/cupones/", "Mis cupones"], ["/buscar/", "Buscar"]] },
+  { title: "Tienda", links: [["/categorias/", "Todas las categorías"], ["/crear/", "Crear el tuyo"], ["/club/", "Club Velmar"], ["/cupones/", "Mis cupones"], ["/regalo/", "Tengo un regalo"], ["/buscar/", "Buscar"]] },
   { title: "Ayuda", links: [["/preguntas/", "Preguntas frecuentes"], ["/pedido/demo-velmar/", "Seguir mi pedido (demo)"], ["/cuenta/", "Mi cuenta (demo)"]] },
   { title: "Legales", links: [["/terminos/", "Términos y condiciones"], ["/privacidad/", "Política de privacidad"], ["/arrepentimiento/", "Botón de arrepentimiento"]] },
 ];
 
 export function Footer() {
   return (
-    <footer className="mt-24 bg-night pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-[#e9e2d3] lg:pb-0">
+    <footer className="cv-auto mt-24 bg-night pb-[calc(5.5rem+env(safe-area-inset-bottom))] text-[#e9e2d3] [contain-intrinsic-size:auto_520px] lg:pb-0">
       <div className="mx-auto max-w-7xl px-6 pb-28 pt-16">
         <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)]">
           <div className="flex flex-col gap-5">
