@@ -11,13 +11,23 @@ precio**. Esta página es la copia del repo; la misma lista está en Notion, den
   (`localStorage`); en producción precio, stock, pagos y misiones los decide solo `src/server/services`.
 - **Decisión** la completa Ignacio con el cliente: entra · después · no.
 
+## Primero: lo que la spec dejó afuera de forma expresa
+La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del alcance vendido) excluye cosas que la demo
+**sí tiene**. Son las que más conviene hablar antes con el cliente, porque no estaban en lo acordado:
+
+| La spec dice (sección 18) | Lo que hay en la demo | Fase |
+|---|---|---|
+| "Cola de producción con cupos" y "planificación de capacidad de fabricación"; "la tienda no calcula capacidad de fabricación ni limita pedidos por cupo" | Cola de producción, capacidad de pedidos por día en el calendario, y "¿Cuándo llega?" en la ficha que usa esa capacidad | 2 |
+| "Embudo de métricas" | Inicio del panel con variación contra la semana anterior, gráficos y rendimiento del club (la spec pide contadores y ventas del día, semana y mes) | previa |
+| "Mascota en la cuenta y premios por fecha" | Mascotas con cumpleaños en la ficha del cliente, recordatorios y email de cumpleaños | 2 y 3 |
+
 ## Tienda
 
 | Agregado | Fase | En producción necesita | Tamaño | Decisión |
 |---|---|---|---|---|
 | Ruleta de cupones (física, con gajos, sonido y confeti) | previa y 4 | Sorteo ponderado y cupón `RULETA…` de un uso, con vencimiento y un giro por cuenta, decididos en el servidor | M | |
 | Mis cupones (pantalla y selector en el carrito) | previa | Cupones por cuenta, estados (vencido, mínimo, solo con cuenta) | S | |
-| Buscador superpuesto (recientes, lo más buscado, tolerante a errores) | previa | Índice de búsqueda sin tildes; recientes por dispositivo | S | |
+| Buscador superpuesto con recientes y lo más buscado (la búsqueda tolerante a errores **ya está en la spec**) | previa | Búsqueda en Postgres (spec); recientes por dispositivo | S | |
 | Favoritos y su pantalla | previa | Tabla de favoritos por cuenta (hoy por navegador) | S | |
 | "Comprar ahora", barra inferior de vidrio, carrusel con pausa, historias de producto | previa y 0 | Solo contenido editable | S | |
 | Ficha todo en uno y **aprobación al agregar al carrito** | previa | **Cambio a la spec:** "Así lo quiero" ya no es una casilla; se guarda `approvedAt` al agregar | S | |
@@ -34,12 +44,13 @@ precio**. Esta página es la copia del repo; la misma lista está en Notion, den
 |---|---|---|---|---|
 | Tablas de CRM (filtros, lotes, vista rápida, columnas, exportar `.xlsx`) y ⌘K | 1 | Paginado, filtros y exportación en el servidor | M | |
 | Importar desde Excel y Planilla editable | 1 | Validación en el servidor, auditoría y deshacer | M | |
-| Calendario de entregas (capacidad por día, feriados, reprogramar, `.ics`) | 2 | Capacidad, feriados y fechas comprometidas como datos | M | |
-| Cola de producción, insumos y costos con margen | 2 | Insumos, recetas y trabajos de producción como modelos | L | |
-| Ficha de cliente con mascotas y recordatorios de cumpleaños | 2 | Mascotas y recordatorios como modelos | M | |
-| Emails automáticos (editor por bloques con fichas de datos, bandeja) | 3 | Plantillas en la base, disparadores por estado y envío con React Email + Nodemailer (ya en la spec para los emails transaccionales) | L | |
+| Calendario de entregas (capacidad por día, feriados, reprogramar, `.ics`); la spec solo prevé la fecha comprometida del pedido (**la capacidad está excluida en la sección 18**) | 2 | Capacidad, feriados y fechas comprometidas como datos | M | |
+| Cola de producción (**excluida en la sección 18**), insumos y costos con margen | 2 | Insumos, recetas y trabajos de producción como modelos | L | |
+| Ficha de cliente con mascotas y recordatorios de cumpleaños (**excluido en la sección 18**) | 2 | Mascotas y recordatorios como modelos | M | |
+| Emails automáticos: editor por bloques con fichas de datos, activar o pausar cada uno, cumpleaños de mascota y bandeja (los emails de cada cambio de estado **ya están en la spec**, sección 9) | 3 | Plantillas editables en la base y disparadores por estado; el envío usa React Email + Nodemailer de la spec | L | |
 | Estudio de contenido para Instagram (post, historia, carrusel, PNG y video, texto sugerido) | 6 | Nada de servidor: se dibuja y graba en el navegador | M | |
-| Guía de primera sesión, buscador global y paginado | previa, 1 | Nada de servidor | S | |
+| Inicio del panel con variación, gráficos y rendimiento del club (**"embudo de métricas" excluido en la sección 18**) | previa | Consultas agregadas en el servidor | M | |
+| Guía de primera sesión, buscador global y paginado | previa, 1 | Nada de servidor (el paginado, en el servidor) | S | |
 
 ## Cambios a la spec que hay que decidir
 1. **Aprobación del diseño**: ya no es una casilla; se confirma al agregar al carrito.
