@@ -43,6 +43,23 @@
 | Sonidos al agregar y en favoritos; silencio recordado al recargar | ✅ |
 | Recargos del collar en pesos enteros, talle por cm, descripción, piezas y combinaciones válidas | ✅ unit |
 
+## Temáticas y motion · Fase 5 (`tests/e2e/shop-fase5.spec.ts`, `tests/unit/themes.test.ts`, `tests/unit/palettes.test.ts`)
+| Verificación | Estado |
+|---|---|
+| Orgullo, 25 de Mayo, Día de la Bandera y 9 de Julio: pantalla de carga con su escena, paleta, banner y cinta | ✅ |
+| Día del Amigo y del Padre: los personajes aparecen en la escena y en el banner | ✅ |
+| Con movimiento reducido no queda ninguna animación CSS corriendo (personajes, fondo, partículas) | ✅ |
+| Navegar usa View Transitions y solo la tarjeta tocada lleva el nombre de la imagen que vuela a la ficha | ✅ |
+| La cantidad rueda sin duplicar el número (lector de pantalla y tests leen un solo valor); favoritos destella | ✅ |
+| Contraste AA de las paletas nuevas en claro y oscuro (texto, apagado, primario, dorado, acento) | ✅ unit |
+| Fechas: Orgullo el 7/11, 25 de Mayo, Padre hasta el 17/6, Bandera el 20/6, 9 de Julio; ninguna superposición en el año | ✅ unit |
+
+**Rendimiento medido** (Chromium sin GPU, Pixel 7 emulado a 390 px, después de las optimizaciones): sin frenar la CPU, la
+tienda Original va a 52–53 cuadros por segundo y las temáticas nuevas a 39–50 (la del 9 de Julio pasó de 28 a 45 al sacar
+los fuegos del fondo). Con la CPU frenada 4× todo cae a 10–25, también la tienda sin temática: el dibujo por software de
+este entorno no representa a un iPhone, que compone `transform` y `opacity` en la GPU. **Falta la prueba en un iPhone real**
+(Safari, 60 fps y sin saltos): pantalla de carga de cada temática nueva, scroll del inicio con temática y tocar una tarjeta.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
@@ -130,6 +147,10 @@ el carril estira la columna y desborda solo en el celular (lo detectó el test d
   verifican qué sonido se pidió (`window.__velmarSounds`), no el audio. Probar en el iPhone que el silencio del
   sistema y el botón de la tienda se respetan.
 - **Collar**: vista previa ilustrativa (SVG), no un render 3D; materiales y recargos de muestra.
+- **Temáticas de la Fase 5**: la fecha de la Marcha del Orgullo se confirma cada año (2026: sábado 7 de noviembre). Las
+  escenas de la pantalla de carga empiezan cuando hidrata la página; si el teléfono tarda más de 2,6 s, la escena arranca
+  por la mitad para llegar a su final antes del telón. Las transiciones entre páginas usan View Transitions: en navegadores
+  sin soporte la página entra con el fundido de antes, y el gesto de "atrás" del navegador no anima la imagen del producto.
 - **Ruleta en el celular**: el disco deja pasar el scroll vertical (`pan-y`); el giro se toma del arrastre
   lateral o del toque. El premio se guarda al empezar el giro (cerrar la ruleta a mitad no da otro giro).
 - **Emails**: no sale ninguno. La bandeja guarda hasta 60 en este navegador. El editor de fichas usa `contentEditable`; en producción el HTML lo arma React Email (con tablas y estilos en línea para clientes de correo).

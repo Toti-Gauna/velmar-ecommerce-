@@ -42,8 +42,10 @@ export function ThemeBanner({ theme, offer }: { theme: SeasonalTheme; offer: The
       {skin.cast && (
         <div aria-hidden="true" className="pointer-events-none absolute bottom-3 right-[2%] flex items-end sm:bottom-8 sm:right-[7%]">
           {skin.cast.map((c, i) => (
-            <span key={i} className={`animate-fade-up block drop-shadow-[0_14px_20px_rgb(0_0_0/0.35)] ${c.pup ? "w-[21vw] max-w-36" : "w-[27vw] max-w-56"} ${i ? "-ml-5 sm:-ml-10" : ""}`} style={{ animationDelay: `${150 + i * 140}ms` }}>
-              <VelmarPup who={c.who} pose={c.pose} outfit={c.outfit} pup={c.pup} flip={c.flip} animated className="w-full" />
+            <span key={i} className={`animate-fade-up block ${c.pup ? "w-[21vw] max-w-36" : "w-[27vw] max-w-56"} ${i ? "-ml-5 sm:-ml-10" : ""}`} style={{ animationDelay: `${150 + i * 140}ms` }}>
+              <span className="pup-idle block" style={{ animationDelay: `${-i * 1.3}s` }}>
+                <VelmarPup who={c.who} pose={c.pose} outfit={c.outfit} pup={c.pup} flip={c.flip} animated className="pup-brief w-full drop-shadow-[0_14px_20px_rgb(0_0_0/0.35)]" />
+              </span>
             </span>
           ))}
         </div>

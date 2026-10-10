@@ -33,6 +33,14 @@
   inferior. Se habilitan con el primer toque; botón de silencio en el header (se recuerda en `velmar-sound`). En el panel no
   suenan.
 
+## Fase 5 · Temáticas y motion (pedido de Ignacio, 10/2026, fuera de la spec)
+- Temáticas nuevas en "Probar temáticas" y en el panel: **Orgullo** (reemplaza a San Patricio), **25 de Mayo**,
+  **Día de la Bandera** y **9 de Julio**, cada una con pantalla de carga, paleta, fondo, banner, cinta, cupón y ofertas.
+- **Día del Amigo** y **Día del Padre** rehechos con los personajes de Velmar (Pancho y Lola) en la pantalla de carga y en el
+  banner del inicio.
+- Navegar entre páginas tiene transición; al tocar una tarjeta, la imagen vuela hasta la galería de la ficha.
+- Ver `docs/tono-visual.md` (Fase 5) para el detalle visual y `docs/qa.md` para las mediciones.
+
 ## Agregados a pedido de Ignacio (04-05/10/2026, fuera de la spec original)
 Ruleta de cupones, página y selector de "Mis cupones", buscador superpuesto con búsquedas recientes, "Comprar ahora",
 historias de producto en el inicio (ilustrativas, `src/demo/fixtures/stories.ts`), paginado del panel, favoritos,

@@ -28,7 +28,7 @@ export function ThemesAdmin() {
   return (
     <>
       <AdminPageHeader title="Temáticas">
-        Halloween, Navidad, San Patricio y el resto de las fechas comerciales: cada una con su banner, decoraciones, cupón y productos en oferta.
+        Halloween, Navidad, el Orgullo, las fechas patrias y el resto de las fechas comerciales: cada una con su banner, decoraciones, cupón y productos en oferta.
         Agregado pedido por Ignacio (fuera de la especificación).
       </AdminPageHeader>
       <ThemeMode />

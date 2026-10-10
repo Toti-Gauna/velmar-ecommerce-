@@ -44,15 +44,18 @@ html[data-theme="dark"] { --amb-snow: #ffffff; }
 .aurora-0 { left: -20vmax; top: -30vmax; }
 .aurora-1 { right: -25vmax; top: 10vh; animation-name: aurora-1; animation-duration: 34s; }
 .aurora-2 { left: 10vw; bottom: -40vmax; animation-name: aurora-2; animation-duration: 40s; }
+/* En el celular, dos manchas de luz alcanzan y alivian la composición. */
+@media (max-width: 640px) { .aurora-2 { display: none; } }
 @keyframes aurora-0 { from { transform: translate3d(0, 0, 0) scale(1); } to { transform: translate3d(30vw, 22vh, 0) scale(1.25); } }
 @keyframes aurora-1 { from { transform: translate3d(0, 0, 0) scale(1.1); } to { transform: translate3d(-35vw, 30vh, 0) scale(0.9); } }
 @keyframes aurora-2 { from { transform: translate3d(0, 0, 0) scale(0.9); } to { transform: translate3d(25vw, -30vh, 0) scale(1.2); } }
-.season-grain { position: absolute; inset: 0; opacity: 0.05; background-image: radial-gradient(rgb(255 255 255 / 0.9) 0.6px, transparent 0.8px); background-size: 3px 3px; mix-blend-mode: overlay; }
+/* Sin mix-blend-mode: una capa de mezcla a pantalla completa obliga a recomponer todo en cada cuadro (Fase 5, VEL-55). */
+.season-grain { position: absolute; inset: 0; opacity: 0.035; background-image: radial-gradient(rgb(255 255 255 / 0.9) 0.6px, transparent 0.8px); background-size: 3px 3px; }
 .amb-paused .aurora-blob { animation-play-state: paused; }
 
 /* Efecto "firma" de cada temática en el fondo (backdrop/fx-*.tsx). */
 .fx-layer { position: absolute; inset: 0; overflow: hidden; }
-.fx-bokeh { position: absolute; width: var(--z); height: var(--z); border-radius: 9999px; background: radial-gradient(closest-side, var(--c), transparent 72%); opacity: 0; mix-blend-mode: screen; animation: fx-breathe 8s ease-in-out infinite; }
+.fx-bokeh { position: absolute; width: var(--z); height: var(--z); border-radius: 9999px; background: radial-gradient(closest-side, var(--c), transparent 72%); opacity: 0; animation: fx-breathe 8s ease-in-out infinite; }
 @keyframes fx-breathe { 0%, 100% { opacity: 0; transform: scale(0.7); } 50% { opacity: 0.55; transform: scale(1.1); } }
 .fx-sweep { position: absolute; left: -60%; width: 60%; height: 40%; background: linear-gradient(90deg, transparent, var(--c), transparent); transform: rotate(-24deg); animation: fx-sweep 15s ease-in-out infinite; }
 @keyframes fx-sweep { 0% { transform: translateX(0) rotate(-24deg); } 60%, 100% { transform: translateX(300%) rotate(-24deg); } }
