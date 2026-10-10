@@ -279,6 +279,28 @@ Lote 7: premios de la ruleta, Día del Animal y regalo en modal (`shop-polish-wh
 - **Regalo**: la barra lateral "Es para regalar" se reemplazó por el modal. El borrador vive en memoria: sobrevive a cerrar
   y reabrir y a navegar dentro de la tienda, no a recargar.
 
+QA global de Polish 8.2 (`shop-polish-journeys.spec.ts`; emulado en Chromium, **no** en equipos reales).
+
+| Recorrido | 1600 | 1366 | 1180 (tablet horizontal) | 820 (tablet vertical) | 390 | 320 |
+|---|---|---|---|---|---|---|
+| A · Compra: inicio → categoría → producto → personalización → carrito → checkout → entrega → pago simulado → confirmación | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| B · Regalo desde la ficha (modal → carrito → checkout → revisar el regalo, sin perder la personalización) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| B · Regalo desde "¿Es para regalo?" en el checkout | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| C · Club: misiones → ruleta → premio → aplicar → checkout → quitar el cupón (el total sube) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| D · Navegación: inicio → recomendado → otro recomendado → volver → categoría → carrito (scroll arriba, flechas del riel) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| E · Seguimiento: en producción → en camino → entregado → cambio de temática (Navidad) → repetir | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+En cada pantalla de cada recorrido se controla que no haya scroll horizontal, errores de consola ni pedidos externos.
+
+- **Encontrado y corregido en el QA**: a 320 px el selector "Ordenar por" de la categoría desbordaba 6 px (ahora pasa
+  abajo del contador) y en el checkout los importes del resumen se partían en dos renglones ("−$" arriba y el número
+  abajo). El bloque "¿Es para regalo?" deja el botón debajo del texto en el celular.
+- **Barrido extra**: 19 rutas de la tienda a 320 y 360 px, con sesión y carrito con cupón: sin desbordes.
+- **Seguridad**: el diff no agrega endpoints, Server Actions, dependencias ni pedidos de red; la contraseña del ingreso
+  solo vive en el estado del formulario (no va a localStorage ni a sessionStorage, comprobado en el e2e); Google es una
+  simulación rotulada, sin OAuth; no se manda ningún email.
+- **Falta**: probar en un iPad, un iPhone y un Android reales (filas 20 a 22 de `qa-dispositivos.md`).
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

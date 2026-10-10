@@ -36,26 +36,29 @@ export function CheckoutGift({ onPayNow }: { onPayNow: () => void }) {
   };
   return (
     <section aria-labelledby="es-regalo" className="rounded-2xl border border-line bg-surface p-4">
-      <div className="flex flex-wrap items-start gap-3">
+      <div className="flex items-start gap-3">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent text-brass-ink"><Gift size={19} aria-hidden="true" /></span>
         <div className="min-w-0 flex-1">
           <h3 id="es-regalo" className="font-bold">¿Es para regalo?</h3>
           {gifts.length === 0 ? (
             <p className="text-sm text-muted">Le mandás un link y un código; lo abre a golpes y nunca ve el precio.</p>
           ) : (
-            <ul className="mt-1 flex flex-col gap-1.5">
+            <ul className="mt-1 flex flex-col gap-2">
               {gifts.map((l) => (
-                <li key={l.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-                  <span className="min-w-0"><strong>Regalo para {l.gift!.to}</strong> · de {l.gift!.from} · {nameOf(l)}</span>
-                  <button type="button" onClick={() => openFor(l)} className="font-bold text-primary underline">Editar</button>
-                  <button type="button" onClick={() => { setGift(l.id, null); toast({ tone: "info", title: "Ya no va como regalo", description: nameOf(l) }); }} className="font-bold text-danger underline">Quitar</button>
+                <li key={l.id} className="text-sm">
+                  <span className="block"><strong>Regalo para {l.gift!.to}</strong> · de {l.gift!.from} · {nameOf(l)}</span>
+                  <span className="mt-0.5 flex gap-4">
+                    <button type="button" onClick={() => openFor(l)} className="min-h-9 font-bold text-primary underline">Editar</button>
+                    <button type="button" onClick={() => { setGift(l.id, null); toast({ tone: "info", title: "Ya no va como regalo", description: nameOf(l) }); }} className="min-h-9 font-bold text-danger underline">Quitar</button>
+                  </span>
                 </li>
               ))}
             </ul>
           )}
         </div>
-        {free && <Button size="sm" variant="secondary" onClick={() => openFor(free)}>{gifts.length ? "Regalar otro" : "Sí, es para regalar"}</Button>}
       </div>
+      {/* El botón va debajo: en el celular no le quita ancho al texto. */}
+      {free && <Button size="sm" variant="secondary" className="mt-3 w-full sm:ml-[3.25rem] sm:w-auto" onClick={() => openFor(free)}>{gifts.length ? "Regalar otro" : "Sí, es para regalar"}</Button>}
       {selected && (
         <GiftModal open={open} onClose={() => setOpen(false)} productName={nameOf(selected)}
           choices={lines.map((l) => ({ id: l.id, label: `${l.quantity} × ${nameOf(l)}${l.gift ? ` (regalo para ${l.gift.to})` : ""}` }))}

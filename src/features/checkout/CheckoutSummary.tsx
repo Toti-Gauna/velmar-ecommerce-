@@ -23,7 +23,7 @@ export function CheckoutSummary({ quote }: { quote: Quote }) {
           return (
             <li key={q.line.id} className="flex justify-between gap-2">
               <span className="min-w-0 truncate">{q.line.quantity} × {product?.name}{q.line.personalization ? " (personalizado)" : ""}{q.line.gift ? ` · regalo para ${q.line.gift.to}` : ""}</span>
-              <span className="tabular-nums">{formatARS(q.lineTotal)}</span>
+              <span className="shrink-0 whitespace-nowrap tabular-nums">{formatARS(q.lineTotal)}</span>
             </li>
           );
         })}
