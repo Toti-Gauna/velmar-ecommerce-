@@ -5,7 +5,7 @@ import { Button } from "@/components/atoms/Button";
 import { useDemoData } from "@/stores/admin";
 import { useCheckout } from "@/stores/checkout";
 
-const PAY_LABEL = { CHECKOUT_PRO: "Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "QR (muestra)" };
+const PAY_LABEL = { CHECKOUT_PRO: "Tarjeta de débito, crédito o prepaga, vía Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "QR (muestra)" };
 
 export function ConfirmStep({ onBack, onConfirm, onEdit }: { onBack: () => void; onConfirm: () => void; onEdit: (step: number) => void }) {
   const { contact, address, fulfillment, paymentMethod, acceptedTerms, patch } = useCheckout();

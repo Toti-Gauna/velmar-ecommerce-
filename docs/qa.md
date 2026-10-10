@@ -214,6 +214,20 @@ Pantalla de carga al recargar a mitad de página (pedido de Ignacio, `splash-pol
 - **Verificado**: recargando a 700 px el splash está abierto en la capa superior y ocupa la pantalla entera; Escape lo
   cierra. En Chromium (no hay WebKit acá); falta confirmarlo en el iPad.
 
+Lote 5: checkout (`tests/e2e/shop-polish-checkout.spec.ts`, `tests/unit/checkout-discounts.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| A 1180 y 390 px: el resumen (subtotal, cupón, descuento por transferencia/QR, envío, total y productos) va debajo de las opciones y de los botones de cada paso; Atrás y Siguiente siguen primero y en el mismo orden | ✅ |
+| El total se actualiza al elegir la entrega y al cambiar entre tarjeta y transferencia; volver a tarjeta lo deja igual que antes | ✅ |
+| "Tarjetas de débito, crédito y prepagas" con la descripción pedida y "vía Mercado Pago"; siguen transferencia y QR con aprobación manual y el aviso de que nada cobra; la revisión del pedido lo nombra igual | ✅ |
+| Con tarjeta no hay descuento por transferencia; cupón + transferencia se aplican una sola vez; ida y vuelta entre medios no acumula | ✅ unit |
+
+- **Resumen**: estaba en un panel al costado (y en el celular, al final de todo). Ahora el checkout es una columna
+  centrada: paso, botones y resumen. La cuenta sale del mismo engine que antes (sin cambios de precio).
+- **Tarjetas**: es el mismo medio de pago de siempre (Mercado Pago Checkout Pro, simulado), nombrado como lo busca el
+  cliente. No hay integración nueva ni se piden datos de tarjeta.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

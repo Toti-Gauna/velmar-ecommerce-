@@ -13,9 +13,10 @@ export function summaryRows(quote: Omit<Quote, "lines">) {
   ];
 }
 
+/** Resumen del checkout (subtotal, cupón, descuento por transferencia/QR, envío, total y productos), debajo del paso. */
 export function CheckoutSummary({ quote }: { quote: Quote }) {
   return (
-    <OrderSummary rows={summaryRows(quote)} total={quote.total} totalNote="Total de muestra. En la tienda real el servidor recalcula precios y stock antes de cobrar.">
+    <OrderSummary title="Resumen de tu compra" rows={summaryRows(quote)} total={quote.total} totalNote="Total de muestra. En la tienda real el servidor recalcula precios y stock antes de cobrar.">
       <ul className="flex flex-col gap-1.5 border-t border-line pt-3 text-sm">
         {quote.lines.map((q) => {
           const product = getProduct(q.line.productSlug);
