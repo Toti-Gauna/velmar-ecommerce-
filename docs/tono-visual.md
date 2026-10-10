@@ -33,7 +33,8 @@ No hay paleta ni tipografía confirmadas por Velmar. Lo siguiente se derivó del
 - Cada fecha comercial tiene su "piel" fija en `src/features/themes/skins.ts`: degradado oscuro o saturado con texto claro
   (AA en modo claro y oscuro), un color de acento para el cupón y el botón, un sombrero para el logo y cinco decoraciones.
 - Decoraciones: SVG propios en `src/components/illustrations/seasonal/` (sombrero de bruja, calabaza, murciélago, fantasma,
-  gorro y árbol de Navidad, adorno, regalo, copo, copas, fuegos, gorro de fiesta, trébol, sombrero de duende, olla de oro,
+  gorro y árbol de Navidad, adorno, regalo, copo, copas, fuegos, gorro de fiesta, arcoíris, bandera y corazón del Orgullo,
+  escarapela, Sol de Mayo, Cabildo, empanada, paraguas, bandera argentina, Casa de Tucumán,
   corazón, carta, huevo, orejas de conejo, tulipán, patita, hueso, llama, etiqueta, bolsa, corbata, bigote, sombrero, mate,
   globo y barrilete). Sin imágenes externas.
 - Dónde aparece: cinta debajo de la barra de demo, sombrero sobre el logo, **primera diapositiva del carrusel** y riel
@@ -44,7 +45,7 @@ No hay paleta ni tipografía confirmadas por Velmar. Lo siguiente se derivó del
   vuelve a salir la pantalla de carga, ahora de temporada.
 - **Paleta de temporada** (`src/features/themes/palettes.ts`): cada temática pisa TODOS los tokens con `html[data-season]`
   (header, fondo, tarjetas, bandas, controles, íconos de select/fecha y el **estudio** detrás de cada producto,
-  `--studio-1/2/3`). Halloween, Navidad, Año Nuevo, Black Friday y San Patricio son **inmersivas**: oscuras también en
+  `--studio-1/2/3`). Halloween, Navidad, Año Nuevo, Black Friday, Orgullo y 9 de Julio son **inmersivas**: oscuras también en
   modo claro. El contraste AA de cada par se prueba en `tests/unit/palettes.test.ts`. El panel no cambia.
 - **Fondo de la página**: aurora (tres manchas de luz de la temática que se desplazan lento), grano sutil y partículas,
   detrás de todo. En escritorio el header pasa a vidrio tintado (en el celular el header y las barras de compra quedan sólidos y su fondo se extiende hasta el borde de la pantalla, por Safari de iPhone; la barra de navegación inferior es una cápsula flotante de vidrio); las tarjetas de producto llevan filo y brillo del color.
@@ -54,16 +55,21 @@ No hay paleta ni tipografía confirmadas por Velmar. Lo siguiente se derivó del
   Navidad (cielo estrellado, colinas nevadas, Papá Noel con estela dorada), Halloween (luna con nubes, murciélagos que
   salen de la luna, bruja, cementerio, calabazas), Año Nuevo (cuenta regresiva 3·2·1, fuegos en cadena, "¡Feliz año!"),
   Black Friday (reflectores, marco dorado que se dibuja, etiqueta que se balancea), Hot Sale (llamas y el descuento que se
-  cuenta), San Valentín (corazón que se dibuja y late), Día de la Madre (flor que se abre y tulipanes), San Patricio
-  (arcoíris banda por banda y olla que lanza monedas), Pascuas (huevo que se rompe y salen orejitas), Día del Animal
-  (huellas que caminan), Día del Padre (constelación y estrella fugaz), Día del Amigo (anillos que se entrelazan y mate que
-  humea) y Día del Niño (globos y barrilete).
+  cuenta), San Valentín (corazón que se dibuja y late), Día de la Madre (flor que se abre y tulipanes), Orgullo
+  (un haz blanco entra a un prisma y sale en los seis colores; cintas onduladas y corazón arcoíris), 25 de Mayo (lluvia y
+  paraguas en la plaza, el Cabildo, sale el Sol de Mayo, vuelan escarapelas, empanadas humeando, "1810"), Día de la Bandera
+  (la bandera sube flameando por el mástil, Sol de Mayo, papelitos celestes y blancos), 9 de Julio (Casa de Tucumán de
+  noche, la puerta se enciende, fuegos celestes, blancos y dorados, "1816"), Pascuas (huevo que se rompe y salen orejitas), Día del Animal
+  (huellas que caminan), Día del Padre (Pancho con sombrero y corbata llega con Panchito bajo el farol; el cachorro salta
+  con un regalo y papá se saca el sombrero), Día del Amigo (Pancho y Lola llegan desde los costados, chocan la pata,
+  aparece el mate y festejan saltando) y Día del Niño (globos y barrilete).
 - **Pantalla de carga Original**: rayos de luz, dos anillos dorados que se trazan, polvo de oro, piezas con brillo de
   vidrio y un destello que recorre "Velmar" (CSS puro, se ve sin JS).
 - **Fondo con efecto propio** (`src/features/themes/backdrop/`): luces desenfocadas (Navidad, Niño), niebla (Halloween),
-  fuegos en loop (Año Nuevo), haces de luz (Black Friday), arcoíris (San Patricio), corazón que late (San Valentín),
+  fuegos en loop (Año Nuevo), haces de luz (Black Friday), arcoíris y luces (Orgullo), rayos del Sol de Mayo que giran
+  (25 de Mayo), franjas celeste y blanca que flamean (Bandera), luces celestes y doradas (9 de Julio), corazón que late (San Valentín),
   burbujas (Pascuas), huellas (Animal), calor (Hot Sale), constelación (Padre), anillos (Amigo) y flor gigante (Madre).
-- **Fondos animados** (`ambient.ts`, `AmbientField`): nieve, murciélagos, papelitos, corazones, tréboles, chispas, globos…
+- **Fondos animados** (`ambient.ts`, `AmbientField`): nieve, murciélagos, papelitos, corazones, escarapelas, chispas, globos…
   detrás del contenido, en el banner y en el splash. Solo `transform`/`opacity` y unidades del contenedor.
   **Excepción a "sin animaciones permanentes"** pedida por Ignacio: con "reducir movimiento" no se muestran y la cinta
   tiene un botón para pausarlas (se recuerda en el navegador).
@@ -96,3 +102,31 @@ muestra nada; ahí se le quita la apariencia del sistema, se dibuja el ícono de
   del inicio, que avanza cada 4 s** (se frena al tocarlo, al pasar el mouse o con foco, y tiene botón de pausa). La
   ruleta gira 4,8 s solo cuando la persona la inicia.
 - `prefers-reduced-motion: reduce` desactiva pantalla de carga, confeti y autoplay del carrusel; la ruleta salta al resultado y toda transición pasa a 1 ms. Sin audio.
+
+## Fase 5 · Temáticas y motion (10/2026, pedido de Ignacio, fuera de la especificación)
+- **Orgullo reemplaza a San Patricio**: noche violeta inmersiva para que brille el arcoíris; Marcha del Orgullo de Buenos
+  Aires el **sábado 7 de noviembre de 2026** (la temática va del 1 al 7). Cupón `ORGULLO15`.
+- **Fechas patrias**: 25 de Mayo (papel colonial y celeste profundo, `MAYO25`), Día de la Bandera (cielo celeste,
+  `BANDERA20`, del 18 al 20 de junio) y 9 de Julio (noche azul inmersiva, `JULIO9`). El **Día del Padre termina el 17**:
+  deja el fin de semana a la bandera y le da tiempo al taller para entregar antes del domingo. Ningún día cae en dos
+  temáticas (lo prueba `tests/unit/themes.test.ts`).
+- **Personajes de Velmar** (`src/components/illustrations/characters/`): **Pancho** (salchicha chocolate y fuego) y **Lola**
+  (caniche damasco con pompones), con el collar oliva y la chapita dorada de la marca. Poses: parado, caminando, saludando y
+  saltando; accesorios: sombrero (fedora o de fiesta), corbata, pañuelo y moño; variante cachorro. Las partes (cola, ojos,
+  orejas, cabeza, patas) se animan con CSS (`app/characters.css`). Protagonizan las escenas y el banner del Día del Amigo y
+  del Padre; en el banner se mueven unos segundos y después solo "respiran" (animar el interior de un SVG lo redibuja).
+- **Reloj de escena** (`SceneClock` en `src/features/themes/splash/kit.tsx`): la escena de temporada se monta al hidratar,
+  pero el telón cae a los 4,35 s desde que se pintó la pantalla. La escena lee cuánto lleva el telón y corre todos sus
+  retrasos (retrasos negativos): en un teléfono lento empieza por la mitad y su final siempre se ve.
+- **Transiciones entre páginas** con React `<ViewTransition>` (`app/(shop)/template.tsx` y `app/motion.css`): la página
+  vieja se desvanece y la nueva sube en fundido; el header y la barra inferior quedan quietos. **La imagen del producto
+  vuela de la tarjeta a la galería de la ficha**: el nombre de la transición se pone solo en la tarjeta tocada
+  (`src/lib/viewTransition.ts`), así un producto repetido en dos rieles no la cancela. Sin soporte (Firefox viejo), entra
+  por CSS como antes.
+- **Microinteracciones**: las tarjetas se elevan al pasar el mouse y se hunden al tocarlas; la bolsa del header se sacude
+  cuando entra algo; el precio de la ficha cambia con un fundido; el corazón de favoritos larga chispas al guardar; la
+  cantidad del carrito rueda hacia arriba o hacia abajo; los botones primarios tienen un destello al pasar el mouse.
+- **Rendimiento**: el grano y las luces del fondo ya no usan `mix-blend-mode` (recomponía la pantalla entera en cada
+  cuadro), en el celular la aurora usa dos manchas en vez de tres, y el 9 de Julio deja los fuegos para la pantalla de carga.
+  Mediciones en `docs/qa.md`.
+

@@ -21,7 +21,7 @@ var pv=j("velmar-demo:theme-preview"),pid=pv&&pv.state?pv.state.previewId:null;
 var ad=j("velmar-demo:admin"),dd=ad&&ad.version===${ADMIN_STORE_VERSION}&&ad.state&&ad.state.data;
 if(dd&&dd.themes)T=dd.themes;if(dd&&dd.themeSettings)S=dd.themeSettings;
 var id=null;
-if(pid==="original")id=null;else if(pid)id=pid;else if(S.mode==="fixed")id=S.fixedId;else if(S.mode==="auto"){
+if(pid==="original")id=null;else if(pid&&K[pid])id=pid;else if(S.mode==="fixed")id=S.fixedId;else if(S.mode==="auto"){
 var n=new Date(),md=("0"+(n.getMonth()+1)).slice(-2)+"-"+("0"+n.getDate()).slice(-2);
 for(var i=0;i<T.length;i++){var t=T[i],f=t.startsOn.slice(5),e=t.endsOn.slice(5);
 if(t.active&&(f<=e?md>=f&&md<=e:md>=f||md<=e)){id=t.id;break}}}

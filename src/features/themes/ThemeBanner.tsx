@@ -1,5 +1,6 @@
 "use client";
 import { ArrowDown, Check, Ticket } from "lucide-react";
+import { VelmarPup } from "@/components/illustrations/characters";
 import { Decor } from "@/components/illustrations/seasonal/Decor";
 import type { SeasonalTheme } from "@/demo/types";
 import type { ThemeOffer } from "@/demo/engine/themes";
@@ -33,11 +34,23 @@ export function ThemeBanner({ theme, offer }: { theme: SeasonalTheme; offer: The
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:radial-gradient(#fff_1px,transparent_1.5px)] [background-size:18px_18px]" />
       <SeasonFx id={theme.id} />
       <AmbientField layers={AMBIENT[theme.id]} className="absolute inset-0" />
-      {skin.decor.map((kind, i) => (
+      {/* Con personajes, la protagonista y la decoración de abajo a la derecha dejan lugar al elenco. */}
+      {skin.decor.map((kind, i) => (skin.cast && (i === 0 || i === 4) ? null : (
         <span key={`${kind}-${i}`} aria-hidden="true" className={`animate-fade-up pointer-events-none absolute ${SPOTS[i]}`} style={{ animationDelay: `${120 + i * 110}ms` }}>
           <Decor kind={kind} className="h-full w-full drop-shadow-[0_14px_20px_rgb(0_0_0/0.35)]" />
         </span>
-      ))}
+      )))}
+      {skin.cast && (
+        <div aria-hidden="true" className="pointer-events-none absolute bottom-14 right-[2%] flex items-end sm:bottom-10 sm:right-[7%]">
+          {skin.cast.map((c, i) => (
+            <span key={i} className={`animate-fade-up block ${c.pup ? "w-[21vw] max-w-36" : "w-[27vw] max-w-56"} ${i ? "-ml-5 sm:-ml-10" : ""}`} style={{ animationDelay: `${150 + i * 140}ms` }}>
+              <span className="pup-idle block" style={{ animationDelay: `${-i * 1.3}s` }}>
+                <VelmarPup who={c.who} pose={c.pose} outfit={c.outfit} pup={c.pup} flip={c.flip} animated className="pup-brief w-full drop-shadow-[0_14px_20px_rgb(0_0_0/0.35)]" />
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
       <div className="relative max-w-[62%] sm:max-w-md">
         <p className="eyebrow" style={{ color: skin.accent }}>Temática · {theme.name}</p>
         <h2 id="tematica-title" className="font-display mt-2 text-[1.75rem] leading-[1.04] sm:text-5xl lg:text-6xl">{theme.headline}</h2>

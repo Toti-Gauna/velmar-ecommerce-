@@ -39,6 +39,7 @@ export const useAdmin = create<AdminState>()(
     {
       name: `${STORAGE_PREFIX}admin`,
       // v4: taller (fechas comprometidas, etapas, insumos, recetas y fichas). v5: configurador del collar (producto nuevo).
+      // v6: temáticas de la Fase 5 (Orgullo en lugar de San Patricio y fechas patrias, con sus cupones).
       // Al cambiar de versión la demo vuelve a los datos de muestra.
       version: ADMIN_STORE_VERSION,
       storage: demoStorage,

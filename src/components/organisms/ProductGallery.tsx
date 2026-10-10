@@ -26,10 +26,10 @@ export function ProductGallery({ art, views, tint, name, photoUrl, alt, live }: 
     const r = e.currentTarget.getBoundingClientRect();
     setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
   };
-  if (photoUrl && !live) return <ProductVisual art={art} photoUrl={photoUrl} label={alt || name} className="aspect-square rounded-[2rem] shadow-[var(--shadow-card)]" />;
+  if (photoUrl && !live) return <div data-vt-hero className="vt-hero"><ProductVisual art={art} photoUrl={photoUrl} label={alt || name} className="aspect-square rounded-[2rem] shadow-[var(--shadow-card)]" /></div>;
   return (
     <div className="flex flex-col gap-3 lg:flex-row-reverse">
-      <div onPointerMove={onMove} onPointerLeave={() => setZoom(null)} className={cn("relative aspect-square flex-1 overflow-hidden rounded-[2rem] bg-accent shadow-[var(--shadow-card)]", !showLive && "lg:cursor-zoom-in")}>
+      <div data-vt-hero onPointerMove={onMove} onPointerLeave={() => setZoom(null)} className={cn("vt-hero relative aspect-square flex-1 overflow-hidden rounded-[2rem] bg-accent shadow-[var(--shadow-card)]", !showLive && "lg:cursor-zoom-in")}>
         {showLive && (
           <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-night px-3 py-1.5 text-xs font-bold text-[#f6f1e8] shadow-[var(--shadow-card)]">
             <Sparkles size={13} aria-hidden="true" className="text-brass" />Vista previa en vivo

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { PageSwap } from "@/components/motion/PageSwap";
 import { Breadcrumbs } from "@/components/templates/PageHeader";
 import { getCategory, getProduct } from "@/demo/engine/catalog";
 import { products } from "@/demo/fixtures/products";
@@ -25,10 +26,12 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
   const category = getCategory(product.categorySlug);
   return (
+    <PageSwap id={slug}>
     <div className="pb-36 sm:pb-0">
       <div className="mb-4"><Breadcrumbs crumbs={category ? [{ href: `/c/${category.slug}/`, label: category.name }] : []} /></div>
       <ProductDetail product={product} />
       <div className="mt-24"><ProductRecommendations slug={slug} /></div>
     </div>
+    </PageSwap>
   );
 }

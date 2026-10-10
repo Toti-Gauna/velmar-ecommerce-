@@ -7,6 +7,7 @@ import { ProductVisual } from "@/components/illustrations/ProductVisual";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { useQuickAdd } from "@/features/cart/useQuickAdd";
 import { cn } from "@/lib/cn";
+import { markProductHero } from "@/lib/viewTransition";
 import { formatARS } from "@/lib/money";
 
 export interface ProductCardData {
@@ -36,8 +37,10 @@ export function ProductCard({ product, priority }: { product: ProductCardData; p
   return (
     <article data-product-card className="group relative flex flex-col gap-3">
       <div className="relative overflow-hidden rounded-[var(--radius-card)] bg-accent shadow-[var(--shadow-card)] transition-shadow duration-500 group-hover:shadow-[var(--shadow-lift)]">
-        <ProductVisual art={product.art} tint={product.tint} photoUrl={product.photoUrl} label={product.alt}
-          className="aspect-[4/5] transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]" />
+        <div data-card-visual className="overflow-hidden rounded-[var(--radius-card)]">
+          <ProductVisual art={product.art} tint={product.tint} photoUrl={product.photoUrl} label={product.alt}
+            className="aspect-[4/5] transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]" />
+        </div>
         {product.secondView && !product.photoUrl && (
           <ProductArt art={product.art} view={product.secondView} tint={product.tint} label="" showBadge={false}
             className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 [&>svg]:h-full [&>svg]:object-cover" />
@@ -57,7 +60,7 @@ export function ProductCard({ product, priority }: { product: ProductCardData; p
       </div>
       <div className="flex flex-col gap-1 px-1">
         <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-ink">
-          <Link href={product.href} prefetch={priority} className="after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none">{product.name}</Link>
+          <Link href={product.href} prefetch={priority} onClick={(e) => markProductHero(e.currentTarget.closest("[data-product-card]"), e)} className="after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:outline-none">{product.name}</Link>
         </h3>
         <p className="text-lg font-extrabold tabular-nums leading-tight">
           {product.hasRange && <span className="mr-1 text-xs font-semibold text-muted">desde</span>}

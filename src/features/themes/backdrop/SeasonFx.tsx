@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import type { SeasonId } from "@/demo/types";
-import { Bokeh, Fog, HeatGlow, LightSweeps, Rainbow } from "./fx-light";
+import { CELESTE } from "@/components/illustrations/seasonal/patrias";
+import { PRIDE } from "@/components/illustrations/seasonal/pride";
+import { Bokeh, FlagBands, Fog, HeatGlow, LightSweeps, Rainbow, SunRays } from "./fx-light";
 import { Bubbles, Constellation, FireworksLoop, PawTrail, Rings, Watermark } from "./fx-shapes";
 
 /** El efecto "firma" del fondo de cada temática, sobre la aurora y las partículas. */
@@ -9,7 +11,11 @@ const FX: Record<SeasonId, () => ReactNode> = {
   halloween: () => <><Fog color="rgb(150 110 190 / 0.22)" /><Bokeh colors={["#ff8a1f"]} count={6} size={[4, 9]} /></>,
   "ano-nuevo": () => <FireworksLoop colors={["#f3dca6", "#ff7aa8", "#8fd3ff", "#ffe9a8"]} />,
   "black-friday": () => <LightSweeps color="rgb(243 220 166 / 0.10)" />,
-  "san-patricio": () => <Rainbow />,
+  orgullo: () => <><Rainbow /><Bokeh colors={PRIDE} count={12} size={[8, 18]} /></>,
+  "revolucion-de-mayo": () => <SunRays color="rgb(246 197 76 / 0.16)" />,
+  "dia-de-la-bandera": () => <FlagBands celeste={CELESTE} white="#ffffff" />,
+  // Los fuegos quedan para la pantalla de carga: en el fondo permanente pesaban demasiado al hacer scroll (VEL-55).
+  "dia-de-la-independencia": () => <Bokeh colors={["#bfe3fb", "#ffffff", "#f3d27a", CELESTE]} count={12} size={[6, 16]} />,
   "san-valentin": () => <><Watermark kind="heart" color="rgb(255 120 160 / 0.10)" /><Bokeh colors={["#ff9bb3", "#ffd1dc"]} count={8} size={[8, 18]} /></>,
   pascuas: () => <Bubbles colors={["#f7b6c8", "#ffe28a", "#b9e3f5", "#cdb3f5"]} />,
   "dia-del-animal": () => <PawTrail />,

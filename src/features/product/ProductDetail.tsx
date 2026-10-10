@@ -71,7 +71,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
           {product.soldCount > 0 && <p className="mt-2 text-sm font-semibold text-muted">+{product.soldCount} vendidos (muestra)</p>}
         </div>
         <div className="flex flex-wrap items-end gap-x-4 gap-y-1">
-          <span className="text-4xl font-extrabold tabular-nums tracking-tight">{formatARS(price)}</span>
+          <span className="text-4xl font-extrabold tabular-nums tracking-tight"><span key={price} className="animate-num">{formatARS(price)}</span></span>
           {settings.transferDiscountPct > 0 && <span className="mb-1 rounded-full bg-success-soft px-3 py-1 text-sm font-bold text-success">{formatARS(transferPrice)} con transferencia o QR</span>}
           <span className="w-full text-xs text-muted">Precio sin impuestos nacionales: {formatARS(withoutNationalTaxes(price, settings.nationalTaxRate))} · precio de muestra</span>
         </div>
@@ -88,7 +88,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
         <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14 shrink-0" />
         <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="flex-1 justify-between whitespace-nowrap px-5 text-[15px]">
           <span>Agregar al carrito</span>
-          <span className="tabular-nums">{formatARS(price * quantity)}</span>
+          <span key={price * quantity} className="animate-num tabular-nums">{formatARS(price * quantity)}</span>
         </Button>
       </div>
     </div>

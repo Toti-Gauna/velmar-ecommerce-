@@ -25,7 +25,9 @@ export function themeForDate(themes: SeasonalTheme[], now: Date): SeasonalTheme 
 export function currentTheme(now: Date, previewId: SeasonId | "original" | null): SeasonalTheme | null {
   const { themes, themeSettings } = demoData();
   if (previewId === "original") return null;
-  if (previewId) return themes.find((t) => t.id === previewId) ?? null;
+  // Una vista previa que ya no existe (p. ej. "san-patricio" guardada antes de la Fase 5) no tapa la temática del panel.
+  const previewed = previewId ? themes.find((t) => t.id === previewId) : undefined;
+  if (previewed) return previewed;
   if (themeSettings.mode === "off") return null;
   if (themeSettings.mode === "fixed") return themes.find((t) => t.id === themeSettings.fixedId) ?? null;
   return themeForDate(themes, now);
