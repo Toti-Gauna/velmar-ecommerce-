@@ -9,6 +9,7 @@ import { Textarea } from "@/components/atoms/Field";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { fulfillmentTrack, nextStep, paymentTrack } from "@/demo/admin/order-tracks";
 import { STATUS_LABEL } from "@/demo/engine/orders";
+import { isManualPayment } from "@/demo/engine/payments";
 import { formatDate, formatDateTime } from "@/lib/date";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
@@ -36,7 +37,7 @@ export function OrderDetail() {
   const pay = paymentTrack(order);
   const ful = fulfillmentTrack(order);
   const step = nextStep(order);
-  const manual = order.paymentMethod !== "CHECKOUT_PRO";
+  const manual = isManualPayment(order.paymentMethod);
   return (
     <div className="@container flex flex-col gap-6">
       <DetailHeader list={{ href: "/admin-demo/pedidos/", label: "Pedidos" }} title={order.code} eyebrow={`Pedido ficticio · ${formatDateTime(order.createdAt)}`}
@@ -60,7 +61,7 @@ export function OrderDetail() {
           <Panel title="Productos y personalización aprobada"><OrderItems lines={order.lines} /></Panel>
           <Panel title="Pago" action={manual && order.proof ? <Link href={paymentHref(order.code)} className="text-sm font-bold text-primary underline">Ver comprobante</Link> : undefined}>
             <Facts items={[
-              ["Medio", paymentLabel(order.paymentMethod)],
+              ["Medio", order.cardLabel ? `${paymentLabel(order.paymentMethod)} · ${order.cardLabel}` : paymentLabel(order.paymentMethod)],
               ["Estado", pay.label],
               ...(manual && order.proof ? [["Comprobante", <span key="p" className="inline-flex flex-wrap items-center gap-2">{order.proof.fileName}<Badge tone={PROOF_STATE[order.proof.status].tone}>{PROOF_STATE[order.proof.status].label}</Badge></span>] as [string, ReactNode]] : []),
               ...(order.proof?.rejectReason ? [["Motivo del rechazo", order.proof.rejectReason] as [string, ReactNode]] : []),

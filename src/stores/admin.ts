@@ -11,6 +11,7 @@ import { withPrizeCatalog } from "@/demo/admin/wheel-prizes";
 import type { AdminClaim } from "@/demo/admin/types";
 import { createWorkshopActions, type WorkshopActions } from "@/demo/admin/workshop-slice";
 import { createEmailActions, type EmailActions } from "@/demo/admin/emails-slice";
+import { withKnownMethods } from "@/demo/engine/payments";
 import { setDemoData, type DemoData } from "@/demo/engine/source";
 import { LEGACY_TEXT_ZONES } from "@/demo/fixtures/templates";
 import { ADMIN_STORE_VERSION, demoStorage, STORAGE_PREFIX } from "./storage";
@@ -67,6 +68,8 @@ export const useAdmin = create<AdminState>()(
         // La zona del comedero perro globo cambió con su ilustración (8.4.23): si nadie la editó, va la nueva.
         for (const [art, z] of Object.entries(LEGACY_TEXT_ZONES)) if (JSON.stringify(saved[art]) === JSON.stringify(z)) delete saved[art];
         data.textZones = { ...current.data.textZones, ...saved };
+        // La tarjeta como medio propio (8.4.22) se suma activa una sola vez a los ajustes guardados antes.
+        data.settings = withKnownMethods({ ...current.data.settings, ...data.settings }, current.data.settings.enabledMethods);
         return { ...current, ...p, data, workshop, emails: { ...current.emails, ...(p.emails ?? {}) } };
       },
       partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop, emails: s.emails }),

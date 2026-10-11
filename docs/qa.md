@@ -226,7 +226,8 @@ Lote 5: checkout (`tests/e2e/shop-polish-checkout.spec.ts`, `tests/unit/checkout
 - **Resumen**: estaba en un panel al costado (y en el celular, al final de todo). Ahora el checkout es una columna
   centrada: paso, botones y resumen. La cuenta sale del mismo engine que antes (sin cambios de precio).
 - **Tarjetas**: es el mismo medio de pago de siempre (Mercado Pago Checkout Pro, simulado), nombrado como lo busca el
-  cliente. No hay integración nueva ni se piden datos de tarjeta.
+  cliente. No hay integración nueva ni se piden datos de tarjeta. *(Reemplazado en 8.4.22: la tarjeta es un medio propio
+  con las tarjetas guardadas y Checkout Pro se llama "Mercado Pago"; ver `polish-8.4-status.md`.)*
 
 Lote 6: seguimiento, Mi cuenta y Club (`shop-polish-tracking.spec.ts`, `shop-polish-account.spec.ts`, `shop-polish-club.spec.ts`).
 

@@ -1,15 +1,17 @@
 "use client";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { cardLabel } from "@/demo/engine/profile";
+import type { PaymentMethod } from "@/demo/types";
 import { useDemoData } from "@/stores/admin";
 import { useCheckout } from "@/stores/checkout";
 import { CheckoutGift } from "./CheckoutGift";
 import { STEP_FORM, StepNav } from "./StepNav";
 
-const PAY_LABEL = { CHECKOUT_PRO: "Tarjeta de débito, crédito o prepaga, vía Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "QR (muestra)" };
+const PAY_LABEL: Record<PaymentMethod, string> = { CARD: "Tarjeta de crédito o débito (muestra)", CHECKOUT_PRO: "Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "QR (muestra)" };
 
 export function ConfirmStep({ onBack, onConfirm, onEdit, before }: { onBack: () => void; onConfirm: () => void; onEdit: (step: number) => void; before?: ReactNode }) {
-  const { contact, address, fulfillment, paymentMethod, acceptedTerms, patch } = useCheckout();
+  const { contact, address, fulfillment, paymentMethod, card, acceptedTerms, patch } = useCheckout();
   const [error, setError] = useState(false);
   // "Regalar y pagar ahora" desde el modal: confirma igual que el botón (con los términos aceptados).
   const payNow = () => {
@@ -20,7 +22,7 @@ export function ConfirmStep({ onBack, onConfirm, onEdit, before }: { onBack: () 
   const rows = [
     { step: 0, label: "Datos", value: `${contact.name} · ${contact.email} · ${contact.phone}` },
     { step: 1, label: "Entrega", value: `${zone?.name ?? "—"}${fulfillment !== "PICKUP" ? ` · ${address.street} ${address.number}, ${address.city} (${address.postalCode})` : ""}` },
-    { step: 2, label: "Pago", value: paymentMethod ? PAY_LABEL[paymentMethod] : "—" },
+    { step: 2, label: "Pago", value: paymentMethod ? `${PAY_LABEL[paymentMethod]}${paymentMethod === "CARD" && card ? ` · ${cardLabel(card)}` : ""}` : "—" },
   ];
   return (
     <>

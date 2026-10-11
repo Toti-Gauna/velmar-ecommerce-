@@ -8,6 +8,7 @@ import { StepIndicator } from "@/components/molecules/StepIndicator";
 import { promiseFor } from "@/demo/engine/delivery";
 import { giftsFromLines } from "@/demo/engine/gifts";
 import { missingForFreeShipping, totalsOf } from "@/demo/engine/pricing";
+import { cardLabel } from "@/demo/engine/profile";
 import { DEMO_TODAY } from "@/demo/fixtures/admin-orders";
 import { DEMO_ORDER_CODE, DEMO_TRACKING_TOKEN } from "@/demo/fixtures/commerce";
 import { useAccount } from "@/stores/account";
@@ -67,6 +68,8 @@ export function CheckoutView() {
       code: DEMO_ORDER_CODE, token: DEMO_TRACKING_TOKEN, createdAt: now.toISOString(), contact: checkout.contact,
       fulfillment: checkout.fulfillment!, paymentMethod: checkout.paymentMethod!, lines, quote: totalsOf(quote), asAccount: isAccount,
       ...(gifts.length ? { gifts: gifts.map((g) => g.code) } : {}),
+      // 8.4.22: de la tarjeta solo viajan la marca y los últimos 4.
+      ...(checkout.paymentMethod === "CARD" && checkout.card ? { card: cardLabel(checkout.card) } : {}),
     };
     checkout.placeOrder(order);
     useAdmin.getState().syncShopOrder(order); // aparece en el panel demo de este navegador

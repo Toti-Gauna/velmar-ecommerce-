@@ -13,12 +13,12 @@ const wasPaid = (o: AdminOrder) => isPaidOrLater(o.status) || o.log.some((l) => 
 export function paymentTrack(o: AdminOrder): Track {
   if (o.status === "PENDING_PAYMENT") {
     if (o.proof?.status === "REJECTED") return { label: "Comprobante rechazado", tone: "danger" };
-    return { label: o.paymentMethod === "CHECKOUT_PRO" ? "Esperando a Mercado Pago" : "Esperando comprobante", tone: "warning" };
+    return { label: o.paymentMethod === "CARD" ? "Esperando la aprobación de la tarjeta" : o.paymentMethod === "CHECKOUT_PRO" ? "Esperando a Mercado Pago" : "Esperando comprobante", tone: "warning" };
   }
   if (o.status === "PAYMENT_REVIEW") return { label: "Comprobante en revisión", tone: "warning" };
   if (o.status === "RETURNED") return { label: "Devuelto", tone: "neutral" };
   if (o.status === "CANCELLED") return wasPaid(o) ? { label: "Pagado y cancelado", tone: "neutral" } : { label: "Sin cobrar (cancelado)", tone: "neutral" };
-  return { label: o.paymentMethod === "CHECKOUT_PRO" ? "Pagado con Mercado Pago" : "Pagado · aprobado a mano", tone: "success" };
+  return { label: o.paymentMethod === "CARD" ? "Pagado con tarjeta" : o.paymentMethod === "CHECKOUT_PRO" ? "Pagado con Mercado Pago" : "Pagado · aprobado a mano", tone: "success" };
 }
 
 export function fulfillmentTrack(o: AdminOrder): Track {
@@ -39,7 +39,7 @@ export function fulfillmentTrack(o: AdminOrder): Track {
 /** Qué le toca hacer a Velmar con este pedido ahora (o null si no hay nada pendiente). */
 export function nextStep(o: AdminOrder): string | null {
   switch (o.status) {
-    case "PENDING_PAYMENT": return o.paymentMethod === "CHECKOUT_PRO" ? "Esperar la confirmación de Mercado Pago" : "Esperar el comprobante del comprador";
+    case "PENDING_PAYMENT": return o.paymentMethod === "CARD" ? "Esperar la aprobación de la tarjeta" : o.paymentMethod === "CHECKOUT_PRO" ? "Esperar la confirmación de Mercado Pago" : "Esperar el comprobante del comprador";
     case "PAYMENT_REVIEW": return "Revisar el comprobante y aprobarlo o rechazarlo";
     case "PAID": return "Pasarlo a producción";
     case "IN_PRODUCTION": return "Terminarlo y marcarlo como listo";

@@ -37,31 +37,33 @@ for (const width of [1180, 390]) {
     await page.getByRole("button", { name: "Continuar al pago" }).click();
     // Medio de pago: con transferencia aparece el descuento y baja el total; con tarjeta, no.
     const total = () => summary.locator("dd").last().textContent();
-    await page.getByText("Tarjetas de débito, crédito y prepagas", { exact: true }).click();
+    await page.getByText("Mercado Pago", { exact: true }).click();
     const withCard = await total();
     await expect(summary.getByText("Descuento transferencia/QR")).toHaveCount(0);
     await page.getByText("Transferencia bancaria").click();
     await expect(summary.getByText("Descuento transferencia/QR")).toBeVisible();
     expect(await total()).not.toBe(withCard);
-    await page.getByText("Tarjetas de débito, crédito y prepagas", { exact: true }).click();
+    await page.getByText("Mercado Pago", { exact: true }).click();
     await expect(summary.getByText("Descuento transferencia/QR")).toHaveCount(0);
     expect(await total()).toBe(withCard);
   });
 }
 
-test("8.2.10 tarjetas de débito, crédito y prepagas: se entiende cómo se pagaría y en la demo no se cobra", async ({ page }) => {
+test("8.2.10/8.4.22 tarjeta y Mercado Pago: se entiende cómo se pagaría y en la demo no se cobra", async ({ page }) => {
   await toCheckout(page);
   await page.getByRole("button", { name: "Continuar a la entrega" }).click();
   await page.getByText("Retiro en persona").click();
   await page.getByRole("button", { name: "Continuar al pago" }).click();
-  const card = page.locator("label", { hasText: "Tarjetas de débito, crédito y prepagas" });
-  await expect(card).toContainText("Pagá con tarjeta de débito, crédito o prepaga de forma segura. En esta demostración no se realiza ningún cobro real.");
-  await expect(card).toContainText("vía Mercado Pago");
+  // 8.4.22: la tarjeta es un medio propio (guardadas o nueva) y Mercado Pago queda con su nombre.
+  const card = page.locator("label", { hasText: "Tarjeta de crédito o débito" });
+  await expect(card).toContainText("Con una tarjeta guardada en tu cuenta o una nueva. En esta demostración no se realiza ningún cobro real.");
+  const mp = page.locator("label", { hasText: "Mercado Pago" }).filter({ hasText: "Checkout Pro" });
+  await expect(mp).toContainText("Pagá con tu cuenta de Mercado Pago");
   // Siguen transferencia y QR con aprobación manual, y el aviso de que nada cobra.
   await expect(page.getByText("Transferencia bancaria")).toBeVisible();
   await expect(page.getByText("QR", { exact: true })).toBeVisible();
   await expect(page.getByText(/ningún medio cobra de verdad/)).toBeVisible();
-  await card.click();
+  await mp.click();
   await page.getByRole("button", { name: "Revisar pedido" }).click();
-  await expect(page.getByText(/Tarjeta de débito, crédito o prepaga, vía Mercado Pago \(muestra\)/)).toBeVisible();
+  await expect(page.getByText("Mercado Pago (muestra)")).toBeVisible();
 });

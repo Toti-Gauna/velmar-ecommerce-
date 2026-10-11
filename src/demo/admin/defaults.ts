@@ -1,4 +1,5 @@
 import { quoteCart } from "../engine/pricing";
+import { isManualPayment } from "../engine/payments";
 import { defaultDemoData, type DemoData } from "../engine/source";
 import type { OrderStatus } from "../engine/orders";
 import { orderSeeds } from "../fixtures/admin-orders";
@@ -55,7 +56,7 @@ function plusHours(iso: string, h: number): string {
 
 /** Línea de tiempo plausible hasta el estado actual del pedido de muestra. */
 function seedLog(o: (typeof orderSeeds)[number]): StatusLogEntry[] {
-  const manual = o.paymentMethod !== "CHECKOUT_PRO";
+  const manual = isManualPayment(o.paymentMethod);
   const path = HAPPY_PATH.filter((s) => (s !== "PAYMENT_REVIEW" || manual) && (s !== "SHIPPED" || o.fulfillment !== "PICKUP"));
   const target = o.status === "IN_CLAIM" ? (o.prevStatus ?? "DELIVERED") : o.status === "CANCELLED" ? "PENDING_PAYMENT" : o.status;
   const steps = path.slice(0, path.indexOf(target) + 1);

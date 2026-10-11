@@ -11,6 +11,7 @@ import { useSessionDraft } from "../useSessionDraft";
 import { SETTINGS_SECTION } from "./SettingsHub";
 
 const METHODS: { value: PaymentMethod; label: string; hint: string }[] = [
+  { value: "CARD", label: "Tarjetas de crédito y débito", hint: "Con las tarjetas guardadas en la cuenta del cliente o una nueva. En producción las procesa Mercado Pago (tokenizadas): Velmar nunca ve el número. En la demo no se cobra nada." },
   { value: "CHECKOUT_PRO", label: "Mercado Pago (Checkout Pro)", hint: "En la demo es una simulación: no se cobra nada." },
   { value: "BANK_TRANSFER", label: "Transferencia", hint: "El comprador sube el comprobante y lo aprobás a mano (simulado)." },
   { value: "QR_MANUAL", label: "QR estático", hint: "Igual que la transferencia: aprobación manual simulada." },

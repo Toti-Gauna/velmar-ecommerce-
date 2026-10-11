@@ -103,9 +103,10 @@ Reglas simples y deterministas, sin tracking del usuario.
 - Catálogo basado en las líneas vistas en el Instagram de Velmar, **sin productos con licencia**. Precios orientativos.
 
 ## Pagos (decisión confirmada 03/10/2026)
-Checkout Pro para crédito/débito/dinero en cuenta (confirmación automática por webhook en producción);
+Checkout Pro para crédito/débito/dinero en cuenta (confirmación automática por webhook en producción); desde 8.4.22
+la demo suma "Tarjeta de crédito o débito" con las tarjetas guardadas del cliente (en producción, Mercado Pago tokenizado);
 transferencia y **QR estático** con comprobante y aprobación manual de Velmar. En la demo todo es pantalla de muestra:
-no se pide tarjeta, no se redirige a Mercado Pago, el QR no es escaneable, el CBU/alias son ficticios y nunca se
+la tarjeta es de prueba (se guardan solo marca, últimos 4 y vencimiento), no se redirige a Mercado Pago, el QR no es escaneable, el CBU/alias son ficticios y nunca se
 afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde

@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/molecules/EmptyState";
 import { SampleProof } from "@/components/molecules/SampleProof";
 import { paymentTrack } from "@/demo/admin/order-tracks";
 import { STATUS_LABEL } from "@/demo/engine/orders";
+import { isManualPayment } from "@/demo/engine/payments";
 import { formatDateTime } from "@/lib/date";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
@@ -39,9 +40,9 @@ export function PaymentDetail() {
         aside={<><p className="text-xs font-bold text-muted">Monto esperado</p><p className="text-3xl font-extrabold tabular-nums">{formatARS(order.total)}</p></>}
         actions={<Button variant="secondary" size="sm" className="self-start" onClick={() => setCollecting(true)}><Landmark size={16} aria-hidden="true" /> Configurar datos de cobro</Button>} />
       <CollectionDialog open={collecting} onClose={() => setCollecting(false)} />
-      {order.paymentMethod === "CHECKOUT_PRO" ? (
+      {!isManualPayment(order.paymentMethod) ? (
         <Panel title="Sin comprobante">
-          <p className="text-sm text-muted">Este pedido se cobra con Mercado Pago: no lleva comprobante. En producción se confirma por webhook verificado, nunca a mano.</p>
+          <p className="text-sm text-muted">{order.paymentMethod === "CARD" ? `Este pedido se paga con tarjeta${order.cardLabel ? ` (${order.cardLabel})` : ""}` : "Este pedido se cobra con Mercado Pago"}: no lleva comprobante. En producción se confirma por webhook verificado, nunca a mano.</p>
           <Link href={`/admin-demo/pedidos/detalle/?codigo=${order.code}`} className="mt-3 inline-block text-sm font-bold text-primary underline">Ver el pedido</Link>
         </Panel>
       ) : (

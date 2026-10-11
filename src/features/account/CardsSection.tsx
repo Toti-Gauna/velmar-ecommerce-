@@ -41,7 +41,7 @@ export function CardsSection({ email }: { email: string }) {
 const EMPTY: CardInput = { number: "", expiry: "", holder: "", cvv: "" };
 
 /** Alta de una tarjeta de demostración. Los campos no usan el autocompletado de tarjetas del navegador a propósito. */
-export function CardForm({ onSave, onClose }: { onSave: (c: SavedCard) => void; onClose: () => void }) {
+export function CardForm({ onSave, onClose, saveLabel = "Guardar tarjeta" }: { onSave: (c: SavedCard) => void; onClose: () => void; saveLabel?: string }) {
   const [card, setCard] = useState<CardInput>(EMPTY);
   const [tried, setTried] = useState(false);
   const errors = tried ? checkCard(card, today()) : {};
@@ -61,7 +61,7 @@ export function CardForm({ onSave, onClose }: { onSave: (c: SavedCard) => void; 
     </Field>
   );
   return (
-    <AccountFormDialog open title="Nueva tarjeta" intro={CARD_NOTE} saveLabel="Guardar tarjeta" onSave={save} onClose={onClose}>
+    <AccountFormDialog open title="Nueva tarjeta" intro={CARD_NOTE} saveLabel={saveLabel} onSave={save} onClose={onClose}>
       <Button variant="secondary" size="sm" className="self-start" onClick={() => { setCard(TEST_CARD); setTried(false); }}><Wand2 size={15} aria-hidden="true" /> Usar tarjeta de prueba</Button>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">{field("number", "Número de la tarjeta", { inputMode: "numeric", placeholder: "0000 0000 0000 0000", "data-autofocus": true, onChange: (e) => set({ number: formatCardNumber(e.target.value) }) })}</div>

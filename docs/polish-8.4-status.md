@@ -32,7 +32,7 @@ falta el equipo real) · **pendiente**.
 | 8.4.19 Generador de emails con pasos | 8 | `emails/EmailEditor`, `EmailStepper`, `EmailSteps`, `EmailEditorParts`, `EmailLivePreview`, `demo/admin/emails/checks` | hecho (emulado) | `polish-84-emails.spec.ts` (1440: cuatro pasos con la vista previa al costado, bandeja del celular, avisos que llevan a su paso, guardar y volver; 820 y 390: pasos en una fila, vista previa en modal y entera al revisar), `admin-emails.spec.ts`, `admin-polish-marketing.spec.ts`, `emails-84.test.ts` | — |
 | 8.4.20 Bandeja de salida arriba y en modal | 1 y 8 | `emails/OutboxDialog` (antes `OutboxSheet`), `emails/OutboxCard`, `EmailsAdmin` | hecho (emulado) | `polish-84-modals.spec.ts`, `polish-84-emails.spec.ts` (la tarjeta va arriba de las plantillas, sus emails abren el modal ahí mismo, "Ver toda la bandeja"; 390 sin desborde) | — |
 | 8.4.21 Editor de Temáticas en modal | 1 | `themes/ThemeEditor`, `detail/EditDialog` (`saveLabel`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado, cerrar con cambios pide confirmar), `themes.spec.ts` | — |
-| 8.4.22 Tarjetas: medio de pago y Mi cuenta | 4 y 9 | `account/CardsSection` (Lote 4) | parcial | `polish-84-account.spec.ts` (validación, tarjeta de prueba; en el almacenamiento solo marca, últimos 4 y vencimiento), `account-84.test.ts` | Medio de pago en Ajustes y en el checkout (Lote 9) |
+| 8.4.22 Tarjetas: medio de pago y Mi cuenta | 4 y 9 | `account/CardsSection` (Lote 4); `engine/payments`, `checkout/CardChoice`, `PaymentStep`, `ConfirmStep`, `order/PaymentInstructions`, `settings/PaymentSettings`, pedidos y pagos del panel (Lote 9) | hecho (emulado) | `polish-84-account.spec.ts`, `polish-84-payments.spec.ts` (con cuenta: agregar en el checkout, queda en Mis tarjetas y elegida en la próxima compra; sin cuenta: solo esa compra; el panel la muestra y simula la aprobación; Ajustes la apaga; en el almacenamiento nunca el número completo, el código ni el titular), `payments-84.test.ts`, `account-84.test.ts` | Decidir con Velmar si se cobra con tarjeta propia (Mercado Pago tokenizado) |
 | 8.4.23 Ilustración del comedero perro globo | 7 | `illustrations/pets` (`BowlDog`, `Balloon`), `fixtures/templates` (zona del texto en el plato), `stores/admin` (zona vieja sin pisar las editadas) | hecho (emulado) | `polish-84-costs.spec.ts`, `polish-84-product.spec.ts` (texto en relieve sobre el plato), capturas a 390 y 1440 | Comparar con la foto real del producto |
 | 8.4.24 Arrepentimiento en tablet y escritorio | 7 | `(shop)/arrepentimiento`, `legal/WithdrawalForm` | hecho (emulado) | `polish-84-costs.spec.ts` (1280 y 820: formulario y "Cómo funciona" lado a lado; 375: uno debajo del otro; se envía y da el código) | — |
 | 8.4.25 Pantalla de carga del link de regalo | 2 | `app/motion.css` (pausa de `stage-open`) | hecho (emulado) | `polish-84-splash.spec.ts` (los pétalos siguen animados con el escenario abierto), captura del Día de la Madre | Confirmar en el iPad real |
@@ -173,3 +173,15 @@ falta el equipo real) · **pendiente**.
   igual (8.3.24). Ningún aviso bloquea el guardado.
 - **8.4.20** La bandeja de salida va arriba de todo en Emails automáticos, como tarjeta: cuántos emails simulados hay y
   los tres últimos, que se abren en el modal ahí mismo; "Ver toda la bandeja" lleva a la página con buscador y filtro.
+
+## Lote 9 · registro
+
+- **8.4.22** (decisión de Ignacio: la tarjeta es un medio de pago propio) Nuevo medio "Tarjeta de crédito o débito"
+  (`CARD`), primero en el checkout. Con cuenta, muestra las tarjetas de Mis tarjetas (la primera queda elegida) y
+  "Usar otra tarjeta" abre el mismo formulario de Mi cuenta, que la guarda en Mis tarjetas; sin cuenta, la tarjeta se
+  usa solo en esa compra. Del pedido viaja solo "Visa terminada en 4242": nunca el número completo, el código ni el
+  titular. El pedido queda pendiente y el panel simula la aprobación (en producción la procesa Mercado Pago, tokenizada,
+  y la confirma por webhook); no pasa por Pagos manuales. El medio que antes se llamaba "Tarjetas de débito, crédito y
+  prepagas" (Checkout Pro) pasa a llamarse **Mercado Pago**, para no tener dos opciones de tarjeta.
+- **Ajustes → Medios de pago** suma "Tarjetas de crédito y débito". Migración sin pérdida: a los ajustes guardados antes
+  se les suma activa una sola vez (si el dueño la apaga, queda apagada); un medio desconocido se descarta.

@@ -2,6 +2,7 @@
 import { Check, X } from "lucide-react";
 import { ConfirmButton } from "@/components/molecules/ConfirmButton";
 import type { AdminOrder } from "@/demo/admin/types";
+import { isManualPayment } from "@/demo/engine/payments";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { useDemoSave } from "../useDemoSave";
@@ -13,7 +14,7 @@ import { useDemoSave } from "../useDemoSave";
 export function ProofActions({ order }: { order: AdminOrder }) {
   const { approveProof, rejectProof, receiveProof } = useAdmin();
   const save = useDemoSave();
-  if (order.paymentMethod === "CHECKOUT_PRO") return null;
+  if (!isManualPayment(order.paymentMethod)) return null;
   if (order.status === "PENDING_PAYMENT") {
     return (
       <ConfirmButton variant="secondary" size="sm" className="self-start" title="Simular comprobante recibido" confirmLabel="Simular"

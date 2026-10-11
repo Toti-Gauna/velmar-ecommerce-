@@ -3,7 +3,8 @@ import type { CollarSpec } from "./fixtures/collar";
 /** Tipos del catálogo de demo. Espejan el modelo de la especificación técnica (sección 4). */
 
 export type PersonalizationKind = "TEXT" | "PHOTO" | "PHOTO_REFERENCE";
-export type PaymentMethod = "CHECKOUT_PRO" | "BANK_TRANSFER" | "QR_MANUAL";
+/** CARD: tarjeta guardada o nueva (8.4.22); en producción la procesa Mercado Pago, tokenizada. */
+export type PaymentMethod = "CARD" | "CHECKOUT_PRO" | "BANK_TRANSFER" | "QR_MANUAL";
 export type FulfillmentType = "PICKUP" | "LOCAL_DELIVERY" | "SHIPPING";
 export type ArtKey =
   | "bowl-dog" | "bowl-wood" | "collar" | "nfc-plate" | "nfc-social" | "lamp-photo"
