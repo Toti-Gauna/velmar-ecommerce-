@@ -10,7 +10,7 @@
     (se recuerda en `velmar-ui:admin-sidebar`). Lleva la marca, secciones agrupadas en Ventas, Taller, Catálogo, Marketing y Ajustes,
     contadores de pedidos en marcha, comprobantes por revisar, reclamos abiertos, variantes para reponer, pedidos atrasados e insumos para reponer, y la "cuenta" demo con acceso a la tienda)
     + barra superior con la señal "Panel de demostración · datos ficticios", migas (Panel › área › sección), **buscador global ⌘K / Ctrl+K**
-    (secciones, acciones, pedidos, productos y clientes), "Ver tienda" y "Reiniciar demo".
+    (secciones, acciones, pedidos, productos y clientes) y "Ver tienda". Sin "Reiniciar demo" desde 8.4.13.
   - Tablets y celulares (táctiles, sin hover): la misma barra superior con **menú hamburguesa**, y **pestañas inferiores**
     (Inicio, Pedidos, Pagos, Productos, Más).
   - Sin guía de bienvenida (Polish 8.3.11): el panel abre directo. Quedan la señal de demo y las ayudas de cada pantalla.
@@ -34,7 +34,7 @@
   (`src/demo/fixtures/admin-*.ts`). Cada cambio muestra "Cambio guardado solo en esta demo" y deja una línea de auditoría de muestra.
 - La tienda y el panel comparten los datos editables (`src/demo/engine/source.ts`): catálogo, stock, plantillas,
   zonas de texto, cupones, misiones, zonas de envío, ajustes y contenido. Un cambio en el panel se ve en la tienda del mismo navegador.
-- "Reiniciar demo" (banner del panel o de la tienda) vuelve tienda y panel a los fixtures.
+- Sin "Reiniciar demo" ni aviso de demo en la tienda (8.4.13, para mostrársela a clientes): una ventana privada vuelve a los fixtures. El panel conserva su señal "Panel de demostración · datos ficticios" y el checkout sigue avisando que no se cobra nada.
 - Acceso discreto desde la tienda: link "Ver panel demo" en el pie. No aparece en la navegación principal.
 
 ## Implementado (demostrable)

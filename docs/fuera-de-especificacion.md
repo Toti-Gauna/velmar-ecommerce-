@@ -41,6 +41,10 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Pantalla de carga de 5 s y confeti de compra | previa | Nada (navegador) | S | |
 | Temáticas (16 fechas con paleta, fondo, pantalla de carga, cinta, cupón y ofertas) | previa, 5 | Tabla de temporadas con fechas y cupón; vigencia validada en el servidor | M | |
 | Personajes Pancho y Lola, transiciones entre páginas y microinteracciones | 5 | Nada (navegador) | S | |
+| Mis direcciones con alta y edición en un modal, principal, y elección con un toque en el paso Entrega (Polish 8.4.6) | Polish 8.4 | Direcciones por cuenta en la base, validadas en el servidor | S | |
+| Mis mascotas cargadas por el cliente, con cumpleaños, en la misma ficha que ve el dueño (Polish 8.4.14) | Polish 8.4 | Mascotas por cuenta en la base; el email de cumpleaños lo arma el servidor | S | |
+| Mis tarjetas y "Tarjeta de crédito o débito" como medio de pago con tarjetas guardadas (Polish 8.4.22). **La spec cobra con Mercado Pago Checkout Pro**: en la demo se guarda solo marca, últimos 4 y vencimiento | Polish 8.4 | Tarjetas guardadas y cobro con el formulario seguro de Mercado Pago (tokenización); Velmar nunca recibe ni guarda el número ni el código | M | A decidir con Velmar |
+| **Cambio:** sin el aviso "Demo de venta" arriba de la tienda ni "Reiniciar demo" (Polish 8.4.13, pedido de Ignacio para mostrársela a clientes). Siguen la señal del panel y los avisos del checkout de que no se cobra nada | Polish 8.4 | Nada (es la demo) | S | |
 
 ## Panel
 

@@ -30,7 +30,7 @@ export function WheelTeaser() {
           <Gift size={18} aria-hidden="true" /> {wheel.active ? "Girar la ruleta" : "Ruleta pausada"}
         </Button>
       )}
-      <p className="max-w-sm text-center text-xs text-muted">Demo: un giro por navegador (se reinicia con “Reiniciar demo”). En producción, un giro por cuenta y sorteo en el servidor.</p>
+      <p className="max-w-sm text-center text-xs text-muted">Demo: un giro por navegador. En producción, un giro por cuenta y sorteo en el servidor.</p>
     </div>
   );
 }

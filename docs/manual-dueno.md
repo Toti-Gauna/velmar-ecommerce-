@@ -4,8 +4,8 @@ Pedido de Ignacio, Fase 7 (VEL-72), fuera de la especificación. Está escrito p
 técnicas. Cada tarea dice **dónde tocar** y **qué pasa después**.
 
 > **Esto es la demo.** Los datos son de muestra y lo que cambies queda **solo en tu navegador**: nadie más lo ve y no se
-> manda ningún email ni se cobra nada. Para volver todo atrás tocá **"Reiniciar demo"** (arriba del panel o al pie de la
-> tienda). En la tienda real, lo que cambies lo ven todos tus clientes.
+> manda ningún email ni se cobra nada. Para volver todo a los datos de muestra, abrí la demo en una ventana privada o borrá
+> los datos del sitio en el navegador. En la tienda real, lo que cambies lo ven todos tus clientes.
 
 ## Cómo entrar
 - La tienda es la página principal. El panel está en **"Ver panel demo"**, al pie de la tienda, o en `/admin-demo/`.
@@ -138,7 +138,7 @@ prueba** antes de guardar. En la demo los emails quedan en la **bandeja de salid
 | Pasa esto | Probá |
 |---|---|
 | No veo un cambio que hice | Recargá la página. Los cambios están en este navegador: en otro equipo no aparecen |
-| Todo se ve raro o vacío | **Reiniciar demo** |
+| Todo se ve raro o vacío | Abrí la demo en una ventana privada (vuelve a los datos de muestra) |
 | No suena nada | Tocá la pantalla una vez; revisá el silencio del teléfono y el botón de sonido de arriba |
 | El video no se graba | Quedate en la pestaña hasta que termine; la imagen PNG siempre se puede bajar |
 | Me equivoqué con un Excel | **Deshacer** en la pantalla de importación |

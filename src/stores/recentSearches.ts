@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { demoStorage, STORAGE_PREFIX } from "./storage";
 
-/** Búsquedas recientes de este navegador (máx. 6). Se borran con "Reiniciar demo". */
+/** Búsquedas recientes de este navegador (máx. 6). */
 interface RecentState {
   terms: string[];
   remember: (term: string) => void;

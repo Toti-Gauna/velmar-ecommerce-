@@ -8,7 +8,6 @@ import { useFavorites } from "./favorites";
 import { useGifts } from "./gifts";
 import { useProfile } from "./profile";
 import { useTablePrefs } from "./tablePrefs";
-import { clearDemoStorage } from "./storage";
 import { useThemePreview } from "./themePreview";
 
 let hydrated = false;
@@ -34,16 +33,4 @@ export function useHydrated(): boolean {
     () => hydrated,
     () => false,
   );
-}
-
-/** Reinicia tienda y panel demo a los fixtures. */
-export function resetDemo(): void {
-  useCart.getState().clear();
-  useCheckout.getState().reset();
-  useAccount.setState({ user: null, usedRewards: [], sort: "relevance", wheelPrize: null });
-  useAdmin.getState().resetAdmin();
-  useFavorites.getState().clear();
-  useGifts.getState().clear();
-  useThemePreview.getState().setPreview(null);
-  clearDemoStorage();
 }

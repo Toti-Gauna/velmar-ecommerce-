@@ -26,5 +26,5 @@ export const privacy: LegalSection[] = [
   { title: "Qué datos pedimos", paragraphs: ["Nombre, email, teléfono y dirección de entrega para gestionar tu pedido. Las fotos de personalización y los comprobantes se guardan de forma privada y solo los ve Velmar."] },
   { title: "Para qué los usamos", paragraphs: ["Para fabricar, cobrar, entregar y avisarte el estado del pedido. No vendemos tus datos. Solo te enviamos promociones si lo aceptás."] },
   { title: "Tus derechos", paragraphs: ["Podés pedir acceso, rectificación o supresión de tus datos escribiéndonos. La AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA, en su carácter de Órgano de Control de la Ley N° 25.326, tiene la atribución de atender las denuncias y reclamos que interpongan quienes resulten afectados en sus derechos por incumplimiento de las normas vigentes en materia de protección de datos personales."] },
-  { title: "En esta demo", paragraphs: ["La demo no envía datos a ningún servidor: todo queda en el almacenamiento local de tu navegador y se borra con “Reiniciar demo”. Las fotos se procesan solo en tu dispositivo."] },
+  { title: "En esta demo", paragraphs: ["La demo no envía datos a ningún servidor: todo queda en el almacenamiento local de tu navegador y se borra al borrar los datos del sitio. Las fotos se procesan solo en tu dispositivo."] },
 ];

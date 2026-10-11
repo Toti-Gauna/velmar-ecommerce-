@@ -22,8 +22,8 @@ falta el equipo real) · **pendiente**.
 | 8.4.9 Regalo que no se reabre solo | 2 | `gifts/GiftExperience`, `AccountGifts` (`&desde=cuenta`) | hecho | `polish-84-splash.spec.ts`, `gifts.spec.ts` | — |
 | 8.4.10 Modal de regalo vacío en iPad | 1 | `gifts/GiftModal`, `GiftPreview`, `motion/Sheet` | hecho (emulado) | `polish-84-modals.spec.ts` (820×1180, 1180×820, 375×812: campos y botones a la vista, sin hijos `flex-1`) | Confirmar en el iPad real (Safari) |
 | 8.4.11 Scroll de fondo con modal abierto | 1 | `lib/scrollLock`, `motion/Sheet`, `motion/ImmersiveStage`, `molecules/ConfirmButton`, `globals.css` | hecho (emulado) | `polish-84-modals.spec.ts` (toques en el velo y el título se cancelan; el cuerpo del modal se desplaza; al cerrar vuelve) | Confirmar en iPhone y iPad reales |
-| 8.4.12 Íconos del encabezado agrupados | 5 | | pendiente | | |
-| 8.4.13 Sin aviso de demo ni "Reiniciar demo" | 5 | | pendiente | | |
+| 8.4.12 Íconos del encabezado agrupados | 5 | `organisms/Header` | hecho (emulado) | `polish-84-header.spec.ts` (1440: cápsula de preferencias, separador y acciones; 390 y 320: sin desborde) | — |
+| 8.4.13 Sin aviso de demo ni "Reiniciar demo" | 5 | `(shop)/layout` (sin `DemoBanner`), `Footer`, `AdminTopbar`, `stores/hydration` (sin `resetDemo`) | hecho | `polish-84-header.spec.ts`, `admin-flows.spec.ts`, `purchase-flow.spec.ts` | — |
 | 8.4.14 Cumpleaños de mascotas del cliente | 4 | `account/PetsSection`, `admin/data-slice` (`syncShopAccount`), `molecules/BirthdayPicker` | hecho (emulado) | `polish-84-account.spec.ts` (la mascota aparece en la ficha del cliente en el panel) | — |
 | 8.4.15 Transferir pedidos al cerrar un día | 6 | | pendiente | | |
 | 8.4.16 Entrega comprometida en modal | 1 | `calendar/ScheduleDialog` (antes `ScheduleSheet`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado a 1440), `admin-polish-workshop.spec.ts`, `admin-workshop.spec.ts` | — |
@@ -118,3 +118,14 @@ falta el equipo real) · **pendiente**.
   código, y "Usar tarjeta de prueba". Se guarda solo marca, últimos 4 y vencimiento; el número completo, el código y el
   titular no salen del formulario, y al cargar datos guardados se descarta cualquier otro campo. Los campos no usan el
   autocompletado de tarjetas del navegador, para que nadie cargue una real por costumbre.
+
+## Lote 5 · registro
+
+- **8.4.12** A la derecha del encabezado: una cápsula con las preferencias (sonido y modo oscuro), un separador y las
+  acciones de la tienda (buscar, favoritos, cuenta y carrito, este último con su fondo de color). En el celular quedan
+  el sonido aparte y buscar y carrito juntos; el modo oscuro sigue en el menú. Probado a 1440, 390 y 320 px.
+- **8.4.13** (opción B, decisión de Ignacio) Se quitaron el aviso "Demo de venta" de arriba de la tienda y "Reiniciar
+  demo" del panel, del aviso y del pie. Se mantienen la señal del panel ("Panel de demostración · datos ficticios",
+  porque el panel no tiene login) y los avisos del checkout de que no se cobra nada. Para volver a los datos de muestra:
+  ventana privada o borrar los datos del sitio. Esto deja sin efecto la regla "el aviso de demo ficticia permanece"
+  para la tienda (registrado en `fuera-de-especificacion.md`).

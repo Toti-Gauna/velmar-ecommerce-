@@ -462,7 +462,7 @@ día `admin-polish-details` y `cross-device`).
 | Aprobar comprobante pide confirmación y deja auditoría; rechazar exige motivo; nada dice "pago acreditado" | ✅ |
 | Comprobante subido en la tienda → "Comprobante en revisión" en el panel, nunca "Pagado" | ✅ |
 | Cupón creado en el panel funciona en el carrito; misión creada aparece en la cuenta demo | ✅ |
-| Reiniciar demo vuelve a los fixtures | ✅ |
+| Reiniciar demo vuelve a los fixtures | retirado en 8.4.13 (pedido de Ignacio) |
 | Teclado: diálogo de confirmación abre con Enter, cierra con Escape, se opera con Tab | ✅ |
 | Movimiento reducido en el panel | ✅ |
 | Transiciones de pedido válidas/ inválidas (spec 5.2) y acciones del store | ✅ unit |
