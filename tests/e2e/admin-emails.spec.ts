@@ -87,8 +87,8 @@ test.describe("editor en escritorio", () => {
   });
 });
 
-test("cumpleaños de mascota: el email sale desde los recordatorios de clientes", async ({ page }) => {
-  await page.goto("admin-demo/usuarios/");
+test("cumpleaños de mascota: el email sale desde los recordatorios de la ficha del cliente", async ({ page }) => {
+  await page.goto("admin-demo/usuarios/ficha/?email=diego.a@ejemplo.com");
   const send = page.getByRole("button", { name: /Simular el email del día: Cumple de Ñoqui/ });
   await send.click();
   await expect(toast(page, "Email de cumpleaños en la bandeja de salida")).toBeVisible();

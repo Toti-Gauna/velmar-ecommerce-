@@ -1,9 +1,10 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { Sort, TableState, TableView } from "@/components/organisms/data-table/types";
 import type { FilterValues } from "@/demo/admin/table";
 import { useTablePrefs } from "@/stores/tablePrefs";
+import { rememberList } from "../listReturn";
 
 interface Defaults {
   sort?: Sort | null;
@@ -28,7 +29,10 @@ function read(p: URLSearchParams, d: Defaults): UrlState {
  */
 export function useTableState(id: string, defaults: Defaults = {}): TableState {
   const params = useSearchParams();
+  const pathname = usePathname();
   const current = params.toString();
+  // La ficha que se abra desde esta lista vuelve con estos filtros y esta página.
+  useEffect(() => { rememberList(pathname, current); }, [pathname, current]);
   const [s, setS] = useState(() => read(params, defaults));
   const [selected, setSelected] = useState<Set<string>>(new Set());
   // Si la URL cambia desde afuera (un enlace a esta misma pantalla), se vuelve a leer; lo que escribió la tabla, no.

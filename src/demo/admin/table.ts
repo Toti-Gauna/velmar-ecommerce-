@@ -1,4 +1,5 @@
 import { normalize } from "../engine/search";
+import type { Help } from "./help";
 
 /** Reglas puras de las tablas del panel: orden, búsqueda y paginado. Sin React. */
 export type SortDir = "asc" | "desc";
@@ -77,6 +78,8 @@ export interface FilterSpec<T> {
   /** Opciones del select, sin la de "todas" (la agrega la tabla con `allLabel`). */
   options?: { value: string; label: string }[];
   allLabel?: string;
+  /** Qué significa cada opción (botón "i" al lado del nombre del filtro, 8.3.10). */
+  help?: Help;
   test: (row: T, value: string) => boolean;
 }
 

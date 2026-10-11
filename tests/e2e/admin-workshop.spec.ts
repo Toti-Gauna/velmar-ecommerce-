@@ -79,14 +79,17 @@ test("costos: la receta calcula el margen y el precio sugerido llega a la tienda
   const sheet = page.getByRole("dialog", { name: "Costo de Vela caniche" });
   await expect(sheet.getByText("52%")).toBeVisible();
   await sheet.getByRole("button", { name: /Usar precio sugerido/ }).click();
+  await expect(sheet.getByText(/Al guardar, el precio pasa a desde \$\s?11\.500/)).toBeVisible();
+  await sheet.getByRole("button", { name: "Guardar" }).click();
   await expect(toast(page, /desde \$\s?11\.500/)).toBeVisible();
   await page.goto("p/vela-caniche/");
   await expect(page.getByText(/\$\s?11\.500/).first()).toBeVisible();
 });
 
 test("ficha de cliente: mascota con cumpleaños genera un recordatorio y se guardan notas", async ({ page }) => {
-  await page.goto("admin-demo/usuarios/");
-  await expect(page.getByRole("region", { name: /Para escribirles/ }).getByText("Cumple de Ñoqui")).toBeVisible();
+  // 8.3.9: ya no hay bloque "Para escribirles"; queda el filtro "Para escribir" (el inicio enlaza a él).
+  await page.goto("admin-demo/usuarios/?escribir=7");
+  await expect(page.getByRole("region", { name: "Clientes" }).getByText("Diego Álvarez").first()).toBeVisible();
   await page.goto("admin-demo/usuarios/ficha/?email=vale.s@ejemplo.com");
   await expect(page.getByRole("heading", { level: 1, name: /Valentina Sosa/ })).toBeVisible();
   await page.getByLabel("Nombre").fill("Michi");

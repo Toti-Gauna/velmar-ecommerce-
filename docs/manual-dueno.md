@@ -26,12 +26,15 @@ técnicas. Cada tarea dice **dónde tocar** y **qué pasa después**.
 ## Quiero…
 
 ### …cobrar un pedido por transferencia
-**Pagos manuales** → abrí el comprobante → **Aprobar** (te pide confirmar) o **Rechazar** (tenés que escribir el motivo).
+**Pagos manuales** → tocá el pedido para ver el comprobante grande → **Aprobar** (te pide confirmar) o **Rechazar**
+(tenés que escribir el motivo). **"Configurar datos de cobro"** cambia el alias, el CBU y el titular que ve el comprador
+(son los mismos de Ajustes).
 Un comprobante recién subido figura "en revisión", nunca "pagado". En la tienda real, aprobar sin haber visto la plata en
 tu cuenta es tu responsabilidad.
 
 ### …avanzar un pedido
-**Pedidos** → tocá el pedido → botones de estado. Solo aparecen los pasos que corresponden. Para varios a la vez, tildá
+**Pedidos** → tocá el pedido. Arriba ves el estado del pago y el de producción por separado, y la **próxima acción**
+con sus botones. Solo aparecen los pasos que corresponden; **Volver** te deja en la lista con los mismos filtros. Para varios a la vez, tildá
 los pedidos y usá la acción de arriba. Cada cambio avisa al cliente con el email de ese momento (si está activo).
 
 ### …saber cuándo puedo entregar
@@ -95,8 +98,9 @@ código, en el navegador donde se compró.
 monto. Los datos de pago de la demo son ficticios.
 
 ### …escribirle a un cliente
-**Clientes** → su ficha: compras, mascotas con cumpleaños, notas y **recordatorios** con el mensaje listo para copiar
-(cumpleaños de la mascota, recompra de velas y aromas).
+**Clientes** → tocá el cliente: compras, mascotas con cumpleaños, Club, notas y **recordatorios** con el mensaje listo
+para copiar (cumpleaños de la mascota, recompra de velas y aromas). Para ver a quién escribirle esta semana, usá el
+filtro **"Para escribir"**. El botón **"i"** al lado de "Segmento" explica qué es VIP, recurrente, nuevo y sin compras.
 
 ### …manejar los emails automáticos
 **Emails automáticos**: uno por momento del pedido (compra, diseño recibido, pago aprobado, en producción, listo,

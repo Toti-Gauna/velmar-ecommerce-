@@ -4,6 +4,7 @@ import { Badge } from "@/components/atoms/Badge";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { DataTable, toSheet } from "@/components/organisms/data-table/DataTable";
 import type { Column, RowCardProps } from "@/components/organisms/data-table/types";
+import { marginHelp } from "@/demo/admin/help";
 import type { FilterSpec } from "@/demo/admin/table";
 import { costRows, MARGIN_LABEL, type CostRow, type MarginState } from "@/demo/admin/workshop/costs";
 import { formatARS } from "@/lib/money";
@@ -34,7 +35,7 @@ export function CostsTable() {
   const save = useDemoSave();
   const onExport = useExport("costos");
   const filters: FilterSpec<CostRow>[] = [
-    { id: "margen", label: "Margen", options: [{ value: "revisar", label: "Margen bajo o pérdida" }, { value: "ok", label: "Margen sano" }, { value: "sin-costo", label: "Sin costo cargado" }],
+    { id: "margen", label: "Margen", help: marginHelp(settings.targetMarginPct), options: [{ value: "revisar", label: "Margen bajo o pérdida" }, { value: "ok", label: "Margen sano" }, { value: "sin-costo", label: "Sin costo cargado" }],
       test: (r, v) => (v === "revisar" ? toReview(r) : v === "ok" ? r.state === "ok" : r.state === "missing") },
     { id: "categoria", label: "Categoría", allLabel: "Todas", options: [...categories].sort((a, b) => a.sortOrder - b.sortOrder).map((c) => ({ value: c.slug, label: c.name })), test: (r, v) => r.categorySlug === v },
   ];
@@ -81,7 +82,7 @@ export function CostsTable() {
       <DataTable caption="Costo y margen por producto" noun="productos" rows={all} columns={columns} state={state} {...table}
         rowKey={(r) => r.slug} rowLabel={(r) => `Seleccionar ${r.name}`} onRowOpen={(r) => setOpen(r.slug)} onExport={onExport} onExcel={() => state.setView("excel")} renderCard={Card} rowTone={(r) => (r.state === "loss" ? "danger" : r.state === "low" ? "warning" : undefined)}
         empty={<EmptyState title="Nada para mostrar">No hay productos en este filtro. Tocá “Reiniciar” para ver todos.</EmptyState>} />
-      <RecipeSheet product={products.find((p) => p.slug === open) ?? null} onClose={() => setOpen(null)} />
+      <RecipeSheet key={open ?? "cerrado"} product={products.find((p) => p.slug === open) ?? null} onClose={() => setOpen(null)} />
     </>
   );
 }

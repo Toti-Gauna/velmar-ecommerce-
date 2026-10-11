@@ -5,6 +5,7 @@ import { StatusBadge } from "@/components/molecules/StatusBadge";
 import { DataTable, toSheet } from "@/components/organisms/data-table/DataTable";
 import type { RowCardProps } from "@/components/organisms/data-table/types";
 import { BULK_TARGETS, inTab, ORDER_TABS, tabForStatus, type OrderTabId } from "@/demo/admin/order-groups";
+import { STAGE_HELP } from "@/demo/admin/help";
 import type { FilterSpec } from "@/demo/admin/table";
 import type { AdminOrder } from "@/demo/admin/types";
 import { canTransition, STATUS_LABEL } from "@/demo/engine/orders";
@@ -41,7 +42,7 @@ const PAYMENTS = ["BANK_TRANSFER", "QR_MANUAL", "CHECKOUT_PRO"] as const;
 const FULFILLMENTS = ["PICKUP", "LOCAL_DELIVERY", "SHIPPING"] as const;
 /** Etapa (los estados agrupados por lo que hay que hacer), fechas, medio de pago y entrega. */
 const FILTERS: FilterSpec<AdminOrder>[] = [
-  { id: "etapa", label: "Etapa", allLabel: "Todas", options: ORDER_TABS.filter((t) => t.id !== "all").map((t) => ({ value: t.id, label: t.label })), test: (o, v) => inTab(o, v as OrderTabId) },
+  { id: "etapa", label: "Etapa", allLabel: "Todas", help: STAGE_HELP, options: ORDER_TABS.filter((t) => t.id !== "all").map((t) => ({ value: t.id, label: t.label })), test: (o, v) => inTab(o, v as OrderTabId) },
   { id: "desde", label: "Desde", kind: "date", test: (o, v) => toDayKey(o.createdAt) >= v },
   { id: "hasta", label: "Hasta", kind: "date", test: (o, v) => toDayKey(o.createdAt) <= v },
   { id: "pago", label: "Medio de pago", options: PAYMENTS.map((m) => ({ value: m, label: paymentLabel(m) })), test: (o, v) => o.paymentMethod === v },

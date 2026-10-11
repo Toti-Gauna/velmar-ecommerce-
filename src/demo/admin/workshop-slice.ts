@@ -11,7 +11,7 @@ export interface WorkshopActions {
   addClosure: (closure: Closure) => void;
   removeClosure: (date: string) => void;
   saveMaterial: (material: Material) => void;
-  createMaterial: (name: string) => string;
+  createMaterial: (name: string, extra?: Partial<Omit<Material, "id" | "name">>) => string;
   adjustMaterials: (ids: string[], op: MaterialOp, label: string) => void;
   /** Guarda varios insumos de una vez (vista Excel): una sola línea de auditoría. */
   updateMaterials: (materials: Material[], action: string) => void;
@@ -42,9 +42,9 @@ export function createWorkshopActions(set: Set): WorkshopActions {
     })),
     removeClosure: (date) => edit("Día cerrado quitado", date, (w) => ({ settings: { ...w.settings, closures: w.settings.closures.filter((c) => c.date !== date) } })),
     saveMaterial: (m) => edit("Insumo guardado", m.name, (w) => ({ materials: w.materials.some((x) => x.id === m.id) ? w.materials.map((x) => (x.id === m.id ? m : x)) : [...w.materials, m] })),
-    createMaterial: (name) => {
+    createMaterial: (name, extra = {}) => {
       const id = `${slugify(name) || "insumo"}-${Date.now().toString(36)}`;
-      edit("Insumo creado", name, (w) => ({ materials: [...w.materials, { id, name: name.trim(), unit: "u", costPerUnit: 0, stock: 0, minStock: 0 }] }));
+      edit("Insumo creado", name, (w) => ({ materials: [...w.materials, { unit: "u", costPerUnit: 0, stock: 0, minStock: 0, ...extra, id, name: name.trim() }] }));
       return id;
     },
     adjustMaterials: (ids, op, label) => edit(label, `${ids.length} insumos`, (w) => ({ materials: applyMaterialOp(w.materials, ids, op) })),

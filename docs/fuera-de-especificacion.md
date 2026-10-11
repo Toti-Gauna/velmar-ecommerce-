@@ -49,6 +49,8 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Tablas de CRM (filtros, lotes, columnas, exportar `.xlsx`) y ⌘K; en Polish 8.3.4 pasan a la tabla común con "Más filtros", 10 por página, fila → ficha y filtros en la URL (la vista rápida lateral se retiró) | 1 · 8.3 | Paginado, filtros y exportación en el servidor | M | |
 | Importar desde Excel y Planilla editable; en Polish 8.3.4/8.3.19 la Planilla es "Ver en formato Excel" de cada tabla (edita solo Productos y stock, Insumos y Categorías) y deja de ser una entrada del menú | 1 · 8.3 | Validación en el servidor, auditoría y deshacer | M | |
 | Detalle de categoría (`/admin-demo/categorias/detalle/`) y alta en modal (8.3.22) | 8.3 | Endpoint de categorías | S | |
+| Fichas completas de pago y de reclamo (`/admin-demo/pagos/detalle/`, `/admin-demo/reclamos/detalle/`), estado de pago y de producción por separado y "Volver" con filtros (8.3.5) | 8.3 | Mismos endpoints de pedidos y reclamos | S | |
+| Ayudas "i" de segmentos y estados con las reglas del engine (8.3.10) y filtro "Para escribir" en Clientes (8.3.9) | 8.3 | — (texto derivado de las reglas) | S | |
 | Calendario de entregas (capacidad por día, feriados, reprogramar, `.ics`); la spec solo prevé la fecha comprometida del pedido (**la capacidad está excluida en la sección 18**) | 2 | Capacidad, feriados y fechas comprometidas como datos | M | |
 | Cola de producción (**excluida en la sección 18**), insumos y costos con margen | 2 | Insumos, recetas y trabajos de producción como modelos | L | |
 | Ficha de cliente con mascotas y recordatorios de cumpleaños (**excluido en la sección 18**) | 2 | Mascotas y recordatorios como modelos | M | |

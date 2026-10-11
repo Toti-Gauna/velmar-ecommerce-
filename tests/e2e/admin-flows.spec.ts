@@ -53,10 +53,11 @@ test("pagos manuales: aprobar y rechazar con motivo sin declararlo pago real", a
 
   await page.getByRole("button", { name: /Resueltos/ }).click();
   await expect(page.getByText("Motivo: El monto no coincide")).toBeVisible();
-  await expect(page.getByText("Auditoría de muestra")).toBeVisible();
-  await expect(page.getByText("Comprobante aprobado tras verificar el ingreso (simulado)")).toBeVisible();
+  // 8.3.8: sin "Auditoría de muestra"; el registro sigue en el historial del pedido.
+  await expect(page.getByText("Auditoría de muestra")).toHaveCount(0);
   await page.goto("admin-demo/pedidos/detalle/?codigo=VEL-000123");
   await expect(page.getByText("Pagado").first()).toBeVisible();
+  await expect(page.getByText(/Comprobante aprobado tras verificar el ingreso \(simulado\)/)).toBeVisible();
   await expect(page.getByText(/acreditad/i)).toHaveCount(0);
 });
 

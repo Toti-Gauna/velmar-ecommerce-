@@ -3,6 +3,7 @@ import { RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
 import { useId, useState } from "react";
 import type { FilterSpec, FilterValues } from "@/demo/admin/table";
 import { cn } from "@/lib/cn";
+import { HelpPanel } from "@/components/molecules/Help";
 import { FilterControl } from "./FilterControl";
 
 interface Props<T> {
@@ -37,11 +38,14 @@ const idle = "border-ink/12 bg-surface hover:border-ink/25";
 export function DataTableToolbar<T>(p: Props<T>) {
   const uid = useId();
   const [more, setMore] = useState(false);
+  const [help, setHelp] = useState<string | null>(null);
+  const helpSpec = p.filters.find((f) => f.id === help && f.help);
   const n = p.filters.length;
   const active = (from: number) => p.filters.slice(from).filter((f) => p.values[f.id]).length;
   const control = (f: FilterSpec<T>, i: number, where: "bar" | "more") => (
     <FilterControl key={f.id} spec={f} value={p.values[f.id] ?? ""} onChange={(v) => p.onFilter(f.id, v)} count={p.count && ((v) => p.count!(f.id, v))}
-      idPrefix={`${uid}-${where}`} className={where === "bar" ? cn("w-44 shrink-0", INLINE[i] ?? "hidden") : (IN_MORE[i] ?? "flex")} />
+      idPrefix={`${uid}-${where}`} className={where === "bar" ? cn("w-44 shrink-0", INLINE[i] ?? "hidden") : (IN_MORE[i] ?? "flex")}
+      help={{ open: help === f.id, controls: `${uid}-help`, onToggle: () => setHelp(help === f.id ? null : f.id) }} />
   );
   return (
     <form role="search" aria-label="Buscar y filtrar" onSubmit={(e) => { e.preventDefault(); (document.activeElement as HTMLElement | null)?.blur(); }}
@@ -79,6 +83,7 @@ export function DataTableToolbar<T>(p: Props<T>) {
           {p.filters.map((f, i) => control(f, i, "more"))}
         </div>
       )}
+      {helpSpec?.help && <HelpPanel id={`${uid}-help`} help={helpSpec.help} onClose={() => setHelp(null)} />}
     </form>
   );
 }

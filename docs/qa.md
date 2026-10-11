@@ -343,6 +343,28 @@ Lote 2: tablas universales, vista Excel y catálogo unificado (`admin-polish-tab
 - **Buscar:** filtra mientras escribís (como antes); "Buscar" confirma y cierra el teclado del celular.
 - **Reclamos, cupones y pagos** son listas de tarjetas, no tablas: siguen con su paginado y se revisan en los Lotes 3 y 6.
 
+Lote 3: fichas completas, comprobantes, Clientes, modales y datos de cobro (`admin-polish-details.spec.ts`,
+`admin-polish-customers.spec.ts`, `tests/unit/admin-details-83.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.5/8.3.6 Pedido: desde la fila con filtro, migas de pan, ID, "Pago" y "Producción y entrega" por separado, próxima acción; cambiar a "En producción" con confirmación; recargar mantiene el pedido; Volver vuelve a la lista con el filtro y el pedido ya no está en "Para producir" | ✅ + unit |
+| 8.3.6 Ficha de pedido y de pago a 768 y 390: apiladas y sin desborde | ✅ emulado |
+| 8.3.7 Pago: comprobante a la izquierda de los datos (1280) y arriba (768, 390); aprobar desde la ficha pasa a "Pagado · aprobado a mano" y los contadores bajan de 2 a 1 (resueltos de 6 a 7) | ✅ emulado |
+| 8.3.8 Sin "Auditoría de muestra"; el registro de aprobación sigue en el historial del pedido | ✅ |
+| 8.3.30 "Configurar datos de cobro": cancelar no cambia nada; CBU inválido da error al lado del campo; guardar muestra los mismos valores en Ajustes, deja la cola en el mismo filtro, no aprueba pagos y el checkout demo con transferencia muestra el alias nuevo | ✅ |
+| 8.3.5 Reclamos: la lista abre la ficha; "Marcar en curso" con confirmación; Volver a la lista con el estado actualizado | ✅ |
+| 8.3.9 Clientes sin "Para escribirles"; el filtro "Para escribir" (esta semana) muestra a Diego Álvarez | ✅ |
+| 8.3.10 Ayuda de segmentos con teclado (Enter abre, Escape cierra), texto con el umbral VIP real y debajo de los filtros (no los tapa) | ✅ + unit |
+| 8.3.12 La fila abre la ficha arriba de todo; el checkbox no navega; Volver conserva `?segmento=VIP` | ✅ |
+| 8.3.13 Ficha a 1280 (dos columnas), 768 y 390 (apilada): botones de recordatorio sin pisar el título, títulos en una línea, sin desborde | ✅ emulado |
+| 8.3.17 Costos en modal: frase inicial, minutos negativos dan error, cancelar con cambios pide confirmar y no guarda, guardar recalcula | ✅ + unit |
+| 8.3.17 Insumos en modal: crear sin nombre da error, crea exactamente uno, Escape sin cambios cierra, editar guarda una vez | ✅ + unit |
+
+- **Ayudas:** el texto sale de las mismas reglas del engine (`VIP_FROM`, `ORDER_TABS`, `materialState`, `marginState`).
+- **Volver:** cada tabla anota su URL por sección en `sessionStorage` (`velmar-ui:list:*`); sin nada anotado, vuelve a la lista limpia.
+- **Datos de cobro:** el checkout de las compras nuevas usa los datos guardados; los pedidos no guardan una copia, así que no se reescriben históricos.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

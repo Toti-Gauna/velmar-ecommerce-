@@ -13,20 +13,20 @@ implementado) · **no verificable** (no se puede probar acá).
 | 8.3.2 Sidebar responsive | 1 | `AdminShell`, `AdminSidebar`, `AdminTabBar`, variante `desk:` | hecho (emulado) | `admin-polish-shell.spec.ts` (1440, 1280, 1024 con mouse; 1024, 768, 390, 360 táctil) | Probar en iPad real |
 | 8.3.3 Cards verticales en home | 1 | `Dashboard`, `OrderCard`, `DashboardInsights` | hecho (emulado) | `admin-polish-dashboard.spec.ts` (1440, 1024, 390, 360) | Probar en iPad real |
 | 8.3.4 Filtros universales y vista Excel | 2 | `data-table/*`, `useTableState`, `sheet/*`, las 6 tablas | hecho (emulado) | `admin-polish-tables.spec.ts`, `admin-tables-83.test.ts` | Fichas completas de pago y reclamo (Lote 3); iPad real |
-| 8.3.5 Detalles full-page y estados | 3 | `OrderDetail`, Pagos, Reclamos | parcial | Desde el Lote 2 la fila de pedido y la de cliente abren su página completa; se retiraron los paneles laterales | Encabezado con estados autorizados; rutas de página para pago y reclamo |
-| 8.3.6 Organización premium de detalles | 3 | `OrderDetail` | parcial | — | Jerarquía y columnas |
-| 8.3.7 Comprobantes: layout y estados | 3 | `ProofReview`, `PaymentsQueue` | parcial | Imagen a la izquierda desde 640 px | Cabecera mínima, chips, apilado |
-| 8.3.8 Quitar Auditoría de muestra | 3 | `PaymentsQueue` | pendiente | — | — |
-| 8.3.9 Clientes sin "Para escribirles" | 3 | `CustomersTable` | pendiente | — | — |
-| 8.3.10 Explicar estados y segmentos | 3 | `CustomersTable`, `customers.ts` | pendiente | — | — |
+| 8.3.5 Detalles full-page y estados | 3 | `detail/DetailHeader`, `OrderDetail`, `payments/PaymentDetail`, `claims/ClaimDetail`, `order-tracks` | hecho (emulado) | `admin-polish-details.spec.ts`, `admin-details-83.test.ts` | — |
+| 8.3.6 Organización premium de detalles | 3 | `OrderDetail`, `detail/Panel` | hecho (emulado) | `admin-polish-details.spec.ts` (1280, 768, 390) | Probar en iPad real |
+| 8.3.7 Comprobantes: layout y estados | 3 | `payments/PaymentCard`, `PaymentDetail`, `ProofActions` | hecho (emulado) | `admin-polish-details.spec.ts`, `admin-flows.spec.ts` | Probar en iPad real |
+| 8.3.8 Quitar Auditoría de muestra | 3 | `payments/PaymentsQueue` | hecho | `admin-polish-details.spec.ts`, `admin-flows.spec.ts` | — |
+| 8.3.9 Clientes sin "Para escribirles" | 3 | `CustomersTable`, `WorkshopStrip` | hecho | `admin-polish-customers.spec.ts`, `admin-workshop.spec.ts` | QA global provisional: cierre en el Lote 8 |
+| 8.3.10 Explicar estados y segmentos | 3 | `Help`, `help.ts`, filtros de Clientes, Pedidos, Insumos, Costos y Pagos | hecho | `admin-polish-customers.spec.ts`, `admin-details-83.test.ts` | Estados del taller (calendario y producción) en el Lote 5 |
 | 8.3.11 Quitar guía inicial | 1 | `AdminShell` (sin `tour/`) | hecho | `admin-flows.spec.ts` (sin guía la primera vez ni después de reiniciar) | — |
-| 8.3.12 Fila Cliente → ficha completa | 3 | `CustomersTable`, `CustomerProfile` | parcial | La fila abre directo la ficha (Lote 2) | Volver con filtros desde la ficha; composición (8.3.13) |
-| 8.3.13 Composición de ficha Cliente | 3 | `CustomerProfile` | parcial | — | Rediseño |
+| 8.3.12 Fila Cliente → ficha completa | 3 | `CustomersTable`, `CustomerProfile`, `listReturn` | hecho | `admin-polish-customers.spec.ts` | — |
+| 8.3.13 Composición de ficha Cliente | 3 | `CustomerProfile`, `PetsCard`, `ClubCard`, `Reminders` | hecho (emulado) | `admin-polish-customers.spec.ts` (1280, 768, 390) | Probar en iPad real |
 | 8.3.14 Modal de capacidad y feriados | 5 | `WorkshopSettingsSheet` | parcial | Dos bloques en un panel lateral | Modal, feriados de a 10 |
 | 8.3.15 Calendario editable y DnD | 5 | `DeliveryCalendar`, `MonthView` | parcial | Arrastrar y "Mover" existen | Crear/editar al tocar un día |
 | 8.3.16 Kanban responsive | 5 | `ProductionBoard` | parcial | Arrastrar y botón de etapa siguiente | Columnas legibles, "Mover etapa" |
-| 8.3.17 Modales Costos e Insumos | 3 | `RecipeSheet`, `MaterialsTable` | pendiente | — | — |
-| 8.3.18 Insumos con tabla universal | 2 | `MaterialsTable`, `materialSheetSpec` | hecho (emulado) | `admin-polish-catalog.spec.ts`, `admin-tables-83.test.ts` | La fila abre el panel actual; pasa a modal con 8.3.17 (Lote 3) |
+| 8.3.17 Modales Costos e Insumos | 3 | `detail/EditDialog`, `RecipeSheet`, `MaterialDialog`, `edit-forms` | hecho (emulado) | `admin-polish-customers.spec.ts`, `admin-workshop.spec.ts`, `admin-details-83.test.ts` | — |
+| 8.3.18 Insumos con tabla universal | 2 | `MaterialsTable`, `materialSheetSpec` | hecho (emulado) | `admin-polish-catalog.spec.ts`, `admin-tables-83.test.ts` | — (la fila abre el modal de 8.3.17) |
 | 8.3.19 Productos y stock; sin Planilla | 2 | `nav.ts`, `ProductsTable`, `catalogTable`, `ModuleMoved` | hecho (emulado) | `admin-polish-tables.spec.ts`, `admin-crm.spec.ts`, `admin-routes.spec.ts` | — |
 | 8.3.20 Editor con imagen primero y stepper | 4 | `ProductEditor` | pendiente | — | — |
 | 8.3.21 Vista previa con regreso | 4 | `ProductEditor` | pendiente | — | — |
@@ -38,7 +38,7 @@ implementado) · **no verificable** (no se puede probar acá).
 | 8.3.27 Oferta en Estudio | 7 | `studio/render/templates.ts` | pendiente | — | — |
 | 8.3.28 Contenido por cards y carrusel | 7 | `ContentAdmin`, `SlidesEditor` | parcial | — | Cards, preview, subida de imagen |
 | 8.3.29 Ajustes por cards; sin Marca | 8 | `SettingsAdmin`, `SettingsSections` | parcial | — | Cards y retirar Marca |
-| 8.3.30 Datos de cobro desde Pagos | 3 | `PaymentsQueue`, `CollectionSettings` | pendiente | — | — |
+| 8.3.30 Datos de cobro desde Pagos | 3 | `payments/CollectionEditor`, `CollectionDialog`, `CollectionSettings` | hecho | `admin-polish-details.spec.ts`, `admin-details-83.test.ts` | Ajustes por cards en el Lote 8 reutiliza este editor |
 
 ## Lote 1 · registro
 
@@ -79,3 +79,21 @@ implementado) · **no verificable** (no se puede probar acá).
   la tabla en ese orden y sin filtros.
 - **Fuera de las tablas:** Pagos, Reclamos y Cupones son listas de tarjetas; se revisan en los Lotes 3 y 6.
 - **Tiempo observado (automatizado):** ~2 h 40 min de implementación y verificación. No incluye la revisión de Ignacio.
+
+## Lote 3 · registro
+
+- **Base:** commit del Lote 2 (`bb26d8e`).
+- **Fichas completas (8.3.5, 8.3.6):** encabezado común (`DetailHeader`) con migas de pan, Volver a la lista con sus filtros
+  y página, ID, estados y dato destacado. El estado de pago y el de producción y entrega se muestran por separado; los dos
+  salen del estado único del engine (`order-tracks.ts`). Pedido reorganizado: próxima acción con los botones permitidos
+  (con confirmación); después cliente, productos, pago y entrega; a la derecha historial, notas y emails. Pagos y reclamos
+  tienen su ficha propia (`/admin-demo/pagos/detalle/`, `/admin-demo/reclamos/detalle/`).
+- **Comprobantes (8.3.7, 8.3.8):** cola con filtro por estado en la URL, diez por página y tarjetas con el comprobante a la
+  izquierda y los datos a la derecha. Sin "Auditoría de muestra" en pantalla: el store y el historial la conservan.
+- **Clientes (8.3.9, 8.3.10, 8.3.12, 8.3.13):** sin el bloque "Para escribirles"; para no perder lo que avisaba hay un filtro
+  "Para escribir" y el inicio enlaza a él. Botón "i" con las definiciones del engine (también en Pedidos, Insumos, Costos y
+  Pagos). La ficha suma Club (misiones y premios que ya guardaba el usuario) y se arma con columnas solo cuando entran.
+- **Modales (8.3.17):** Costos e Insumos se editan en un modal con frase inicial, bloques, validación y un solo guardado;
+  cerrar con cambios pide confirmar. "Nuevo insumo" ya no crea uno vacío antes de guardar.
+- **Datos de cobro (8.3.30):** un editor (`CollectionEditor`) con una sola fuente, usado en Ajustes y en el modal de Pagos.
+- **Tiempo observado (automatizado):** ~2 h 30 min de implementación y verificación. No incluye la revisión de Ignacio.

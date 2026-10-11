@@ -9,6 +9,7 @@ import type { Column, RowCardProps } from "@/components/organisms/data-table/typ
 import { customerRows, type CustomerRow, type CustomerSegment } from "@/demo/admin/customers";
 import { customerReminders } from "@/demo/admin/workshop/reminders";
 import { DEMO_TODAY } from "@/demo/fixtures/admin-orders";
+import { SEGMENT_HELP } from "@/demo/admin/help";
 import type { FilterSpec } from "@/demo/admin/table";
 import { formatDate } from "@/lib/date";
 import { formatARS } from "@/lib/money";
@@ -19,13 +20,14 @@ import { BulkButton } from "../table/TabFilter";
 import { specFromColumns, TableExcel } from "../table/TableExcel";
 import { useExport } from "../table/useExport";
 import { useTableState } from "../table/useTableState";
-import { profileHref, ReminderList } from "./Reminders";
+import { profileHref } from "./Reminders";
 
 const SEGMENTS: [CustomerSegment, string][] = [["VIP", "VIP"], ["Recurrente", "Recurrentes"], ["Nuevo", "Nuevos"], ["Sin compras", "Sin compras"]];
-const FILTERS: FilterSpec<CustomerRow>[] = [
-  { id: "segmento", label: "Segmento", options: SEGMENTS.map(([value, label]) => ({ value, label })), test: (c, v) => c.segment === v },
-  { id: "tipo", label: "Tipo", options: [{ value: "cuenta", label: "Con cuenta" }, { value: "invitado", label: "Invitados" }], test: (c, v) => (v === "invitado" ? !c.registered : c.registered) },
+const BASE_FILTERS: FilterSpec<CustomerRow>[] = [
+  { id: "segmento", label: "Segmento", options: SEGMENTS.map(([value, label]) => ({ value, label })), help: SEGMENT_HELP, test: (c, v) => c.segment === v },
+  { id: "tipo", label: "Tipo", options: [{ value: "cuenta", label: "Con cuenta" }, { value: "invitado", label: "Invitados" }], help: SEGMENT_HELP, test: (c, v) => (v === "invitado" ? !c.registered : c.registered) },
 ];
+const FILTER_IDS = [...BASE_FILTERS.map((f) => f.id), "escribir"];
 const search = (c: CustomerRow) => `${c.name} ${c.email} ${c.phone ?? ""}`;
 
 const columns: Column<CustomerRow>[] = [
@@ -64,9 +66,14 @@ export function CustomersTable() {
   // Enlaces anteriores con ?cliente=: llevan a la ficha completa (ya no hay panel lateral).
   const param = useSearchParams().get("cliente");
   useEffect(() => { if (param) router.replace(profileHref(param)); }, [param, router]);
-  const state = useTableState("customers", { sort: { id: "spent", dir: "desc" }, hidden: ["email", "phone"], filterIds: FILTERS.map((f) => f.id) });
+  const state = useTableState("customers", { sort: { id: "spent", dir: "desc" }, hidden: ["email", "phone"], filterIds: FILTER_IDS });
   const all = customerRows(users, orders);
-  const reminders = customerReminders(all, profiles, products, settings, DEMO_TODAY);
+  // 8.3.9: sin el bloque "Para escribirles"; los recordatorios siguen en cada ficha y acá como filtro (el inicio enlaza a él).
+  const upcoming = (days: number) => new Set(customerReminders(all, profiles, products, settings, DEMO_TODAY, days).map((r) => r.email.toLowerCase()));
+  const soon = { "7": upcoming(7), "30": upcoming(30) } as Record<string, Set<string>>;
+  const FILTERS: FilterSpec<CustomerRow>[] = [...BASE_FILTERS,
+    { id: "escribir", label: "Para escribir", allLabel: "Todos", options: [{ value: "7", label: "Esta semana" }, { value: "30", label: "Próximos 30 días" }],
+      test: (c, v) => !!soon[v]?.has(c.email.toLowerCase()) }];
   const copy = async (list: CustomerRow[]) => {
     try { await navigator.clipboard.writeText(list.map((c) => c.email).join(", ")); push({ tone: "success", title: `${list.length} emails copiados`, description: "Listos para pegar en tu correo o en una campaña." }); }
     catch { push({ tone: "error", title: "No se pudo copiar", description: "Tu navegador no dejó usar el portapapeles." }); }
@@ -78,13 +85,6 @@ export function CustomersTable() {
   return (
     <>
       <AdminPageHeader title="Clientes">Cuentas registradas y compradores invitados, unidos por email. Perfiles ficticios: el panel nunca muestra contraseñas ni datos de pago.</AdminPageHeader>
-      {reminders.length > 0 && (
-        <section aria-labelledby="c-remind" className="mb-6">
-          <h2 id="c-remind" className="mb-2 font-bold">Para escribirles (próximos 30 días)</h2>
-          <ReminderList reminders={reminders.slice(0, 4)} showCustomer />
-          {reminders.length > 4 && <p className="mt-2 text-sm text-muted">Y {reminders.length - 4} más en las fichas de cada cliente.</p>}
-        </section>
-      )}
       <DataTable caption="Clientes" noun="clientes" rows={all} columns={columns} state={state} {...table}
         rowKey={(c) => c.key} rowLabel={(c) => `Seleccionar ${c.name}`} rowHref={(c) => profileHref(c.email)} onExport={onExport} onExcel={() => state.setView("excel")} renderCard={(p) => <Card {...p} />}
         bulkActions={(list) => <BulkButton onClick={() => copy(list)}><Copy size={14} aria-hidden="true" /> Copiar emails</BulkButton>}
