@@ -5,7 +5,7 @@ import { emailsOfOrder } from "@/demo/admin/emails/triggers";
 import { TRIGGER_LABEL } from "@/demo/fixtures/emails";
 import { formatDateTime } from "@/lib/date";
 import { useAdmin } from "@/stores/admin";
-import { OutboxSheet } from "../emails/OutboxSheet";
+import { OutboxDialog } from "../emails/OutboxDialog";
 import { Panel } from "./Panel";
 
 /** Emails automáticos que "salieron" para este pedido (bandeja de salida simulada). */
@@ -27,7 +27,7 @@ export function OrderEmails({ code, createdAt }: { code: string; createdAt: stri
           ))}
         </ul>
       ) : <p className="text-sm text-muted">Todavía no salió ningún email para este pedido.</p>}
-      <OutboxSheet mail={mails.find((m) => m.id === open) ?? null} onClose={() => setOpen(null)} />
+      <OutboxDialog mail={mails.find((m) => m.id === open) ?? null} onClose={() => setOpen(null)} />
     </Panel>
   );
 }

@@ -10,13 +10,20 @@ import { formatDateTime } from "@/lib/date";
 import { TabFilter } from "../table/TabFilter";
 import { EmailPreview } from "./EmailPreview";
 
-/** Email "enviado" abierto desde la bandeja o desde el pedido: tal cual salió (aunque después se edite la plantilla). */
-export function OutboxSheet({ mail, onClose }: { mail: OutboxEmail | null; onClose: () => void }) {
+/**
+ * Email "enviado" abierto desde la bandeja o desde el pedido, tal cual salió (aunque después se edite la plantilla).
+ * Modal centrado (8.4.20; antes, panel lateral); en el celular sube desde abajo con su propio scroll.
+ */
+export function OutboxDialog({ mail, onClose }: { mail: OutboxEmail | null; onClose: () => void }) {
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   return (
-    <Sheet open={!!mail} onClose={onClose} title={mail ? `Email: ${mail.email.subject}` : "Email"} side="right" className="max-w-2xl bg-bg">
+    <Sheet open={!!mail} onClose={onClose} title={mail ? `Email: ${mail.email.subject}` : "Email"} side="dialog" className="bg-bg sm:w-[min(94vw,880px)]">
       {mail && (
-        <div className="flex h-full flex-col gap-4 overflow-y-auto p-5 pt-14 sm:p-6 sm:pt-14">
+        <div className="flex max-h-[94dvh] flex-col gap-4 overflow-y-auto p-5 pt-6 sm:max-h-[90dvh] sm:p-7">
+          <div className="pr-12">
+            <p className="eyebrow text-brass-ink">Bandeja de salida</p>
+            <h2 className="font-display mt-1 text-2xl leading-tight sm:text-3xl">{mail.email.subject}</h2>
+          </div>
           <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
             <Badge tone="brand">{TRIGGER_LABEL[mail.trigger]}</Badge>
             {mail.test && <Badge tone="demo">Prueba</Badge>}

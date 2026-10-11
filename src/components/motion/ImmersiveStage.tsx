@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { useEffect, useRef, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
+import { lockScroll } from "@/lib/scrollLock";
 
 interface Props {
   open: boolean;
@@ -36,7 +37,7 @@ export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a7
     if (!open) return;
     const previous = document.activeElement as HTMLElement | null;
     const html = document.documentElement;
-    html.style.overflow = "hidden";
+    const unlock = lockScroll(() => root.current);
     html.classList.add("stage-open");
     // El foco entra al diálogo (sin anillo visible al tocar); Tab recorre los botones. Si ya está adentro (alguien
     // llegó antes con Tab o con un toque), no se lo saca.
@@ -61,7 +62,7 @@ export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a7
     document.addEventListener("keydown", onKey);
     return () => {
       window.clearTimeout(t);
-      html.style.overflow = "";
+      unlock();
       html.classList.remove("stage-open");
       document.removeEventListener("keydown", onKey);
       previous?.focus?.({ preventScroll: true });

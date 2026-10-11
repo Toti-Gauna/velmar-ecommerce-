@@ -97,6 +97,8 @@ html[data-theme="dark"] {
 html[data-theme="dark"] .bg-night { box-shadow: inset 0 0 0 1px rgb(210 173 105 / 0.12); }
 
 @layer base {
+  /* 8.4.11: lo que se desplaza adentro de un modal no "arrastra" la página de atrás al llegar a su final. */
+  [aria-modal="true"] *, dialog[open] * { overscroll-behavior: contain; }
   /* Controles nativos con la estética de la tienda: el navegador sigue dibujando el selector, el calendario,
      el teclado numérico y el selector de color (accesibles y conocidos), con nuestros colores, radios y foco. */
   input, select, textarea, button { font: inherit; }

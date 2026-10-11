@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
+import { lockScroll } from "@/lib/scrollLock";
 
 interface SheetProps {
   open: boolean;
@@ -27,11 +28,14 @@ const PLACE = {
 };
 
 /**
- * Panel modal accesible: foco atrapado, Escape cierra, scroll de fondo bloqueado, devuelve el foco.
+ * Panel modal accesible: foco atrapado, Escape cierra, scroll de fondo bloqueado (también en Safari de iPhone y iPad,
+ * ver lib/scrollLock), devuelve el foco. En "dialog" y "center" el alto sale del contenido (`fit-content`): adentro
+ * no usar hijos `flex-1` con `min-h-0`, que Safari colapsa a cero (8.4.10); el scroll va en un hijo con `max-h`.
  * Se monta en <body> por portal: un ancestro con backdrop-filter (el header) recortaría un `fixed`.
  */
 export function Sheet({ open, onClose, title, side = "right", children, className }: SheetProps) {
   const panel = useRef<HTMLDivElement>(null);
+  const layer = useRef<HTMLDivElement>(null);
   const mounted = useSyncExternalStore(noop, () => true, () => false);
   // onClose suele ser una función nueva en cada render: se guarda en un ref para que el efecto
   // de foco/scroll dependa solo de `open` (si no, cada tecla devolvía el foco al botón que abrió).
@@ -40,8 +44,7 @@ export function Sheet({ open, onClose, title, side = "right", children, classNam
   useEffect(() => {
     if (!open) return;
     const previous = document.activeElement as HTMLElement | null;
-    const html = document.documentElement;
-    html.style.overflow = "hidden";
+    const unlock = lockScroll(() => layer.current);
     const t = window.setTimeout(() => (panel.current?.querySelector<HTMLElement>("[data-autofocus]") ?? panel.current?.querySelector<HTMLElement>("button, a, input"))?.focus(), 40);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeRef.current();
@@ -52,13 +55,13 @@ export function Sheet({ open, onClose, title, side = "right", children, classNam
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
     };
     document.addEventListener("keydown", onKey);
-    return () => { window.clearTimeout(t); html.style.overflow = ""; document.removeEventListener("keydown", onKey); previous?.focus?.(); };
+    return () => { window.clearTimeout(t); unlock(); document.removeEventListener("keydown", onKey); previous?.focus?.(); };
   }, [open]);
   if (!mounted) return null;
   return createPortal(
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[70]">
+        <div ref={layer} className="fixed inset-0 z-[70]">
           <motion.div className="absolute inset-0 bg-night/45 backdrop-blur-[3px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} onClick={onClose} />
           <motion.div ref={panel} role="dialog" aria-modal="true" aria-label={title}
             className={cn("absolute flex flex-col bg-bg shadow-[var(--shadow-lift)]", /\bmax-w-/.test(className ?? "") ? PLACE[side].replace(/ max-w-\S+/g, "") : PLACE[side], className)}

@@ -31,10 +31,10 @@ interface Props {
 }
 
 /**
- * Ficha de entrega: qué lleva el pedido, su fecha y cómo moverla (alternativa a arrastrar, para teclado y celular).
- * Llevarlo a un día completo se confirma antes (8.3.15).
+ * Ficha de entrega en un modal centrado (8.4.16; antes, panel lateral): qué lleva el pedido, su fecha y cómo moverla
+ * (alternativa a arrastrar, para teclado y celular). Llevarlo a un día completo se confirma antes (8.3.15).
  */
-export function ScheduleSheet({ order, orders, settings, today, late, movable, warnings, onMove, onClose }: Props) {
+export function ScheduleDialog({ order, orders, settings, today, late, movable, warnings, onMove, onClose }: Props) {
   const cal = calendarOf(settings);
   const day = order?.promisedDate;
   const used = day ? (loadByDay(orders).get(day) ?? 0) : 0;
@@ -48,10 +48,10 @@ export function ScheduleSheet({ order, orders, settings, today, late, movable, w
   };
   const step = "inline-flex h-11 items-center justify-center gap-1 rounded-full border border-ink/15 px-3 text-sm font-bold hover:bg-accent/50 disabled:opacity-40";
   return (
-    <Sheet open={!!order} onClose={onClose} title={order ? `Entrega ${order.code}` : "Entrega"} side="right" className="max-w-lg bg-bg">
+    <Sheet open={!!order} onClose={onClose} title={order ? `Entrega ${order.code}` : "Entrega"} side="dialog" className="bg-bg sm:w-[min(94vw,860px)]">
       {order && (
-        <div className="flex h-full flex-col overflow-y-auto">
-          <header className="border-b border-line bg-surface px-6 pb-5 pt-6 pr-16">
+        <div className="flex max-h-[94dvh] flex-col overflow-y-auto sm:max-h-[90dvh]">
+          <header className="shrink-0 border-b border-line bg-surface px-5 pb-5 pt-6 pr-16 sm:px-7">
             <p className="eyebrow text-muted">Entrega comprometida</p>
             <h2 className="font-display mt-1 text-3xl first-letter:uppercase">{day ? formatDay(day, "long") : "Sin fecha"}</h2>
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">
@@ -60,24 +60,29 @@ export function ScheduleSheet({ order, orders, settings, today, late, movable, w
               {day && day >= today && !closureFor(day, cal) && <span>{capacityText(used, settings.dailyCapacity)} ese día</span>}
             </div>
           </header>
-          <div className="flex flex-col gap-5 p-6">
-            <section aria-label="Pedido" className="rounded-3xl bg-surface p-4 shadow-[var(--shadow-card)]">
-              <p className="font-bold">{order.code} · {order.customer.name}</p>
-              <p className="text-sm text-muted">{fulfillmentLabel(order.fulfillment)}{order.address ? ` · ${order.address}` : ""}</p>
-              <ul className="mt-3 flex flex-col gap-2">
-                {order.lines.map((l) => {
-                  const p = getProduct(l.productSlug);
-                  const v = p?.variants.find((x) => x.id === l.variantId);
-                  return (
-                    <li key={l.id} className="flex items-center gap-3 text-sm">
-                      {p && <div className="w-12 shrink-0"><LineThumb art={p.art} tint={v?.colorHex} name={p.name} personalization={l.personalization} zone={demoData().textZones[p.art]} /></div>}
-                      <span className="min-w-0 flex-1"><span className="block font-semibold">{l.quantity} × {p?.name ?? l.productSlug}</span><span className="text-muted">{v?.label}</span></span>
-                    </li>
-                  );
-                })}
-              </ul>
-              <p className="mt-3 text-xs text-muted">Plazo de fabricación: {orderLeadDays(order.lines)} días hábiles.</p>
-            </section>
+          <div className="grid items-start gap-5 p-5 sm:p-7 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+            <div className="flex flex-col gap-4">
+              <section aria-label="Pedido" className="rounded-3xl bg-surface p-4 shadow-[var(--shadow-card)]">
+                <p className="font-bold">{order.code} · {order.customer.name}</p>
+                <p className="text-sm text-muted">{fulfillmentLabel(order.fulfillment)}{order.address ? ` · ${order.address}` : ""}</p>
+                <ul className="mt-3 flex flex-col gap-2">
+                  {order.lines.map((l) => {
+                    const p = getProduct(l.productSlug);
+                    const v = p?.variants.find((x) => x.id === l.variantId);
+                    return (
+                      <li key={l.id} className="flex items-center gap-3 text-sm">
+                        {p && <div className="w-12 shrink-0"><LineThumb art={p.art} tint={v?.colorHex} name={p.name} personalization={l.personalization} zone={demoData().textZones[p.art]} /></div>}
+                        <span className="min-w-0 flex-1"><span className="block font-semibold">{l.quantity} × {p?.name ?? l.productSlug}</span><span className="text-muted">{v?.label}</span></span>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="mt-3 text-xs text-muted">Plazo de fabricación: {orderLeadDays(order.lines)} días hábiles.</p>
+              </section>
+              <Link href={`/admin-demo/pedidos/detalle/?codigo=${order.code}`} className="inline-flex min-h-11 items-center gap-1.5 self-start text-sm font-bold text-primary underline">
+                Abrir el pedido completo <ArrowUpRight size={15} aria-hidden="true" />
+              </Link>
+            </div>
             {movable ? (
               <section aria-labelledby="move-title" className="flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-[var(--shadow-card)]">
                 <h3 id="move-title" className="font-bold">Reprogramar</h3>
@@ -102,10 +107,7 @@ export function ScheduleSheet({ order, orders, settings, today, late, movable, w
                 )}
                 <p className="text-xs text-muted">En escritorio también podés arrastrar el pedido a otro día del calendario. En producción, el cliente recibiría un aviso con la fecha nueva.</p>
               </section>
-            ) : <p className="text-sm text-muted">Este pedido ya salió del taller: su fecha no se reprograma.</p>}
-            <Link href={`/admin-demo/pedidos/detalle/?codigo=${order.code}`} className="inline-flex items-center gap-1.5 self-start text-sm font-bold text-primary underline">
-              Abrir el pedido completo <ArrowUpRight size={15} aria-hidden="true" />
-            </Link>
+            ) : <p className="rounded-3xl bg-surface p-4 text-sm text-muted shadow-[var(--shadow-card)]">Este pedido ya salió del taller: su fecha no se reprograma.</p>}
           </div>
         </div>
       )}

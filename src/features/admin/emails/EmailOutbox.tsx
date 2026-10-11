@@ -11,7 +11,7 @@ import { useAdmin } from "@/stores/admin";
 import { MARKETING, SubpageHeader } from "../marketing/SubpageHeader";
 import { useDemoSave } from "../useDemoSave";
 import { EMAILS_SECTION } from "./EmailsAdmin";
-import { OutboxSheet } from "./OutboxSheet";
+import { OutboxDialog } from "./OutboxDialog";
 
 /** Bandeja de salida (8.3.24: subpágina de Emails automáticos). Todo es simulado: en la demo no sale ningún email. */
 export function EmailOutbox() {
@@ -62,7 +62,7 @@ export function EmailOutbox() {
           </ul>
         ) : <EmptyState title="Sin emails">{outbox.length ? "Ningún email coincide con la búsqueda." : "Cuando un pedido cambie de estado o alguien compre en la tienda demo, el email aparece acá."}</EmptyState>}
       </section>
-      <OutboxSheet mail={outbox.find((m) => m.id === open) ?? null} onClose={() => setOpen(null)} />
+      <OutboxDialog mail={outbox.find((m) => m.id === open) ?? null} onClose={() => setOpen(null)} />
     </>
   );
 }
