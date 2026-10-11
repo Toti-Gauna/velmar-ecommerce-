@@ -6,7 +6,7 @@ funciona en la demo, con datos y envíos simulados.
 
 ## Antes de entrar (5 minutos antes)
 1. Abrir la demo en **el celular del dueño** y en la **compu**, con la batería cargada y el brillo alto.
-2. Tocar **"Reiniciar demo"** (banner de arriba): vuelve la tienda y el panel a los datos de muestra.
+2. Para empezar con los datos de muestra, abrir la demo en una **ventana privada** (o borrar los datos del sitio en el navegador). Desde 8.4.13 la tienda no muestra el aviso de demo ni "Reiniciar demo": está lista para mostrarla.
 3. Dejar abiertas dos pestañas: el panel `/admin-demo/` y la tienda `/`. En el celular, solo la tienda.
 4. Sonido del celular encendido (los sonidos de la tienda arrancan recién con el primer toque).
 5. Anotar qué temática muestra hoy la tienda (se elige sola por fecha): si no sirve para la charla, "Probar
@@ -30,7 +30,7 @@ funciona en la demo, con datos y envíos simulados.
 ## Frases que ayudan
 - **No vendas funciones, vendé horas**: "esto reemplaza anotar el comprobante, buscar el chat y escribir el aviso".
 - Cuando algo sale solo, decirlo: "no escribí ningún email; salió porque cambié el estado".
-- Si el dueño toca algo, dejarlo. Todo lo que cambie queda solo en su navegador y "Reiniciar demo" lo vuelve atrás.
+- Si el dueño toca algo, dejarlo. Todo lo que cambie queda solo en su navegador; una ventana privada nueva vuelve a los datos de muestra.
 
 ## Preguntas que van a aparecer
 | Pregunta | Respuesta honesta |
@@ -43,7 +43,7 @@ funciona en la demo, con datos y envíos simulados.
 | ¿Puedo cambiar un texto o un precio yo? | Sí: Contenido, Productos, Cupones y Ajustes. Se ve al instante en la tienda de la demo. |
 
 ## Si algo falla
-- **No carga o se ve raro**: recargar. Si sigue, "Reiniciar demo" y volver a entrar.
+- **No carga o se ve raro**: recargar. Si sigue, abrirla en una ventana privada.
 - **El video del estudio no se graba**: no cambiar de pestaña mientras graba; si pasa, repetir. La imagen PNG siempre sale.
 - **No suena nada**: tocar la pantalla una vez y revisar el silencio del celular y el botón de sonido del header.
 - **Sin buena señal**: llegar con la demo ya abierta y probada en el mismo lugar; no depender de la red del cliente.

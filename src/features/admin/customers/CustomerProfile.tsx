@@ -16,7 +16,7 @@ import { useAdmin } from "@/stores/admin";
 import { DetailHeader, TrackChip } from "../detail/DetailHeader";
 import { Panel } from "../detail/Panel";
 import { useDemoSave } from "../useDemoSave";
-import { BirthdayPicker, birthdayText } from "./BirthdayPicker";
+import { BirthdayPicker, birthdayText } from "@/components/molecules/BirthdayPicker";
 import { ClubCard } from "./ClubCard";
 import { PetsCard } from "./PetsCard";
 import { ReminderList } from "./Reminders";
@@ -37,7 +37,7 @@ export function CustomerProfile() {
   const [note, setNote] = useState("");
   const customer = customerRows(users, orders).find((c) => c.email.toLowerCase() === email.toLowerCase());
   if (!customer) {
-    return <EmptyState title="No encontramos ese cliente" action={<Link href="/admin-demo/usuarios/" className="font-bold text-primary underline">Volver a Clientes</Link>}>Puede que el enlace sea viejo o que la demo se haya reiniciado.</EmptyState>;
+    return <EmptyState title="No encontramos ese cliente" action={<Link href="/admin-demo/usuarios/" className="font-bold text-primary underline">Volver a Clientes</Link>}>Puede que el enlace sea viejo o que se hayan borrado los datos de este navegador.</EmptyState>;
   }
   const profile = profiles[customer.email.toLowerCase()] ?? { pets: [], notes: [] };
   const reminders = remindersFor(customer, profile, products, settings, DEMO_TODAY, 60);

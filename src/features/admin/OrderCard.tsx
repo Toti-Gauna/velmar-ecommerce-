@@ -2,13 +2,13 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { StatusBadge } from "@/components/molecules/StatusBadge";
 import type { AdminOrder } from "@/demo/admin/types";
+import { PAYMENT_LABEL } from "@/demo/engine/payments";
 import { formatDateTime } from "@/lib/date";
 import { formatARS } from "@/lib/money";
 
-const PAY = { CHECKOUT_PRO: "Mercado Pago", BANK_TRANSFER: "Transferencia", QR_MANUAL: "QR" };
 const SHIP = { PICKUP: "Retiro", LOCAL_DELIVERY: "Cadete", SHIPPING: "Envío nacional" };
 
-export const paymentLabel = (m: AdminOrder["paymentMethod"]) => PAY[m];
+export const paymentLabel = (m: AdminOrder["paymentMethod"]) => PAYMENT_LABEL[m];
 export const fulfillmentLabel = (f: AdminOrder["fulfillment"]) => SHIP[f];
 
 /**
@@ -16,7 +16,7 @@ export const fulfillmentLabel = (f: AdminOrder["fulfillment"]) => SHIP[f];
  * En el celular el estado sube junto al código y el resto se apila; nada se corta a la mitad.
  */
 export function OrderCard({ order }: { order: AdminOrder }) {
-  const meta = `${formatDateTime(order.createdAt)} · ${PAY[order.paymentMethod]} · ${SHIP[order.fulfillment]}${order.fromShop ? " · desde la tienda demo" : ""}`;
+  const meta = `${formatDateTime(order.createdAt)} · ${PAYMENT_LABEL[order.paymentMethod]} · ${SHIP[order.fulfillment]}${order.fromShop ? " · desde la tienda demo" : ""}`;
   return (
     <Link href={`/admin-demo/pedidos/detalle/?codigo=${order.code}`} className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-[var(--shadow-card)] transition-colors hover:bg-accent/40 sm:gap-4">
       <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">

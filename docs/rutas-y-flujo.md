@@ -103,12 +103,13 @@ Reglas simples y deterministas, sin tracking del usuario.
 - Catálogo basado en las líneas vistas en el Instagram de Velmar, **sin productos con licencia**. Precios orientativos.
 
 ## Pagos (decisión confirmada 03/10/2026)
-Checkout Pro para crédito/débito/dinero en cuenta (confirmación automática por webhook en producción);
+Checkout Pro para crédito/débito/dinero en cuenta (confirmación automática por webhook en producción); desde 8.4.22
+la demo suma "Tarjeta de crédito o débito" con las tarjetas guardadas del cliente (en producción, Mercado Pago tokenizado);
 transferencia y **QR estático** con comprobante y aprobación manual de Velmar. En la demo todo es pantalla de muestra:
-no se pide tarjeta, no se redirige a Mercado Pago, el QR no es escaneable, el CBU/alias son ficticios y nunca se
+la tarjeta es de prueba (se guardan solo marca, últimos 4 y vencimiento), no se redirige a Mercado Pago, el QR no es escaneable, el CBU/alias son ficticios y nunca se
 afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
 Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`, `:gifts`; y
 `velmar-ui:admin-sidebar` para recordar la barra lateral fija; `velmar-ui:sheet:*` en `sessionStorage` para el borrador de una vista Excel sin guardar; `velmar-ui:list:*` en `sessionStorage` para que "Volver" de una ficha lleve a la lista con sus filtros y página; `velmar-ui:product-draft:*` y `velmar-ui:preview-return` en `sessionStorage` para el borrador del editor de producto y su vista previa; `velmar-ui:mission-draft:*`, `velmar-ui:email-draft:*` y `velmar-ui:wheel-draft` en `sessionStorage` para los borradores de misión, plantilla de email y ruleta; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
-navegador. "Reiniciar demo" (banner y pie) borra todo.
+navegador (desde 8.4: también `velmar-demo:profile`, con direcciones y tarjetas de la cuenta; de las tarjetas solo marca, últimos 4 y vencimiento). Borrar los datos del sitio vuelve a los fixtures (desde 8.4.13 no hay botón "Reiniciar demo").

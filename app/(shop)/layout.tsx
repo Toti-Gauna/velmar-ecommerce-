@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { DemoBanner } from "@/components/organisms/DemoBanner";
 import { Footer } from "@/components/organisms/Footer";
 import { Header } from "@/components/organisms/Header";
 import { LazyOverlays } from "@/components/organisms/LazyOverlays";
@@ -15,7 +14,6 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <ThemeStage />
-      <DemoBanner />
       <ThemeRibbon />
       <Header />
       <ThemeGarland />

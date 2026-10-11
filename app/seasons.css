@@ -52,6 +52,11 @@ html[data-theme="dark"] { --amb-snow: #ffffff; }
 /* Sin mix-blend-mode: una capa de mezcla a pantalla completa obliga a recomponer todo en cada cuadro (Fase 5, VEL-55). */
 .season-grain { position: absolute; inset: 0; opacity: 0.035; background-image: radial-gradient(rgb(255 255 255 / 0.9) 0.6px, transparent 0.8px); background-size: 3px 3px; }
 .amb-paused .aurora-blob { animation-play-state: paused; }
+/* 8.4.28: en el celular, una de cada tres partículas en el fondo y una de cada cuatro en el banner. Cada una se recalcula
+   en cada cuadro: con todas, el inicio quedaba por debajo de 40 fps en un celular de gama media (emulado). */
+@media (max-width: 640px) {
+  .season-backdrop .amb:not(:nth-child(3n+1)), [data-theme-banner] .amb:not(:nth-child(4n+1)) { display: none; }
+}
 
 /* Efecto "firma" de cada temática en el fondo (backdrop/fx-*.tsx). */
 .fx-layer { position: absolute; inset: 0; overflow: hidden; }

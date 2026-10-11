@@ -12,6 +12,7 @@ import { MissionProgress } from "@/components/molecules/MissionProgress";
 import { OrderSummary } from "@/components/molecules/OrderSummary";
 import { previewMission } from "@/demo/engine/missions";
 import { demoAccountProgress } from "@/demo/fixtures/commerce";
+import type { PaymentMethod } from "@/demo/types";
 import { useAdmin, useDemoData } from "@/stores/admin";
 import { whatsappLink } from "@/lib/whatsapp";
 import { useCheckout } from "@/stores/checkout";
@@ -22,7 +23,7 @@ import { summaryRows } from "../checkout/CheckoutSummary";
 import { OrderLines } from "./OrderLines";
 import { PaymentInstructions } from "./PaymentInstructions";
 
-const PAY_TITLE = { CHECKOUT_PRO: "Pagar con tarjeta, vía Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "Pago con QR (muestra)" };
+const PAY_TITLE: Record<PaymentMethod, string> = { CARD: "Pago con tarjeta (muestra)", CHECKOUT_PRO: "Pagar con Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "Pago con QR (muestra)" };
 
 export function ConfirmationView() {
   const hydrated = useHydrated();
@@ -76,7 +77,7 @@ export function ConfirmationView() {
         )}
         <section aria-labelledby="pago" className="flex flex-col gap-3">
           <h2 id="pago" className="font-display text-3xl">{PAY_TITLE[order.paymentMethod]}</h2>
-          <PaymentInstructions method={order.paymentMethod} total={order.quote.total} code={order.code} />
+          <PaymentInstructions method={order.paymentMethod} total={order.quote.total} code={order.code} card={order.card} />
         </section>
         {order.asAccount && (
           <MissionProgress title={mission.title} reward={mission.reward} pctFrom={preview.pctBefore} pctTo={preview.pctAfter}

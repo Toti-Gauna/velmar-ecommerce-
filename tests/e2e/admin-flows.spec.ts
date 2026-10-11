@@ -28,11 +28,9 @@ test("cambiar stock y pausar en el panel se refleja en la tienda; el reset vuelv
   await page.goto("categorias/");
   await expect(page.getByRole("link", { name: /Souvenirs/ })).toHaveCount(0);
 
+  // 8.4.13: sin "Reiniciar demo" en el panel (se muestra a clientes).
   await page.goto("admin-demo/");
-  page.once("dialog", (d) => d.accept());
-  await page.getByRole("button", { name: "Reiniciar demo" }).click();
-  await page.goto("p/vela-caniche/");
-  await expect(page.getByText(/En stock/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reiniciar demo" })).toHaveCount(0);
   assertNoExternal();
 });
 
@@ -160,7 +158,7 @@ test("celular: menú hamburguesa del panel y paginado de pedidos", async ({ page
   await expect(page.getByRole("dialog", { name: "Menú del panel" }).getByRole("link", { name: "Ajustes" })).toBeVisible();
 });
 
-test("8.3.11 sin guía de bienvenida: el panel abre directo, también la primera vez y después de reiniciar", async ({ page }) => {
+test("8.3.11 sin guía de bienvenida: el panel abre directo, también la primera vez", async ({ page }) => {
   // Aunque el navegador nunca haya visto el panel (sin preferencias guardadas), no aparece ningún recorrido.
   await page.addInitScript(() => localStorage.removeItem("velmar-tour:admin"));
   await page.goto("admin-demo/");
@@ -168,11 +166,6 @@ test("8.3.11 sin guía de bienvenida: el panel abre directo, también la primera
   await page.waitForTimeout(1500);
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Ver guía del panel" })).toHaveCount(0);
-  // La señal de demo sigue siempre a la vista.
+  // La señal de demo sigue siempre a la vista ("Reiniciar demo" ya no está, 8.4.13).
   await expect(page.getByText("Panel de demostración · datos ficticios")).toBeVisible();
-  page.once("dialog", (d) => d.accept());
-  await page.getByRole("button", { name: "Reiniciar demo" }).click();
-  await expect(page.getByRole("heading", { level: 1, name: /Buen día/ })).toBeVisible();
-  await page.waitForTimeout(1500);
-  await expect(page.getByRole("dialog")).toHaveCount(0);
 });

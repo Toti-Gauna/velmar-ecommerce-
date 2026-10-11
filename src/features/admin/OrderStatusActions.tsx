@@ -4,6 +4,7 @@ import { ConfirmButton } from "@/components/molecules/ConfirmButton";
 import type { AdminOrder } from "@/demo/admin/types";
 import { canReschedule } from "@/demo/engine/delivery";
 import { manualNextStatuses, STATUS_LABEL } from "@/demo/engine/orders";
+import { isProviderPayment } from "@/demo/engine/payments";
 import { useAdmin } from "@/stores/admin";
 import { useToasts } from "@/stores/toast";
 import { PickDate } from "./calendar/PickDate";
@@ -15,7 +16,8 @@ export function OrderStatusActions({ order }: { order: AdminOrder }) {
   const confirmProvider = useAdmin((s) => s.confirmProvider);
   const save = useDemoSave();
   const next = manualNextStatuses(order.status, order.fulfillment, order.prevStatus);
-  const mpPending = order.paymentMethod === "CHECKOUT_PRO" && order.status === "PENDING_PAYMENT";
+  const mpPending = isProviderPayment(order.paymentMethod) && order.status === "PENDING_PAYMENT";
+  const card = order.paymentMethod === "CARD";
   return (
     <div className="flex flex-col gap-3">
       {next.length === 0 && !mpPending && <p className="text-sm text-muted">{order.status === "PAYMENT_REVIEW" ? "Resolvé el comprobante para avanzar." : "No hay cambios de estado disponibles."}</p>}
@@ -29,10 +31,10 @@ export function OrderStatusActions({ order }: { order: AdminOrder }) {
           </ConfirmButton>
         ))}
         {mpPending && (
-          <ConfirmButton size="sm" variant="secondary" title="Simular notificación de Mercado Pago" confirmLabel="Simular"
+          <ConfirmButton size="sm" variant="secondary" title={card ? "Simular la aprobación de la tarjeta" : "Simular notificación de Mercado Pago"} confirmLabel="Simular"
             description="En producción, el pedido pasa a Pagado solo cuando llega el webhook firmado y el servidor verifica monto, moneda y referencia. Esto es una simulación local."
             onConfirm={() => save("Confirmación del proveedor simulada", () => confirmProvider(order.code))}>
-            Simular confirmación de Mercado Pago
+            {card ? "Simular aprobación de la tarjeta" : "Simular confirmación de Mercado Pago"}
           </ConfirmButton>
         )}
       </div>

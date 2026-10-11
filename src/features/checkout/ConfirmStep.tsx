@@ -1,15 +1,17 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { Button } from "@/components/atoms/Button";
+import { useState, type ReactNode } from "react";
+import { cardLabel } from "@/demo/engine/profile";
+import type { PaymentMethod } from "@/demo/types";
 import { useDemoData } from "@/stores/admin";
 import { useCheckout } from "@/stores/checkout";
 import { CheckoutGift } from "./CheckoutGift";
+import { STEP_FORM, StepNav } from "./StepNav";
 
-const PAY_LABEL = { CHECKOUT_PRO: "Tarjeta de débito, crédito o prepaga, vía Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "QR (muestra)" };
+const PAY_LABEL: Record<PaymentMethod, string> = { CARD: "Tarjeta de crédito o débito (muestra)", CHECKOUT_PRO: "Mercado Pago (muestra)", BANK_TRANSFER: "Transferencia (muestra)", QR_MANUAL: "QR (muestra)" };
 
-export function ConfirmStep({ onBack, onConfirm, onEdit }: { onBack: () => void; onConfirm: () => void; onEdit: (step: number) => void }) {
-  const { contact, address, fulfillment, paymentMethod, acceptedTerms, patch } = useCheckout();
+export function ConfirmStep({ onBack, onConfirm, onEdit, before }: { onBack: () => void; onConfirm: () => void; onEdit: (step: number) => void; before?: ReactNode }) {
+  const { contact, address, fulfillment, paymentMethod, card, acceptedTerms, patch } = useCheckout();
   const [error, setError] = useState(false);
   // "Regalar y pagar ahora" desde el modal: confirma igual que el botón (con los términos aceptados).
   const payNow = () => {
@@ -20,10 +22,11 @@ export function ConfirmStep({ onBack, onConfirm, onEdit }: { onBack: () => void;
   const rows = [
     { step: 0, label: "Datos", value: `${contact.name} · ${contact.email} · ${contact.phone}` },
     { step: 1, label: "Entrega", value: `${zone?.name ?? "—"}${fulfillment !== "PICKUP" ? ` · ${address.street} ${address.number}, ${address.city} (${address.postalCode})` : ""}` },
-    { step: 2, label: "Pago", value: paymentMethod ? PAY_LABEL[paymentMethod] : "—" },
+    { step: 2, label: "Pago", value: paymentMethod ? `${PAY_LABEL[paymentMethod]}${paymentMethod === "CARD" && card ? ` · ${cardLabel(card)}` : ""}` : "—" },
   ];
   return (
-    <form noValidate onSubmit={(e) => { e.preventDefault(); if (!acceptedTerms) return setError(true); onConfirm(); }} className="flex flex-col gap-5">
+    <>
+    <form id={STEP_FORM} noValidate onSubmit={(e) => { e.preventDefault(); if (!acceptedTerms) return setError(true); onConfirm(); }} className="flex flex-col gap-5">
       <dl className="divide-y divide-line rounded-2xl border border-line bg-surface">
         {rows.map((r) => (
           <div key={r.label} className="flex items-start justify-between gap-3 p-4">
@@ -42,11 +45,10 @@ export function ConfirmStep({ onBack, onConfirm, onEdit }: { onBack: () => void;
         </span>
       </label>
       {error && <p id="terms-error" role="alert" className="-mt-3 text-sm font-semibold text-danger">Para continuar, aceptá los términos.</p>}
-      <div className="flex flex-wrap gap-3">
-        <Button variant="secondary" onClick={onBack}>Atrás</Button>
-        <Button type="submit" size="lg">Confirmar pedido de demostración</Button>
-      </div>
-      <p className="text-xs text-muted">Esto no crea un pedido real ni cobra nada. Solo guarda una confirmación de muestra en este navegador.</p>
     </form>
+    {before}
+    <StepNav onBack={onBack} next="Confirmar pedido de demostración" big />
+    <p className="-mt-2 text-xs text-muted">Esto no crea un pedido real ni cobra nada. Solo guarda una confirmación de muestra en este navegador.</p>
+    </>
   );
 }

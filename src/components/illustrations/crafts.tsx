@@ -59,7 +59,7 @@ export function CandleTin({ tint = "#74acdf" }: { tint?: string }) {
 }
 
 /** Vela souvenir: cuenco de madera, flores de cera (color de la variante) y nombre grabado. */
-export function CandleBowl({ tint: petal = "#f2a9a2" }: { tint?: string }) {
+export function CandleBowl({ tint: petal = "#f2a9a2", blank }: { tint?: string; blank?: boolean }) {
   const tint = "#a8693a";
   return (
     <g>
@@ -73,7 +73,13 @@ export function CandleBowl({ tint: petal = "#f2a9a2" }: { tint?: string }) {
           <circle r="10" fill={shade(petal, -0.12)} />
         </g>
       ))}
-      <text x="200" y="282" textAnchor="middle" fontSize="30" fill="#fff" fontFamily="Caveat, 'Segoe Script', cursive">Ámbar</text>
+      {/* Nombre de muestra grabado en la madera (surco quemado con el labio de abajo a la luz), como el de la vista previa. */}
+      {!blank && (
+        <g fontSize="30" fontWeight="700" textAnchor="middle" fontFamily="Caveat, 'Segoe Script', cursive">
+          <text x="200" y="283.3" fill="#fff6e6" opacity=".42">Ámbar</text>
+          <text x="200" y="282" fill="#5b3418" opacity=".92">Ámbar</text>
+        </g>
+      )}
     </g>
   );
 }

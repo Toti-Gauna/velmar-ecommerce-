@@ -34,14 +34,3 @@ const safeStorage: StateStorage = {
 };
 
 export const demoStorage = createJSONStorage(() => safeStorage);
-
-export function clearDemoStorage(): void {
-  memory.clear();
-  try {
-    Object.keys(window.localStorage)
-      .filter((k) => k.startsWith(STORAGE_PREFIX))
-      .forEach((k) => window.localStorage.removeItem(k));
-  } catch {
-    /* ignorar */
-  }
-}

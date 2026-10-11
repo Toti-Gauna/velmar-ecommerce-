@@ -1,8 +1,9 @@
 "use client";
-import { useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/atoms/Button";
 import { inputClass } from "@/components/atoms/Field";
 import { cn } from "@/lib/cn";
+import { lockScroll } from "@/lib/scrollLock";
 
 interface ConfirmButtonProps {
   children: ReactNode;
@@ -24,11 +25,16 @@ export function ConfirmButton({ children, title, description, confirmLabel, onCo
   const id = useId();
   const [reason, setReason] = useState("");
   const [error, setError] = useState(false);
+  // El <dialog> nativo no frena el scroll de atrás (en Safari de iPhone, tampoco con overflow): ver lib/scrollLock.
+  const unlock = useRef<(() => void) | null>(null);
+  const release = () => { unlock.current?.(); unlock.current = null; };
+  useEffect(() => () => unlock.current?.(), []);
+  const open = () => { ref.current?.showModal(); release(); unlock.current = lockScroll(() => ref.current); };
   const close = () => { ref.current?.close(); setReason(""); setError(false); };
   return (
     <>
-      <Button variant={variant} size={size} className={className} disabled={disabled} onClick={() => ref.current?.showModal()}>{children}</Button>
-      <dialog ref={ref} aria-labelledby={`${id}-t`} onClose={() => { setReason(""); setError(false); }}
+      <Button variant={variant} size={size} className={className} disabled={disabled} onClick={open}>{children}</Button>
+      <dialog ref={ref} aria-labelledby={`${id}-t`} onClose={() => { release(); setReason(""); setError(false); }}
         className="m-auto w-[min(92vw,440px)] rounded-[var(--radius-card)] border border-line bg-surface p-0 text-ink shadow-2xl backdrop:bg-black/40">
         <form method="dialog" className="flex flex-col gap-4 p-5" onSubmit={(e) => {
           e.preventDefault();

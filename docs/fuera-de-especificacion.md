@@ -41,6 +41,14 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Pantalla de carga de 5 s y confeti de compra | previa | Nada (navegador) | S | |
 | Temáticas (16 fechas con paleta, fondo, pantalla de carga, cinta, cupón y ofertas) | previa, 5 | Tabla de temporadas con fechas y cupón; vigencia validada en el servidor | M | |
 | Personajes Pancho y Lola, transiciones entre páginas y microinteracciones | 5 | Nada (navegador) | S | |
+| Mis direcciones con alta y edición en un modal, principal, y elección con un toque en el paso Entrega (Polish 8.4.6) | Polish 8.4 | Direcciones por cuenta en la base, validadas en el servidor | S | |
+| Mis mascotas cargadas por el cliente, con cumpleaños, en la misma ficha que ve el dueño (Polish 8.4.14) | Polish 8.4 | Mascotas por cuenta en la base; el email de cumpleaños lo arma el servidor | S | |
+| Mis tarjetas y "Tarjeta de crédito o débito" como medio de pago propio con tarjetas guardadas (Polish 8.4.22); Checkout Pro pasa a llamarse "Mercado Pago" en el checkout. **La spec cobra con Mercado Pago Checkout Pro**: en la demo se guarda solo marca, últimos 4 y vencimiento | Polish 8.4 | Tarjetas guardadas y cobro con el formulario seguro de Mercado Pago (tokenización); Velmar nunca recibe ni guarda el número ni el código | M | A decidir con Velmar |
+| Transferir los pedidos de un día que se cierra a otro día, con aviso de carga y capacidad (Polish 8.4.15) | Polish 8.4 | Reprogramación en la base y aviso a cada cliente con la fecha nueva | S | |
+| Explicación de cómo se calculan costo, margen y precio sugerido en Costos y margen (Polish 8.4.18) | Polish 8.4 | Nada (texto de ayuda) | S | |
+| Editor de emails en cuatro pasos con avisos antes de guardar y bandeja de salida arriba en tarjeta (Polish 8.4.19 y 8.4.20) | Polish 8.4 | Nada nuevo: las plantillas se guardan en la base y los envía Nodemailer | S | |
+| **Cambio:** en el celular, el cambio de página entra con un fundido CSS en vez de View Transitions, con menos partículas y collares quietos en las tarjetas (Polish 8.4.28, rendimiento) | Polish 8.4 | Nada (es del lado del navegador) | S | |
+| **Cambio:** sin el aviso "Demo de venta" arriba de la tienda ni "Reiniciar demo" (Polish 8.4.13, pedido de Ignacio para mostrársela a clientes). Siguen la señal del panel y los avisos del checkout de que no se cobra nada | Polish 8.4 | Nada (es la demo) | S | |
 
 ## Panel
 

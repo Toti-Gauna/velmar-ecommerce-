@@ -40,7 +40,7 @@ const seed = (page: Page, cart: object | null, prize: boolean) =>
     if (prize) localStorage.setItem("velmar-demo:account", JSON.stringify({ state: { wheelPrize: { code: "DEMO", label: "Premio", at: "2026-10-10T12:00:00.000Z" } }, version: 0 }));
   }, { cart, prize });
 
-async function contactToConfirm(page: Page, pay: "Transferencia bancaria" | "Tarjetas de débito, crédito y prepagas") {
+async function contactToConfirm(page: Page, pay: "Transferencia bancaria" | "Mercado Pago") {
   await page.getByLabel("Nombre y apellido").fill("Juana Pérez");
   await page.getByLabel("Email").fill("juana@ejemplo.com");
   await page.getByLabel("Teléfono / WhatsApp").fill("223 555-1234");
@@ -79,7 +79,7 @@ for (const d of DEVICES) {
       await w.check("carrito");
       await page.getByRole("button", { name: "Continuar al checkout" }).click();
       await page.getByRole("dialog", { name: "Ruleta de cupones" }).getByRole("button", { name: "Continuar sin girar" }).click();
-      await contactToConfirm(page, "Tarjetas de débito, crédito y prepagas");
+      await contactToConfirm(page, "Mercado Pago");
       await w.check("checkout");
       await confirmOrder(page);
       await expect(page.getByText("PEDIDO DE DEMOSTRACIÓN · no es un pedido real")).toBeVisible();
@@ -150,6 +150,11 @@ for (const d of DEVICES) {
       await w.check("ruleta");
       await stage.getByRole("button", { name: "Aplicar ahora" }).click();
       await page.goto("checkout/");
+      // 8.4.4: el resumen y el cupón aparecen desde "Entrega".
+      await page.getByLabel("Nombre y apellido").fill("Juana Pérez");
+      await page.getByLabel("Email").fill("juana@ejemplo.com");
+      await page.getByLabel("Teléfono / WhatsApp").fill("223 555-1234");
+      await page.getByRole("button", { name: "Continuar a la entrega" }).click();
       const summary = page.getByRole("region", { name: "Resumen de tu compra" });
       await expect(summary.getByText("Cupón", { exact: true })).toBeVisible();
       const withCoupon = await summary.locator("dd").last().textContent();

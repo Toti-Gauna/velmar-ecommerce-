@@ -7,7 +7,7 @@ import type { CustomerProfile, PetSpecies } from "@/demo/fixtures/workshop";
 import { useAdmin } from "@/stores/admin";
 import { Panel } from "../detail/Panel";
 import { useDemoSave } from "../useDemoSave";
-import { BirthdayPicker, birthdayText } from "./BirthdayPicker";
+import { BirthdayPicker, birthdayText } from "@/components/molecules/BirthdayPicker";
 
 const SPECIES: Record<PetSpecies, string> = { perro: "Perro", gato: "Gato", otro: "Otra" };
 const select = "h-12 rounded-2xl border border-ink/12 bg-surface px-3 text-base font-semibold";

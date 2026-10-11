@@ -17,7 +17,7 @@ export function WhatsAppFab() {
   const bar = bottomBarFor(pathname);
   if (bar === "preview") return null;
   return (
-    <a
+    <a data-shop-fab="whatsapp"
       href={whatsappLink(whatsappMessage({ productName, page }))}
       target="_blank"
       rel="noopener noreferrer"

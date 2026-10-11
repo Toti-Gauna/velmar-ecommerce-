@@ -7,6 +7,7 @@ import { HelpButton, HelpPanel } from "@/components/molecules/Help";
 import { Pagination } from "@/components/molecules/Pagination";
 import { PAYMENT_QUEUE_HELP } from "@/demo/admin/help";
 import { paginate } from "@/demo/admin/table";
+import { isManualPayment } from "@/demo/engine/payments";
 import { useAdmin } from "@/stores/admin";
 import { AdminPageHeader } from "../AdminPageHeader";
 import { TabFilter } from "../table/TabFilter";
@@ -27,7 +28,7 @@ export function PaymentsQueue() {
   const [help, setHelp] = useState(false);
   const [collecting, setCollecting] = useState(false);
   const tab = (state.filters.estado || "review") as Tab;
-  const manual = orders.filter((o) => o.paymentMethod !== "CHECKOUT_PRO");
+  const manual = orders.filter((o) => isManualPayment(o.paymentMethod));
   const groups: Record<Tab, typeof orders> = {
     review: manual.filter((o) => o.status === "PAYMENT_REVIEW"),
     waiting: manual.filter((o) => o.status === "PENDING_PAYMENT"),

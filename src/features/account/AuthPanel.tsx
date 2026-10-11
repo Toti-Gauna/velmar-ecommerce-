@@ -7,11 +7,11 @@ import { VelmarPup } from "@/components/illustrations/characters";
 import { cn } from "@/lib/cn";
 import { useAccount } from "@/stores/account";
 import { GoogleSimulated } from "./GoogleSimulated";
+import { DEMO_USER } from "@/demo/fixtures/commerce";
 
 type Mode = "login" | "signup";
 type Errors = Partial<Record<"name" | "email" | "password", string>>;
 
-const DEMO_USER = { name: "Sofía Demo", email: "sofia.demo@ejemplo.com" };
 const BENEFITS = [
   { icon: Package, text: "Seguí tus pedidos paso a paso" },
   { icon: Gift, text: "Tus regalos, enviados y recibidos" },

@@ -1,28 +1,19 @@
 "use client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { ArrowUpRight, ChevronRight, FlaskConical, Menu, RotateCcw, Search } from "lucide-react";
-import { resetDemo } from "@/stores/hydration";
-import { useToasts } from "@/stores/toast";
+import { usePathname } from "next/navigation";
+import { ArrowUpRight, ChevronRight, FlaskConical, Menu, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle";
 import { currentSection } from "./nav";
 
 /**
  * Barra superior del panel. Lleva la señal persistente de demo (abierto a propósito, datos ficticios, sin
- * seguridad real), la sección actual y las acciones. En el celular suma el botón del menú hamburguesa.
+ * seguridad real), la sección actual y las acciones. En el celular suma el botón del menú hamburguesa. Sin "Reiniciar
+ * demo" (8.4.13, pedido de Ignacio para mostrársela a clientes).
  */
 export function AdminTopbar({ onMenu, onSearch }: { onMenu: () => void; onSearch: () => void }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const toast = useToasts((s) => s.push);
   const section = currentSection(pathname);
   const Icon = section.icon;
-  const reset = () => {
-    if (!window.confirm("¿Reiniciar la demo? Panel y tienda vuelven a los datos ficticios iniciales en este navegador.")) return;
-    resetDemo();
-    toast({ tone: "info", title: "Demo reiniciada", description: "Panel y tienda volvieron a los datos de muestra." });
-    router.push("/admin-demo/");
-  };
   return (
     <header data-admin-topbar className="sticky top-[env(safe-area-inset-top)] z-40 border-b border-line bg-bg">
       <p className="flex items-center gap-2 border-b border-dashed border-warning/50 bg-warning-soft px-4 py-1.5 text-[12px] font-bold text-warning lg:px-10">
@@ -46,9 +37,6 @@ export function AdminTopbar({ onMenu, onSearch }: { onMenu: () => void; onSearch
           Ver tienda <ArrowUpRight size={15} aria-hidden="true" />
         </Link>
         <ThemeToggle className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-muted hover:bg-accent/60 hover:text-ink" />
-        <button type="button" onClick={reset} aria-label="Reiniciar demo" className="flex h-10 shrink-0 items-center gap-2 rounded-full border border-ink/15 bg-surface px-3 text-sm font-bold transition-colors hover:border-ink/30 sm:px-4">
-          <RotateCcw size={15} aria-hidden="true" /><span className="hidden sm:inline">Reiniciar demo</span>
-        </button>
       </div>
     </header>
   );

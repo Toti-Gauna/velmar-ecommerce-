@@ -21,7 +21,7 @@ export function GiftPreview({ draft, productName }: { draft: LineGift; productNa
         <Scene key={draft.occasion} hits={0} total={5} opened={false} reduce />
       </div>
       <p className="text-center text-xs font-bold uppercase tracking-wider opacity-80">{GIFT_SCENE_NAMES[draft.occasion]}</p>
-      <div className="mt-4 rounded-2xl bg-black/20 p-4 backdrop-blur-[2px]">
+      <div className="mt-4 rounded-2xl bg-black/25 p-4">
         <p className="font-display text-2xl leading-tight">Para {draft.to.trim() || "…"}</p>
         <p className={`mt-2 whitespace-pre-line break-words text-sm ${message ? "" : "italic opacity-70"}`}>{message ? `“${message}”` : "Tu mensaje aparece acá."}</p>
         <p className="mt-3 text-sm font-bold">De {draft.from.trim() || "…"}</p>

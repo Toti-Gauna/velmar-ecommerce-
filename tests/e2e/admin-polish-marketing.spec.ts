@@ -65,13 +65,15 @@ test.describe("escritorio con mouse", () => {
     await expect(page.getByRole("heading", { level: 1, name: /Configuración de ruleta/ })).toBeVisible();
     await page.goto("admin-demo/cupones/premios/");
     await expect(page.getByRole("heading", { level: 1, name: /Premios disponibles/ })).toBeVisible();
-    // Emails: plantillas como tarjetas; la bandeja es su propia página (y el enlace viejo lleva ahí).
+    // Emails: plantillas como tarjetas; la bandeja completa es su propia página (y el enlace viejo lleva ahí).
     await page.goto("admin-demo/emails/?vista=enviados");
     await expect(page).toHaveURL(/emails\/enviados\/$/);
     await expect(page.getByRole("region", { name: "Bandeja de salida" })).toBeVisible();
     await page.getByRole("link", { name: "Volver a Emails automáticos" }).click();
     await expect(page.getByRole("link", { name: "Editar Gracias por tu compra" })).toBeVisible();
-    await expect(page.getByRole("region", { name: "Bandeja de salida" })).toHaveCount(0);
+    // 8.4.20: en la lista queda la tarjeta de la bandeja (arriba), sin el buscador de la página completa.
+    await expect(page.getByRole("region", { name: "Bandeja de salida" }).getByRole("link", { name: "Ver toda la bandeja" })).toBeVisible();
+    await expect(page.getByLabel("Buscar en la bandeja")).toHaveCount(0);
   });
 
   test("8.3.24 editor de email: título a todo el ancho y acciones abajo; los cambios sin guardar vuelven al reabrir y se descartan con confirmación", async ({ page }) => {
@@ -81,8 +83,12 @@ test.describe("escritorio con mouse", () => {
     const actions = (await page.getByRole("group", { name: "Acciones de la plantilla" }).boundingBox())!;
     expect(title.height, "el título entra en una línea").toBeLessThan(70);
     expect(actions.y).toBeGreaterThanOrEqual(title.y + title.height - 1);
-    await page.getByRole("navigation", { name: "Partes del editor" }).getByRole("button", { name: "Bloques" }).click();
-    await expect(page.locator("#e-blocks")).toBeFocused();
+    // 8.4.19: los pasos llevan el foco al paso elegido.
+    const steps = page.getByRole("navigation", { name: "Pasos del editor" });
+    await steps.getByRole("button", { name: /Contenido/ }).click();
+    await expect(page.locator("#e-step")).toBeFocused();
+    await expect(page.locator("#e-blocks")).toBeVisible();
+    await steps.getByRole("button", { name: /Cuándo se envía/ }).click();
     await page.getByLabel("Nombre interno").fill("Gracias por tu compra (borrador)");
     await expect(page.getByText("Cambios sin guardar")).toBeVisible();
     await page.getByRole("link", { name: "Volver a Emails automáticos" }).click();
@@ -92,8 +98,9 @@ test.describe("escritorio con mouse", () => {
     await page.getByRole("button", { name: "Descartar cambios" }).click();
     await page.getByRole("dialog").getByRole("button", { name: "Descartar" }).click();
     await expect(page.getByLabel("Nombre interno")).toHaveValue("Gracias por tu compra");
-    // La vista previa sigue reemplazando las fichas.
-    await expect(page.getByRole("region", { name: "Vista previa" }).getByText(/¡Gracias por tu compra, Julián! Pedido VEL-000121/)).toBeVisible();
+    // La vista previa sigue reemplazando las fichas (a 1024 px se abre en un modal).
+    await page.getByRole("button", { name: "Ver cómo queda" }).click();
+    await expect(page.getByRole("dialog", { name: "Vista previa del email" }).getByText(/¡Gracias por tu compra, Julián! Pedido VEL-000121/)).toBeVisible();
   });
 
   test("8.3.25 ruleta arriba; premio desde plantilla, elegido por lista y guardado; pesos en cero no se guardan; el borrador vuelve", async ({ page }) => {
@@ -149,8 +156,13 @@ for (const [label, width, height, touch] of [["escritorio chico", 1024, 768, fal
       expect(await horizontalOverflow(page), route).toBeLessThanOrEqual(0);
     }
     await page.goto(base() + "admin-demo/cupones/ruleta/");
-    const preview = (await page.getByRole("region", { name: "Vista previa de la ruleta" }).boundingBox())!;
-    expect(preview.y + preview.height).toBeLessThanOrEqual((await page.getByRole("region", { name: "Visibilidad y vigencia" }).boundingBox())!.y);
+    // Las dos medidas juntas: con la página todavía acomodándose, dos lecturas separadas podían caer en momentos distintos.
+    await expect(page.getByRole("region", { name: "Visibilidad y vigencia" })).toBeVisible();
+    const [previewBottom, configTop] = await page.evaluate(() => [
+      document.querySelector('[aria-label="Vista previa de la ruleta"]')!.getBoundingClientRect().bottom,
+      document.querySelector('[aria-labelledby="w-config"]')!.getBoundingClientRect().top,
+    ]);
+    expect(previewBottom).toBeLessThanOrEqual(configTop);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     await page.goto(base() + "admin-demo/emails/editar/?id=tpl-order-created");
     const title = (await page.getByRole("heading", { level: 1 }).boundingBox())!;

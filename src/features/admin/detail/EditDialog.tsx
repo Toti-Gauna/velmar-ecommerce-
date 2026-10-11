@@ -15,6 +15,8 @@ interface Props {
   canSave?: boolean;
   onSave: () => void;
   onClose: () => void;
+  /** Texto del botón de guardar (por defecto, "Guardar"). */
+  saveLabel?: string;
   children: ReactNode;
 }
 
@@ -22,7 +24,7 @@ interface Props {
  * Modal centrado de edición breve (8.3.17); en el celular sube desde abajo con su propio scroll. Guardar y Cancelar
  * siempre a la vista; cerrar con cambios (Cancelar, Escape o la X) pide confirmar antes de descartarlos.
  */
-export function EditDialog({ open, title, heading, intro, dirty, canSave = dirty, onSave, onClose, children }: Props) {
+export function EditDialog({ open, title, heading, intro, dirty, canSave = dirty, onSave, onClose, saveLabel = "Guardar", children }: Props) {
   const [ask, setAsk] = useState(false);
   const close = () => { setAsk(false); onClose(); };
   const request = () => (dirty ? setAsk(true) : close());
@@ -37,16 +39,18 @@ export function EditDialog({ open, title, heading, intro, dirty, canSave = dirty
           {children}
         </div>
         <div className="border-t border-line bg-surface px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-7">
+          {/* Claves distintas: sin ellas React reusaba el botón tocado ("Seguir editando") como el de guardar, y el
+              mismo toque terminaba enviando el formulario (8.4: guardaba y cerraba en vez de seguir editando). */}
           {ask ? (
-            <div role="alertdialog" aria-label="Cambios sin guardar" className="flex flex-wrap items-center justify-end gap-2">
+            <div key="ask" role="alertdialog" aria-label="Cambios sin guardar" className="flex flex-wrap items-center justify-end gap-2">
               <p className="mr-auto text-sm font-bold text-warning">Tenés cambios sin guardar.</p>
               <Button variant="ghost" onClick={() => setAsk(false)}>Seguir editando</Button>
               <Button variant="danger" onClick={close}>Descartar cambios</Button>
             </div>
           ) : (
-            <div className="flex flex-wrap justify-end gap-2">
+            <div key="actions" className="flex flex-wrap justify-end gap-2">
               <Button variant="ghost" onClick={request}>Cancelar</Button>
-              <Button type="submit" disabled={!canSave}>Guardar</Button>
+              <Button type="submit" disabled={!canSave}>{saveLabel}</Button>
             </div>
           )}
         </div>

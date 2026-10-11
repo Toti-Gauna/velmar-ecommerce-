@@ -55,8 +55,10 @@ export function GiftModal({ open, onClose, productName, choices, choice, onChoic
 
   return (
     <Sheet open={open} onClose={onClose} title="Es para regalar" side="dialog">
-      <form onSubmit={submit("cart")} noValidate className="flex min-h-0 flex-1 flex-col">
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+      {/* Sin hijos flex-1/min-h-0: el modal toma el alto del contenido y Safari los colapsaba a cero, así que en el
+          iPad solo se veía el velo (8.4.10). El alto máximo va en el formulario y el scroll en el cuerpo. */}
+      <form onSubmit={submit("cart")} noValidate className="flex max-h-[94dvh] flex-col sm:max-h-[90dvh]">
+        <div className="overflow-y-auto overscroll-contain">
           <div className="grid gap-6 p-5 pt-6 sm:p-8 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
             <div className="flex flex-col gap-4">
               <div className="pr-12">
@@ -101,7 +103,7 @@ export function GiftModal({ open, onClose, productName, choices, choice, onChoic
           </div>
         </div>
         {/* Acciones siempre a la vista, también con el teclado del celular abierto. */}
-        <div className="flex flex-col gap-2 border-t border-line bg-surface p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end sm:px-8">
+        <div className="flex shrink-0 flex-col gap-2 border-t border-line bg-surface p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end sm:px-8">
           <Button type="submit" size="lg"><Gift size={18} aria-hidden="true" /> Agregar regalo al carrito</Button>
           <Button variant="dark" size="lg" onClick={() => submit("buy")()}><Zap size={18} aria-hidden="true" className="text-brass" /> Regalar y pagar ahora</Button>
         </div>

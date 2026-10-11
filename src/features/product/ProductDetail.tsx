@@ -1,6 +1,6 @@
 "use client";
 import { Eye, Gift, ShieldCheck, ShoppingBag, Undo2, Zap } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "@/components/atoms/Button";
 import { FLOATING_BAR } from "@/components/organisms/bottomBars";
 import { StockMeter } from "@/components/molecules/StockMeter";
@@ -34,9 +34,10 @@ function stockNote(a: Availability): string {
 
 /**
  * Ficha todo en uno: galería con vista previa en vivo + una sola tarjeta para elegir opción, diseño y cantidad.
- * `preview` (8.3.21): muestra el borrador del panel tal cual, sin comprar ni favoritos.
+ * `preview` (8.3.21): muestra el borrador del panel tal cual, sin comprar ni favoritos. `crumbs` (8.4.2): las migas van
+ * arriba de la galería y, en escritorio, quedan fijas con ella mientras se baja por la compra.
  */
-export function ProductDetail({ product: initial, preview = false }: { product: Product; preview?: boolean }) {
+export function ProductDetail({ product: initial, preview = false, crumbs }: { product: Product; preview?: boolean; crumbs?: ReactNode }) {
   const stored = useDemoData((d) => d.products.find((p) => p.slug === initial.slug));
   const product = preview ? initial : stored ?? initial;
   const settings = useDemoData((d) => d.settings);
@@ -83,6 +84,7 @@ export function ProductDetail({ product: initial, preview = false }: { product: 
           terminar esta sección (no acompaña a los detalles ni invade las recomendaciones). En el celular, flujo natural. */}
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
         <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
+          {crumbs && <div className="-mb-1" data-product-crumbs>{crumbs}</div>}
           <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} photoUrl={product.photoDataUrl} alt={product.imageAlt} live={live} />
           {inactive && !preview ? (
             <p role="status" className="rounded-2xl bg-warning-soft p-3 text-sm font-bold text-warning">Este producto está pausado desde el panel demo y no se puede comprar.</p>

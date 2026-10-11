@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { brand } from "@/config/brand";
 import { Logo } from "@/components/atoms/Logo";
-import { ResetDemoButton } from "./ResetDemoButton";
 
 const COLS = [
   { title: "Tienda", links: [["/categorias/", "Todas las categorías"], ["/crear/", "Crear el tuyo"], ["/club/", "Club Velmar"], ["/cupones/", "Mis cupones"], ["/regalo/", "Tengo un regalo"], ["/buscar/", "Buscar"]] },
@@ -41,7 +40,6 @@ export function Footer() {
           <p>Vendedor: {brand.legalName ?? "razón social a confirmar"} · CUIT {brand.cuit ?? "a confirmar"}</p>
           <p className="flex flex-wrap gap-x-3">
             <span>Demo de venta por Eclipse · paleta provisional</span>
-            <ResetDemoButton className="font-bold text-brass underline underline-offset-2" />
             <Link href="/admin-demo/" className="font-semibold underline underline-offset-2 hover:text-white">Ver panel demo</Link>
           </p>
         </div>

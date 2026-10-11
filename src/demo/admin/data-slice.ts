@@ -1,5 +1,5 @@
 import type { DemoData } from "../engine/source";
-import type { DemoSettings } from "../fixtures/commerce";
+import { DEMO_USER, type DemoSettings } from "../fixtures/commerce";
 import type { TextZone } from "../fixtures/templates";
 import type { WheelConfig, WheelPrize } from "../fixtures/wheel";
 import type { CarouselSlide, Coupon, Faq, Mission, PersonalizationTemplate, Product, SeasonalTheme, ShippingZone, ThemeSettings } from "../types";
@@ -33,6 +33,8 @@ export interface DataActions {
   saveTheme: (theme: SeasonalTheme) => void;
   saveThemeSettings: (patch: Partial<ThemeSettings>) => void;
   toggleUserBlocked: (id: string) => void;
+  /** Cuenta de la tienda (simulada) que todavía no figura en Clientes: se suma como registrada (8.4.14). */
+  syncShopAccount: (user: { name: string; email: string }) => void;
   resolveClaim: (id: string, status: ClaimStatus, resolution: string) => void;
 }
 
@@ -75,6 +77,14 @@ export function createDataActions(set: Set): DataActions {
     saveThemeSettings: (patch) => edit("Modo de temáticas", "Temáticas", (d) => ({ themeSettings: { ...d.themeSettings, ...patch } })),
     toggleUserBlocked: (id) =>
       set((s) => ({ users: s.users.map((u) => (u.id === id ? { ...u, blocked: !u.blocked } : u)), audit: [auditEntry("Bloqueo de usuario (visual)", id), ...s.audit] })),
+    syncShopAccount: (user) =>
+      set((s) => {
+        const email = user.email.trim().toLowerCase();
+        if (s.users.some((u) => u.email.toLowerCase() === email)) return {};
+        // Mismo id que usan los pedidos hechos con la cuenta (orders-slice: "u-demo"): la ficha junta compras y mascotas.
+        const id = email === DEMO_USER.email ? "u-demo" : `u-${email.replace(/[^a-z0-9]+/g, "-")}`;
+        return { users: [...s.users, { id, name: user.name, email: user.email.trim(), createdAt: new Date().toISOString(), orderCodes: [], totalSpent: 0, missionProgress: {}, rewards: [], blocked: false }], audit: [auditEntry("Cuenta de la tienda sumada a Clientes", user.email), ...s.audit].slice(0, 80) };
+      }),
     resolveClaim: (id, status, resolution) =>
       set((s) => ({ claims: s.claims.map((c) => (c.id === id ? { ...c, status, resolution } : c)), audit: [auditEntry(`Reclamo: ${status}`, id), ...s.audit] })),
   };

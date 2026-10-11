@@ -26,6 +26,8 @@ export interface AdminOrder {
   prevStatus?: OrderStatus | null;
   fulfillment: FulfillmentType;
   paymentMethod: PaymentMethod;
+  /** Pago con tarjeta (8.4.22): solo marca y últimos 4, ej. "Visa terminada en 4242". */
+  cardLabel?: string;
   address?: string;
   lines: CartLine[];
   total: number;

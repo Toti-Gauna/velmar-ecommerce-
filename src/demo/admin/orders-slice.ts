@@ -61,7 +61,7 @@ export function createOrdersActions(set: Set, get: () => AdminData): OrdersActio
         if (existing && (!existing.fromShop || existing.createdAt === order.createdAt)) return {};
         const created: AdminOrder = {
           code: order.code, createdAt: order.createdAt, customer: order.contact, userId: order.asAccount ? "u-demo" : null,
-          status: "PENDING_PAYMENT", fulfillment: order.fulfillment, paymentMethod: order.paymentMethod, lines: order.lines,
+          status: "PENDING_PAYMENT", fulfillment: order.fulfillment, paymentMethod: order.paymentMethod, ...(order.card ? { cardLabel: order.card } : {}), lines: order.lines,
           total: order.quote.total, notes: [], fromShop: true, promisedDate: promiseFor(order.lines, DEMO_TODAY, s.orders, s.workshop.settings, order.code).day, log: [{ at: order.createdAt, from: null, to: "PENDING_PAYMENT", note: "Checkout de demostración" }],
         };
         const mails = emailsForOrder(s.emails.templates, triggersForNewOrder(created), created, order.createdAt);
@@ -73,7 +73,7 @@ export function createOrdersActions(set: Set, get: () => AdminData): OrdersActio
       move(set, code, "PAID", "proof-approved", (o) => ({ proof: o.proof && { ...o.proof, status: "APPROVED" } }), "Comprobante aprobado tras verificar el ingreso (simulado)"),
     rejectProof: (code, reason) =>
       move(set, code, "PENDING_PAYMENT", "proof-rejected", (o) => ({ proof: o.proof && { ...o.proof, status: "REJECTED", rejectReason: reason } }), `Comprobante rechazado: ${reason}`),
-    confirmProvider: (code) => move(set, code, "PAID", "provider-confirmed", () => ({}), "Confirmación de Mercado Pago simulada (en producción llega por webhook)"),
+    confirmProvider: (code) => move(set, code, "PAID", "provider-confirmed", () => ({}), get().orders.find((o) => o.code === code)?.paymentMethod === "CARD" ? "Pago con tarjeta aprobado (simulado; en producción lo confirma Mercado Pago por webhook)" : "Confirmación de Mercado Pago simulada (en producción llega por webhook)"),
     transition: (code, to, note) => move(set, code, to, "admin", () => ({}), note?.trim() || `Estado cambiado a ${STATUS_LABEL[to]}`),
     addNote: (code, text) =>
       set((s) => ({ orders: s.orders.map((o) => (o.code === code ? { ...o, notes: [...o.notes, text] } : o)), audit: [auditEntry("Nota interna agregada", code), ...s.audit] })),

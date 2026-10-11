@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { ProductArt } from "@/components/illustrations/ProductArt";
 import { LOGO_M, LOGO_STROKE, LOGO_V, LOGO_VIEWBOX } from "@/components/atoms/Logo";
 import { brand } from "@/config/brand";
+import { BASE_PATH } from "@/lib/base-path";
 import type { ArtKey } from "@/demo/types";
 import { ThemeSplashScene } from "@/features/themes/ThemeSplashScene";
 
@@ -68,7 +69,15 @@ export function Splash() {
 /** Abre el splash en la capa superior; sin soporte de popover (o con "reducir movimiento") queda como antes. */
 const splashOpenScript = `(function(){var s=document.getElementById("velmar-splash");if(!s||!s.showPopover||document.documentElement.classList.contains("splash-done"))return;if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;try{s.showPopover()}catch(e){}})();`;
 
-/** Cierra la pantalla de carga con Escape (si no hay JS, igual se va sola a los 5 s). */
-// Si la pantalla de carga está a la vista, el Escape que la cierra queda "usado" (preventDefault) y no cierra además lo
-// que esté abierto debajo. Oculta (ya terminó o "reducir movimiento"), el Escape sigue de largo: listas y diálogos nativos.
-export const splashScript = `(function(){var d=document.documentElement;function hide(){d.classList.add("splash-done");var s=document.getElementById("velmar-splash");try{if(s&&s.matches(":popover-open"))s.hidePopover()}catch(e){}}document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var s=document.getElementById("velmar-splash");if(s&&!d.classList.contains("splash-done")&&getComputedStyle(s).display!=="none")e.preventDefault();hide()});setTimeout(hide,5200)})();`;
+/**
+ * Script del <head> de la pantalla de carga (corre antes de pintar):
+ * - Escape la cierra (si no hay JS, igual se va sola a los 5 s). Si está a la vista, el Escape que la cierra queda
+ *   "usado" (preventDefault) y no cierra además lo que esté abierto debajo; oculta, sigue de largo.
+ * - 8.4.3: solo sale al entrar desde afuera o al recargar a mano. Una carga completa que viene de adentro de la tienda
+ *   (un link que recargó la página, o una versión nueva publicada a mitad de la visita que obliga al navegador a pedir
+ *   la página entera) entra directo, sin splash. "Ver en la tienda" del panel la pide a propósito (`velmar:splash`).
+ * - 8.4.26: mientras se ve, la página queda oculta (`splash-hold`, ver app/splash.css) hasta que sube el telón, y las
+ *   transiciones entre páginas terminan en el acto (app/motion.css): React arranca una al hidratar y sus capas se dibujan
+ *   encima de todo, también del splash (por eso asomaba la página sobre la pantalla de carga al recargar).
+ */
+export const splashScript = `(function(){var d=document.documentElement;function lift(){d.classList.remove("splash-hold")}function hide(){lift();d.classList.add("splash-done");var s=document.getElementById("velmar-splash");try{if(s&&s.matches(":popover-open"))s.hidePopover()}catch(e){}}try{var forced=sessionStorage.getItem("velmar:splash")==="1";sessionStorage.removeItem("velmar:splash");var n=performance.getEntriesByType("navigation")[0];var r=document.referrer?new URL(document.referrer):null;var base=${JSON.stringify(BASE_PATH)};var inside=r&&r.origin===location.origin&&(r.pathname+"/").indexOf(base+"/")===0;if(!forced&&inside&&(!n||n.type!=="reload"))d.classList.add("splash-done")}catch(e){}if(!d.classList.contains("splash-done")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("splash-hold");setTimeout(lift,4350)}document.addEventListener("keydown",function(e){if(e.key!=="Escape")return;var s=document.getElementById("velmar-splash");if(s&&!d.classList.contains("splash-done")&&getComputedStyle(s).display!=="none")e.preventDefault();hide()});setTimeout(hide,5200)})();`;

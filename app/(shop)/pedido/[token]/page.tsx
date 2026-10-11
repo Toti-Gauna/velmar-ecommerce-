@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/templates/PageHeader";
 import { DEMO_TRACKING_TOKEN } from "@/demo/fixtures/commerce";
+import { BackToOrders } from "@/features/order/BackToOrders";
 import { TrackingView } from "@/features/order/TrackingView";
 
 export const dynamicParams = false;
@@ -15,6 +16,7 @@ export const metadata: Metadata = { title: "Seguimiento (demo)" };
 export default function TrackingPage() {
   return (
     <>
+      <BackToOrders />
       <PageHeader title="Seguimiento de tu pedido" />
       <TrackingView />
     </>

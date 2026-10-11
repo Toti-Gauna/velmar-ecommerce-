@@ -9,6 +9,8 @@ export interface DemoSettings {
   transferHolder: string;
   nationalTaxRate: number;
   enabledMethods: PaymentMethod[];
+  /** Medios que existían cuando se guardaron estos ajustes (para sumar los nuevos una sola vez, ver engine/payments). */
+  knownMethods?: PaymentMethod[];
   /** null = no confirmado: el CTA abre WhatsApp sin destinatario. */
   whatsappNumber: string | null;
   brandColors: { primary: string; accent: string; background: string };
@@ -27,7 +29,8 @@ export const demoSettings: DemoSettings = {
   transferCbu: "0000000000000000000000",
   transferHolder: "Titular de muestra",
   nationalTaxRate: 0.21,
-  enabledMethods: ["CHECKOUT_PRO", "BANK_TRANSFER", "QR_MANUAL"],
+  enabledMethods: ["CARD", "CHECKOUT_PRO", "BANK_TRANSFER", "QR_MANUAL"],
+  knownMethods: ["CARD", "CHECKOUT_PRO", "BANK_TRANSFER", "QR_MANUAL"],
   whatsappNumber: null,
   brandColors: { primary: "#3a4527", accent: "#ece2cf", background: "#f6f1e8" },
   legalName: null,
@@ -68,4 +71,7 @@ export const slides: CarouselSlide[] = [
 ];
 
 export const DEMO_TRACKING_TOKEN = "demo-velmar";
+/** Cuenta demo ("Entrar a la cuenta demo"): datos ficticios. */
+export const DEMO_USER = { name: "Sofía Demo", email: "sofia.demo@ejemplo.com" };
+
 export const DEMO_ORDER_CODE = "VEL-DEMO-0001";

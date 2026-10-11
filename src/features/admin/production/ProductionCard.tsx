@@ -31,21 +31,19 @@ function DueChip({ order, today }: { order: AdminOrder; today: string }) {
 }
 
 /** "Mover etapa" (8.3.16): las etapas a las que puede ir el pedido según las reglas, sin arrastrar (teclado y celular). */
-function MoveStage({ order, column, onMove }: { order: AdminOrder; column: ProductionColumn; onMove: (to: ProductionColumn) => void }) {
+function MoveStage({ order, targets, onMove, className }: { order: AdminOrder; targets: typeof PRODUCTION_COLUMNS; onMove: (to: ProductionColumn) => void; className?: string }) {
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
-  const targets = PRODUCTION_COLUMNS.filter((c) => c.id !== column && productionMove(order, c.id).ok);
-  if (!targets.length) return null;
   const close = () => { setOpen(false); button.current?.focus(); };
   return (
-    <div className="relative" onKeyDown={(e) => { if (e.key === "Escape" && open) { e.stopPropagation(); close(); } }}
+    <div className={cn("relative", className)} onKeyDown={(e) => { if (e.key === "Escape" && open) { e.stopPropagation(); close(); } }}
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false); }}>
       <button ref={button} type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls={`mover-${order.code}`}
-        className="inline-flex h-9 items-center gap-1 rounded-full border border-ink/15 px-3 text-xs font-bold hover:bg-accent/50">
+        className="inline-flex h-10 w-full items-center justify-center gap-1 rounded-full border border-ink/15 bg-surface px-3 text-[13px] font-bold hover:bg-accent/50">
         Mover etapa<span className="sr-only"> de {order.code}</span> <ChevronDown size={14} aria-hidden="true" className={cn("transition-transform motion-reduce:transition-none", open && "rotate-180")} />
       </button>
       {open && (
-        <ul id={`mover-${order.code}`} aria-label={`Mover ${order.code} a`} className="absolute bottom-full left-0 z-20 mb-1 flex min-w-44 flex-col gap-0.5 rounded-2xl bg-surface p-1.5 shadow-[var(--shadow-lift)] ring-1 ring-ink/10">
+        <ul id={`mover-${order.code}`} aria-label={`Mover ${order.code} a`} className="absolute bottom-full left-0 z-20 mb-1 flex w-full min-w-44 flex-col gap-0.5 rounded-2xl bg-surface p-1.5 shadow-[var(--shadow-lift)] ring-1 ring-ink/10">
           {targets.map((c) => (
             <li key={c.id}>
               <button type="button" onClick={() => { setOpen(false); onMove(c.id); }} aria-label={`Mover ${order.code} a ${c.label}`}
@@ -65,6 +63,7 @@ interface Props { order: AdminOrder; column: ProductionColumn; today: string; on
 /** Tarjeta del tablero: pedido, cliente, vencimiento, productos con variante y lo aprobado, y las acciones abajo. */
 export function ProductionCard({ order, column, today, onMove, onDragStart, onDragEnd }: Props) {
   const next = nextColumn(column);
+  const targets = PRODUCTION_COLUMNS.filter((c) => c.id !== column && productionMove(order, c.id).ok);
   const draggable = column !== "ready";
   const start = (e: DragEvent) => { e.dataTransfer.setData("text/plain", order.code); e.dataTransfer.effectAllowed = "move"; onDragStart(order.code); };
   return (
@@ -98,15 +97,19 @@ export function ProductionCard({ order, column, today, onMove, onDragStart, onDr
         })}
       </ul>
       {order.notes.length > 0 && <p className="flex gap-1.5 rounded-2xl bg-bg p-2 text-xs text-muted"><MessageSquareText size={14} aria-hidden="true" className="mt-px shrink-0" />{order.notes.at(-1)}</p>}
-      {(next || column !== "ready") && (
-        <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-line pt-3">
-          <MoveStage order={order} column={column} onMove={(to) => onMove(order.code, to)} />
-          {next && (
-            <button type="button" onClick={() => onMove(order.code, next)} aria-label={`Pasar ${order.code} a ${columnLabel(next)}`}
-              className="ml-auto inline-flex h-9 items-center gap-1 rounded-full bg-primary px-3.5 text-xs font-bold text-on-primary hover:bg-primary-hover">
-              {columnLabel(next)} <ArrowRight size={14} aria-hidden="true" />
-            </button>
-          )}
+      {/* 8.4.17: el paso siguiente es el botón principal y "Mover etapa" el secundario, del mismo alto y repartidos en
+          el ancho de la tarjeta; si la tarjeta es angosta, uno arriba del otro (el principal primero). */}
+      {(next || targets.length > 0) && (
+        <div className="@container mt-auto border-t border-line pt-3">
+          <div className={cn("grid gap-2", next && targets.length > 0 && "@min-[15.5rem]:grid-cols-2")}>
+            {next && (
+              <button type="button" onClick={() => onMove(order.code, next)} aria-label={`Pasar ${order.code} a ${columnLabel(next)}`}
+                className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-full bg-primary px-3 text-[13px] font-bold text-on-primary shadow-[0_8px_18px_-12px_var(--color-primary)] hover:bg-primary-hover @min-[15.5rem]:order-2">
+                {columnLabel(next)} <ArrowRight size={15} aria-hidden="true" />
+              </button>
+            )}
+            {targets.length > 0 && <MoveStage order={order} targets={targets} onMove={(to) => onMove(order.code, to)} className="@min-[15.5rem]:order-1" />}
+          </div>
         </div>
       )}
     </article>

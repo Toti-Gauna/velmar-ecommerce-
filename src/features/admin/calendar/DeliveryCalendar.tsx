@@ -23,7 +23,7 @@ import { LEGEND, STATUS_TONE } from "./EntryChip";
 import { byDay, calendarEntries, eventsByDay } from "./entries";
 import { MonthView } from "./MonthView";
 import { MoveConfirm } from "./MoveConfirm";
-import { ScheduleSheet } from "./ScheduleSheet";
+import { ScheduleDialog } from "./ScheduleDialog";
 import { useCalendarMoves } from "./useCalendarMoves";
 import { WeekView } from "./WeekView";
 import { WorkshopSettingsDialog } from "./WorkshopSettingsDialog";
@@ -127,7 +127,7 @@ export function DeliveryCalendar() {
         <li className="flex items-center gap-1.5"><span aria-hidden="true" className="h-3.5 w-5 rounded bg-[repeating-linear-gradient(135deg,transparent_0_3px,rgb(28_32_22/0.15)_3px_6px)]" />Taller cerrado</li>
       </ul>
 
-      <ScheduleSheet key={current?.code} order={current} orders={orders} settings={settings} today={today} late={!!currentEntry?.late} movable={currentEntry?.movable ?? false}
+      <ScheduleDialog key={current?.code} order={current} orders={orders} settings={settings} today={today} late={!!currentEntry?.late} movable={currentEntry?.movable ?? false}
         warnings={moves.warnings} onMove={moves.move} onClose={() => setOpen(null)} />
       <DayDialog day={dayOpen?.day ?? null} eventId={dayOpen?.eventId ?? null} today={today} entries={dayOpen ? days.get(dayOpen.day) ?? [] : []} onClose={() => setDayOpen(null)} onReschedule={openOrder} />
       <MoveConfirm move={moves.pending} onConfirm={moves.confirm} onClose={moves.cancel} />

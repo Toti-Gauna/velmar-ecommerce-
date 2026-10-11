@@ -14,6 +14,7 @@ import { site } from "@/config/site";
 import { SITE_URL } from "@/lib/base-path";
 import { MotionRoot } from "@/components/motion/MotionRoot";
 import { ClientShell } from "@/components/organisms/ClientShell";
+import { pageMotionScript } from "@/components/motion/pageMotion";
 import { Splash, splashScript } from "@/components/organisms/Splash";
 import { themeScript } from "@/components/atoms/ThemeToggle";
 import { seasonPaletteCss } from "@/features/themes/palettes";
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: seasonScript }} />
         <script dangerouslySetInnerHTML={{ __html: splashScript }} />
+        <script dangerouslySetInnerHTML={{ __html: pageMotionScript }} />
         <style dangerouslySetInnerHTML={{ __html: seasonPaletteCss() }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }} />
       </head>

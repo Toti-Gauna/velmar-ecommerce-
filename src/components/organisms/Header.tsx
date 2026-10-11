@@ -31,13 +31,17 @@ export function Header() {
   useEffect(() => {
     const onScroll = () => {
       setCompact(window.scrollY > 24);
-      // Pegado arriba: recién ahí su fondo se extiende hacia la franja de la hora (antes taparía el aviso de la demo).
+      // Pegado arriba: recién ahí su fondo se extiende hacia la franja de la hora (antes taparía la cinta de la temática).
       const el = ref.current;
       if (el) setStuck(el.getBoundingClientRect().top <= parseFloat(getComputedStyle(el).top) + 0.5);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    // La cinta de la temática aparece después de hidratar y baja el header sin que haya scroll: si no se recalcula, el
+    // header queda "pegado" desde el arranque y su fondo extendido tapa la cinta (se notó al sacar el aviso de demo, 8.4.13).
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(document.body);
+    return () => { window.removeEventListener("scroll", onScroll); ro.disconnect(); };
   }, []);
   const count = hydrated ? units : 0;
   // La bolsa se sacude solo cuando entra algo con la página ya cargada (no al recuperar el carrito guardado).
@@ -48,6 +52,7 @@ export function Header() {
     setPrev({ count, hydrated });
   }
   const icon = "grid h-11 w-11 place-items-center rounded-full text-ink transition-colors hover:bg-ink/5";
+  const pref = "grid h-10 w-10 place-items-center rounded-full text-ink/75 transition-colors hover:bg-surface hover:text-ink";
   return (
     <header ref={ref} data-shop-header className={cn(stuck && "max-lg:bleed-top", "sticky top-[env(safe-area-inset-top)] z-40 bg-surface lg:glass border-b transition-[border-color,box-shadow] duration-300", compact ? "border-line shadow-[0_8px_30px_-20px_rgb(28_32_22/0.35)]" : "border-transparent")}>
       <div className={cn("mx-auto flex max-w-7xl items-center gap-2 px-4 transition-[height] duration-300 sm:px-6", compact ? "h-16" : "h-[4.5rem] lg:h-20")}>
@@ -62,16 +67,23 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <div className="ml-auto flex items-center gap-0.5">
-          <SoundToggle className={icon} />
-          <ThemeToggle className={cn(icon, "max-sm:hidden")} />
-          <button type="button" onClick={() => setSearch(true)} aria-label="Buscar" className={icon}><Search size={21} aria-hidden="true" /></button>
-          <Link href="/favoritos/" aria-label="Favoritos" className={cn(icon, "max-lg:hidden")}><Heart size={21} aria-hidden="true" /></Link>
-          <Link href="/cuenta/" aria-label="Mi cuenta (demo)" className={cn(icon, "max-sm:hidden")}><UserRound size={21} aria-hidden="true" /></Link>
-          <button type="button" onClick={() => openCart()} aria-label={`Carrito, ${count} ${count === 1 ? "producto" : "productos"}`} className={cn(icon, "relative")}>
-            <ShoppingBag key={`bag-${jiggle}`} size={21} aria-hidden="true" className={jiggle ? "animate-bag" : undefined} />
-            {count > 0 && <span key={`badge-${count}`} className="animate-pop absolute right-0.5 top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[11px] font-extrabold text-on-primary">{count}</span>}
-          </button>
+        {/* 8.4.12: preferencias (sonido y modo oscuro) en una cápsula aparte, un separador y después las acciones de la
+            tienda (buscar, favoritos, cuenta y carrito). En el celular, el modo oscuro está en el menú. */}
+        <div className="ml-auto flex items-center">
+          <div role="group" aria-label="Preferencias" className="flex items-center gap-0.5 rounded-full bg-ink/[0.045] p-0.5 sm:p-1">
+            <SoundToggle className={pref} />
+            <ThemeToggle className={cn(pref, "max-sm:hidden")} />
+          </div>
+          <span aria-hidden="true" className="mx-1.5 h-6 w-px bg-ink/15 sm:mx-3" />
+          <div role="group" aria-label="Tu compra" className="flex items-center gap-0.5">
+            <button type="button" onClick={() => setSearch(true)} aria-label="Buscar" className={icon}><Search size={21} aria-hidden="true" /></button>
+            <Link href="/favoritos/" aria-label="Favoritos" className={cn(icon, "max-lg:hidden")}><Heart size={21} aria-hidden="true" /></Link>
+            <Link href="/cuenta/" aria-label="Mi cuenta (demo)" className={cn(icon, "max-sm:hidden")}><UserRound size={21} aria-hidden="true" /></Link>
+            <button type="button" onClick={() => openCart()} aria-label={`Carrito, ${count} ${count === 1 ? "producto" : "productos"}`} className={cn(icon, "relative bg-primary/[0.08] text-primary hover:bg-primary/15")}>
+              <ShoppingBag key={`bag-${jiggle}`} size={21} aria-hidden="true" className={jiggle ? "animate-bag" : undefined} />
+              {count > 0 && <span key={`badge-${count}`} className="animate-pop absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[11px] font-extrabold text-on-primary ring-2 ring-surface">{count}</span>}
+            </button>
+          </div>
         </div>
       </div>
       <MobileMenu />

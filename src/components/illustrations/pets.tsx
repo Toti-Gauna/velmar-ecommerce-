@@ -1,26 +1,55 @@
 import { shade } from "@/lib/color";
 
 /** Ilustraciones vectoriales propias (placeholders). viewBox 0 0 400 400. */
-export function BowlDog({ tint = "#e88aa0" }: { tint?: string }) {
-  const dark = shade(tint, -0.18);
+/** Un globo del perro: forma con volumen (sombra abajo y brillo arriba), así se lee como globo inflado y brillante. */
+function Balloon({ cx, cy, rx, ry, rot = 0, tint, back }: { cx: number; cy: number; rx: number; ry: number; rot?: number; tint: string; back?: boolean }) {
   return (
-    <g>
-      <path d="M92 228c6 58 44 82 108 82s102-24 108-82Z" fill={tint} />
-      <ellipse cx="200" cy="228" rx="108" ry="26" fill={dark} />
-      <ellipse cx="200" cy="231" rx="90" ry="17" fill="#8a5a35" />
-      <circle cx="176" cy="228" r="7" fill="#6b4425" /><circle cx="214" cy="232" r="6" fill="#6b4425" /><circle cx="238" cy="226" r="5" fill="#6b4425" />
-      <ellipse cx="112" cy="168" rx="28" ry="42" fill={tint} transform="rotate(-18 112 168)" />
-      <ellipse cx="82" cy="132" rx="14" ry="34" fill={dark} transform="rotate(-28 82 132)" />
-      <ellipse cx="128" cy="118" rx="13" ry="32" fill={dark} transform="rotate(16 128 118)" />
-      <ellipse cx="148" cy="190" rx="42" ry="15" fill={tint} transform="rotate(12 148 190)" />
-      <ellipse cx="312" cy="180" rx="13" ry="38" fill={tint} transform="rotate(24 312 180)" />
-      <ellipse cx="102" cy="150" rx="8" ry="14" fill="#fff" opacity=".35" transform="rotate(-18 102 150)" />
-      <path d="M120 262c30 18 130 18 160 0" stroke="#fff" strokeOpacity=".3" strokeWidth="8" fill="none" strokeLinecap="round" />
+    <g transform={`rotate(${rot} ${cx} ${cy})`}>
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={back ? shade(tint, -0.16) : tint} />
+      <ellipse cx={cx + rx * 0.12} cy={cy + ry * 0.3} rx={rx * 0.82} ry={ry * 0.6} fill="#1c2016" opacity=".1" />
+      <ellipse cx={cx - rx * 0.32} cy={cy - ry * 0.46} rx={rx * 0.42} ry={Math.max(3, ry * 0.2)} fill="#fff" opacity=".42" />
+      <ellipse cx={cx - rx * 0.46} cy={cy - ry * 0.5} rx={Math.max(2, rx * 0.1)} ry={Math.max(1.6, ry * 0.08)} fill="#fff" opacity=".9" />
     </g>
   );
 }
 
-export function BowlWood({ tint = "#d8b98c" }: { tint?: string }) {
+/**
+ * Comedero perro globo (8.4.23): el perro de globos impreso en 3D, brillante, parado en sus cuatro patas, con el plato
+ * en el lomo. El frente del cuerpo queda libre para el nombre en relieve (zona "bowl-dog").
+ */
+export function BowlDog({ tint = "#e88aa0" }: { tint?: string }) {
+  const knot = shade(tint, -0.32);
+  return (
+    <g>
+      {/* Patas de atrás (más oscuras: quedan del otro lado) y de adelante */}
+      <Balloon cx={276} cy={292} rx={14} ry={32} rot={4} tint={tint} back />
+      <Balloon cx={146} cy={290} rx={14} ry={32} rot={-4} tint={tint} back />
+      <Balloon cx={298} cy={296} rx={15} ry={33} rot={-3} tint={tint} />
+      <Balloon cx={170} cy={296} rx={15} ry={33} rot={3} tint={tint} />
+      {/* Cola */}
+      <Balloon cx={330} cy={188} rx={12} ry={28} rot={24} tint={tint} />
+      <circle cx={341} cy={161} r={9} fill={tint} /><circle cx={338} cy={158} r={3} fill="#fff" opacity=".7" />
+      {/* Cuerpo con el plato en el lomo */}
+      <Balloon cx={226} cy={242} rx={104} ry={44} tint={tint} />
+      <ellipse cx={232} cy={212} rx={72} ry={17} fill={shade(tint, -0.22)} />
+      <ellipse cx={232} cy={214} rx={62} ry={12} fill="#8a5a35" />
+      {[[210, 212, 5], [236, 216, 4.5], [256, 210, 4], [222, 218, 3.5]].map(([x, y, r]) => <circle key={`${x}-${y}`} cx={x} cy={y} r={r} fill="#6b4425" />)}
+      <path d="M162 214c20-6 44-8 70-8" stroke="#fff" strokeOpacity=".35" strokeWidth="3" fill="none" strokeLinecap="round" />
+      {/* Cuello, cabeza, hocico y orejas */}
+      <Balloon cx={134} cy={196} rx={15} ry={32} rot={-24} tint={tint} />
+      <Balloon cx={152} cy={110} rx={12} ry={26} rot={16} tint={tint} back />
+      <Balloon cx={126} cy={108} rx={12} ry={27} rot={-14} tint={tint} />
+      <circle cx={124} cy={150} r={25} fill={tint} />
+      <ellipse cx={116} cy={140} rx={10} ry={5} fill="#fff" opacity=".42" />
+      <Balloon cx={82} cy={160} rx={34} ry={17} rot={-12} tint={tint} />
+      <circle cx={50} cy={167} r={5} fill={knot} />
+      {/* Nudos de los globos */}
+      {[[147, 222], [124, 172], [318, 210], [172, 266], [296, 266]].map(([x, y]) => <ellipse key={`${x}-${y}`} cx={x} cy={y} rx={5} ry={3.5} fill={knot} />)}
+    </g>
+  );
+}
+
+export function BowlWood({ tint = "#d8b98c", blank }: { tint?: string; blank?: boolean }) {
   const dark = shade(tint, -0.25);
   return (
     <g>
@@ -34,7 +63,7 @@ export function BowlWood({ tint = "#d8b98c" }: { tint?: string }) {
           <ellipse cx={cx} cy="190" rx="40" ry="11" fill="#e4e8eb" />
         </g>
       ))}
-      <text x="200" y="224" textAnchor="middle" fontSize="18" fontWeight="700" fill={dark} fontFamily="Georgia, serif">TOBY</text>
+      {!blank && <text x="200" y="224" textAnchor="middle" fontSize="18" fontWeight="700" fill={dark} fontFamily="Georgia, serif">TOBY</text>}
     </g>
   );
 }

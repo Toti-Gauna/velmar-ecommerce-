@@ -80,7 +80,9 @@ test("regalo en la cuenta y con código: se abre sin el link", async ({ page }) 
   await stage.getByRole("button", { name: "Abrirlo de una vez" }).click();
   await expect(stage.getByText("¡Feliz día, ma!", { exact: false })).toBeVisible();
   await expect(stage.getByRole("link", { name: "Está en mis regalos" })).toBeVisible();
-  await stage.getByRole("button", { name: "Salir" }).click();
+  // 8.4.9: desde Mis regalos, salir vuelve a la cuenta (no a una pantalla para abrirlo otra vez).
+  await stage.getByRole("button", { name: "Volver a Mis regalos" }).click();
+  await expect(page).toHaveURL(/cuenta\/#regalos$/);
   // El hash abre directo la tarjeta de regalos.
   await page.goto("cuenta/#regalos");
   await expect(page.getByRole("link", { name: /Abierto · de Lucía/ })).toBeVisible();

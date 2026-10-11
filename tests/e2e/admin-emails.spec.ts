@@ -13,7 +13,7 @@ test("compra en la tienda: los emails de compra y de diseño recibido aparecen e
   await page.getByRole("button", { name: "Continuar a la entrega" }).click();
   await page.getByText("Retiro en persona").click();
   await page.getByRole("button", { name: "Continuar al pago" }).click();
-  await page.getByText("Tarjetas de débito, crédito y prepagas", { exact: true }).click();
+  await page.getByText("Mercado Pago", { exact: true }).click();
   await page.getByRole("button", { name: "Revisar pedido" }).click();
   await page.getByRole("checkbox", { name: /Acepto los/ }).check();
   await page.getByRole("button", { name: "Confirmar pedido de demostración" }).click();
@@ -50,6 +50,8 @@ test.describe("editor en escritorio", () => {
 
   test("insertar una ficha de dato, ver la vista previa con datos reales, guardar y mandar prueba", async ({ page }) => {
     await page.goto("admin-demo/emails/editar/?id=tpl-payment-approved");
+    const steps = page.getByRole("navigation", { name: "Pasos del editor" });
+    await steps.getByRole("button", { name: /Contenido/ }).click();
     const text = page.getByRole("textbox", { name: "Texto 3" });
     await expect(text).toContainText("Fecha de entrega");
     await text.click();
@@ -61,6 +63,7 @@ test.describe("editor en escritorio", () => {
     await expect(preview).toContainText(/Total: \$\s?27\.350/);
     await expect(preview).not.toContainText("{");
     // Asunto con otro dato
+    await steps.getByRole("button", { name: /Asunto/ }).click();
     await page.getByRole("textbox", { name: "Asunto" }).click();
     await page.keyboard.press("End");
     await page.getByRole("button", { name: "Insertar Nombre del cliente" }).click();
@@ -74,11 +77,13 @@ test.describe("editor en escritorio", () => {
       document.getElementById("e-preheader")!.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
     });
     await expect(page.locator("#e-preheader [data-token='customer.firstName']")).toBeVisible();
-    await expect(page.getByText(/Ya entra al taller\. Para Julián/)).toBeVisible();
+    await expect(page.getByRole("region", { name: "Vista previa" }).getByText(/Ya entra al taller\. Para Julián/)).toBeVisible();
     await page.getByRole("button", { name: "Guardar cambios" }).click();
     await expect(toast(page, "Plantilla guardada")).toBeVisible();
     await page.reload();
+    await steps.getByRole("button", { name: /Contenido/ }).click();
     await expect(page.getByRole("textbox", { name: "Texto 3" }).locator("[data-token='order.total']")).toBeVisible();
+    await steps.getByRole("button", { name: /Revisar y probar/ }).click();
     await page.getByRole("button", { name: "Celular", exact: true }).click();
     await page.getByRole("button", { name: "Enviar prueba" }).click();
     await expect(toast(page, "Prueba en la bandeja de salida")).toBeVisible();

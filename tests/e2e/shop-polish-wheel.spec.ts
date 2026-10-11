@@ -2,6 +2,17 @@ import { expect, test, type Page } from "@playwright/test";
 
 /** Polish 8.2 · Lote 7 (8.2.14): el premio de la ruleta conserva su estado entre pantallas, recargas y el checkout. */
 
+/** 8.4.4: el cupón y el resumen se ven desde "Entrega"; completa los datos si hace falta y avanza. */
+async function toDelivery(page: Page) {
+  const name = page.getByLabel("Nombre y apellido");
+  if (!(await name.inputValue())) {
+    await name.fill("Juana Pérez");
+    await page.getByLabel("Email").fill("juana@ejemplo.com");
+    await page.getByLabel("Teléfono / WhatsApp").fill("223 555-1234");
+  }
+  await page.getByRole("button", { name: "Continuar a la entrega" }).click();
+}
+
 /** Cuatro velas en el carrito ($38.000): alcanza el mínimo de cualquier premio de la ruleta. */
 const seedCart = (page: Page) =>
   page.addInitScript(() => {
@@ -46,6 +57,7 @@ test("8.2.14 aplicado: sigue aplicado al navegar y recargar, se quita en el chec
   await stage.getByRole("button", { name: "Listo, ya está aplicado" }).click();
   // Checkout: se ve aplicado, se quita y el total vuelve a subir.
   await page.goto("checkout/");
+  await toDelivery(page);
   const coupon = page.getByRole("region", { name: "Cupón del pedido" });
   const summary = page.getByRole("region", { name: "Resumen de tu compra" });
   await expect(coupon.getByText(new RegExp(`${code}: Ruleta`))).toBeVisible();
@@ -53,6 +65,7 @@ test("8.2.14 aplicado: sigue aplicado al navegar y recargar, se quita en el chec
   await coupon.getByRole("button", { name: `Quitar cupón ${code}` }).click();
   await expect(summary.getByText("Cupón", { exact: true })).toHaveCount(0);
   await page.reload();
+  await toDelivery(page);
   await expect(coupon.getByRole("button", { name: "Elegir de mis cupones" })).toBeVisible();
   // En Mis cupones queda desactivado (no aplicado) y se puede volver a aplicar desde el checkout.
   await coupon.getByRole("button", { name: /Elegir de mis cupones/ }).click();

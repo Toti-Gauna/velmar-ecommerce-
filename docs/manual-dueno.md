@@ -4,8 +4,8 @@ Pedido de Ignacio, Fase 7 (VEL-72), fuera de la especificación. Está escrito p
 técnicas. Cada tarea dice **dónde tocar** y **qué pasa después**.
 
 > **Esto es la demo.** Los datos son de muestra y lo que cambies queda **solo en tu navegador**: nadie más lo ve y no se
-> manda ningún email ni se cobra nada. Para volver todo atrás tocá **"Reiniciar demo"** (arriba del panel o al pie de la
-> tienda). En la tienda real, lo que cambies lo ven todos tus clientes.
+> manda ningún email ni se cobra nada. Para volver todo a los datos de muestra, abrí la demo en una ventana privada o borrá
+> los datos del sitio en el navegador. En la tienda real, lo que cambies lo ven todos tus clientes.
 
 ## Cómo entrar
 - La tienda es la página principal. El panel está en **"Ver panel demo"**, al pie de la tienda, o en `/admin-demo/`.
@@ -41,7 +41,8 @@ los pedidos y usá la acción de arriba. Cada cambio avisa al cliente con el ema
 ### …saber cuándo puedo entregar
 **Calendario de entregas**: cada pedido está en su día. Los días completos y los feriados se marcan.
 - **Tocá un día** para ver sus entregas y anotar tareas o notas de un pedido (por ejemplo, "retirar filamento"). También
-  podés cerrar el taller ese día desde ahí.
+  podés cerrar el taller ese día desde ahí: si tenía entregas, te pregunta si querés pasarlas a otro día (te muestra
+  los próximos días con taller y cuántos pedidos tienen, y te avisa si se llena).
 - Para **mover** un pedido, arrastralo a otro día (compu): te pide confirmar antes de cambiar la fecha. Un día cerrado o
   completo no lo acepta y te dice por qué. Sin arrastrar, abrí su ficha y elegí "Primera fecha libre", el día hábil
   anterior o siguiente, u otra fecha; si el día está completo te pregunta si querés sobrecargarlo.
@@ -76,7 +77,8 @@ nada cambia hasta que tocás **Guardar cambios**.
 
 ### …saber si gano plata
 **Costos y margen**: cargá qué insumos usa cada producto y cuánto tardás. Te dice la ganancia y si el margen es bueno, bajo
-o si perdés plata. **"Usar precio sugerido"** cambia el precio en la tienda. **Insumos** te dice qué comprar y cuánto.
+o si perdés plata. **"Usar precio sugerido"** cambia el precio en la tienda. Abajo de los valores del taller, "Cómo se
+calcula y para qué sirve" te explica cada número con un ejemplo. **Insumos** te dice qué comprar y cuánto.
 
 ### …hacer una promoción
 **Marketing** (en el menú, "Resumen") te muestra todas las herramientas en tarjetas. Cada una abre su página y con
@@ -117,7 +119,7 @@ y la ordenás o la quitás. Podés subir una **imagen propia**: JPG, PNG o WEBP,
 (se achica sola y, en esta demo, queda solo en tu navegador). Escribí qué muestra (texto alternativo) y acomodá el
 encuadre. Si el navegador se queda sin lugar, te avisa y no perdés lo que estabas editando. **Textos de inicio** y
 **Preguntas frecuentes** se guardan aparte: guardar una parte no toca las otras.
-**Ajustes**: cuatro tarjetas, cada una con su página: **Contacto y WhatsApp**, **Medios de pago** (cuáles se ofrecen,
+**Ajustes**: cuatro tarjetas, cada una con su página: **Contacto y WhatsApp**, **Medios de pago** (cuáles se ofrecen: tarjeta, Mercado Pago, transferencia y QR;
 descuento por transferencia o QR y horas de reserva), **Datos de cobro** (alias, CBU/CVU y titular; en la demo, solo
 ficticios) y **Envíos y retiro** (envío gratis desde cierto monto, precio, plazo y códigos postales del cadete). Si salís
 sin guardar, al volver tus cambios siguen ahí; guardar una parte no cambia las otras. Los colores de la tienda son los de
@@ -130,15 +132,16 @@ filtro **"Para escribir"**. El botón **"i"** al lado de "Segmento" explica qué
 
 ### …manejar los emails automáticos
 **Emails automáticos**: uno por momento del pedido (compra, diseño recibido, pago aprobado, en producción, listo,
-enviado) y el cumpleaños de la mascota. Cada uno se activa o se pausa. Para cambiar el texto, tocá el bloque y escribí;
-los datos del cliente se insertan con **fichas** (nombre, código, total…), sin códigos raros. **Vista previa** y **Enviar
-prueba** antes de guardar. En la demo los emails quedan en la **bandeja de salida**.
+enviado) y el cumpleaños de la mascota. Cada uno se activa o se pausa. El editor te lleva en cuatro pasos: **cuándo se
+envía**, **asunto**, **contenido** y **revisar y probar**. Para cambiar el texto, tocá el bloque y escribí; los datos del
+cliente se insertan con **fichas** (nombre, código, total…), sin códigos raros. En el último paso ves qué conviene
+revisar, mandás una **prueba** y guardás. En la demo los emails quedan en la **bandeja de salida**, arriba de todo.
 
 ## Si algo no anda
 | Pasa esto | Probá |
 |---|---|
 | No veo un cambio que hice | Recargá la página. Los cambios están en este navegador: en otro equipo no aparecen |
-| Todo se ve raro o vacío | **Reiniciar demo** |
+| Todo se ve raro o vacío | Abrí la demo en una ventana privada (vuelve a los datos de muestra) |
 | No suena nada | Tocá la pantalla una vez; revisá el silencio del teléfono y el botón de sonido de arriba |
 | El video no se graba | Quedate en la pestaña hasta que termine; la imagen PNG siempre se puede bajar |
 | Me equivoqué con un Excel | **Deshacer** en la pantalla de importación |

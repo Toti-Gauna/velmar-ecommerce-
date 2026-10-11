@@ -38,7 +38,7 @@ function OrderRowCard({ row: o, selected, onToggle, onOpen }: RowCardProps<Admin
   );
 }
 
-const PAYMENTS = ["BANK_TRANSFER", "QR_MANUAL", "CHECKOUT_PRO"] as const;
+const PAYMENTS = ["BANK_TRANSFER", "QR_MANUAL", "CARD", "CHECKOUT_PRO"] as const;
 const FULFILLMENTS = ["PICKUP", "LOCAL_DELIVERY", "SHIPPING"] as const;
 /** Etapa (los estados agrupados por lo que hay que hacer), fechas, medio de pago y entrega. */
 const FILTERS: FilterSpec<AdminOrder>[] = [

@@ -49,7 +49,7 @@
 | Orgullo, 25 de Mayo, Día de la Bandera y 9 de Julio: pantalla de carga con su escena, paleta, banner y cinta | ✅ |
 | Día del Amigo y del Padre: los personajes aparecen en la escena y en el banner | ✅ |
 | Con movimiento reducido no queda ninguna animación CSS corriendo (personajes, fondo, partículas) | ✅ |
-| Navegar usa View Transitions y solo la tarjeta tocada lleva el nombre de la imagen que vuela a la ficha | ✅ |
+| Navegar usa View Transitions y solo la tarjeta tocada lleva el nombre de la imagen que vuela a la ficha (desde 8.4.28, en tablet y escritorio; en el celular la página entra con un fundido CSS) | ✅ |
 | La cantidad rueda sin duplicar el número (lector de pantalla y tests leen un solo valor); favoritos destella | ✅ |
 | Contraste AA de las paletas nuevas en claro y oscuro (texto, apagado, primario, dorado, acento) | ✅ unit |
 | Fechas: Orgullo el 7/11, 25 de Mayo, Padre hasta el 17/6, Bandera el 20/6, 9 de Julio; ninguna superposición en el año | ✅ unit |
@@ -226,7 +226,8 @@ Lote 5: checkout (`tests/e2e/shop-polish-checkout.spec.ts`, `tests/unit/checkout
 - **Resumen**: estaba en un panel al costado (y en el celular, al final de todo). Ahora el checkout es una columna
   centrada: paso, botones y resumen. La cuenta sale del mismo engine que antes (sin cambios de precio).
 - **Tarjetas**: es el mismo medio de pago de siempre (Mercado Pago Checkout Pro, simulado), nombrado como lo busca el
-  cliente. No hay integración nueva ni se piden datos de tarjeta.
+  cliente. No hay integración nueva ni se piden datos de tarjeta. *(Reemplazado en 8.4.22: la tarjeta es un medio propio
+  con las tarjetas guardadas y Checkout Pro se llama "Mercado Pago"; ver `polish-8.4-status.md`.)*
 
 Lote 6: seguimiento, Mi cuenta y Club (`shop-polish-tracking.spec.ts`, `shop-polish-account.spec.ts`, `shop-polish-club.spec.ts`).
 
@@ -462,7 +463,7 @@ día `admin-polish-details` y `cross-device`).
 | Aprobar comprobante pide confirmación y deja auditoría; rechazar exige motivo; nada dice "pago acreditado" | ✅ |
 | Comprobante subido en la tienda → "Comprobante en revisión" en el panel, nunca "Pagado" | ✅ |
 | Cupón creado en el panel funciona en el carrito; misión creada aparece en la cuenta demo | ✅ |
-| Reiniciar demo vuelve a los fixtures | ✅ |
+| Reiniciar demo vuelve a los fixtures | retirado en 8.4.13 (pedido de Ignacio) |
 | Teclado: diálogo de confirmación abre con Enter, cierra con Escape, se opera con Tab | ✅ |
 | Movimiento reducido en el panel | ✅ |
 | Transiciones de pedido válidas/ inválidas (spec 5.2) y acciones del store | ✅ unit |

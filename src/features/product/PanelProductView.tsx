@@ -14,7 +14,7 @@ export function PanelProductView({ mode }: { mode: "detail" | "personalize" }) {
   const product = useDemoData((d) => d.products.find((p) => p.slug === slug));
   if (!hydrated) return <DetailSkeleton />;
   if (!product || (mode === "personalize" && !product.personalization)) {
-    return <EmptyState title="Producto no encontrado en esta demo" action={<ButtonLink href="/">Ir a la tienda</ButtonLink>}>Puede que se haya reiniciado la demo o que el producto se creó en otro navegador.</EmptyState>;
+    return <EmptyState title="Producto no encontrado en esta demo" action={<ButtonLink href="/">Ir a la tienda</ButtonLink>}>Puede que se hayan borrado los datos de este navegador o que el producto se creó en otro.</EmptyState>;
   }
   return <ProductDetail product={product} />;
 }

@@ -4,7 +4,8 @@ import { guardNetwork } from "./helpers";
 test("flujo móvil completo hasta la confirmación de demostración", async ({ page }) => {
   const assertNoExternal = guardNetwork(page);
   await page.goto("");
-  await expect(page.getByRole("note").filter({ hasText: "No se cobra nada" })).toBeVisible();
+  // 8.4.13: sin el aviso de demo arriba de la tienda (el checkout sigue avisando que no se cobra nada).
+  await expect(page.getByRole("note").filter({ hasText: "No se cobra nada" })).toHaveCount(0);
 
   // Búsqueda tolerante a errores
   await page.goto("buscar/?q=comedro");
@@ -78,9 +79,7 @@ test("flujo móvil completo hasta la confirmación de demostración", async ({ p
   await expect(page.getByText("estado actual")).toBeVisible();
   await expect(page.getByText(/“Ñoqui”/).first()).toBeVisible();
 
-  // Reiniciar demo deja todo vacío
-  page.once("dialog", (d) => d.accept());
-  await page.getByRole("button", { name: "Reiniciar demo" }).first().click();
+  // Confirmado el pedido, el carrito queda vacío (8.4.13: ya no hay "Reiniciar demo").
   await page.goto("carrito/");
   await expect(page.getByText("Tu carrito está vacío")).toBeVisible();
   assertNoExternal();
@@ -100,7 +99,7 @@ test("checkout con cuenta demo, retiro y Mercado Pago simulado", async ({ page }
   await page.getByRole("button", { name: "Continuar a la entrega" }).click();
   await page.getByText("Retiro en persona").click();
   await page.getByRole("button", { name: "Continuar al pago" }).click();
-  await page.getByText("Tarjetas de débito, crédito y prepagas", { exact: true }).click();
+  await page.getByText("Mercado Pago", { exact: true }).click();
   await page.getByRole("button", { name: "Revisar pedido" }).click();
   await page.getByRole("checkbox", { name: /Acepto los/ }).check();
   await page.getByRole("button", { name: "Confirmar pedido de demostración" }).click();

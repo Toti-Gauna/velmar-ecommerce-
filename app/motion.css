@@ -1,6 +1,6 @@
 /*
  * Motion de la tienda (Fase 5, VEL-54): transiciones entre páginas, la imagen que vuela de la tarjeta a la ficha
- * y microinteracciones. Solo transform/opacity/filter. Con "reducir movimiento" todo queda quieto.
+ * y microinteracciones. Solo transform/opacity (sin filtros en las transiciones, 8.4.28). Con "reducir movimiento" todo queda quieto.
  */
 
 /* ---------- Transiciones entre páginas (React <ViewTransition> en app/(shop)/template.tsx) ---------- */
@@ -9,16 +9,46 @@
 ::view-transition-old(.page-out) { animation: vt-out 160ms cubic-bezier(0.4, 0, 1, 1) both; }
 ::view-transition-new(.page-in) { animation: vt-in 380ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both; }
 @keyframes vt-out { to { opacity: 0; transform: translateY(-6px) scale(0.99); } }
-@keyframes vt-in { from { opacity: 0; transform: translateY(16px); filter: blur(4px); } }
-/* Con View Transitions, la entrada por CSS de la plantilla duplicaría la animación. */
-@supports (view-transition-name: none) { .page-enter { animation: none; } }
+/* 8.4.28: sin desenfoque (un blur sobre la captura de toda la página es lo más caro de la transición en el celular). */
+@keyframes vt-in { from { opacity: 0; transform: translateY(16px); } }
+/* 8.4.27: el header, la barra inferior y los botones flotantes van en su propia capa, quieta y encima de la página que
+   sale y entra. Sin esto quedaban en la captura de fondo y la página nueva se dibujaba por encima un momento (se veían
+   las tarjetas tapando la barra de abajo). */
+[data-shop-header] { view-transition-name: shop-header; }
+/* El fondo del header que sube a tapar la franja de la hora (bleed-top) entraría en su captura y taparía la cinta de la
+   temática durante la transición: mientras dura, no se dibuja. */
+:root:active-view-transition [data-shop-header]::before { content: none; }
+[data-shop-bottomnav] { view-transition-name: shop-tabbar; }
+[data-buy-bar] { view-transition-name: shop-buybar; }
+[data-shop-fab="whatsapp"] { view-transition-name: shop-whatsapp; }
+[data-shop-fab="themes"] { view-transition-name: shop-themes; }
+::view-transition-group(shop-header), ::view-transition-group(shop-tabbar), ::view-transition-group(shop-buybar),
+::view-transition-group(shop-whatsapp), ::view-transition-group(shop-themes) { z-index: 50; animation: none; }
+::view-transition-old(shop-header), ::view-transition-new(shop-header), ::view-transition-old(shop-tabbar), ::view-transition-new(shop-tabbar),
+::view-transition-old(shop-buybar), ::view-transition-new(shop-buybar), ::view-transition-old(shop-whatsapp), ::view-transition-new(shop-whatsapp),
+::view-transition-old(shop-themes), ::view-transition-new(shop-themes) { animation: none; }
+/* Si una barra está de un solo lado (del inicio a una ficha: la navegación se va y llega la barra de compra), se
+   cruzan con un fundido corto en vez de cambiar de golpe al final. */
+::view-transition-old(shop-tabbar):only-child, ::view-transition-old(shop-buybar):only-child,
+::view-transition-old(shop-whatsapp):only-child, ::view-transition-old(shop-themes):only-child { animation: vt-fade 160ms ease-in both reverse; }
+::view-transition-new(shop-tabbar):only-child, ::view-transition-new(shop-buybar):only-child,
+::view-transition-new(shop-whatsapp):only-child, ::view-transition-new(shop-themes):only-child { animation: vt-fade 260ms ease-out 80ms both; }
+@keyframes vt-fade { from { opacity: 0; } }
+/* 8.4.26: React arranca una transición al hidratar la página y sus capas van encima de todo, también de la pantalla de
+   carga. Mientras se ve, terminan en el acto (sin animación) y, como la página está oculta (splash-hold), no asoma nada.
+   No se cancelan con skipTransition: Next espera esas promesas y una cancelada termina en un error de la página. */
+html:not(.splash-done)::view-transition-group(*), html:not(.splash-done)::view-transition-image-pair(*),
+html:not(.splash-done)::view-transition-old(*), html:not(.splash-done)::view-transition-new(*) { animation: none !important; }
+/* Con View Transitions, la entrada por CSS de la plantilla duplicaría la animación. En el celular no se usan (vt-off,
+   ver components/motion/pageMotion.ts) y la página entra con este fundido. */
+@supports (view-transition-name: none) { html:not(.vt-off) .page-enter { animation: none; } }
 
 /* La imagen del producto: de la tarjeta a la galería (relación de aspecto distinta, sin deformar). */
 .vt-hero { view-transition-name: product-hero; }
 ::view-transition-group(product-hero) { animation-duration: 520ms; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); z-index: 5; }
 ::view-transition-old(product-hero), ::view-transition-new(product-hero) { height: 100%; object-fit: cover; overflow: clip; }
 ::view-transition-image-pair(product-hero) { animation-name: vt-soften; animation-duration: 520ms; }
-@keyframes vt-soften { 40% { filter: blur(2px); } }
+@keyframes vt-soften { 40% { opacity: 0.92; } }
 /* Sin pareja (se sale de la ficha o se llega desde otro link), la galería acompaña a la página en vez de quedar flotando. */
 ::view-transition-old(product-hero):only-child { animation: vt-out 160ms cubic-bezier(0.4, 0, 1, 1) both; }
 ::view-transition-new(product-hero):only-child { animation: vt-in 380ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both; }
@@ -55,13 +85,17 @@
     #07080a;
   animation: stage-in 320ms ease-out both;
 }
+/* Abierto al entrar (el link de un regalo): el fondo ya está oscuro desde el primer cuadro, sin dejar ver la página. */
+.immersive-instant .immersive-backdrop { animation: none; }
 .immersive-stage > :not(.immersive-backdrop) { animation: stage-rise 520ms var(--ease-out-expo) 80ms both; }
 /* Sobre el fondo casi negro, el anillo de foco va en crema (el de la tienda, oliva, no llega a 3:1). */
 .immersive-stage :focus-visible { outline-color: #f3dca6; }
 @keyframes stage-in { from { opacity: 0; } }
 @keyframes stage-rise { from { opacity: 0; transform: translateY(14px) scale(0.98); } }
-/* Con el escenario abierto, los fondos animados de la tienda se pausan (no se ven y gastan batería). */
-.stage-open .season-backdrop *, .stage-open .season-scene * { animation-play-state: paused !important; }
+/* Con el escenario abierto, los fondos animados de la tienda se pausan (no se ven y gastan batería). La escena de la
+   pantalla de carga no: el link de un regalo abre el escenario mientras todavía se ve, y la dejaba congelada a medio
+   armar (8.4.25, un pétalo suelto en el Día de la Madre). */
+.stage-open .season-backdrop *, .stage-open .season-scene:not(#velmar-splash .season-scene) * { animation-play-state: paused !important; }
 
 /* Regalo abierto: lo de adentro entra en cascada; la nota queda apenas inclinada, como un papel. */
 .gift-card > * { flex-shrink: 0; animation: stage-rise 640ms var(--ease-out-expo) both; }

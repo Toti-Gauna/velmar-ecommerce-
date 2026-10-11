@@ -21,7 +21,7 @@ export function ClaimDetail() {
   const resolveClaim = useAdmin((s) => s.resolveClaim);
   const known = useAdmin((s) => !!claim && (s.users.some((u) => u.email === claim.email) || s.orders.some((o) => o.customer.email === claim.email)));
   const save = useDemoSave();
-  if (!claim) return <EmptyState title="No encontramos ese reclamo" action={<ButtonLink href="/admin-demo/reclamos/">Ver reclamos</ButtonLink>}>Revisá el enlace o reiniciá la demo.</EmptyState>;
+  if (!claim) return <EmptyState title="No encontramos ese reclamo" action={<ButtonLink href="/admin-demo/reclamos/">Ver reclamos</ButtonLink>}>Revisá el enlace: puede que el reclamo se haya cargado en otro navegador.</EmptyState>;
   const status = CLAIM_STATUS[claim.status];
   return (
     <div className="@container flex flex-col gap-6">

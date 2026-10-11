@@ -31,6 +31,17 @@ function CheckoutProMock({ total }: { total: number }) {
   );
 }
 
+/** Tarjeta (8.4.22): en la tienda real Mercado Pago la procesa al momento; acá queda pendiente hasta simularlo en el panel. */
+function CardMock({ total, card }: { total: number; card?: string }) {
+  return (
+    <div className="rounded-2xl border-2 border-dashed border-line bg-bg p-4">
+      <p className="text-xs font-bold uppercase tracking-wide text-muted">Pantalla de muestra</p>
+      <p className="mt-1 font-bold">{card ?? "Tu tarjeta"} · {formatARS(total)}</p>
+      <p className="text-sm text-muted">En la tienda real, Mercado Pago procesa la tarjeta al confirmar y el pedido pasa a pagado cuando llega su aviso al servidor. En la demo no se cobra nada: el pedido queda pendiente hasta que Velmar simule la aprobación en el panel.</p>
+    </div>
+  );
+}
+
 function TransferData({ total, code }: { total: number; code: string }) {
   const settings = useDemoData((d) => d.settings);
   const rows = [
@@ -45,8 +56,9 @@ function TransferData({ total, code }: { total: number; code: string }) {
   );
 }
 
-export function PaymentInstructions({ method, total, code }: { method: PaymentMethod; total: number; code: string }) {
+export function PaymentInstructions({ method, total, code, card }: { method: PaymentMethod; total: number; code: string; card?: string }) {
   const hours = useDemoData((d) => d.settings.pendingTransferHours);
+  if (method === "CARD") return <CardMock total={total} card={card} />;
   if (method === "CHECKOUT_PRO") return <CheckoutProMock total={total} />;
   return (
     <div className="flex flex-col gap-4">
