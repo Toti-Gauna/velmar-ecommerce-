@@ -29,8 +29,8 @@ falta el equipo real) · **pendiente**.
 | 8.4.16 Entrega comprometida en modal | 1 | `calendar/ScheduleDialog` (antes `ScheduleSheet`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado a 1440), `admin-polish-workshop.spec.ts`, `admin-workshop.spec.ts` | — |
 | 8.4.17 Botones de la cola de producción | 6 | `production/ProductionCard` | hecho (emulado) | `polish-84-workshop.spec.ts` (1440, 1024, 390: mismo alto y de borde a borde de la tarjeta) | — |
 | 8.4.18 Costos alineados y explicados | 7 | `workshop/CostsSummary`, `workshop/CostsTable` | hecho (emulado) | `polish-84-costs.spec.ts` (1440 y 1180: los tres campos a la misma altura con etiquetas de una línea; indicadores aparte; "Cómo se calcula" se recalcula con el margen objetivo y se guarda; 390 sin desborde) | — |
-| 8.4.19 Generador de emails con pasos | 8 | | pendiente | | |
-| 8.4.20 Bandeja de salida arriba y en modal | 1 y 8 | `emails/OutboxDialog` (antes `OutboxSheet`) | parcial | `polish-84-modals.spec.ts` (el email abre en modal centrado) | Tarjeta arriba de "Emails automáticos" (Lote 8) |
+| 8.4.19 Generador de emails con pasos | 8 | `emails/EmailEditor`, `EmailStepper`, `EmailSteps`, `EmailEditorParts`, `EmailLivePreview`, `demo/admin/emails/checks` | hecho (emulado) | `polish-84-emails.spec.ts` (1440: cuatro pasos con la vista previa al costado, bandeja del celular, avisos que llevan a su paso, guardar y volver; 820 y 390: pasos en una fila, vista previa en modal y entera al revisar), `admin-emails.spec.ts`, `admin-polish-marketing.spec.ts`, `emails-84.test.ts` | — |
+| 8.4.20 Bandeja de salida arriba y en modal | 1 y 8 | `emails/OutboxDialog` (antes `OutboxSheet`), `emails/OutboxCard`, `EmailsAdmin` | hecho (emulado) | `polish-84-modals.spec.ts`, `polish-84-emails.spec.ts` (la tarjeta va arriba de las plantillas, sus emails abren el modal ahí mismo, "Ver toda la bandeja"; 390 sin desborde) | — |
 | 8.4.21 Editor de Temáticas en modal | 1 | `themes/ThemeEditor`, `detail/EditDialog` (`saveLabel`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado, cerrar con cambios pide confirmar), `themes.spec.ts` | — |
 | 8.4.22 Tarjetas: medio de pago y Mi cuenta | 4 y 9 | `account/CardsSection` (Lote 4) | parcial | `polish-84-account.spec.ts` (validación, tarjeta de prueba; en el almacenamiento solo marca, últimos 4 y vencimiento), `account-84.test.ts` | Medio de pago en Ajustes y en el checkout (Lote 9) |
 | 8.4.23 Ilustración del comedero perro globo | 7 | `illustrations/pets` (`BowlDog`, `Balloon`), `fixtures/templates` (zona del texto en el plato), `stores/admin` (zona vieja sin pisar las editadas) | hecho (emulado) | `polish-84-costs.spec.ts`, `polish-84-product.spec.ts` (texto en relieve sobre el plato), capturas a 390 y 1440 | Comparar con la foto real del producto |
@@ -157,3 +157,19 @@ falta el equipo real) · **pendiente**.
 - **8.4.24** Arrepentimiento en tablet y escritorio: formulario ancho a la izquierda (dos columnas cuando hay lugar) y a
   la derecha "Cómo funciona" en tres pasos más el plazo de 10 días corridos, con enlaces a términos y preguntas. En el
   celular, uno debajo del otro.
+
+## Lote 8 · registro
+
+- **8.4.19** El editor de cada email pasa a cuatro pasos, con la vista previa en vivo al costado en pantallas anchas:
+  1. **Cuándo se envía**: el momento del pedido en el que sale (marcado en la línea de momentos), si está activo y el
+     nombre interno.
+  2. **Asunto**: asunto y texto de vista previa con contador de letras y cómo se ve en la bandeja de un celular.
+  3. **Contenido**: los bloques, con las fichas de datos a mano.
+  4. **Revisar y probar**: avisos (asunto largo o vacío, sin texto de vista previa, sin botón, bloques del pedido que
+     no se ven en el cumpleaños, pausado, cambios sin guardar), cada uno con un botón a su paso; enviar prueba,
+     restaurar la original y "Guardar y volver a Emails".
+  Los pasos listos llevan un tilde y se puede saltar a cualquiera. Guardar siempre está arriba. En tablet y celular la
+  vista previa se abre en un modal ("Ver cómo queda") y en el último paso se ve entera. El borrador de la pestaña sigue
+  igual (8.3.24). Ningún aviso bloquea el guardado.
+- **8.4.20** La bandeja de salida va arriba de todo en Emails automáticos, como tarjeta: cuántos emails simulados hay y
+  los tres últimos, que se abren en el modal ahí mismo; "Ver toda la bandeja" lleva a la página con buscador y filtro.

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Inbox, MailCheck, PencilLine } from "lucide-react";
+import { MailCheck, PencilLine } from "lucide-react";
 import { useEffect } from "react";
 import { Badge } from "@/components/atoms/Badge";
 import { Switch } from "@/components/atoms/Switch";
@@ -9,15 +9,15 @@ import { contextForOrder, petSampleContext, resolveInline, sampleOrder } from "@
 import { TRIGGER_HINT, TRIGGER_LABEL } from "@/demo/fixtures/emails";
 import { formatDateTime } from "@/lib/date";
 import { useAdmin } from "@/stores/admin";
-import { HubCard, HubGrid } from "../marketing/HubCard";
 import { MARKETING, SubpageHeader } from "../marketing/SubpageHeader";
 import { useDemoSave } from "../useDemoSave";
+import { OutboxCard } from "./OutboxCard";
 
 export const EMAILS_SECTION = { href: "/admin-demo/emails/", label: "Emails automáticos" };
 
 /**
- * Emails automáticos (pedido de Ignacio, fuera de la especificación): una tarjeta por plantilla, que abre su editor, y
- * la bandeja de salida como otra tarea con su propia página (8.3.24).
+ * Emails automáticos (pedido de Ignacio, fuera de la especificación): arriba la bandeja de salida con los últimos emails
+ * (8.4.20) y después una tarjeta por plantilla, que abre su editor. La bandeja completa tiene su propia página (8.3.24).
  */
 export function EmailsAdmin() {
   const router = useRouter();
@@ -32,12 +32,15 @@ export function EmailsAdmin() {
   const ctx = sample ? contextForOrder(sample) : { customerName: "Cliente", email: "" };
   const petCtx = petSampleContext(profiles, orders, users);
   // Enlaces viejos a la pestaña de enviados: la bandeja ahora es una subpágina.
-  useEffect(() => { if (params.get("vista") === "enviados") router.replace("/admin-demo/emails/enviados/"); }, [params, router]);
+  const legacy = params.get("vista") === "enviados";
+  useEffect(() => { if (legacy) router.replace("/admin-demo/emails/enviados/"); }, [legacy, router]);
+  if (legacy) return null;
 
   return (
     <>
       <SubpageHeader trail={[MARKETING]} back={MARKETING} title="Emails automáticos"
         intro="Un email por cada momento del pedido, con la marca y los datos del cliente puestos solos. En la demo no sale nada: lo “enviado” queda en la bandeja de salida." />
+      <OutboxCard />
       <ul aria-label="Plantillas" className="mb-8 grid grid-cols-[minmax(0,1fr)] gap-3 md:grid-cols-2 xl:grid-cols-3">
         {templates.map((t) => {
           const sent = outbox.filter((m) => m.templateId === t.id && !m.test);
@@ -63,9 +66,6 @@ export function EmailsAdmin() {
           );
         })}
       </ul>
-      <HubGrid label="Otras tareas de emails">
-        <HubCard href="/admin-demo/emails/enviados/" icon={Inbox} title="Bandeja de salida" description="Los emails simulados que “salieron”, con buscador y filtro por momento." meta={`${outbox.length} ${outbox.length === 1 ? "email" : "emails"}`} action="Ver la bandeja" />
-      </HubGrid>
     </>
   );
 }

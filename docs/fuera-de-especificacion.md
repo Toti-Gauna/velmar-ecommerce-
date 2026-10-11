@@ -46,6 +46,7 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Mis tarjetas y "Tarjeta de crédito o débito" como medio de pago con tarjetas guardadas (Polish 8.4.22). **La spec cobra con Mercado Pago Checkout Pro**: en la demo se guarda solo marca, últimos 4 y vencimiento | Polish 8.4 | Tarjetas guardadas y cobro con el formulario seguro de Mercado Pago (tokenización); Velmar nunca recibe ni guarda el número ni el código | M | A decidir con Velmar |
 | Transferir los pedidos de un día que se cierra a otro día, con aviso de carga y capacidad (Polish 8.4.15) | Polish 8.4 | Reprogramación en la base y aviso a cada cliente con la fecha nueva | S | |
 | Explicación de cómo se calculan costo, margen y precio sugerido en Costos y margen (Polish 8.4.18) | Polish 8.4 | Nada (texto de ayuda) | S | |
+| Editor de emails en cuatro pasos con avisos antes de guardar y bandeja de salida arriba en tarjeta (Polish 8.4.19 y 8.4.20) | Polish 8.4 | Nada nuevo: las plantillas se guardan en la base y los envía Nodemailer | S | |
 | **Cambio:** sin el aviso "Demo de venta" arriba de la tienda ni "Reiniciar demo" (Polish 8.4.13, pedido de Ignacio para mostrársela a clientes). Siguen la señal del panel y los avisos del checkout de que no se cobra nada | Polish 8.4 | Nada (es la demo) | S | |
 
 ## Panel

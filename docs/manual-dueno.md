@@ -132,9 +132,10 @@ filtro **"Para escribir"**. El botón **"i"** al lado de "Segmento" explica qué
 
 ### …manejar los emails automáticos
 **Emails automáticos**: uno por momento del pedido (compra, diseño recibido, pago aprobado, en producción, listo,
-enviado) y el cumpleaños de la mascota. Cada uno se activa o se pausa. Para cambiar el texto, tocá el bloque y escribí;
-los datos del cliente se insertan con **fichas** (nombre, código, total…), sin códigos raros. **Vista previa** y **Enviar
-prueba** antes de guardar. En la demo los emails quedan en la **bandeja de salida**.
+enviado) y el cumpleaños de la mascota. Cada uno se activa o se pausa. El editor te lleva en cuatro pasos: **cuándo se
+envía**, **asunto**, **contenido** y **revisar y probar**. Para cambiar el texto, tocá el bloque y escribí; los datos del
+cliente se insertan con **fichas** (nombre, código, total…), sin códigos raros. En el último paso ves qué conviene
+revisar, mandás una **prueba** y guardás. En la demo los emails quedan en la **bandeja de salida**, arriba de todo.
 
 ## Si algo no anda
 | Pasa esto | Probá |
