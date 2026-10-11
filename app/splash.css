@@ -98,5 +98,10 @@
 /* El telón sube entero (transform): antes era un recorte que se repintaba en cada cuadro. */
 @keyframes splash-curtain { to { transform: translate3d(0, calc(-100% - 140px), 0); } }
 
+/* 8.4.26: mientras se ve el splash, la página queda oculta y aparece recién cuando sube el telón (la clase la pone y la
+   saca el script del <head>: a los 4,35 s o al cerrarlo con Escape). Así nada de la página se dibuja encima ni asoma a
+   medio armar aunque el navegador no ponga el splash en la capa superior. Sin JS no hay clase y la página se ve igual. */
+html.splash-hold body > :not(#velmar-splash) { visibility: hidden; }
+
 /* Con "reducir movimiento" no hay pantalla de carga. Va al final: pisa el display de la regla de arriba. */
 @media (prefers-reduced-motion: reduce) { #velmar-splash { display: none; } }

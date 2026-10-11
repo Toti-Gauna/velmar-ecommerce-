@@ -16,6 +16,8 @@ interface Props {
   exitLabel?: string;
   /** Oculta el botón de salida (por ejemplo, mientras gira la ruleta). */
   lockExit?: boolean;
+  /** Fondo oscuro desde el primer cuadro, sin fundido (cuando se abre solo al entrar a la página). */
+  instant?: boolean;
   children: ReactNode;
   className?: string;
 }
@@ -27,7 +29,7 @@ const noop = () => () => {};
  * ventana con marco: ocupa la pantalla entera y entra sin scroll. Accesible como diálogo: foco atrapado, Escape
  * sale, scroll de fondo bloqueado y el foco vuelve a donde estaba. Se monta en <body> por portal.
  */
-export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a77a"], exitLabel = "Salir", lockExit, children, className }: Props) {
+export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a77a"], exitLabel = "Salir", lockExit, instant, children, className }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const mounted = useSyncExternalStore(noop, () => true, () => false);
   const closeRef = useRef(onClose);
@@ -72,7 +74,7 @@ export function ImmersiveStage({ open, onClose, label, glow = ["#3d4a2a", "#c9a7
   return createPortal(
     <div ref={root} role="dialog" aria-modal="true" aria-label={label} tabIndex={-1}
       style={{ "--glow-a": glow[0], "--glow-b": glow[1] } as CSSProperties}
-      className={cn("immersive-stage fixed inset-0 z-[80] flex flex-col overflow-hidden text-[#f6f1e8] outline-none", className)}>
+      className={cn("immersive-stage fixed inset-0 z-[80] flex flex-col overflow-hidden text-[#f6f1e8] outline-none", instant && "immersive-instant", className)}>
       <div aria-hidden="true" className="immersive-backdrop absolute inset-0" />
       {!lockExit && (
         <button type="button" onClick={onClose}

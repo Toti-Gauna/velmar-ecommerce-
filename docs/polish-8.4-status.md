@@ -13,13 +13,13 @@ falta el equipo real) · **pendiente**.
 |---|---|---|---|---|---|
 | 8.4.1 Nombre grabado/impreso premium | 3 | | pendiente | | |
 | 8.4.2 Migas fijas con la galería | 3 | | pendiente | | |
-| 8.4.3 Sin pantalla de carga al ir al checkout | 2 | | pendiente | | |
+| 8.4.3 Sin pantalla de carga al ir al checkout | 2 | `organisms/Splash` (`splashScript`), `themes/reloadWithTheme` | hecho | `polish-84-splash.spec.ts` (entrar y recargar la muestran; una carga completa desde adentro no; "Ver en la tienda" la pide) | — |
 | 8.4.4 Paso Datos sin carrito | 3 | | pendiente | | |
 | 8.4.5 Pago y resumen arriba de los botones | 3 | | pendiente | | |
 | 8.4.6 Direcciones en Mi cuenta y checkout | 4 | | pendiente | | |
 | 8.4.7 Volver a Mis pedidos | 4 | | pendiente | | |
-| 8.4.8 Abrir regalo sin textos de fondo | 2 | | pendiente | | |
-| 8.4.9 Regalo que no se reabre solo | 2 | | pendiente | | |
+| 8.4.8 Abrir regalo sin textos de fondo | 2 | `gifts/GiftExperience`, `motion/ImmersiveStage` (`instant`) | hecho (emulado) | `polish-84-splash.spec.ts` (fondo oscuro sin fundido; la página de atrás no se dibuja) | Confirmar en el iPhone real |
+| 8.4.9 Regalo que no se reabre solo | 2 | `gifts/GiftExperience`, `AccountGifts` (`&desde=cuenta`) | hecho | `polish-84-splash.spec.ts`, `gifts.spec.ts` | — |
 | 8.4.10 Modal de regalo vacío en iPad | 1 | `gifts/GiftModal`, `GiftPreview`, `motion/Sheet` | hecho (emulado) | `polish-84-modals.spec.ts` (820×1180, 1180×820, 375×812: campos y botones a la vista, sin hijos `flex-1`) | Confirmar en el iPad real (Safari) |
 | 8.4.11 Scroll de fondo con modal abierto | 1 | `lib/scrollLock`, `motion/Sheet`, `motion/ImmersiveStage`, `molecules/ConfirmButton`, `globals.css` | hecho (emulado) | `polish-84-modals.spec.ts` (toques en el velo y el título se cancelan; el cuerpo del modal se desplaza; al cerrar vuelve) | Confirmar en iPhone y iPad reales |
 | 8.4.12 Íconos del encabezado agrupados | 5 | | pendiente | | |
@@ -35,9 +35,9 @@ falta el equipo real) · **pendiente**.
 | 8.4.22 Tarjetas: medio de pago y Mi cuenta | 4 y 9 | | pendiente | | |
 | 8.4.23 Ilustración del comedero perro globo | 7 | | pendiente | | |
 | 8.4.24 Arrepentimiento en tablet y escritorio | 7 | | pendiente | | |
-| 8.4.25 Pantalla de carga del link de regalo | 2 | | pendiente | | |
-| 8.4.26 Esqueleto bajo la pantalla de carga | 2 | | pendiente | | |
-| 8.4.27 Barra inferior sobre la transición | 2 | | pendiente | | |
+| 8.4.25 Pantalla de carga del link de regalo | 2 | `app/motion.css` (pausa de `stage-open`) | hecho (emulado) | `polish-84-splash.spec.ts` (los pétalos siguen animados con el escenario abierto), captura del Día de la Madre | Confirmar en el iPad real |
+| 8.4.26 Página oculta bajo la pantalla de carga | 2 | `organisms/Splash` (`splash-hold`), `app/splash.css`, `app/motion.css` (transiciones sin animación durante el splash) | hecho (emulado) | `polish-84-splash.spec.ts` (página oculta y transición sin animación mientras se ve; aparece al subir el telón) | Confirmar en el iPad real |
+| 8.4.27 Barra inferior sobre la transición | 2 | `app/motion.css` (capas `shop-header`, `shop-tabbar`, `shop-buybar`, botones flotantes) | hecho (emulado) | `polish-84-splash.spec.ts`, cuadro a cuadro de cupones → inicio a 390 px | Confirmar en el iPhone real |
 | 8.4.28 Rendimiento en mobile (≥ 50 fps) | 10 | | pendiente | Línea de base abajo | |
 
 ## Lote 1 · registro
@@ -69,3 +69,23 @@ falta el equipo real) · **pendiente**.
   | Club | 59,7 / 1 % | 58,0 / 4 % | 35,4 / 25 % | 0,8 s |
 
   Lo que más pesa: el inicio (animado aun quieto) y cada cambio de sección.
+
+## Lote 2 · registro
+
+- **8.4.26** Causa encontrada: React arranca una View Transition al hidratar la página, y las capas de una transición se
+  dibujan por encima de todo, también del splash en la capa superior: por eso la ficha asomaba sobre la pantalla de carga
+  al recargar. Mientras se ve el splash, las transiciones terminan en el acto (sin animación; no se cancelan con
+  `skipTransition` porque Next espera esas promesas y una cancelada termina en un error de la página) y la página queda
+  oculta (`splash-hold`) hasta que sube el telón a los 4,35 s; sin JS no hay clase y la página se ve igual.
+- **8.4.3** El splash sale al entrar desde afuera o al recargar a mano. Una carga completa que viene de adentro de la
+  tienda (lo que pasa cuando se publica una versión nueva a mitad de la visita y el navegador pide la página entera, que
+  es lo más probable del checkout) entra directo. "Ver en la tienda" del panel la sigue pidiendo (`velmar:splash`).
+- **8.4.25** Causa: al abrir el link, el escenario del regalo pone `stage-open` en `<html>`, que pausaba también la escena
+  de la pantalla de carga (quedaba congelada a medio armar). La pausa ahora excluye al splash.
+- **8.4.27** Causa: la barra inferior y el header quedaban en la captura de fondo y la página que entra y sale se dibujaba
+  encima. Ahora van en su propia capa, quieta y arriba (también la barra de compra y los botones flotantes). El fondo del
+  header que sube a tapar la hora no se dibuja durante la transición (si no, tapaba la cinta de la temática).
+- **8.4.8 / 8.4.9** El escenario abierto al entrar ya está oscuro desde el primer cuadro y la página de atrás no se dibuja
+  mientras está abierto. Al salir: desde Mis regalos vuelve a la cuenta (reemplaza la página, Atrás no lo reabre); por
+  link o código queda "Tu regalo de…" con "Ver mi regalo" (lo de adentro, sin volver a golpearlo) o, si no se abrió,
+  la invitación a abrirlo.
