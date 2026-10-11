@@ -39,6 +39,7 @@ falta el equipo real) · **pendiente**.
 | 8.4.26 Página oculta bajo la pantalla de carga | 2 | `organisms/Splash` (`splash-hold`), `app/splash.css`, `app/motion.css` (transiciones sin animación durante el splash) | hecho (emulado) | `polish-84-splash.spec.ts` (página oculta y transición sin animación mientras se ve; aparece al subir el telón) | Confirmar en el iPad real |
 | 8.4.27 Barra inferior sobre la transición | 2 | `app/motion.css` (capas `shop-header`, `shop-tabbar`, `shop-buybar`, botones flotantes) | hecho (emulado) | `polish-84-splash.spec.ts`, cuadro a cuadro de cupones → inicio a 390 px | Confirmar en el iPhone real |
 | 8.4.28 Rendimiento en mobile (≥ 50 fps) | 10 | `app/seasons.css` (partículas en el celular), `app/globals.css` (collar y grano), `app/motion.css` (transiciones sin blur), `organisms/ShopBottomNav` (pastilla en CSS), `motion/pageMotion` (sin View Transitions en el celular), `ProductArt`/`ProductCard` (etiquetas sin desenfoque) | hecho (emulado) al desplazar y con la página quieta; parcial al cambiar de sección | Mediciones abajo (Chromium, 390×844 táctil, CPU 4×), `polish-84-perf.spec.ts` | Cambio de sección desde el inicio (41 fps) y desde la ficha; confirmar en celulares reales |
+| 8.4.29 Sonidos en toda la tienda y el panel | 11 | `lib/sound-kit` (recetas y prioridad), `lib/sound` (silencio único, prioridad, sin bloqueo en el panel), `lib/uiSounds` (un listener para todo lo que se toca y se escribe), `motion/Sheet`, `molecules/ConfirmButton`, `stores/toast`, `product/ProductDetail`, `checkout/CheckoutView`, `admin/AdminTopbar` (botón de sonidos) | hecho (emulado) | `polish-84-sounds.spec.ts` (tienda, checkout y panel; agregar sin el clic encima; silencio compartido), `shop-fase4.spec.ts`, `sounds-84.test.ts` | Escucharlo en los equipos reales (volumen y cuánto suena) |
 
 ## Lote 1 · registro
 
@@ -225,3 +226,23 @@ falta el equipo real) · **pendiente**.
   la cinta en el celular hasta que se scrolleaba. Ahora se recalcula también cuando cambia el alto de la página.
 - Textos que todavía decían "reiniciá la demo" (seis pantallas de "no encontrado") cambiados por "puede que se haya
   hecho en otro navegador" o "que se hayan borrado los datos de este navegador".
+
+## Lote 11 · registro
+
+- **8.4.29** (pedido de Ignacio: "quiero que toda la página tenga sonidos, literalmente toda, que se sienta una re app")
+  Todo lo que se toca suena, en la tienda y en el panel, con sonidos sintetizados (WebAudio, sin archivos ni
+  dependencias):
+  - **Interfaz**: clic de botón, link (navegar), opción/pestaña/radio (elegir), interruptor y casilla (distinto al
+    prender y al apagar), cada tecla al escribir (muy suave, sin contraseñas), abrir y cerrar modales, pasos del
+    checkout y del editor de emails (adelante sube, atrás baja), sumar y restar (cantidad y stock) y avisos de info.
+  - **Respuestas**: "listo" al guardar, aprobar o copiar (cada aviso de éxito), "se va" al quitar o borrar, y un brillo
+    al entrar a ver un producto.
+  - **Momentos clave** (ya estaban): agregar al carrito, favoritos, cupón, ruleta, regalo, compra y error.
+  Cómo: un solo listener en la ventana decide el sonido según el control tocado (`data-sound` lo cambia o lo apaga en un
+  caso puntual), así no hay que tocar cada componente. Una prioridad evita que se encimen: si suena "agregar al
+  carrito", no suena además el clic del botón ni el aviso. El panel ahora suena (antes estaba bloqueado) y tiene su
+  botón de sonidos; el silencio es uno solo para la tienda y el panel y se recuerda en el navegador. El ruido se arma
+  una sola vez y se reusa (antes se generaba en cada sonido).
+- Ajuste en la verificación: en una primera versión, cualquier sonido de mayor prioridad tapaba a los menores y el
+  "listo" de guardar el stock (que en el panel se guarda en el acto) apagaba el "+". Ahora solo los momentos clave tapan;
+  sumar y su "listo" suenan los dos.

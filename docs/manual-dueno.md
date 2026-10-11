@@ -12,6 +12,8 @@ técnicas. Cada tarea dice **dónde tocar** y **qué pasa después**.
 - **En el celular**: arriba tenés el menú de las tres rayitas y abajo las pestañas Inicio, Pedidos, Pagos, Productos y Más.
 - **En la compu**: el menú está a la izquierda, agrupado en Ventas, Taller, Catálogo, Marketing y Ajustes.
 - Buscar rápido: **Ctrl+K** (o **⌘K** en Mac) busca pedidos, productos, clientes y secciones.
+- **Sonidos**: cada botón, cambio y guardado suena, en la tienda y en el panel. Si no los querés, tocá el parlante de
+  arriba (vale para los dos y se recuerda).
 - En la computadora, el menú de la izquierda muestra solo íconos: pasá el mouse para ver los nombres o fijalo abierto con
   el botón de abajo. En la tablet y el celular, el menú está en el botón de arriba a la izquierda y en las pestañas de abajo.
 

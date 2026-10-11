@@ -48,6 +48,7 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Explicación de cómo se calculan costo, margen y precio sugerido en Costos y margen (Polish 8.4.18) | Polish 8.4 | Nada (texto de ayuda) | S | |
 | Editor de emails en cuatro pasos con avisos antes de guardar y bandeja de salida arriba en tarjeta (Polish 8.4.19 y 8.4.20) | Polish 8.4 | Nada nuevo: las plantillas se guardan en la base y los envía Nodemailer | S | |
 | **Cambio:** en el celular, el cambio de página entra con un fundido CSS en vez de View Transitions, con menos partículas y collares quietos en las tarjetas (Polish 8.4.28, rendimiento) | Polish 8.4 | Nada (es del lado del navegador) | S | |
+| Sonidos en toda la tienda y el panel: cada botón, link, interruptor, opción y campo, modales, pasos, sumar/restar, guardar, borrar y entrar a un producto, con un solo botón de silencio (Polish 8.4.29) | Polish 8.4 | Nada (es del lado del navegador); decidir con Velmar si arranca con sonido o en silencio | S | A decidir con Velmar |
 | **Cambio:** sin el aviso "Demo de venta" arriba de la tienda ni "Reiniciar demo" (Polish 8.4.13, pedido de Ignacio para mostrársela a clientes). Siguen la señal del panel y los avisos del checkout de que no se cobra nada | Polish 8.4 | Nada (es la demo) | S | |
 
 ## Panel

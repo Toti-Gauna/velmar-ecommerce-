@@ -10,7 +10,8 @@
     (se recuerda en `velmar-ui:admin-sidebar`). Lleva la marca, secciones agrupadas en Ventas, Taller, Catálogo, Marketing y Ajustes,
     contadores de pedidos en marcha, comprobantes por revisar, reclamos abiertos, variantes para reponer, pedidos atrasados e insumos para reponer, y la "cuenta" demo con acceso a la tienda)
     + barra superior con la señal "Panel de demostración · datos ficticios", migas (Panel › área › sección), **buscador global ⌘K / Ctrl+K**
-    (secciones, acciones, pedidos, productos y clientes) y "Ver tienda". Sin "Reiniciar demo" desde 8.4.13.
+    (secciones, acciones, pedidos, productos y clientes), "Ver tienda" y el botón de **sonidos** (8.4.29: el panel suena
+    igual que la tienda y el silencio es el mismo para los dos). Sin "Reiniciar demo" desde 8.4.13.
   - Tablets y celulares (táctiles, sin hover): la misma barra superior con **menú hamburguesa**, y **pestañas inferiores**
     (Inicio, Pedidos, Pagos, Productos, Más).
   - Sin guía de bienvenida (Polish 8.3.11): el panel abre directo. Quedan la señal de demo y las ayudas de cada pantalla.

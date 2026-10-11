@@ -1,6 +1,6 @@
 # Polish 8.4 · Checklist de QA para probar en los equipos
 
-Todo lo que se arregló en el Polish 8.4 (ítems 8.4.1 a 8.4.28 y los bugs que aparecieron en el camino), para probar en
+Todo lo que se arregló en el Polish 8.4 (ítems 8.4.1 a 8.4.29 y los bugs que aparecieron en el camino), para probar en
 los equipos reales. Acá solo se pudo probar en Chromium emulando cada tamaño: **lo marcado con 📱 hay que confirmarlo
 sí o sí en el iPhone/iPad** (Safari se comporta distinto y no se puede emular acá). Detalle técnico de cada ítem en
 `polish-8.4-status.md`.
@@ -135,6 +135,19 @@ sí o sí en el iPhone/iPad** (Safari se comporta distinto y no se puede emular 
 - [ ] **8.4.22** Ajustes → Medios de pago: aparece **"Tarjetas de crédito y débito"** tildada. Destildala y guardá: en
   el checkout ya no aparece la opción de tarjeta. En el panel, un pedido pagado con tarjeta dice "Tarjeta · Visa
   terminada en 4242", no pasa por Pagos manuales y se aprueba con "Simular aprobación de la tarjeta".
+
+## Sonidos (8.4.29)
+
+- [ ] 📱 Con el volumen del teléfono alto (y sin el modo silencio del iPhone), tocá la pantalla una vez y recorré:
+  botones, links de la barra de abajo, una pestaña o chip, un interruptor (suena distinto al prender y al apagar),
+  escribí un nombre en un producto (cada tecla suena muy suave), abrí y cerrá la búsqueda o el carrito.
+- [ ] Al **entrar a un producto** suena un brillo; **sumar y restar** cantidad suben y bajan; **agregar al carrito**
+  suena a "agregar" sin otro clic encima; **quitar** del carrito suena a "se va".
+- [ ] En el checkout, **Continuar** sube y **Atrás** baja.
+- [ ] En el panel: **sumar stock** (Productos y stock, el "+"), guardar algo (suena el "listo" del aviso), prender o
+  apagar un interruptor y "Vaciar" la bandeja de salida (suena a "se va").
+- [ ] El parlante de arriba **silencia todo**, en la tienda y en el panel a la vez, y se recuerda al recargar.
+- [ ] Contanos si algo suena demasiado o muy poco (se ajusta fácil).
 
 ## Si algo falla
 

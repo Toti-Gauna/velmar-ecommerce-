@@ -15,7 +15,7 @@ export const EMAIL_STEPS: { id: EmailStepId; label: string; hint: string }[] = [
 /** Los cuatro pasos del editor (8.4.19): se puede saltar a cualquiera; los listos llevan un tilde. */
 export function EmailStepper({ step, done, onStep }: { step: number; done: Record<EmailStepId, boolean>; onStep: (i: number) => void }) {
   return (
-    <nav aria-label="Pasos del editor">
+    <nav aria-label="Pasos del editor" data-sound="none">
       <ol className="grid grid-cols-4 gap-1.5 sm:gap-2">
         {EMAIL_STEPS.map((s, i) => {
           const current = step === i, ok = done[s.id];
@@ -49,10 +49,10 @@ export function StepFooter({ step, onStep, children }: { step: number; onStep: (
   const next = EMAIL_STEPS[step + 1];
   return (
     <div className="flex flex-wrap items-center gap-2 border-t border-line pt-4">
-      {step > 0 && <Button variant="ghost" onClick={() => onStep(step - 1)}><ArrowLeft size={16} aria-hidden="true" /> Atrás</Button>}
+      {step > 0 && <Button variant="ghost" data-sound="none" onClick={() => onStep(step - 1)}><ArrowLeft size={16} aria-hidden="true" /> Atrás</Button>}
       <span className="ml-auto flex flex-wrap justify-end gap-2">
         {children}
-        {next && <Button onClick={() => onStep(step + 1)}>Siguiente: {next.label} <ArrowRight size={16} aria-hidden="true" /></Button>}
+        {next && <Button data-sound="none" onClick={() => onStep(step + 1)}>Siguiente: {next.label} <ArrowRight size={16} aria-hidden="true" /></Button>}
       </span>
     </div>
   );

@@ -49,7 +49,7 @@ export function ContactStep({ onNext }: { onNext: () => void }) {
       <Field id="c-phone" label="Teléfono / WhatsApp" error={errors.phone?.message}>
         <Input id="c-phone" type="tel" autoComplete="tel" inputMode="tel" aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "c-phone-error" : undefined} {...form.register("phone")} />
       </Field>
-      <Button type="submit" size="lg" className="self-start">Continuar a la entrega</Button>
+      <Button type="submit" size="lg" data-sound="none" className="self-start">Continuar a la entrega</Button>
     </form>
   );
 }

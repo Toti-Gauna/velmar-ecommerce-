@@ -7,6 +7,7 @@ import { emailChecks, stepsDone } from "@/demo/admin/emails/checks";
 import { contextForOrder, petSampleContext, renderEmail, sampleOrder, type EmailContext } from "@/demo/admin/emails/render";
 import { ORDER_TOKENS, TOKEN_LABEL, type EmailTemplate, type EmailToken } from "@/demo/fixtures/emails";
 import { useAdmin } from "@/stores/admin";
+import { playSound } from "@/lib/sound";
 import { useSessionDraft } from "../useSessionDraft";
 import { ChipEditorsProvider } from "./ChipEditor";
 import { EditorHeader, FinishButton, PreviewButton, ReviewActions } from "./EmailEditorParts";
@@ -86,7 +87,7 @@ function Editor({ saved }: { saved: EmailTemplate }) {
   const arts = [...new Map(products.map((p) => [p.art, { art: p.art, name: p.name }])).values()];
   const set = (p: Partial<EmailTemplate>) => session.setDraft({ ...draft, ...p });
   const checks = emailChecks(draft, rendered, dirty);
-  const go = (i: number) => { setStep(i); requestAnimationFrame(focusStep); };
+  const go = (i: number) => { if (i !== step) playSound(i > step ? "step" : "back"); setStep(i); requestAnimationFrame(focusStep); };
   const preview = { email: rendered, to: `${ctx.customerName} <${ctx.email}>`, device, onDevice: setDevice, orders: isPet ? [] : orders.filter((o) => o.status !== "CANCELLED"), sample, onSample: setSample };
   const current = EMAIL_STEPS[step]!;
 

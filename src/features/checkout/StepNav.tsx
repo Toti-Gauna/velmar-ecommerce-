@@ -11,8 +11,8 @@ export const STEP_FORM = "checkout-paso";
 export function StepNav({ onBack, next, big }: { onBack?: () => void; next: ReactNode; big?: boolean }) {
   return (
     <div className="flex flex-wrap gap-3">
-      {onBack && <Button variant="secondary" onClick={onBack}>Atrás</Button>}
-      <Button type="submit" form={STEP_FORM} size={big ? "lg" : undefined}>{next}</Button>
+      {onBack && <Button variant="secondary" data-sound="none" onClick={onBack}>Atrás</Button>}
+      <Button type="submit" form={STEP_FORM} data-sound="none" size={big ? "lg" : undefined}>{next}</Button>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, ChevronRight, FlaskConical, Menu, Search } from "lucide-react";
+import { SoundToggle } from "@/components/atoms/SoundToggle";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle";
 import { currentSection } from "./nav";
 
@@ -36,6 +37,7 @@ export function AdminTopbar({ onMenu, onSearch }: { onMenu: () => void; onSearch
         <Link href="/" className="hidden h-10 items-center gap-1.5 rounded-full px-4 text-sm font-bold text-primary transition-colors hover:bg-accent/60 xl:flex">
           Ver tienda <ArrowUpRight size={15} aria-hidden="true" />
         </Link>
+        <SoundToggle className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-muted hover:bg-accent/60 hover:text-ink" />
         <ThemeToggle className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-muted hover:bg-accent/60 hover:text-ink" />
       </div>
     </header>

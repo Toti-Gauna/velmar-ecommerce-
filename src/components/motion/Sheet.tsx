@@ -5,6 +5,7 @@ import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
 import { lockScroll } from "@/lib/scrollLock";
+import { playSound } from "@/lib/sound";
 
 interface SheetProps {
   open: boolean;
@@ -45,6 +46,7 @@ export function Sheet({ open, onClose, title, side = "right", children, classNam
     if (!open) return;
     const previous = document.activeElement as HTMLElement | null;
     const unlock = lockScroll(() => layer.current);
+    playSound("modalOpen");
     // Foco inicial, salvo que ya se haya tocado algo adentro (si no, lo que se escribía iba a parar a otro campo).
     const t = window.setTimeout(() => {
       if (panel.current?.contains(document.activeElement)) return;
@@ -59,7 +61,7 @@ export function Sheet({ open, onClose, title, side = "right", children, classNam
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
     };
     document.addEventListener("keydown", onKey);
-    return () => { window.clearTimeout(t); unlock(); document.removeEventListener("keydown", onKey); previous?.focus?.(); };
+    return () => { window.clearTimeout(t); unlock(); document.removeEventListener("keydown", onKey); previous?.focus?.(); playSound("modalClose"); };
   }, [open]);
   if (!mounted) return null;
   return createPortal(

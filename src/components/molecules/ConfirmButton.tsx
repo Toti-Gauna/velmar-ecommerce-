@@ -4,6 +4,7 @@ import { Button } from "@/components/atoms/Button";
 import { inputClass } from "@/components/atoms/Field";
 import { cn } from "@/lib/cn";
 import { lockScroll } from "@/lib/scrollLock";
+import { playSound } from "@/lib/sound";
 
 interface ConfirmButtonProps {
   children: ReactNode;
@@ -19,6 +20,8 @@ interface ConfirmButtonProps {
   disabled?: boolean;
 }
 
+const DESTRUCTIVE = /quitar|borrar|eliminar|vaciar|descartar|rechazar|cancelar/i;
+
 /** Botón que pide confirmación con <dialog> nativo (foco atrapado y Esc para cerrar). */
 export function ConfirmButton({ children, title, description, confirmLabel, onConfirm, reasonLabel, variant = "primary", size = "md", className, disabled }: ConfirmButtonProps) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -29,17 +32,19 @@ export function ConfirmButton({ children, title, description, confirmLabel, onCo
   const unlock = useRef<(() => void) | null>(null);
   const release = () => { unlock.current?.(); unlock.current = null; };
   useEffect(() => () => unlock.current?.(), []);
-  const open = () => { ref.current?.showModal(); release(); unlock.current = lockScroll(() => ref.current); };
+  const open = () => { ref.current?.showModal(); release(); unlock.current = lockScroll(() => ref.current); playSound("modalOpen"); };
   const close = () => { ref.current?.close(); setReason(""); setError(false); };
   return (
     <>
       <Button variant={variant} size={size} className={className} disabled={disabled} onClick={open}>{children}</Button>
-      <dialog ref={ref} aria-labelledby={`${id}-t`} onClose={() => { release(); setReason(""); setError(false); }}
+      <dialog ref={ref} aria-labelledby={`${id}-t`} onClose={() => { release(); setReason(""); setError(false); playSound("modalClose"); }}
         className="m-auto w-[min(92vw,440px)] rounded-[var(--radius-card)] border border-line bg-surface p-0 text-ink shadow-2xl backdrop:bg-black/40">
         <form method="dialog" className="flex flex-col gap-4 p-5" onSubmit={(e) => {
           e.preventDefault();
           if (reasonLabel && reason.trim().length < 3) return setError(true);
           onConfirm(reason.trim());
+          // 8.4.29: confirmar suena a "listo", o a "se va" si quita, borra o descarta algo.
+          playSound(variant === "danger" || DESTRUCTIVE.test(confirmLabel) ? "remove" : "success");
           close();
         }}>
           <h2 id={`${id}-t`} className="text-lg font-extrabold">{title}</h2>

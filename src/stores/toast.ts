@@ -20,7 +20,8 @@ let seq = 0;
 export const useToasts = create<ToastState>()((set, get) => ({
   toasts: [],
   push: (toast) => {
-    if (toast.tone === "error") playSound("error");
+    // 8.4.29: cada aviso suena según su tono (el de éxito es el "listo" de guardar, aprobar o copiar).
+    playSound(toast.tone === "error" ? "error" : toast.tone === "success" ? "success" : "info");
     const id = ++seq;
     // El mismo aviso no se apila: si ya está a la vista, se reemplaza (con su tiempo de nuevo).
     const same = (t: Toast) => t.title === toast.title && t.description === toast.description;

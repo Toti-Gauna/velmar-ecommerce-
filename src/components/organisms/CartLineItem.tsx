@@ -55,7 +55,7 @@ export function CartLineItem({ line, onQuantity, onRemove }: { line: CartLineVie
           </div>
         </div>
       </div>
-      <button type="button" onClick={onRemove} aria-label={`Quitar ${line.name}`} className="absolute right-2 top-2 grid h-10 w-10 place-items-center rounded-full text-danger hover:bg-danger-soft">
+      <button type="button" data-sound="remove" onClick={onRemove} aria-label={`Quitar ${line.name}`} className="absolute right-2 top-2 grid h-10 w-10 place-items-center rounded-full text-danger hover:bg-danger-soft">
         <Trash2 size={18} aria-hidden="true" />
       </button>
     </li>

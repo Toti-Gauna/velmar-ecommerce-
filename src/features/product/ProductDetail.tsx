@@ -1,6 +1,6 @@
 "use client";
 import { Eye, Gift, ShieldCheck, ShoppingBag, Undo2, Zap } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/atoms/Button";
 import { FLOATING_BAR } from "@/components/organisms/bottomBars";
 import { StockMeter } from "@/components/molecules/StockMeter";
@@ -8,6 +8,7 @@ import { ProductGallery } from "@/components/organisms/ProductGallery";
 import { availability, getCategory, isPurchasable, maxQuantity, unitPrice, type Availability } from "@/demo/engine/catalog";
 import type { Product } from "@/demo/types";
 import { cn } from "@/lib/cn";
+import { playSound } from "@/lib/sound";
 import { formatARS, withoutNationalTaxes } from "@/lib/money";
 import { useAccount } from "@/stores/account";
 import { useDemoData } from "@/stores/admin";
@@ -39,6 +40,8 @@ function stockNote(a: Availability): string {
  */
 export function ProductDetail({ product: initial, preview = false, crumbs }: { product: Product; preview?: boolean; crumbs?: ReactNode }) {
   const stored = useDemoData((d) => d.products.find((p) => p.slug === initial.slug));
+  // 8.4.29: entrar a ver un producto tiene su brillo (la vista previa del panel, no).
+  useEffect(() => { if (!preview) playSound("product"); }, [initial.slug, preview]);
   const product = preview ? initial : stored ?? initial;
   const settings = useDemoData((d) => d.settings);
   const sel = useVariantSelection(product);

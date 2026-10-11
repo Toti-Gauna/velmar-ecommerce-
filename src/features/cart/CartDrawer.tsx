@@ -64,7 +64,7 @@ export function CartDrawer() {
                         <span className="text-sm font-extrabold tabular-nums">{formatARS(q.lineTotal)}</span>
                       </div>
                     </div>
-                    <button type="button" onClick={() => remove(q.line.id)} aria-label={`Quitar ${product.name}`} className="grid h-9 w-9 place-items-center self-start rounded-full text-muted hover:bg-danger-soft hover:text-danger"><Trash2 size={16} aria-hidden="true" /></button>
+                    <button type="button" data-sound="remove" onClick={() => remove(q.line.id)} aria-label={`Quitar ${product.name}`} className="grid h-9 w-9 place-items-center self-start rounded-full text-muted hover:bg-danger-soft hover:text-danger"><Trash2 size={16} aria-hidden="true" /></button>
                   </motion.li>
                 );
               })}

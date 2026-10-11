@@ -11,6 +11,7 @@ import { missingForFreeShipping, totalsOf } from "@/demo/engine/pricing";
 import { cardLabel } from "@/demo/engine/profile";
 import { DEMO_TODAY } from "@/demo/fixtures/admin-orders";
 import { DEMO_ORDER_CODE, DEMO_TRACKING_TOKEN } from "@/demo/fixtures/commerce";
+import { playSound } from "@/lib/sound";
 import { useAccount } from "@/stores/account";
 import { useAdmin } from "@/stores/admin";
 import { useCart } from "@/stores/cart";
@@ -31,6 +32,8 @@ export function CheckoutView() {
   const hydrated = useHydrated();
   const router = useRouter();
   const [step, setStep] = useState(0);
+  // 8.4.29: avanzar sube y volver baja (los botones Atrás/Siguiente no suman su clic).
+  const go = (to: number) => { playSound(to > step ? "step" : "back"); setStep(to); };
   const heading = useRef<HTMLHeadingElement>(null);
   const { quote, couponCheck, isRegistered } = useCartQuote();
   const lines = useCart((s) => s.lines);
@@ -95,10 +98,10 @@ export function CheckoutView() {
       <StepIndicator steps={STEPS} current={step} />
       <h2 ref={heading} tabIndex={-1} className="text-xl font-extrabold focus:outline-none">{STEPS[step]}</h2>
       <div key={step} className="animate-fade-up flex flex-col gap-5">
-        {step === 0 && <ContactStep onNext={() => setStep(1)} />}
-        {step === 1 && <DeliveryStep onNext={() => setStep(2)} onBack={() => setStep(0)} freeShipping={missingForFreeShipping(quote.subtotal) === 0} before={before} />}
-        {step === 2 && <PaymentStep onNext={() => setStep(3)} onBack={() => setStep(1)} before={before} />}
-        {step === 3 && <ConfirmStep onBack={() => setStep(2)} onConfirm={confirm} onEdit={setStep} before={before} />}
+        {step === 0 && <ContactStep onNext={() => go(1)} />}
+        {step === 1 && <DeliveryStep onNext={() => go(2)} onBack={() => go(0)} freeShipping={missingForFreeShipping(quote.subtotal) === 0} before={before} />}
+        {step === 2 && <PaymentStep onNext={() => go(3)} onBack={() => go(1)} before={before} />}
+        {step === 3 && <ConfirmStep onBack={() => go(2)} onConfirm={confirm} onEdit={go} before={before} />}
       </div>
     </div>
   );
