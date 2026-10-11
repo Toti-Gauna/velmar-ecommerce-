@@ -21,7 +21,8 @@ técnicas. Cada tarea dice **dónde tocar** y **qué pasa después**.
 2. **Pagos manuales**: revisá los comprobantes de transferencia o QR.
 3. **Pedidos**: pasá cada pedido a la etapa que sigue.
 4. **Calendario de entregas**: mirá qué entregás esta semana y si algún día quedó completo.
-5. **Cola de producción**: qué fabricar hoy.
+5. **Cola de producción**: qué fabricar hoy. Pasá cada pedido de etapa con el botón, con "Mover etapa" o arrastrándolo;
+   en el celular deslizá de costado entre etapas.
 
 ## Quiero…
 
@@ -39,8 +40,14 @@ los pedidos y usá la acción de arriba. Cada cambio avisa al cliente con el ema
 
 ### …saber cuándo puedo entregar
 **Calendario de entregas**: cada pedido está en su día. Los días completos y los feriados se marcan.
-- Para **mover** un pedido, arrastralo (compu) o abrí su ficha y elegí "Primera fecha libre", el día hábil anterior o siguiente, u otra fecha.
-- **Capacidad y feriados**: cuántos pedidos hacés por día, si trabajás sábados o domingos y tus días cerrados.
+- **Tocá un día** para ver sus entregas y anotar tareas o notas de un pedido (por ejemplo, "retirar filamento"). También
+  podés cerrar el taller ese día desde ahí.
+- Para **mover** un pedido, arrastralo a otro día (compu): te pide confirmar antes de cambiar la fecha. Un día cerrado o
+  completo no lo acepta y te dice por qué. Sin arrastrar, abrí su ficha y elegí "Primera fecha libre", el día hábil
+  anterior o siguiente, u otra fecha; si el día está completo te pregunta si querés sobrecargarlo.
+- **Capacidad y feriados**: elegí "Capacidad y horarios" (pedidos por día, sábados, domingos) o "Días cerrados y
+  feriados" (feriados nacionales ya cargados y tus cierres, de a 10 por página). Si un cambio deja entregas en un día
+  cerrado o sobrecargado, te avisa antes; esas entregas no se mueven solas y quedan marcadas para reprogramar.
 - **Exportar a Google Calendar** te baja un archivo que se abre con tu calendario.
 - La tienda usa este mismo calendario para decirle al cliente "llega el…".
 

@@ -383,6 +383,27 @@ Lote 4: editor de producto por pasos y vista previa en la tienda (`admin-polish-
 - **Pasos:** el estado sale de validar (`checkSteps`): errores bloquean (alt, nombre, precio, categoría, variantes), las medidas solo avisan.
 - **Borrador:** `velmar-ui:product-draft:editar:<slug>` o `:nuevo` en `sessionStorage`, solo mientras hay cambios; `velmar-ui:preview-return` marca que la vista previa se abrió desde el editor.
 
+Lote 5: capacidad y feriados, calendario editable y tablero de producción (`admin-polish-workshop.spec.ts`,
+`admin-workshop.spec.ts`, `tests/unit/admin-workshop-83.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.14 Modal con dos tarjetas: el foco arranca en la primera, Escape cierra y devuelve el foco al botón | ✅ |
+| 8.3.14 Bajar la capacidad a 2 avisa "El jue, 8 oct queda sobrecargado (3 de 2 pedidos)"; "Seguir editando" no guarda; "Guardar igual" guarda y los pedidos siguen en su fecha | ✅ + unit |
+| 8.3.14 Feriados de a 10: "Todos" da 35 en 4 páginas (1–10, 11–20 … 31–35), siguiente se apaga en la última; los cierres propios van en su pestaña | ✅ + unit |
+| 8.3.14 Cerrar el 14/10 avisa que VEL-000123 queda en un día cerrado; confirmado, el pedido no se mueve y el calendario lo marca para reprogramar; editar el motivo y quitar con confirmación (el aviso desaparece) | ✅ + unit |
+| 8.3.15 Tocar un día: ver entregas y entradas; crear (con validación), nota vinculada a un pedido, persistir al recargar, editar | ✅ + unit |
+| 8.3.15 Arrastrar una entrada la mueve; arrastrar un pedido a un sábado lo rechaza con el motivo; a un día válido pide confirmar (Cancelar no mueve, Mover sí, una sola vez) | ✅ + unit |
+| 8.3.15 Reprogramar sin arrastrar a un día completo pide confirmar la sobrecarga; la fecha nueva se ve en la ficha del pedido | ✅ |
+| 8.3.15 Teclado: Enter sobre un día abre su modal y Escape lo cierra | ✅ |
+| 8.3.16 "Mover etapa" lista solo etapas permitidas; contadores al día; volver a En máquina no descuenta insumos otra vez (cera 5000 → 3920 una sola vez) | ✅ + unit |
+| 8.3.16 Arrastrar a A fabricar se rechaza con "Un pedido en producción no vuelve a la cola."; a Terminación se acepta | ✅ |
+| 8.3.16 Tablero a 1440 y 1280 con menú fijo, 1024 con mouse, 768 y 390 táctil: cada etapa de 250 px o más, títulos en una línea, sin desborde de página; los atajos llevan al carril | ✅ emulado |
+| 8.3.10 Ayuda "i" del calendario y de producción, armada con las reglas del engine | ✅ + unit |
+| Datos guardados antes de 8.3 sin entradas del calendario (o rotas): quedan las de muestra y el resto no cambia | unit |
+
+- **Arrastrar con el dedo:** no está. En tablet y celular se reprograma desde la ficha de entrega y las etapas con "Mover etapa".
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

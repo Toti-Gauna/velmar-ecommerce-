@@ -1,9 +1,11 @@
 import { formatARS } from "@/lib/money";
+import { CAPACITY_STATUSES } from "../engine/delivery";
 import { STATUS_LABEL } from "../engine/orders";
 import { VIP_FROM } from "./customers";
 import { ORDER_TABS } from "./order-groups";
 import { MATERIAL_STATE_LABEL } from "./workshop/materials";
 import { MARGIN_LABEL } from "./workshop/costs";
+import { PRODUCTION_COLUMNS } from "./workshop/production";
 
 /**
  * Qué significa cada segmento o estado (8.3.10). Se arma con las mismas reglas y umbrales del engine
@@ -57,3 +59,31 @@ export function marginHelp(target: number): Help {
     ],
   };
 }
+
+const statusList = (list: readonly (keyof typeof STATUS_LABEL)[]) => list.map((s) => STATUS_LABEL[s].toLowerCase()).join(", ");
+
+/** Colores y marcas del calendario de entregas (8.3.10, se completa en el Lote 5), con las reglas de capacidad del engine. */
+export const CALENDAR_HELP: Help = {
+  title: "Qué marca el calendario",
+  items: [
+    { term: "Ocupa lugar", text: `Cuentan para la capacidad del día los pedidos ${statusList(CAPACITY_STATUSES)}. Listo, enviado y entregado ya no ocupan lugar.` },
+    { term: "Completo", text: "El día llegó a la capacidad: la tienda ofrece el siguiente con lugar y arrastrar un pedido ahí no se acepta." },
+    { term: "Sobrecargado", text: "Tiene más pedidos que la capacidad: se confirmó desde Reprogramar o se bajó la capacidad después." },
+    { term: "Atrasado", text: `Pagado o en producción con la fecha comprometida ya pasada.` },
+    { term: "Taller cerrado", text: "Feriado, cierre propio o día de la semana sin taller: no se puede comprometer una entrega." },
+    { term: "Día cerrado: reprogramar", text: "El pedido estaba en un día que se cerró después. No se movió solo: elegí otra fecha." },
+    { term: "Entrada propia", text: "Una tarea o nota de un pedido que anotaste. No ocupa lugar ni cambia fechas." },
+  ],
+};
+
+const STAGE_STATUS: Record<(typeof PRODUCTION_COLUMNS)[number]["id"], keyof typeof STATUS_LABEL> = { queue: "PAID", machine: "IN_PRODUCTION", finishing: "IN_PRODUCTION", ready: "READY" };
+
+/** Etapas del tablero de producción y sus reglas (las mismas que valida `productionMove`). */
+export const PRODUCTION_HELP: Help = {
+  title: "Etapas de producción",
+  items: [
+    ...PRODUCTION_COLUMNS.map((c) => ({ term: c.label, text: `${c.hint}. Estado del pedido: ${STATUS_LABEL[STAGE_STATUS[c.id]].toLowerCase()}.` })),
+    { term: "Reglas", text: "Un pedido en producción no vuelve a la cola y uno listo no vuelve a producción; de Terminación se puede volver a En máquina. Al salir de A fabricar se descuentan sus insumos, una sola vez." },
+  ],
+};
+

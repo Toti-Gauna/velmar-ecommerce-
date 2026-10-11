@@ -51,7 +51,10 @@ export const useAdmin = create<AdminState>()(
       // collar siempre es la del código.
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<AdminData>;
-        return { ...current, ...p, data: withCurrentCollarSpec({ ...current.data, ...(p.data ?? {}) }), workshop: { ...current.workshop, ...(p.workshop ?? {}) }, emails: { ...current.emails, ...(p.emails ?? {}) } };
+        const workshop = { ...current.workshop, ...(p.workshop ?? {}) };
+        // Las entradas del calendario (8.3.15) llegaron después: si faltan o vienen rotas, quedan las de muestra.
+        if (!Array.isArray(workshop.events)) workshop.events = current.workshop.events;
+        return { ...current, ...p, data: withCurrentCollarSpec({ ...current.data, ...(p.data ?? {}) }), workshop, emails: { ...current.emails, ...(p.emails ?? {}) } };
       },
       partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop, emails: s.emails }),
     },

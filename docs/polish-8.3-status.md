@@ -18,13 +18,13 @@ implementado) · **no verificable** (no se puede probar acá).
 | 8.3.7 Comprobantes: layout y estados | 3 | `payments/PaymentCard`, `PaymentDetail`, `ProofActions` | hecho (emulado) | `admin-polish-details.spec.ts`, `admin-flows.spec.ts` | Probar en iPad real |
 | 8.3.8 Quitar Auditoría de muestra | 3 | `payments/PaymentsQueue` | hecho | `admin-polish-details.spec.ts`, `admin-flows.spec.ts` | — |
 | 8.3.9 Clientes sin "Para escribirles" | 3 | `CustomersTable`, `WorkshopStrip` | hecho | `admin-polish-customers.spec.ts`, `admin-workshop.spec.ts` | QA global provisional: cierre en el Lote 8 |
-| 8.3.10 Explicar estados y segmentos | 3 | `Help`, `help.ts`, filtros de Clientes, Pedidos, Insumos, Costos y Pagos | hecho | `admin-polish-customers.spec.ts`, `admin-details-83.test.ts` | Estados del taller (calendario y producción) en el Lote 5 |
+| 8.3.10 Explicar estados y segmentos | 3 | `Help`, `help.ts`, filtros de Clientes, Pedidos, Insumos, Costos y Pagos | hecho | `admin-polish-customers.spec.ts`, `admin-details-83.test.ts`; calendario y producción: `admin-polish-workshop.spec.ts`, `admin-workshop-83.test.ts` | — |
 | 8.3.11 Quitar guía inicial | 1 | `AdminShell` (sin `tour/`) | hecho | `admin-flows.spec.ts` (sin guía la primera vez ni después de reiniciar) | — |
 | 8.3.12 Fila Cliente → ficha completa | 3 | `CustomersTable`, `CustomerProfile`, `listReturn` | hecho | `admin-polish-customers.spec.ts` | — |
 | 8.3.13 Composición de ficha Cliente | 3 | `CustomerProfile`, `PetsCard`, `ClubCard`, `Reminders` | hecho (emulado) | `admin-polish-customers.spec.ts` (1280, 768, 390) | Probar en iPad real |
-| 8.3.14 Modal de capacidad y feriados | 5 | `WorkshopSettingsSheet` | parcial | Dos bloques en un panel lateral | Modal, feriados de a 10 |
-| 8.3.15 Calendario editable y DnD | 5 | `DeliveryCalendar`, `MonthView` | parcial | Arrastrar y "Mover" existen | Crear/editar al tocar un día |
-| 8.3.16 Kanban responsive | 5 | `ProductionBoard` | parcial | Arrastrar y botón de etapa siguiente | Columnas legibles, "Mover etapa" |
+| 8.3.14 Modal de capacidad y feriados | 5 | `calendar/WorkshopSettingsDialog`, `CapacitySection`, `ClosuresSection`, `ImpactConfirm`, `workshop/schedule.ts` | hecho (emulado) | `admin-polish-workshop.spec.ts` (1440, 1280 y 1024 con mouse; 768 y 390 táctil), `admin-workshop.spec.ts`, `admin-workshop-83.test.ts` | Probar en iPad real |
+| 8.3.15 Calendario editable y DnD | 5 | `calendar/DayDialog`, `EventForm`, `EventChip`, `dnd.ts`, `useCalendarMoves`, `MoveConfirm`, `ScheduleSheet`, `checkDrop` | hecho (emulado) | `admin-polish-workshop.spec.ts`, `admin-workshop.spec.ts`, `admin-workshop-83.test.ts` | Arrastrar con el dedo no está (en táctil se usa Reprogramar); probar en iPad real |
+| 8.3.16 Kanban responsive | 5 | `production/ProductionBoard`, `ProductionCard` | hecho (emulado) | `admin-polish-workshop.spec.ts` (con y sin menú fijo), `admin-workshop-83.test.ts` | Probar deslizar carriles en iPhone y iPad reales |
 | 8.3.17 Modales Costos e Insumos | 3 | `detail/EditDialog`, `RecipeSheet`, `MaterialDialog`, `edit-forms` | hecho (emulado) | `admin-polish-customers.spec.ts`, `admin-workshop.spec.ts`, `admin-details-83.test.ts` | — |
 | 8.3.18 Insumos con tabla universal | 2 | `MaterialsTable`, `materialSheetSpec` | hecho (emulado) | `admin-polish-catalog.spec.ts`, `admin-tables-83.test.ts` | — (la fila abre el modal de 8.3.17) |
 | 8.3.19 Productos y stock; sin Planilla | 2 | `nav.ts`, `ProductsTable`, `catalogTable`, `ModuleMoved` | hecho (emulado) | `admin-polish-tables.spec.ts`, `admin-crm.spec.ts`, `admin-routes.spec.ts` | — |
@@ -124,3 +124,33 @@ implementado) · **no verificable** (no se puede probar acá).
   sale del editor sin guardar, al volver se recupera con aviso y opción de descartar (con confirmación). Un borrador roto o
   de otra versión se ignora. No se toca `localStorage` ni el formato de los datos guardados.
 - **Tiempo observado (automatizado):** ~3 h de implementación y verificación. No incluye la revisión de Ignacio.
+
+## Lote 5 · registro
+
+- **Base:** commit del Lote 4 (`955f17c`).
+- **Capacidad y feriados (8.3.14):** el panel lateral pasa a un modal centrado (pantalla completa en el celular) con dos
+  tarjetas: "Capacidad y horarios" y "Días cerrados y feriados"; la elegida se abre debajo, en el mismo modal. Capacidad,
+  sábados y domingos son un borrador hasta "Guardar", con las reglas que usa el calendario a la vista. Los feriados
+  nacionales cargados van separados de los cierres del taller, por año ("Próximos", 2026, 2027, "Todos") y de a 10 por
+  página. Un feriado se puede trabajar y volver a cerrar; los cierres propios se agregan, editan y quitan (quitar pide
+  confirmación). Si un cambio deja entregas en un día cerrado o sobrecargado, primero se lista y se confirma
+  (`scheduleImpact`); los pedidos nunca se mueven solos y quedan marcados en el calendario ("Día cerrado: reprogramar").
+- **Calendario editable (8.3.15):** tocar cualquier parte de un día abre un modal con sus entregas, sus entradas y si el
+  taller trabaja. Las entradas propias (tarea o nota de un pedido, con título, fecha, notas y vínculo al pedido) se
+  crean, editan, quitan y arrastran; persisten en el store de la demo (`workshop.events`, con las de muestra si faltan o
+  vienen rotas). Desde el mismo modal se cierra el día. Arrastrar un pedido pide confirmar antes de cambiar su fecha; un
+  día pasado, cerrado o completo no lo acepta: se marca "No se puede: …" mientras se arrastra y, si se suelta, se explica
+  por qué (`checkDrop`). Sobrecargar un día solo desde "Reprogramar", confirmándolo. La ficha de entrega sigue siendo la
+  alternativa sin arrastrar (teclado, iPad y celular). Con movimiento reducido, sin animación al pasar el mouse.
+- **Decisión:** un día completo ahora rechaza el pedido arrastrado (antes lo aceptaba y avisaba), porque la ficha pide
+  que un destino lleno "informe por qué no puede soltarse"; sobrecargar sigue siendo posible desde Reprogramar.
+- **Cola de producción (8.3.16):** cada etapa tiene un ancho mínimo legible (16 rem en escritorio, 17 en tablet, casi
+  todo el ancho en el celular) y el tablero se desliza de costado dentro de su caja: la página no se corre, con el menú
+  fijo o no. En tablet y celular, carriles con encastre y atajos por etapa que se marcan solos al deslizar. Cada tarjeta:
+  pedido, cliente, vencimiento, productos con variante y lo aprobado; abajo "Mover etapa" (solo las etapas permitidas) y
+  la etapa siguiente. Arrastrar a una etapa inválida se atenúa, no se acepta y explica por qué. Los insumos se descuentan
+  una sola vez (ir y volver entre En máquina y Terminación no descuenta de nuevo).
+- **8.3.10 completo:** botón "i" en el calendario (qué ocupa lugar, completo, sobrecargado, atrasado, cerrado, entradas)
+  y en producción (etapas y reglas), armados con las reglas del engine.
+- **Tiempo observado (automatizado):** ~3 h de implementación y verificación. No incluye la revisión de Ignacio.
+

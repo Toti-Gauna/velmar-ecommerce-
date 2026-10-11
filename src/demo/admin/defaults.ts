@@ -4,7 +4,7 @@ import type { OrderStatus } from "../engine/orders";
 import { orderSeeds } from "../fixtures/admin-orders";
 import { adminClaims, adminUsers } from "../fixtures/admin-people";
 import { emailTemplates, type EmailTemplate } from "../fixtures/emails";
-import { customerProfiles, materials, recipes, workshopSettings, type CustomerProfile, type Material, type Recipe, type WorkshopSettings } from "../fixtures/workshop";
+import { calendarEvents, customerProfiles, materials, recipes, workshopSettings, type CalendarEvent, type CustomerProfile, type Material, type Recipe, type WorkshopSettings } from "../fixtures/workshop";
 import type { ImportSnapshot } from "./catalog-slice";
 import type { AdminClaim, AdminOrder, AdminUser, AuditEntry, StatusLogEntry } from "./types";
 import { emailsForOrder, OUTBOX_LIMIT, triggersForNewOrder, triggersForTransition, type OutboxEmail } from "./emails/triggers";
@@ -43,6 +43,8 @@ export interface WorkshopData {
   recipes: Record<string, Recipe>;
   /** Fichas por email en minúsculas. */
   profiles: Record<string, CustomerProfile>;
+  /** Tareas y notas del calendario (8.3.15). */
+  events: CalendarEvent[];
 }
 
 const HAPPY_PATH: OrderStatus[] = ["PENDING_PAYMENT", "PAYMENT_REVIEW", "PAID", "IN_PRODUCTION", "READY", "SHIPPED", "DELIVERED"];
@@ -75,7 +77,7 @@ export function defaultAdminData(): AdminData {
     claims: structuredClone(adminClaims),
     audit: [{ id: "a0", at: "2026-10-04T08:00:00-03:00", actor: "Sistema (demo)", action: "Datos de muestra cargados", entity: "Panel" }],
     lastImport: null,
-    workshop: structuredClone({ settings: workshopSettings, materials, recipes, profiles: customerProfiles }),
+    workshop: structuredClone({ settings: workshopSettings, materials, recipes, profiles: customerProfiles, events: calendarEvents }),
     emails: { templates, outbox: seedOutbox(orders, templates) },
   };
 }

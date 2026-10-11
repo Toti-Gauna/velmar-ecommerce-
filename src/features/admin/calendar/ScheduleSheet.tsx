@@ -1,17 +1,19 @@
 "use client";
 import Link from "next/link";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Sparkles, TriangleAlert } from "lucide-react";
+import { useState } from "react";
 import { Sheet } from "@/components/motion/Sheet";
 import { StatusBadge } from "@/components/molecules/StatusBadge";
 import { LineThumb } from "@/components/organisms/LineThumb";
 import type { AdminOrder } from "@/demo/admin/types";
 import { getProduct } from "@/demo/engine/catalog";
-import { calendarOf, loadByDay, nextFreeDayFor, orderLeadDays } from "@/demo/engine/delivery";
+import { calendarOf, checkReschedule, loadByDay, nextFreeDayFor, orderLeadDays } from "@/demo/engine/delivery";
 import { demoData } from "@/demo/engine/source";
 import { closureFor, nextWorkday, prevWorkday } from "@/demo/engine/workdays";
 import type { WorkshopSettings } from "@/demo/fixtures/workshop";
 import { formatDay } from "@/lib/date";
 import { fulfillmentLabel } from "../OrderCard";
+import { InlineConfirm } from "./ImpactConfirm";
 import { capacityText } from "./MonthView";
 import { PickDate } from "./PickDate";
 
@@ -28,13 +30,22 @@ interface Props {
   onClose: () => void;
 }
 
-/** Ficha de entrega: qué lleva el pedido, su fecha y cómo moverla (alternativa a arrastrar, para teclado y celular). */
+/**
+ * Ficha de entrega: qué lleva el pedido, su fecha y cómo moverla (alternativa a arrastrar, para teclado y celular).
+ * Llevarlo a un día completo se confirma antes (8.3.15).
+ */
 export function ScheduleSheet({ order, orders, settings, today, late, movable, warnings, onMove, onClose }: Props) {
   const cal = calendarOf(settings);
   const day = order?.promisedDate;
   const used = day ? (loadByDay(orders).get(day) ?? 0) : 0;
   const free = order ? nextFreeDayFor(order, today, orders, settings) : null;
-  const move = (d: string) => order && onMove(order.code, d);
+  const [overload, setOverload] = useState<string | null>(null);
+  const move = (d: string) => {
+    if (!order) return;
+    if (checkReschedule(order, d, today, orders, settings).overload) { setOverload(d); return; }
+    setOverload(null);
+    onMove(order.code, d);
+  };
   const step = "inline-flex h-11 items-center justify-center gap-1 rounded-full border border-ink/15 px-3 text-sm font-bold hover:bg-accent/50 disabled:opacity-40";
   return (
     <Sheet open={!!order} onClose={onClose} title={order ? `Entrega ${order.code}` : "Entrega"} side="right" className="max-w-lg bg-bg">
@@ -78,6 +89,12 @@ export function ScheduleSheet({ order, orders, settings, today, late, movable, w
                   <button type="button" className={step} onClick={() => move(free)}><Sparkles size={16} aria-hidden="true" className="text-brass-ink" /> Primera fecha libre: {formatDay(free)}</button>
                 )}
                 <PickDate key={`${order.code}-${day}`} id="schedule-date" label="Elegir otra fecha" min={today} value={day ?? ""} action="Mover" onPick={move} />
+                {overload && (
+                  <InlineConfirm label="Día completo" title={`El ${formatDay(overload)} ya está completo`} action="Mover igual" cancel="Elegir otro día"
+                    onCancel={() => setOverload(null)} onConfirm={() => { const d = overload; setOverload(null); onMove(order.code, d); }}>
+                    <p>Ya tiene {loadByDay(orders, order.code).get(overload) ?? 0} de {settings.dailyCapacity} pedidos: con este queda sobrecargado.</p>
+                  </InlineConfirm>
+                )}
                 {warnings.length > 0 && (
                   <ul role="status" className="flex flex-col gap-1 rounded-2xl bg-warning-soft p-3 text-sm font-semibold text-warning">
                     {warnings.map((w) => <li key={w} className="flex gap-2"><TriangleAlert size={16} aria-hidden="true" className="mt-0.5 shrink-0" />{w}</li>)}
