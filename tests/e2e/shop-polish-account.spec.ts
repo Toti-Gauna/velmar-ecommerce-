@@ -58,10 +58,11 @@ for (const [width, height] of [[1180, 820], [820, 1180], [390, 844]] as const) {
     await page.goto("cuenta/");
     await page.getByRole("button", { name: "Entrar a la cuenta demo" }).click();
     const nav = page.getByRole("navigation", { name: "Secciones de la cuenta" });
-    await expect(nav.getByRole("link")).toHaveCount(5);
+    // 8.4.6, 8.4.14 y 8.4.22: se suman Mis mascotas y Mis tarjetas.
+    await expect(nav.getByRole("link")).toHaveCount(7);
     await expect(nav.getByRole("link", { name: /^Mis pedidos/ })).toHaveAttribute("aria-current", "true");
     await expect(page.getByRole("heading", { level: 2, name: "Mis pedidos" })).toBeVisible();
-    for (const [tile, check] of [["Mis regalos", /de Lucía/], ["Misiones", /Comprá 2 productos/], ["Premios", "Grabado de nombre gratis"], ["Direcciones", "Casa"]] as const) {
+    for (const [tile, check] of [["Mis regalos", /de Lucía/], ["Misiones", /Comprá 2 productos/], ["Premios", "Grabado de nombre gratis"], ["Mis mascotas", /Sumá a tu mascota/], ["Mis tarjetas", /nunca el número completo/], ["Direcciones", "Casa"]] as const) {
       await nav.getByRole("link", { name: new RegExp(`^${tile}`) }).click();
       const panel = page.locator("#cuenta-seccion");
       await expect(panel.getByRole("heading", { level: 2, name: tile })).toBeVisible();

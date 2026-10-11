@@ -1,17 +1,21 @@
 "use client";
-import { Gift, LogOut, MapPin, Package, Sparkles, Trophy, type LucideIcon } from "lucide-react";
+import { CreditCard, Gift, LogOut, MapPin, Package, PawPrint, Sparkles, Trophy, type LucideIcon } from "lucide-react";
 import type { MouseEvent, ReactNode } from "react";
 import { giftsFor } from "@/demo/engine/gifts";
 import { demoGifts } from "@/demo/fixtures/gifts";
 import { cn } from "@/lib/cn";
 import { scrollBehavior } from "@/lib/scroll";
 import { useAccount } from "@/stores/account";
-import { useDemoData } from "@/stores/admin";
+import { useAdmin, useDemoData } from "@/stores/admin";
 import { useCheckout } from "@/stores/checkout";
 import { useGifts } from "@/stores/gifts";
+import { useAccountProfile } from "@/stores/profile";
 import { useWheelPrize } from "../club/useWheelPrize";
 import { AccountGifts } from "../gifts/AccountGifts";
-import { AddressesSection, MissionsSection, OrdersSection, RewardsSection, availableRewards } from "./AccountSections";
+import { MissionsSection, OrdersSection, RewardsSection, availableRewards } from "./AccountSections";
+import { AddressesSection } from "./AddressesSection";
+import { CardsSection } from "./CardsSection";
+import { PetsSection } from "./PetsSection";
 import { useAccountTab, type AccountTab } from "./useAccountTab";
 
 interface Section { id: AccountTab; title: string; icon: LucideIcon; summary: string; intro: string; body: ReactNode }
@@ -32,13 +36,17 @@ export function AccountDashboard({ user }: { user: { name: string; email: string
   const unopened = received.filter((g) => !opened.includes(g.code)).length;
   const { status: prizeStatus } = useWheelPrize();
   const rewards = availableRewards(usedRewards) + (prizeStatus && prizeStatus !== "utilizado" ? 1 : 0);
+  const profile = useAccountProfile(user.email);
+  const pets = useAdmin((s) => s.workshop.profiles[user.email.trim().toLowerCase()]?.pets.length ?? 0);
   const [tab, select] = useAccountTab();
   const sections: Section[] = [
     { id: "pedidos", title: "Mis pedidos", icon: Package, summary: plural(lastOrder ? 2 : 1, "pedido", "pedidos"), intro: "Seguí cada pedido paso a paso.", body: <OrdersSection lastOrder={lastOrder} /> },
     { id: "regalos", title: "Mis regalos", icon: Gift, summary: unopened ? plural(unopened, "sin abrir", "sin abrir") : plural(received.length, "regalo", "regalos"), intro: "Los que te mandaron se abren sin el link; los que hiciste, para volver a mandarlos.", body: <AccountGifts email={user.email} /> },
     { id: "misiones", title: "Misiones", icon: Sparkles, summary: plural(missions.length, "activa", "activas"), intro: "Tus compras suman a cada misión (progreso de ejemplo).", body: <MissionsSection /> },
     { id: "premios", title: "Premios", icon: Trophy, summary: rewards ? plural(rewards, "disponible", "disponibles") : "Sin premios para usar", intro: "El premio de la ruleta y los de las misiones, de un solo uso.", body: <RewardsSection used={usedRewards} onUse={markRewardUsed} /> },
-    { id: "direcciones", title: "Direcciones", icon: MapPin, summary: "1 guardada", intro: "Donde te llegan los pedidos.", body: <AddressesSection /> },
+    { id: "direcciones", title: "Direcciones", icon: MapPin, summary: profile.addresses.length ? plural(profile.addresses.length, "guardada", "guardadas") : "Ninguna guardada", intro: "Donde te llegan los pedidos. Las elegís en el checkout.", body: <AddressesSection email={user.email} /> },
+    { id: "mascotas", title: "Mis mascotas", icon: PawPrint, summary: pets ? plural(pets, "mascota", "mascotas") : "Sumá su cumpleaños", intro: "Con su cumpleaños, ese día te llega un saludo del taller.", body: <PetsSection email={user.email} /> },
+    { id: "tarjetas", title: "Mis tarjetas", icon: CreditCard, summary: profile.cards.length ? plural(profile.cards.length, "tarjeta", "tarjetas") : "Ninguna guardada", intro: "Para pagar con un toque en el checkout (demo: sin datos reales).", body: <CardsSection email={user.email} /> },
   ];
   const current = sections.find((s) => s.id === tab)!;
   const open = (e: MouseEvent, id: AccountTab) => {

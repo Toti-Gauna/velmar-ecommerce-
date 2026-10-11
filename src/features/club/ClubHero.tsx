@@ -11,8 +11,8 @@ import type { Mission } from "@/demo/types";
 import { skinOf } from "@/features/themes/skins";
 import { useCurrentTheme } from "@/features/themes/useCurrentTheme";
 import { useAccount } from "@/stores/account";
+import { DEMO_USER } from "@/demo/fixtures/commerce";
 
-const DEMO_USER = { name: "Sofía Demo", email: "sofia.demo@ejemplo.com" };
 
 /**
  * Portada del Club (8.2.13): título, métricas, el próximo premio y los accesos. Toma el acento y el adorno de la

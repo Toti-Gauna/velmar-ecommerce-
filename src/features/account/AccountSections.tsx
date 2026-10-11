@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Gift, MapPin, Package } from "lucide-react";
+import { Gift, Package } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
 import { MissionProgress } from "@/components/molecules/MissionProgress";
@@ -76,14 +76,5 @@ export function RewardsSection({ used, onUse }: { used: string[]; onUse: (id: st
         );
       })}
     </ul>
-  );
-}
-
-export function AddressesSection() {
-  return (
-    <div className="flex items-start gap-3 rounded-2xl border border-line bg-surface p-4">
-      <MapPin size={20} aria-hidden="true" className="text-primary" />
-      <div className="text-sm"><p className="font-bold">Casa</p><p className="text-muted">Calle de Muestra 1234, Mar del Plata (7600), Buenos Aires</p></div>
-    </div>
   );
 }

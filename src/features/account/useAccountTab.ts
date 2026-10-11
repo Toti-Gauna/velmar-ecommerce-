@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useSyncExternalStore } from "react";
 
-export const ACCOUNT_TABS = ["pedidos", "regalos", "misiones", "premios", "direcciones"] as const;
+export const ACCOUNT_TABS = ["pedidos", "regalos", "misiones", "premios", "direcciones", "mascotas", "tarjetas"] as const;
 export type AccountTab = (typeof ACCOUNT_TABS)[number];
 
 const listeners = new Set<() => void>();

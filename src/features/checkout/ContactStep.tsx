@@ -7,8 +7,8 @@ import { Field, Input } from "@/components/atoms/Field";
 import { useAccount } from "@/stores/account";
 import { useCheckout } from "@/stores/checkout";
 import { contactSchema, type ContactInput } from "./schemas";
+import { DEMO_USER } from "@/demo/fixtures/commerce";
 
-const DEMO_USER = { name: "Sofía Demo", email: "sofia.demo@ejemplo.com" };
 
 export function ContactStep({ onNext }: { onNext: () => void }) {
   const contact = useCheckout((s) => s.contact);

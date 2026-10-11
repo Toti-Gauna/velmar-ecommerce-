@@ -68,4 +68,7 @@ export const slides: CarouselSlide[] = [
 ];
 
 export const DEMO_TRACKING_TOKEN = "demo-velmar";
+/** Cuenta demo ("Entrar a la cuenta demo"): datos ficticios. */
+export const DEMO_USER = { name: "Sofía Demo", email: "sofia.demo@ejemplo.com" };
+
 export const DEMO_ORDER_CODE = "VEL-DEMO-0001";

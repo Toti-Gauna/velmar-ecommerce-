@@ -16,15 +16,15 @@ falta el equipo real) · **pendiente**.
 | 8.4.3 Sin pantalla de carga al ir al checkout | 2 | `organisms/Splash` (`splashScript`), `themes/reloadWithTheme` | hecho | `polish-84-splash.spec.ts` (entrar y recargar la muestran; una carga completa desde adentro no; "Ver en la tienda" la pide) | — |
 | 8.4.4 Paso Datos sin carrito | 3 | `checkout/CheckoutView` | hecho (emulado) | `polish-84-product.spec.ts` (1180, 820, 390), `shop-polish-checkout.spec.ts` | — |
 | 8.4.5 Cupón y resumen arriba de los botones | 3 | `checkout/StepNav` (botones fuera del formulario, `form=`), pasos de Entrega, Pago y Confirmar | hecho (emulado) | `polish-84-product.spec.ts` (orden opciones → cupón → resumen → Atrás/Siguiente en cada paso; el botón de afuera envía el paso) | — |
-| 8.4.6 Direcciones en Mi cuenta y checkout | 4 | | pendiente | | |
-| 8.4.7 Volver a Mis pedidos | 4 | | pendiente | | |
+| 8.4.6 Direcciones en Mi cuenta y checkout | 4 | `account/AddressesSection`, `AddressDialog`, `checkout/SavedAddresses`, `DeliveryStep`, `stores/profile`, `engine/profile` | hecho (emulado) | `polish-84-account.spec.ts` (alta con validación, principal, editar, quitar; elegirla en el checkout, "Otra dirección" y guardarla), `account-84.test.ts` | — |
+| 8.4.7 Volver a Mis pedidos | 4 | `order/BackToOrders`, `/pedido/[token]` | hecho | `polish-84-account.spec.ts` | — |
 | 8.4.8 Abrir regalo sin textos de fondo | 2 | `gifts/GiftExperience`, `motion/ImmersiveStage` (`instant`) | hecho (emulado) | `polish-84-splash.spec.ts` (fondo oscuro sin fundido; la página de atrás no se dibuja) | Confirmar en el iPhone real |
 | 8.4.9 Regalo que no se reabre solo | 2 | `gifts/GiftExperience`, `AccountGifts` (`&desde=cuenta`) | hecho | `polish-84-splash.spec.ts`, `gifts.spec.ts` | — |
 | 8.4.10 Modal de regalo vacío en iPad | 1 | `gifts/GiftModal`, `GiftPreview`, `motion/Sheet` | hecho (emulado) | `polish-84-modals.spec.ts` (820×1180, 1180×820, 375×812: campos y botones a la vista, sin hijos `flex-1`) | Confirmar en el iPad real (Safari) |
 | 8.4.11 Scroll de fondo con modal abierto | 1 | `lib/scrollLock`, `motion/Sheet`, `motion/ImmersiveStage`, `molecules/ConfirmButton`, `globals.css` | hecho (emulado) | `polish-84-modals.spec.ts` (toques en el velo y el título se cancelan; el cuerpo del modal se desplaza; al cerrar vuelve) | Confirmar en iPhone y iPad reales |
 | 8.4.12 Íconos del encabezado agrupados | 5 | | pendiente | | |
 | 8.4.13 Sin aviso de demo ni "Reiniciar demo" | 5 | | pendiente | | |
-| 8.4.14 Cumpleaños de mascotas del cliente | 4 | | pendiente | | |
+| 8.4.14 Cumpleaños de mascotas del cliente | 4 | `account/PetsSection`, `admin/data-slice` (`syncShopAccount`), `molecules/BirthdayPicker` | hecho (emulado) | `polish-84-account.spec.ts` (la mascota aparece en la ficha del cliente en el panel) | — |
 | 8.4.15 Transferir pedidos al cerrar un día | 6 | | pendiente | | |
 | 8.4.16 Entrega comprometida en modal | 1 | `calendar/ScheduleDialog` (antes `ScheduleSheet`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado a 1440), `admin-polish-workshop.spec.ts`, `admin-workshop.spec.ts` | — |
 | 8.4.17 Botones de la cola de producción | 6 | | pendiente | | |
@@ -32,7 +32,7 @@ falta el equipo real) · **pendiente**.
 | 8.4.19 Generador de emails con pasos | 8 | | pendiente | | |
 | 8.4.20 Bandeja de salida arriba y en modal | 1 y 8 | `emails/OutboxDialog` (antes `OutboxSheet`) | parcial | `polish-84-modals.spec.ts` (el email abre en modal centrado) | Tarjeta arriba de "Emails automáticos" (Lote 8) |
 | 8.4.21 Editor de Temáticas en modal | 1 | `themes/ThemeEditor`, `detail/EditDialog` (`saveLabel`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado, cerrar con cambios pide confirmar), `themes.spec.ts` | — |
-| 8.4.22 Tarjetas: medio de pago y Mi cuenta | 4 y 9 | | pendiente | | |
+| 8.4.22 Tarjetas: medio de pago y Mi cuenta | 4 y 9 | `account/CardsSection` (Lote 4) | parcial | `polish-84-account.spec.ts` (validación, tarjeta de prueba; en el almacenamiento solo marca, últimos 4 y vencimiento), `account-84.test.ts` | Medio de pago en Ajustes y en el checkout (Lote 9) |
 | 8.4.23 Ilustración del comedero perro globo | 7 | | pendiente | | |
 | 8.4.24 Arrepentimiento en tablet y escritorio | 7 | | pendiente | | |
 | 8.4.25 Pantalla de carga del link de regalo | 2 | `app/motion.css` (pausa de `stage-open`) | hecho (emulado) | `polish-84-splash.spec.ts` (los pétalos siguen animados con el escenario abierto), captura del Día de la Madre | Confirmar en el iPad real |
@@ -102,3 +102,19 @@ falta el equipo real) · **pendiente**.
 - **8.4.4 / 8.4.5** (revierte 8.2.9, pedido de Ignacio) En "Datos" no se ven el carrito ni el total. Desde "Entrega",
   el orden es: opciones del paso, cupón, resumen y recién después Atrás/Siguiente. Los botones quedaron afuera del
   formulario del paso (el cupón es su propio formulario y no puede ir anidado) y lo envían con `form="checkout-paso"`.
+
+## Lote 4 · registro
+
+- **8.4.6** (las direcciones también se eligen en el checkout, decisión de Ignacio) Mis direcciones pasó de una tarjeta
+  fija de muestra a una lista con alta y edición en un modal, principal y quitar con confirmación. Se guardan en
+  `velmar-demo:profile` por email; la cuenta demo arranca con la dirección de muestra de siempre. En el paso Entrega, con
+  sesión, se eligen con un toque (se propone la principal) y "Otra dirección" abre los campos, con la opción de guardarla.
+  Las reglas son las mismas que el checkout; lo guardado roto se descarta al cargar.
+- **8.4.7** El detalle del pedido tiene "Volver a Mis pedidos" (con la sesión abierta) y abre esa sección de la cuenta.
+- **8.4.14** Mis mascotas: alta y edición con cumpleaños sin año. Usa la misma ficha del cliente que ve el dueño en el
+  panel, así que el recordatorio y el email de cumpleaños salen igual; la cuenta de la tienda se suma a Clientes
+  (`syncShopAccount`) para que el dueño la encuentre.
+- **8.4.22 (primera parte)** Mis tarjetas: formulario de demostración con detección de marca, Luhn, vencimiento y
+  código, y "Usar tarjeta de prueba". Se guarda solo marca, últimos 4 y vencimiento; el número completo, el código y el
+  titular no salen del formulario, y al cargar datos guardados se descarta cualquier otro campo. Los campos no usan el
+  autocompletado de tarjetas del navegador, para que nadie cargue una real por costumbre.
