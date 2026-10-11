@@ -1,7 +1,11 @@
-/** Qué barra fija inferior lleva cada ruta de la tienda en el celular (una sola por pantalla). */
-export type BottomBar = "nav" | "product" | "cart" | "none";
+/**
+ * Qué barra fija inferior lleva cada ruta de la tienda en el celular (una sola por pantalla). La vista previa del panel
+ * (8.3.21) lleva solo su franja "Volver al editor", en todos los tamaños, sin WhatsApp ni "Probar temáticas".
+ */
+export type BottomBar = "nav" | "product" | "cart" | "preview" | "none";
 
 export function bottomBarFor(pathname: string): BottomBar {
+  if (pathname.startsWith("/vista-previa")) return "preview";
   if (pathname.startsWith("/p/") || /^\/crear\/[^/]+/.test(pathname)) return "product";
   if (pathname.startsWith("/carrito")) return "cart";
   if (pathname.startsWith("/checkout")) return "none";

@@ -15,10 +15,50 @@ export const COLUMN_LABEL: Record<SheetColumn, string> = {
 /** Columnas que cambian el producto entero (todas sus variantes) y no una sola variante. */
 const PRODUCT_LEVEL: SheetColumn[] = ["productName", "categorySlug", "active"];
 
-export const cellKey = (rowKey: string, col: SheetColumn) => `${rowKey}|${col}`;
+export const cellKey = (rowKey: string, col: string) => `${rowKey}|${col}`;
 
-export function rawValue(row: StockRow, col: SheetColumn): SheetValue {
-  return row[col];
+/**
+ * Columna de una vista Excel (8.3.4). Sin `parse` es de solo lectura: se ve, se ordena y se copia, pero no se
+ * edita. Los estados críticos (pagos, etapas de pedidos) nunca tienen `parse`: cambian solo por el engine.
+ */
+export interface SheetSpecColumn<R> {
+  id: string;
+  label: string;
+  get: (row: R) => SheetValue;
+  /** Texto para mostrar y copiar (por defecto, el valor; sí/no para casillas). */
+  text?: (value: SheetValue, row: R) => string;
+  numeric?: boolean;
+  money?: boolean;
+  parse?: (input: string, row: R) => Parsed<SheetValue>;
+  /** Editar con un select (`options`) o como casilla que se tilda con un toque. */
+  input?: "select" | "toggle";
+  options?: { value: string; label: string }[];
+  /** Ancho mínimo de la columna (clases de Tailwind). */
+  width?: string;
+}
+
+export interface SheetSpec<R> {
+  rowKey: (row: R) => string;
+  columns: SheetSpecColumn<R>[];
+  /** Una edición que también cambia otras filas (el nombre de un producto, en todas sus variantes). */
+  expand?: (rows: R[], rowKey: string, col: string, value: SheetValue) => Draft;
+}
+
+export function specText<R>(col: SheetSpecColumn<R>, value: SheetValue, row: R): string {
+  if (col.text) return col.text(value, row);
+  if (typeof value === "boolean") return value ? "sí" : "no";
+  return String(value ?? "");
+}
+
+/** Descarta del borrador lo que volvió a su valor original (o ya no existe). */
+export function specPrune<R>(spec: SheetSpec<R>, rows: R[], draft: Draft): Draft {
+  const byKey = new Map(rows.map((r) => [spec.rowKey(r), r]));
+  return Object.fromEntries(Object.entries(draft).filter(([k, v]) => {
+    const i = k.lastIndexOf("|");
+    const row = byKey.get(k.slice(0, i));
+    const col = spec.columns.find((c) => c.id === k.slice(i + 1));
+    return row && col?.parse && col.get(row) !== v;
+  }));
 }
 
 export function parseCellInput(col: SheetColumn, input: string, categories: Category[]): Parsed<SheetValue> {
@@ -105,7 +145,7 @@ export function pruneDraft(rows: StockRow[], draft: Draft): Draft {
   return Object.fromEntries(Object.entries(draft).filter(([k, v]) => {
     const [rowKey, col] = k.split("|") as [string, SheetColumn];
     const row = byKey.get(rowKey);
-    return row && rawValue(row, col) !== v;
+    return row && row[col] !== v;
   }));
 }
 

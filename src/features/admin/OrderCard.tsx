@@ -11,21 +11,27 @@ const SHIP = { PICKUP: "Retiro", LOCAL_DELIVERY: "Cadete", SHIPPING: "Envío nac
 export const paymentLabel = (m: AdminOrder["paymentMethod"]) => PAY[m];
 export const fulfillmentLabel = (f: AdminOrder["fulfillment"]) => SHIP[f];
 
-/** Pedido como tarjeta táctil (la tabla del panel se convierte en tarjetas en el celular). */
+/**
+ * Pedido como fila a todo el ancho (8.3.3): código, cliente con fecha y medio, estado, importe y acceso a la ficha.
+ * En el celular el estado sube junto al código y el resto se apila; nada se corta a la mitad.
+ */
 export function OrderCard({ order }: { order: AdminOrder }) {
+  const meta = `${formatDateTime(order.createdAt)} · ${PAY[order.paymentMethod]} · ${SHIP[order.fulfillment]}${order.fromShop ? " · desde la tienda demo" : ""}`;
   return (
-    <Link href={`/admin-demo/pedidos/detalle/?codigo=${order.code}`} className="flex items-center gap-3 rounded-3xl bg-surface shadow-[var(--shadow-card)] p-4 hover:border-primary">
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="font-extrabold">{order.code}</span>
-          <StatusBadge status={order.status} />
-          {order.fromShop && <span className="text-xs font-bold text-warning">desde la tienda demo</span>}
-        </div>
-        <span className="truncate text-sm">{order.customer.name}</span>
-        <span className="text-xs text-muted">{formatDateTime(order.createdAt)} · {PAY[order.paymentMethod]} · {SHIP[order.fulfillment]}</span>
+    <Link href={`/admin-demo/pedidos/detalle/?codigo=${order.code}`} className="flex items-center gap-3 rounded-2xl bg-surface p-4 shadow-[var(--shadow-card)] transition-colors hover:bg-accent/40 sm:gap-4">
+      <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
+        <span className="flex flex-wrap items-center gap-2 sm:w-32 sm:shrink-0">
+          <span className="whitespace-nowrap font-extrabold">{order.code}</span>
+          <span className="sm:hidden"><StatusBadge status={order.status} /></span>
+        </span>
+        <span className="min-w-0 sm:flex-1">
+          <span className="block truncate font-semibold">{order.customer.name}</span>
+          <span className="block text-xs text-muted sm:truncate">{meta}</span>
+        </span>
+        <span className="hidden shrink-0 sm:block"><StatusBadge status={order.status} /></span>
       </div>
-      <span className="font-extrabold tabular-nums">{formatARS(order.total)}</span>
-      <ChevronRight size={18} aria-hidden="true" className="text-muted" />
+      <span className="shrink-0 whitespace-nowrap text-right font-extrabold tabular-nums sm:w-28">{formatARS(order.total)}</span>
+      <ChevronRight size={18} aria-hidden="true" className="shrink-0 text-muted" />
     </Link>
   );
 }

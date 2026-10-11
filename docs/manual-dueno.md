@@ -12,7 +12,8 @@ técnicas. Cada tarea dice **dónde tocar** y **qué pasa después**.
 - **En el celular**: arriba tenés el menú de las tres rayitas y abajo las pestañas Inicio, Pedidos, Pagos, Productos y Más.
 - **En la compu**: el menú está a la izquierda, agrupado en Ventas, Taller, Catálogo, Marketing y Ajustes.
 - Buscar rápido: **Ctrl+K** (o **⌘K** en Mac) busca pedidos, productos, clientes y secciones.
-- La primera vez aparece una guía de 7 pasos. Volvés a verla con el botón **"?"**.
+- En la computadora, el menú de la izquierda muestra solo íconos: pasá el mouse para ver los nombres o fijalo abierto con
+  el botón de abajo. En la tablet y el celular, el menú está en el botón de arriba a la izquierda y en las pestañas de abajo.
 
 ## Tu día, en orden
 1. **Inicio**: cuánto vendiste, cuántos pedidos hay en cada etapa y qué te falta hacer (comprobantes, atrasados,
@@ -20,44 +21,72 @@ técnicas. Cada tarea dice **dónde tocar** y **qué pasa después**.
 2. **Pagos manuales**: revisá los comprobantes de transferencia o QR.
 3. **Pedidos**: pasá cada pedido a la etapa que sigue.
 4. **Calendario de entregas**: mirá qué entregás esta semana y si algún día quedó completo.
-5. **Cola de producción**: qué fabricar hoy.
+5. **Cola de producción**: qué fabricar hoy. Pasá cada pedido de etapa con el botón, con "Mover etapa" o arrastrándolo;
+   en el celular deslizá de costado entre etapas.
 
 ## Quiero…
 
 ### …cobrar un pedido por transferencia
-**Pagos manuales** → abrí el comprobante → **Aprobar** (te pide confirmar) o **Rechazar** (tenés que escribir el motivo).
+**Pagos manuales** → tocá el pedido para ver el comprobante grande → **Aprobar** (te pide confirmar) o **Rechazar**
+(tenés que escribir el motivo). **"Configurar datos de cobro"** cambia el alias, el CBU y el titular que ve el comprador
+(son los mismos de Ajustes).
 Un comprobante recién subido figura "en revisión", nunca "pagado". En la tienda real, aprobar sin haber visto la plata en
 tu cuenta es tu responsabilidad.
 
 ### …avanzar un pedido
-**Pedidos** → tocá el pedido → botones de estado. Solo aparecen los pasos que corresponden. Para varios a la vez, tildá
+**Pedidos** → tocá el pedido. Arriba ves el estado del pago y el de producción por separado, y la **próxima acción**
+con sus botones. Solo aparecen los pasos que corresponden; **Volver** te deja en la lista con los mismos filtros. Para varios a la vez, tildá
 los pedidos y usá la acción de arriba. Cada cambio avisa al cliente con el email de ese momento (si está activo).
 
 ### …saber cuándo puedo entregar
 **Calendario de entregas**: cada pedido está en su día. Los días completos y los feriados se marcan.
-- Para **mover** un pedido, arrastralo (compu) o abrí su ficha y elegí "Primera fecha libre", el día hábil anterior o siguiente, u otra fecha.
-- **Capacidad y feriados**: cuántos pedidos hacés por día, si trabajás sábados o domingos y tus días cerrados.
+- **Tocá un día** para ver sus entregas y anotar tareas o notas de un pedido (por ejemplo, "retirar filamento"). También
+  podés cerrar el taller ese día desde ahí.
+- Para **mover** un pedido, arrastralo a otro día (compu): te pide confirmar antes de cambiar la fecha. Un día cerrado o
+  completo no lo acepta y te dice por qué. Sin arrastrar, abrí su ficha y elegí "Primera fecha libre", el día hábil
+  anterior o siguiente, u otra fecha; si el día está completo te pregunta si querés sobrecargarlo.
+- **Capacidad y feriados**: elegí "Capacidad y horarios" (pedidos por día, sábados, domingos) o "Días cerrados y
+  feriados" (feriados nacionales ya cargados y tus cierres, de a 10 por página). Si un cambio deja entregas en un día
+  cerrado o sobrecargado, te avisa antes; esas entregas no se mueven solas y quedan marcadas para reprogramar.
 - **Exportar a Google Calendar** te baja un archivo que se abre con tu calendario.
 - La tienda usa este mismo calendario para decirle al cliente "llega el…".
 
 ### …cargar o cambiar un producto
-**Productos** → **Crear** (queda pausado hasta que lo muestres) o tocá uno para editar nombre, descripción, precio, plazo,
-foto y variantes (color, tamaño, recargo y stock). Poné **−1 de stock** si lo hacés a pedido.
+**Productos y stock** → **Nuevo producto** o tocá cualquier parte de la fila para editar. El editor va por pasos: primero la
+foto y su descripción corta (texto alternativo), después nombre, precio, plazo, variantes (color, tamaño, recargo y stock),
+medidas y personalización. Los pasos de la derecha (arriba en el celular) te llevan a cada parte y se ponen en verde cuando
+están completos. **Ver en tienda** muestra cómo queda antes de guardar, sin publicarlo; "Volver al editor" te deja donde
+estabas. Un producto nuevo no existe hasta que tocás **Guardar** y queda pausado hasta que lo muestres. Poné **−1 de stock**
+si lo hacés a pedido.
 - **Pausar** lo oculta de la tienda sin borrarlo.
+- Arriba de la tabla elegís **Productos** o **Variantes**: en Variantes sumás o restás stock fila por fila. El aviso amarillo
+  ("necesitan reposición") te lleva a las que hay que reponer.
+
+### …encontrar algo en cualquier tabla
+Escribí en el buscador y elegí filtros; los que no entran en pantalla están en **"Más filtros"**. **"Reiniciar filtros"**
+vuelve a mostrar todo. Al pie, **"Ver en formato Excel"** abre la misma lista como planilla y **"Descargar Excel"** baja
+todo lo filtrado (no solo la página que ves).
 
 ### …actualizar precios y stock con Excel
 **Importar desde Excel**: subí tu planilla (.xlsx o .csv). Reconoce columnas con otros nombres (Rubro, Artículo,
 Cantidad…) y te muestra, fila por fila, qué cambia y qué está mal. Importás lo válido y, si te arrepentís, **Deshacer**.
-Para empezar tocá **"Bajar mi catálogo como plantilla"**, editá y volvé a subir. La **Planilla** sirve para editar como en
-Excel dentro del panel (se puede pegar desde Excel).
+Para empezar tocá **"Bajar mi catálogo como plantilla"**, editá y volvé a subir. Se entra desde **Productos y stock →
+Importar Excel**. **"Ver en formato Excel"** sirve para editar como en Excel dentro del panel (se puede pegar desde Excel);
+nada cambia hasta que tocás **Guardar cambios**.
 
 ### …saber si gano plata
 **Costos y margen**: cargá qué insumos usa cada producto y cuánto tardás. Te dice la ganancia y si el margen es bueno, bajo
 o si perdés plata. **"Usar precio sugerido"** cambia el precio en la tienda. **Insumos** te dice qué comprar y cuánto.
 
 ### …hacer una promoción
-- **Cupones**: porcentaje, monto o envío gratis, con mínimo, vencimiento y cantidad de usos.
-- **Ruleta**: los premios y qué tan probable es cada uno (el panel muestra el porcentaje resultante).
+**Marketing** (en el menú, "Resumen") te muestra todas las herramientas en tarjetas. Cada una abre su página y con
+"Volver" elegís otra.
+- **Cupones y ruleta** → **Cupones**: porcentaje, monto o envío gratis, con mínimo, vencimiento y cantidad de usos.
+- **Cupones y ruleta** → **Configuración de ruleta**: arriba ves cómo queda; abajo elegís el premio de cada gajo de una
+  lista y su peso (el panel muestra el porcentaje resultante). **Premios disponibles** (o "Agregar premio") suma un
+  premio nuevo desde una plantilla: porcentaje, monto fijo, envío gratis, grabado gratis o un producto de regalo.
+- **Misiones y premios** → **Nueva misión** abre una ventana con todo lo que hay que completar. Si la cerrás sin
+  guardar, lo escrito te espera la próxima vez.
 - **Temáticas**: fechas como Día de la Madre o Navidad cambian solas los colores, el banner y la oferta de la tienda.
   Podés ajustar fechas, titular, cupón y productos en oferta, o dejar una fija. Las fechas que cambian cada año (Día de
   la Madre, Pascuas, Orgullo) revisalas una vez al año.
@@ -66,7 +95,8 @@ o si perdés plata. **"Usar precio sugerido"** cambia el precio en la tienda. **
 **Estudio de contenido**: elegí la fecha y te arma un **post, una historia y un carrusel** con el fondo de la temática y
 tus productos.
 1. Elegí hasta 3 productos o **subí una foto propia** (las fotos reales funcionan mejor que las ilustraciones).
-2. Editá los textos y elegí si va el precio o la oferta.
+2. Editá los textos y elegí si va el precio o la oferta. La oferta sale como un cupón con el descuento, el código y la
+   condición de compra del cupón de la temática (si cambiás el cupón, cambia la pieza).
 3. **Descargá la imagen (PNG)** o el **video de 6 a 15 segundos**, con música si querés. En el celular, **Compartir**
    lo manda a Fotos, Instagram o WhatsApp.
 4. Copiá el **texto sugerido** para el posteo; **"Otra idea"** te da otro gancho.
@@ -81,13 +111,22 @@ el pedido del panel figura como regalo para que lo envuelvas. En la demo el link
 código, en el navegador donde se compró.
 
 ### …cambiar lo que dice la tienda
-**Contenido**: carrusel del inicio (orden, textos y a dónde lleva), textos de inicio y preguntas frecuentes.
-**Ajustes**: colores, WhatsApp, medios de pago, descuento por transferencia, zonas de envío y envío gratis desde cierto
-monto. Los datos de pago de la demo son ficticios.
+**Contenido**: tres tarjetas, cada una con su página. **Carrusel**: arriba ves la diapositiva elegida tal como sale en el
+inicio; abajo elegís cuál editar, le cambiás los textos (el contador avisa si te pasás), a dónde lleva el botón y si se ve,
+y la ordenás o la quitás. Podés subir una **imagen propia**: JPG, PNG o WEBP, hasta 10 MB y de al menos 400 px de lado
+(se achica sola y, en esta demo, queda solo en tu navegador). Escribí qué muestra (texto alternativo) y acomodá el
+encuadre. Si el navegador se queda sin lugar, te avisa y no perdés lo que estabas editando. **Textos de inicio** y
+**Preguntas frecuentes** se guardan aparte: guardar una parte no toca las otras.
+**Ajustes**: cuatro tarjetas, cada una con su página: **Contacto y WhatsApp**, **Medios de pago** (cuáles se ofrecen,
+descuento por transferencia o QR y horas de reserva), **Datos de cobro** (alias, CBU/CVU y titular; en la demo, solo
+ficticios) y **Envíos y retiro** (envío gratis desde cierto monto, precio, plazo y códigos postales del cadete). Si salís
+sin guardar, al volver tus cambios siguen ahí; guardar una parte no cambia las otras. Los colores de la tienda son los de
+Velmar y cambian solos con cada temática.
 
 ### …escribirle a un cliente
-**Clientes** → su ficha: compras, mascotas con cumpleaños, notas y **recordatorios** con el mensaje listo para copiar
-(cumpleaños de la mascota, recompra de velas y aromas).
+**Clientes** → tocá el cliente: compras, mascotas con cumpleaños, Club, notas y **recordatorios** con el mensaje listo
+para copiar (cumpleaños de la mascota, recompra de velas y aromas). Para ver a quién escribirle esta semana, usá el
+filtro **"Para escribir"**. El botón **"i"** al lado de "Segmento" explica qué es VIP, recurrente, nuevo y sin compras.
 
 ### …manejar los emails automáticos
 **Emails automáticos**: uno por momento del pedido (compra, diseño recibido, pago aprobado, en producción, listo,

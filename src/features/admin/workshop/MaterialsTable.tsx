@@ -3,23 +3,25 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/atoms/Badge";
 import { Button } from "@/components/atoms/Button";
-import { Input } from "@/components/atoms/Field";
-import { Sheet } from "@/components/motion/Sheet";
 import { EmptyState } from "@/components/molecules/EmptyState";
-import { DataTable } from "@/components/organisms/data-table/DataTable";
+import { DataTable, toSheet } from "@/components/organisms/data-table/DataTable";
 import type { Column, RowCardProps } from "@/components/organisms/data-table/types";
+import { applyMaterialDraft, materialSheetSpec } from "@/demo/admin/sheet-specs";
+import { MATERIAL_HELP } from "@/demo/admin/help";
+import type { FilterSpec } from "@/demo/admin/table";
 import { MATERIAL_STATE_LABEL, materialRows, reorderQty, type MaterialRow, type MaterialState } from "@/demo/admin/workshop/materials";
-import { UNIT_LABEL, UNIT_SHORT, type Material, type MaterialUnit } from "@/demo/fixtures/workshop";
+import { UNIT_LABEL, UNIT_SHORT, type MaterialUnit } from "@/demo/fixtures/workshop";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { useToasts } from "@/stores/toast";
 import { AdminPageHeader } from "../AdminPageHeader";
-import { CommitNumberField } from "../NumberField";
-import { BulkButton, TabFilter } from "../table/TabFilter";
+import { BulkButton } from "../table/TabFilter";
+import { TableExcel } from "../table/TableExcel";
 import { useExport } from "../table/useExport";
 import { useTableState } from "../table/useTableState";
 import { useDemoSave } from "../useDemoSave";
 import { InlineNumber } from "./InlineNumber";
+import { MaterialDialog } from "./MaterialDialog";
 
 const TONE = { ok: "success", low: "warning", short: "danger" } as const;
 const qty = (n: number, unit: MaterialUnit) => `${n.toLocaleString("es-AR", { maximumFractionDigits: 2 })} ${UNIT_SHORT[unit]}`;
@@ -28,51 +30,27 @@ export function MaterialChip({ state }: { state: MaterialState }) {
   return <Badge tone={TONE[state]} className="whitespace-nowrap">{MATERIAL_STATE_LABEL[state]}</Badge>;
 }
 
-type Tab = "all" | "reorder" | "short";
-const TABS: [Tab, string, (r: MaterialRow) => boolean][] = [["all", "Todos", () => true], ["reorder", "Para reponer", (r) => r.state !== "ok"], ["short", "No alcanza para los pedidos", (r) => r.state === "short"]];
-
-function MaterialSheet({ material, onClose }: { material: Material | null; onClose: () => void }) {
-  const saveMaterial = useAdmin((s) => s.saveMaterial);
-  const save = useDemoSave();
-  const [name, setName] = useState<string | null>(null);
-  const [supplier, setSupplier] = useState<string | null>(null);
-  if (!material) return <Sheet open={false} onClose={onClose} title="Insumo"><span /></Sheet>;
-  const patch = (p: Partial<Material>, label = "Insumo guardado") => save(label, () => saveMaterial({ ...material, ...p }));
-  return (
-    <Sheet open onClose={() => { setName(null); setSupplier(null); onClose(); }} title={`Insumo ${material.name}`} side="right" className="max-w-lg bg-bg">
-      <div className="flex h-full flex-col gap-4 overflow-y-auto p-6 pt-14">
-        <h2 className="font-display text-3xl">{material.name}</h2>
-        <label className="flex flex-col gap-1 text-sm font-bold">Nombre
-          <Input value={name ?? material.name} onChange={(e) => setName(e.target.value)} onBlur={() => { if (name?.trim() && name.trim() !== material.name) patch({ name: name.trim() }); setName(null); }} />
-        </label>
-        <label className="flex flex-col gap-1 text-sm font-bold">Unidad de medida
-          <select value={material.unit} onChange={(e) => patch({ unit: e.target.value as MaterialUnit })} className="h-12 rounded-2xl border border-ink/12 bg-surface px-3 font-semibold">
-            {(Object.keys(UNIT_LABEL) as MaterialUnit[]).map((u) => <option key={u} value={u}>{UNIT_LABEL[u]}</option>)}
-          </select>
-        </label>
-        <CommitNumberField id="m-cost" label={`Costo por ${UNIT_SHORT[material.unit]}`} suffix="pesos enteros" value={material.costPerUnit} onCommit={(n) => patch({ costPerUnit: n }, "Costo del insumo guardado")} hint="Se usa en Costos y margen para calcular el costo de cada producto." />
-        <CommitNumberField id="m-min" label="Avisar para reponer con" suffix={UNIT_LABEL[material.unit]} value={material.minStock} onCommit={(n) => patch({ minStock: n })} />
-        <label className="flex flex-col gap-1 text-sm font-bold">Proveedor
-          <Input value={supplier ?? material.supplier ?? ""} placeholder="Opcional" onChange={(e) => setSupplier(e.target.value)} onBlur={() => { if (supplier !== null && supplier.trim() !== (material.supplier ?? "")) patch({ supplier: supplier.trim() || undefined }); setSupplier(null); }} />
-        </label>
-      </div>
-    </Sheet>
-  );
-}
+const search = (r: MaterialRow) => `${r.name} ${r.supplier ?? ""}`;
 
 /** Insumos con stock propio (pedido de Ignacio, fuera de la especificación): cuánto queda, cuánto piden los pedidos y qué reponer. */
 export function MaterialsTable() {
   const orders = useAdmin((s) => s.orders);
   const { materials, recipes } = useAdmin((s) => s.workshop);
-  const { adjustMaterials, createMaterial } = useAdmin();
+  const { adjustMaterials, updateMaterials } = useAdmin();
   const save = useDemoSave();
   const push = useToasts((t) => t.push);
   const onExport = useExport("insumos");
-  const state = useTableState("materials", { sort: { id: "state", dir: "asc" }, hidden: ["value"] });
-  const [tab, setTab] = useState<Tab>("all");
+  const suppliers = [...new Set(materials.map((m) => m.supplier).filter((x): x is string => !!x))].sort((a, b) => a.localeCompare(b, "es"));
+  const filters: FilterSpec<MaterialRow>[] = [
+    { id: "estado", label: "Estado", help: MATERIAL_HELP, options: [{ value: "reponer", label: "Para reponer" }, { value: "short", label: "No alcanza para los pedidos" }, { value: "ok", label: "Alcanza" }],
+      test: (r, v) => (v === "reponer" ? r.state !== "ok" : r.state === v) },
+    { id: "unidad", label: "Unidad", allLabel: "Todas", options: (Object.keys(UNIT_LABEL) as MaterialUnit[]).filter((u) => materials.some((m) => m.unit === u)).map((u) => ({ value: u, label: UNIT_LABEL[u] })), test: (r, v) => r.unit === v },
+    { id: "proveedor", label: "Proveedor", options: [...suppliers.map((x) => ({ value: x, label: x })), { value: "-", label: "Sin proveedor" }], test: (r, v) => (v === "-" ? !r.supplier : r.supplier === v) },
+  ];
+  const state = useTableState("materials", { sort: { id: "state", dir: "asc" }, hidden: ["value"], filterIds: filters.map((f) => f.id) });
   const [open, setOpen] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
   const all = materialRows(materials, orders, recipes);
-  const rows = all.filter(TABS.find((t) => t[0] === tab)![2]);
   const setStock = (r: MaterialRow, stock: number) => save(`Stock de ${r.name}: ${qty(stock, r.unit)}`, () => adjustMaterials([r.id], { kind: "set", stock }, `Stock de ${r.name}`));
   const buy = (list: MaterialRow[], clear: () => void) => {
     const need = list.filter((r) => reorderQty(r) > 0);
@@ -90,7 +68,7 @@ export function MaterialsTable() {
     { id: "min", header: "Mínimo", align: "right", cell: (r) => qty(r.minStock, r.unit), sortValue: (r) => r.minStock, exportValue: (r) => r.minStock },
     { id: "state", header: "Estado", cell: (r) => <MaterialChip state={r.state} />, sortValue: (r) => ["short", "low", "ok"].indexOf(r.state), exportValue: (r) => MATERIAL_STATE_LABEL[r.state] },
     { id: "reorder", header: "Comprar", align: "right", cell: (r) => (reorderQty(r) ? qty(reorderQty(r), r.unit) : "—"), sortValue: (r) => reorderQty(r), exportValue: (r) => reorderQty(r) },
-    { id: "value", header: "Valor", align: "right", defaultHidden: true, cell: (r) => formatARS(r.value), sortValue: (r) => r.value, exportValue: (r) => r.value },
+    { id: "value", header: "Valor", align: "right", money: true, defaultHidden: true, cell: (r) => formatARS(r.value), sortValue: (r) => r.value, exportValue: (r) => r.value },
   ];
   const Card = ({ row: r, selected, onToggle, onOpen }: RowCardProps<MaterialRow>) => (
     <div className={`flex flex-col gap-3 rounded-3xl bg-bg p-3 ring-1 ${selected ? "ring-primary" : "ring-ink/[0.06]"}`}>
@@ -102,19 +80,24 @@ export function MaterialsTable() {
       <div className="flex items-center gap-2 text-sm"><InlineNumber value={r.stock} decimals={r.unit === "m" || r.unit === "plancha"} label={`Stock de ${r.name}`} onCommit={(n) => setStock(r, n)} /><span className="text-muted">{UNIT_LABEL[r.unit]} · queda {qty(r.available, r.unit)}</span></div>
     </div>
   );
+  const table = { searchLabel: "Buscar insumo", searchPlaceholder: "Filamento, cera, LED…", searchText: search, filters };
+  if (state.view === "excel") {
+    return (
+      <TableExcel id="materials" title="Insumos" noun="insumos" state={state} rows={all} {...table} spec={materialSheetSpec} onExport={(rows) => onExport(toSheet(columns, rows), "filtered")}
+        onSave={(dirty) => { const n = Object.keys(dirty).length; updateMaterials(applyMaterialDraft(materials, dirty), `Vista Excel: ${n} ${n === 1 ? "celda" : "celdas"} de insumos`); return "Costos y margen y las alertas de reposición ya usan los valores nuevos."; }} />
+    );
+  }
   return (
     <>
-      <AdminPageHeader title="Insumos" actions={<Button variant="secondary" size="sm" onClick={() => { const id = createMaterial("Insumo nuevo"); setOpen(id); }}><Plus size={16} aria-hidden="true" /> Nuevo insumo</Button>}>
+      <AdminPageHeader title="Insumos" actions={<Button variant="secondary" size="sm" onClick={() => setCreating(true)}><Plus size={16} aria-hidden="true" /> Nuevo insumo</Button>}>
         Filamento, madera, cera, LED y todo lo que usa el taller. “Piden los pedidos” suma las recetas de los pedidos pagados que todavía no entraron a producción; al pasarlos a producción se descuenta del stock.
       </AdminPageHeader>
-      <div className="mb-4"><TabFilter label="Filtrar insumos" value={tab} onChange={(t) => { setTab(t); state.setPage(1); }} tabs={TABS.map(([id, label, fn]) => ({ id, label, count: all.filter(fn).length }))} /></div>
-      <DataTable caption="Insumos del taller" noun="insumos" rows={rows} columns={columns} state={state} pageSize={12}
-        rowKey={(r) => r.id} rowLabel={(r) => `Seleccionar ${r.name}`} searchText={(r) => `${r.name} ${r.supplier ?? ""}`} searchLabel="Buscar insumo" searchPlaceholder="Filamento, cera, LED…"
-        onRowOpen={(r) => setOpen(r.id)} onExport={onExport} renderCard={Card} rowTone={(r) => (r.state === "short" ? "danger" : r.state === "low" ? "warning" : undefined)}
+      <DataTable caption="Insumos del taller" noun="insumos" rows={all} columns={columns} state={state} {...table}
+        rowKey={(r) => r.id} rowLabel={(r) => `Seleccionar ${r.name}`} onRowOpen={(r) => setOpen(r.id)} onExport={onExport} onExcel={() => state.setView("excel")} renderCard={Card} rowTone={(r) => (r.state === "short" ? "danger" : r.state === "low" ? "warning" : undefined)}
         bulkActions={(list, clear) => <BulkButton onClick={() => buy(list, clear)}>Registrar compra para reponer</BulkButton>}
         footer={(list) => <p className="flex justify-end gap-6 border-t border-line px-5 py-3 text-sm text-muted">Valor de los insumos: <strong className="tabular-nums text-ink">{formatARS(list.reduce((s, r) => s + r.value, 0))}</strong></p>}
-        empty={<EmptyState title="Nada para mostrar">No hay insumos en este filtro.</EmptyState>} />
-      <MaterialSheet material={materials.find((m) => m.id === open) ?? null} onClose={() => setOpen(null)} />
+        empty={<EmptyState title="Nada para mostrar">No hay insumos en este filtro. Tocá “Reiniciar” para ver todos.</EmptyState>} />
+      <MaterialDialog key={creating ? "nuevo" : (open ?? "cerrado")} material={materials.find((m) => m.id === open) ?? null} creating={creating} onClose={() => { setOpen(null); setCreating(false); }} />
     </>
   );
 }

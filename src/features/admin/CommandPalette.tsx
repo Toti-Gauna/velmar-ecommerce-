@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Boxes, ClipboardList, CornerDownLeft, FileSpreadsheet, Plus, Store, UserRound } from "lucide-react";
+import { ArrowRight, Boxes, ClipboardList, CornerDownLeft, Disc3, FileSpreadsheet, GalleryHorizontal, Inbox, Landmark, MessageCircleQuestion, Plus, Store, Truck, UserRound } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Sheet } from "@/components/motion/Sheet";
 import { customerRows } from "@/demo/admin/customers";
@@ -8,6 +8,7 @@ import { matchesQuery } from "@/demo/admin/table";
 import { STATUS_LABEL } from "@/demo/engine/orders";
 import { cn } from "@/lib/cn";
 import { useAdmin } from "@/stores/admin";
+import { profileHref } from "./customers/Reminders";
 import { ADMIN_NAV } from "./nav";
 
 interface Item { id: string; group: string; label: string; hint?: string; icon: ReactNode; href: string; search: string }
@@ -24,12 +25,19 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const [active, setActive] = useState(0);
   const all: Item[] = [
     ...ADMIN_NAV.map((n) => ({ id: n.href, group: "Ir a", label: n.label, icon: <n.icon size={17} aria-hidden="true" />, href: n.href, search: `${n.label} ${n.group}` })),
-    { id: "new-product", group: "Acciones", label: "Nuevo producto", icon: icon(Plus), href: "/admin-demo/productos/?nuevo=1", search: "crear producto nuevo alta" },
+    { id: "new-product", group: "Acciones", label: "Nuevo producto", icon: icon(Plus), href: "/admin-demo/productos/editar/?nuevo=1", search: "crear producto nuevo alta" },
     { id: "import", group: "Acciones", label: "Importar categorías y stock desde Excel", icon: icon(FileSpreadsheet), href: "/admin-demo/importar/", search: "importar excel csv planilla subir" },
+    { id: "sheet", group: "Acciones", label: "Productos y stock en formato Excel", icon: icon(FileSpreadsheet), href: "/admin-demo/productos/?formato=excel", search: "planilla excel grilla stock editar precios" },
+    { id: "wheel", group: "Acciones", label: "Configuración de la ruleta", icon: icon(Disc3), href: "/admin-demo/cupones/ruleta/", search: "ruleta premios pesos gajos cupones" },
+    { id: "outbox", group: "Acciones", label: "Bandeja de salida de emails", icon: icon(Inbox), href: "/admin-demo/emails/enviados/", search: "emails enviados bandeja salida" },
+    { id: "slides", group: "Acciones", label: "Carrusel del inicio", icon: icon(GalleryHorizontal), href: "/admin-demo/contenido/carrusel/", search: "carrusel diapositivas portada inicio banner imagen" },
+    { id: "faqs", group: "Acciones", label: "Preguntas frecuentes", icon: icon(MessageCircleQuestion), href: "/admin-demo/contenido/preguntas/", search: "preguntas frecuentes ayuda faq" },
+    { id: "collection", group: "Acciones", label: "Datos de cobro de muestra", icon: icon(Landmark), href: "/admin-demo/ajustes/cobro/", search: "alias cbu cvu titular qr transferencia cobro ajustes" },
+    { id: "shipping", group: "Acciones", label: "Envíos y retiro", icon: icon(Truck), href: "/admin-demo/ajustes/envios/", search: "envio gratis zonas cadete retiro codigos postales ajustes" },
     { id: "shop", group: "Acciones", label: "Ver la tienda", icon: icon(Store), href: "/", search: "tienda sitio web" },
     ...orders.map((o) => ({ id: o.code, group: "Pedidos", label: `${o.code} · ${o.customer.name}`, hint: STATUS_LABEL[o.status], icon: icon(ClipboardList), href: `/admin-demo/pedidos/detalle/?codigo=${o.code}`, search: `${o.code} ${o.customer.name} ${o.customer.email}` })),
     ...products.map((p) => ({ id: p.slug, group: "Productos", label: p.name, hint: p.active === false ? "Pausado" : undefined, icon: icon(Boxes), href: `/admin-demo/productos/editar/?id=${p.slug}`, search: `${p.name} ${p.tags.join(" ")}` })),
-    ...customerRows(users, orders).map((c) => ({ id: c.key, group: "Clientes", label: c.name, hint: c.email, icon: icon(UserRound), href: `/admin-demo/usuarios/?cliente=${encodeURIComponent(c.email)}`, search: `${c.name} ${c.email}` })),
+    ...customerRows(users, orders).map((c) => ({ id: c.key, group: "Clientes", label: c.name, hint: c.email, icon: icon(UserRound), href: profileHref(c.email), search: `${c.name} ${c.email}` })),
   ];
   const results = (q.trim() ? all.filter((i) => matchesQuery(q, i.search, i.label)) : all.filter((i) => i.group !== "Productos" && i.group !== "Clientes" && i.group !== "Pedidos")).slice(0, 12);
   const current = Math.min(active, Math.max(0, results.length - 1));

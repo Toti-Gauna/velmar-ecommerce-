@@ -24,7 +24,7 @@ test("ruleta: gira (sin animación con movimiento reducido), emite un cupón y s
   await page.goto("club/");
   await expect(page.getByRole("button", { name: "Girar la ruleta" })).toHaveCount(0);
   await expect(page.getByText("Tu premio")).toBeVisible();
-  await page.goto("admin-demo/cupones/");
+  await page.goto("admin-demo/cupones/lista/");
   await expect(page.getByText(code, { exact: true })).toBeVisible();
   assertNoExternal();
 });

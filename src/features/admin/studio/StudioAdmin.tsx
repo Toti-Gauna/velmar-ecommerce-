@@ -8,7 +8,7 @@ import { STUDIO_FORMATS, type StudioFormat } from "@/demo/fixtures/studio";
 import type { SeasonId } from "@/demo/types";
 import { useDemoData } from "@/stores/admin";
 import { useToasts } from "@/stores/toast";
-import { AdminPageHeader } from "../AdminPageHeader";
+import { MARKETING, SubpageHeader } from "../marketing/SubpageHeader";
 import { useStudioAssets } from "./assets";
 import { playJingle, type StudioMusic } from "./music";
 import { assetRequest, buildScene } from "./scene";
@@ -84,9 +84,8 @@ export function StudioAdmin() {
 
   return (
     <>
-      <AdminPageHeader title="Estudio de contenido">
-        Elegí la fecha y salen tres piezas para Instagram con su fondo animado, tus productos y la oferta: post, historia o reel y carrusel. Se exportan como imagen o video. Agregado pedido por Ignacio (fuera de la especificación).
-      </AdminPageHeader>
+      <SubpageHeader trail={[MARKETING]} back={MARKETING} title="Estudio de contenido"
+        intro="Elegí la fecha y salen tres piezas para Instagram con su fondo animado, tus productos y la oferta: post, historia o reel y carrusel. Se exportan como imagen o video. Agregado pedido por Ignacio (fuera de la especificación)." />
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
         <StudioControls themes={themes} themeId={themeId} onTheme={setThemeId} catalog={catalog} selected={selected} onToggleProduct={toggle}
           photoUrl={photo?.url ?? null} onPhoto={onPhoto} texts={texts} onTexts={setTexts} onResetTexts={() => setTexts(studioTexts(theme))}

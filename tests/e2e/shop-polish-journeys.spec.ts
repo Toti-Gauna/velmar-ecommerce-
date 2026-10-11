@@ -178,6 +178,7 @@ for (const d of DEVICES) {
       await expect(page.locator("main h1")).toHaveText(name1);
       await expect.poll(() => page.evaluate(() => Math.round(scrollY))).toBe(0);
       await w.check("detalle 1");
+      const url1 = page.url();
       const related = page.locator("#relacionados").locator("xpath=ancestor::section[1]");
       await related.scrollIntoViewIfNeeded();
       const second = related.locator("[data-product-card] h3 a").first();
@@ -187,9 +188,13 @@ for (const d of DEVICES) {
       await expect.poll(() => page.evaluate(() => Math.round(scrollY))).toBe(0);
       await page.goBack();
       await expect(page.locator("main h1")).toHaveText(name1);
-      await page.getByRole("navigation", { name: "Ruta de navegación" }).getByRole("link").last().click();
+      await expect(page).toHaveURL(url1);
+      // Si el clic llega mientras el router todavía termina el "Atrás", la navegación se pierde: se reintenta el clic.
+      await expect(async () => {
+        await page.getByRole("navigation", { name: "Ruta de navegación" }).getByRole("link").last().click();
+        await expect(page).toHaveURL(/\/c\//, { timeout: 2_000 });
+      }).toPass({ timeout: 10_000 });
       await expect(page.locator("main h1")).toBeVisible();
-      await expect(page).toHaveURL(/\/c\//);
       await w.check("categoría");
       await page.locator("[data-shop-header]").getByRole("button", { name: /^Carrito/ }).click();
       await expect(page.getByRole("dialog", { name: "Carrito" })).toBeVisible();

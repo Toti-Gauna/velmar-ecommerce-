@@ -1,7 +1,8 @@
 import { STUDIO_BRAND } from "@/demo/fixtures/studio";
 import { formatARS } from "@/lib/money";
 import { drawBackdrop } from "./backdrop";
-import { DISPLAY, SANS, drawCard, drawLines, drawLogo, drawPill, wrap } from "./paint";
+import { drawOfferBadge, offerBadge } from "./offer";
+import { DISPLAY, SANS, drawCard, drawLines, drawLogo, drawPill, fitLine, wrap } from "./paint";
 import { raster } from "./sprites";
 import type { StudioScene } from "./types";
 
@@ -75,25 +76,20 @@ function steps(ctx: CanvasRenderingContext2D, s: StudioScene) {
 
 function offer(ctx: CanvasRenderingContext2D, s: StudioScene) {
   const o = s.showOffer ? s.offer : null;
+  const badge = o ? offerBadge(o, s.look, 1.7, 760) : null;
   ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
   ctx.fillStyle = s.look.accent;
   ctx.font = `800 30px ${SANS}`;
-  ctx.fillText(s.texts.eyebrow.toUpperCase(), s.W / 2, 380);
-  ctx.fillStyle = "#ffffff";
-  ctx.font = `600 ${o ? 170 : 104}px ${DISPLAY}`;
-  ctx.fillText(o ? o.label : STUDIO_BRAND.handMade, s.W / 2, o ? 590 : 560);
-  ctx.font = `500 44px ${SANS}`;
-  ctx.fillStyle = "rgba(255,255,255,0.88)";
-  if (o) {
-    ctx.fillText("con el código", s.W / 2, 690);
-    drawPill(ctx, o.code, s.W / 2, 730, { bg: s.look.accent, ink: s.look.accentInk, size: 54, align: "center", padX: 50 });
-    if (o.condition) {
-      ctx.fillStyle = "rgba(255,255,255,0.88)";
-      ctx.font = `600 38px ${SANS}`;
-      ctx.textBaseline = "alphabetic";
-      ctx.fillText(o.condition, s.W / 2, 940);
-    }
-  } else ctx.fillText(`en ${STUDIO_BRAND.city}`, s.W / 2, 650);
+  ctx.fillText(fitLine(ctx, s.texts.eyebrow.toUpperCase(), 920), s.W / 2, badge ? 260 : 380);
+  if (badge) drawOfferBadge(ctx, badge, (s.W - badge.w) / 2, 320 + Math.max(0, (620 - badge.h) / 2));
+  else {
+    ctx.fillStyle = "#ffffff";
+    ctx.font = `600 104px ${DISPLAY}`;
+    ctx.fillText(STUDIO_BRAND.handMade, s.W / 2, 560);
+    ctx.font = `500 44px ${SANS}`;
+    ctx.fillStyle = "rgba(255,255,255,0.88)";
+    ctx.fillText(`en ${STUDIO_BRAND.city}`, s.W / 2, 650);
+  }
   drawPill(ctx, s.texts.cta, s.W / 2, s.H - 300, { bg: "#ffffff", ink: "#1c2016", size: 32, align: "center" });
   if (s.cast.length) s.cast.forEach((img, i) => ctx.drawImage(raster(img, 260, 200), s.W / 2 - 270 + i * 280, s.H - 215));
   else if (s.hero) ctx.drawImage(raster(s.hero, 170, 170), s.W / 2 - 85, s.H - 190);

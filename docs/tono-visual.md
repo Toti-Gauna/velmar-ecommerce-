@@ -27,7 +27,8 @@ No hay paleta ni tipografía confirmadas por Velmar. Lo siguiente se derivó del
 - Tokens oscuros en `app/globals.css` (`html[data-theme="dark"]`): fondo `#121510`, superficie `#1b1f17`, texto `#ece6d8`
   (14,8:1), secundario `#a9a591` (≥ 5,8:1), primario salvia `#c5d19e` con texto `#151910`, dorado de texto `#d9b878`.
   Todos AA. Las bandas "noche" pasan a un negro más profundo con filo dorado sutil.
-- Los colores de marca editados en el panel aplican al modo claro; el oscuro usa su propia paleta.
+- La paleta del modo claro es la de Velmar (`src/config/brand.ts`); el oscuro usa su propia paleta. Desde Polish 8.3.29
+  el panel ya no edita colores de marca (las temáticas siguen cambiando la paleta en sus fechas).
 
 ## Temáticas (05/10, pedido de Ignacio, fuera de la especificación)
 - Cada fecha comercial tiene su "piel" fija en `src/features/themes/skins.ts`: degradado oscuro o saturado con texto claro

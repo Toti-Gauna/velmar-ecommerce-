@@ -11,7 +11,7 @@ import { formatDayRange } from "@/lib/date";
 import { useAdmin } from "@/stores/admin";
 import { reloadWithTheme } from "@/features/themes/reloadWithTheme";
 import { skinOf } from "@/features/themes/skins";
-import { AdminPageHeader } from "../AdminPageHeader";
+import { MARKETING, SubpageHeader } from "../marketing/SubpageHeader";
 import { useDemoSave } from "../useDemoSave";
 import { ThemeEditor } from "./ThemeEditor";
 import { ThemeMode } from "./ThemeMode";
@@ -27,12 +27,10 @@ export function ThemesAdmin() {
   const preview = (id: SeasonId) => reloadWithTheme(id, "/");
   return (
     <>
-      <AdminPageHeader title="Temáticas">
-        Halloween, Navidad, el Orgullo, las fechas patrias y el resto de las fechas comerciales: cada una con su banner, decoraciones, cupón y productos en oferta.
-        Agregado pedido por Ignacio (fuera de la especificación).
-      </AdminPageHeader>
+      <SubpageHeader trail={[MARKETING]} back={MARKETING} title="Temáticas"
+        intro="Halloween, Navidad, el Orgullo, las fechas patrias y el resto de las fechas comerciales: cada una con su banner, decoraciones, cupón y productos en oferta. Agregado pedido por Ignacio (fuera de la especificación)." />
       <ThemeMode />
-      <ul className="grid gap-3 md:grid-cols-2">
+      <ul aria-label="Temáticas por fecha" className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,26rem),1fr))] gap-3">
         {themes.map((t) => {
           const skin = skinOf(t.id);
           const offer = themeOffer(t);

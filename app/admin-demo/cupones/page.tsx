@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { CouponsAdmin } from "@/features/admin/CouponsAdmin";
+import { CouponsHub } from "@/features/admin/coupons/CouponsHub";
 
-export const metadata: Metadata = { title: "Cupones" };
+export const metadata: Metadata = { title: "Cupones y ruleta" };
 
 export default function AdminCouponsPage() {
-  return <CouponsAdmin />;
+  return <CouponsHub />;
 }

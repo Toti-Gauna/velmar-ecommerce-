@@ -26,7 +26,7 @@ export function WorkshopStrip() {
     { href: "/admin-demo/calendario/", icon: CalendarDays, label: "Entregas próximos 7 días", value: nextDays, hint: "Ver el calendario" },
     { href: "/admin-demo/produccion/", icon: AlarmClock, label: "Pedidos atrasados", value: late, hint: "Abrir la cola de producción", tone: late ? "text-danger" : undefined },
     { href: "/admin-demo/insumos/", icon: Spool, label: "Insumos para reponer", value: reorder, hint: "Ver insumos", tone: reorder ? "text-warning" : undefined },
-    { href: "/admin-demo/usuarios/", icon: Cake, label: "Clientes para escribir", value: reminders, hint: "Cumpleaños y recompras de la semana" },
+    { href: "/admin-demo/usuarios/?escribir=7", icon: Cake, label: "Clientes para escribir", value: reminders, hint: "Cumpleaños y recompras de la semana" },
   ];
   return (
     <section aria-labelledby="taller">

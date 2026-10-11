@@ -25,11 +25,17 @@ const SHOP = [
 const ADMIN = [
   ["admin-demo/", "Buen día, Velmar"], ["admin-demo/pedidos/", "Pedidos"], ["admin-demo/pedidos/detalle/?codigo=VEL-000123", "VEL-000123"],
   ["admin-demo/pagos/", "Pagos manuales"], ["admin-demo/productos/", "Productos y stock"], ["admin-demo/categorias/", "Categorías y personalización"],
-  ["admin-demo/stock/", "Stock"], ["admin-demo/planilla/", "Planilla"], ["admin-demo/importar/", "Importar desde Excel"],
+  ["admin-demo/stock/", "Productos y stock"], ["admin-demo/planilla/", "Productos y stock · formato Excel"], ["admin-demo/importar/", "Importar desde Excel"],
   ["admin-demo/misiones/", "Misiones y premios"], ["admin-demo/cupones/", "Cupones"], ["admin-demo/emails/", "Emails automáticos"],
   ["admin-demo/calendario/", "Calendario de entregas"], ["admin-demo/produccion/", "Cola de producción"], ["admin-demo/costos/", "Costos y margen"],
   ["admin-demo/insumos/", "Insumos"], ["admin-demo/usuarios/", "Clientes"], ["admin-demo/reclamos/", "Reclamos"],
   ["admin-demo/contenido/", "Contenido"], ["admin-demo/tematicas/", "Temáticas"], ["admin-demo/estudio/", "Estudio de contenido"], ["admin-demo/ajustes/", "Ajustes"],
+  // Subpáginas de Polish 8.3 (tarjetas de Marketing, Contenido y Ajustes).
+  ["admin-demo/marketing/", "Marketing"], ["admin-demo/cupones/lista/", "Cupones"], ["admin-demo/cupones/ruleta/", "Configuración de ruleta"],
+  ["admin-demo/cupones/premios/", "Premios disponibles"], ["admin-demo/misiones/simular/", "Simular progreso y premio"], ["admin-demo/emails/enviados/", "Bandeja de salida"],
+  ["admin-demo/contenido/carrusel/", "Carrusel"], ["admin-demo/contenido/textos/", "Textos de inicio"], ["admin-demo/contenido/preguntas/", "Preguntas frecuentes"],
+  ["admin-demo/ajustes/contacto/", "Contacto y WhatsApp"], ["admin-demo/ajustes/pagos/", "Medios de pago"], ["admin-demo/ajustes/cobro/", "Datos de cobro"],
+  ["admin-demo/ajustes/envios/", "Envíos y retiro"],
 ] as const;
 
 /** Errores que no son de la demo: el navegador de pruebas no tiene GPU ni códecs propietarios. */

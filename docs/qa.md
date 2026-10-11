@@ -301,6 +301,158 @@ En cada pantalla de cada recorrido se controla que no haya scroll horizontal, er
   simulación rotulada, sin OAuth; no se manda ningún email.
 - **Falta**: probar en un iPad, un iPhone y un Android reales (filas 20 a 22 de `qa-dispositivos.md`).
 
+## Panel admin · Polish 8.3 (`tests/e2e/admin-polish-*.spec.ts`; matriz completa en `docs/polish-8.3-status.md`)
+
+Lote 1: base responsive, navegación e inicio.
+
+| Verificación | Estado |
+|---|---|
+| 8.3.1 Cada barra de "Ventas por día" es un botón (clic, toque, Enter): muestra fecha, cantidad, total y los pedidos del día con acceso a su ficha; un día sin ventas muestra su estado vacío | ✅ |
+| 8.3.1 La suma de los pedidos del detalle es la de la barra; "Ver como tabla" usa los mismos días y su total es el KPI "Ventas últimos 7 días"; elegir un día desde la tabla también lo marca | ✅ + unit |
+| 8.3.1 Recorrido: barra → pedido del día → ficha → Atrás vuelve al inicio | ✅ |
+| 8.3.2 Escritorio con mouse (1440, 1280, 1024): riel de íconos de 72 px; con el mouse o el teclado se despliega a 280 px encima del contenido, que no se corre; "Fijar el menú abierto" lo deja abierto y se recuerda al recargar; un clic en un ícono navega y el riel se vuelve a cerrar | ✅ emulado |
+| 8.3.2 Táctil (1024 horizontal, 768 vertical, 390, 360): sin riel; hamburguesa con los grupos y la sección actual marcada; pestañas Inicio, Pedidos, Pagos, Productos y Más; la barra no tapa el final del contenido; sin desborde | ✅ emulado |
+| 8.3.3 Últimos pedidos, Club Velmar y Actividad reciente, una debajo de la otra a todo el ancho (1440, 1024, 390); cada pedido en una fila con código en una línea, cliente, estado e importe | ✅ emulado |
+| 8.3.11 Sin guía de bienvenida la primera vez ni después de "Reiniciar demo"; sin botón "Ver guía"; la señal de demo sigue | ✅ |
+
+- **Sidebar:** el corte es "1024 px **y** mouse" (variante `desk:` en `globals.css`). Un iPad en horizontal (1024 o 1180 px,
+  táctil) usa hamburguesa y pestañas, como pide la ficha. Falta confirmarlo en un iPad real con Safari.
+- **Guía:** se quitaron el componente, sus pasos y las marcas `data-tour`. La clave vieja `velmar-tour:admin` queda donde
+  esté (no se borra nada del navegador) y ya no se lee.
+
+Lote 2: tablas universales, vista Excel y catálogo unificado (`admin-polish-tables.spec.ts`, `admin-polish-catalog.spec.ts`,
+`tests/unit/admin-tables-83.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.4 Pedidos, Clientes, Productos, Variantes, Costos, Insumos y Categorías a 1440 (mouse), 1024 y 390 (táctil): buscar, "Buscar", "Reiniciar filtros" y todos los filtros a mano (los que no entran, en "Más filtros"); sin desborde | ✅ emulado |
+| 8.3.4 Diez por página con "página N de M"; filtrar estando en la página 2 deja una página válida; Reiniciar limpia búsqueda, filtros y URL | ✅ + unit |
+| 8.3.4 Toda la fila abre la entidad correcta (pedido, cliente, producto desde producto o variante, costo, insumo, categoría); checkbox, switch de visibilidad y botones de stock no navegan | ✅ |
+| 8.3.4 Vista Excel con los mismos filtros y filas; pedidos de solo lectura (nada se edita, sin "Guardar"); Atrás vuelve a la tabla con el filtro; el `.xlsx` lleva las 17 filas sin filtro (la página muestra 10) y las filtradas con filtro | ✅ |
+| 8.3.18 Insumos: buscar pasa a la vista Excel; "Piden los pedidos" no se edita; −3 marca error; 4.200 se guarda una vez, la tabla muestra 4200 y sigue al recargar; filtro de estado y Reiniciar | ✅ |
+| 8.3.18 Salir con cambios pide confirmar; recargar recupera el borrador; "Descartar y volver" lo limpia | ✅ |
+| 8.3.19 Menú con "Productos y stock" y sin Stock, Planilla ni Importar; el aviso de reposición filtra la misma pantalla; `/admin-demo/stock/?vista=reponer` y `/admin-demo/planilla/` llegan a la vista correcta; "Importar Excel" sigue en el módulo | ✅ |
+| 8.3.19 "A pedido": mismas variantes en la tabla y en la vista Excel, que las muestra como "a pedido" | ✅ + unit |
+| 8.3.22 Modal "Nueva categoría": foco en el nombre, Escape cierra y devuelve el foco, el borrador sigue al reabrir, nombre vacío da error, el repetido avisa, crear suma exactamente una, se limpia y aparece en el editor de productos | ✅ |
+| 8.3.22 Con filtros no hay Subir/Bajar (aviso); en el orden de la tienda, Subir mueve y se guarda; el switch de la fila no navega; la fila abre el detalle con productos y destacada | ✅ |
+| 8.3.22 Vista Excel: renombrar se guarda y el lugar en la tienda no cambia | ✅ + unit |
+
+- **Filtros que entran:** container queries sobre el ancho real de la tabla (no del viewport): el primero desde 50rem, el
+  segundo desde 62rem y el tercero desde 73rem; del cuarto en adelante, siempre en "Más filtros". Con la barra lateral fijada
+  entra uno menos.
+- **Buscar:** filtra mientras escribís (como antes); "Buscar" confirma y cierra el teclado del celular.
+- **Reclamos, cupones y pagos** son listas de tarjetas, no tablas: siguen con su paginado y se revisan en los Lotes 3 y 6.
+
+Lote 3: fichas completas, comprobantes, Clientes, modales y datos de cobro (`admin-polish-details.spec.ts`,
+`admin-polish-customers.spec.ts`, `tests/unit/admin-details-83.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.5/8.3.6 Pedido: desde la fila con filtro, migas de pan, ID, "Pago" y "Producción y entrega" por separado, próxima acción; cambiar a "En producción" con confirmación; recargar mantiene el pedido; Volver vuelve a la lista con el filtro y el pedido ya no está en "Para producir" | ✅ + unit |
+| 8.3.6 Ficha de pedido y de pago a 768 y 390: apiladas y sin desborde | ✅ emulado |
+| 8.3.7 Pago: comprobante a la izquierda de los datos (1280) y arriba (768, 390); aprobar desde la ficha pasa a "Pagado · aprobado a mano" y los contadores bajan de 2 a 1 (resueltos de 6 a 7) | ✅ emulado |
+| 8.3.8 Sin "Auditoría de muestra"; el registro de aprobación sigue en el historial del pedido | ✅ |
+| 8.3.30 "Configurar datos de cobro": cancelar no cambia nada; CBU inválido da error al lado del campo; guardar muestra los mismos valores en Ajustes, deja la cola en el mismo filtro, no aprueba pagos y el checkout demo con transferencia muestra el alias nuevo | ✅ |
+| 8.3.5 Reclamos: la lista abre la ficha; "Marcar en curso" con confirmación; Volver a la lista con el estado actualizado | ✅ |
+| 8.3.9 Clientes sin "Para escribirles"; el filtro "Para escribir" (esta semana) muestra a Diego Álvarez | ✅ |
+| 8.3.10 Ayuda de segmentos con teclado (Enter abre, Escape cierra), texto con el umbral VIP real y debajo de los filtros (no los tapa) | ✅ + unit |
+| 8.3.12 La fila abre la ficha arriba de todo; el checkbox no navega; Volver conserva `?segmento=VIP` | ✅ |
+| 8.3.13 Ficha a 1280 (dos columnas), 768 y 390 (apilada): botones de recordatorio sin pisar el título, títulos en una línea, sin desborde | ✅ emulado |
+| 8.3.17 Costos en modal: frase inicial, minutos negativos dan error, cancelar con cambios pide confirmar y no guarda, guardar recalcula | ✅ + unit |
+| 8.3.17 Insumos en modal: crear sin nombre da error, crea exactamente uno, Escape sin cambios cierra, editar guarda una vez | ✅ + unit |
+
+- **Ayudas:** el texto sale de las mismas reglas del engine (`VIP_FROM`, `ORDER_TABS`, `materialState`, `marginState`).
+- **Volver:** cada tabla anota su URL por sección en `sessionStorage` (`velmar-ui:list:*`); sin nada anotado, vuelve a la lista limpia.
+- **Datos de cobro:** el checkout de las compras nuevas usa los datos guardados; los pedidos no guardan una copia, así que no se reescriben históricos.
+
+Lote 4: editor de producto por pasos y vista previa en la tienda (`admin-polish-editor.spec.ts`,
+`tests/unit/admin-editor-83.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.20 Edición a 1440: foto y alt primero, pasos a la derecha; "Datos" completo y "Medidas" por completar según los datos; tocar "Variantes" lleva al bloque justo debajo de la barra del panel, lo marca como actual y enfoca su título; lo escrito sigue | ✅ + unit |
+| 8.3.20 Sin texto alternativo: guardar marca el error en su bloque, el paso en rojo y "Faltan datos en 1 paso" en la barra; al completarlo, el paso queda completo y guarda | ✅ + unit |
+| 8.3.20 Al final de la página la barra de guardado queda debajo del último bloque (no lo tapa) | ✅ |
+| 8.3.20 A 1024 con mouse, 768 y 390 táctil: pasos compactos arriba ("Paso N de 7"), el bloque elegido queda debajo de ellos, un campo enfocado no queda debajo de la barra ni de los pasos, sin desborde | ✅ emulado |
+| 8.3.21 Vista previa de una edición: muestra el nombre sin guardar, comprar y regalar apagados, carrito en 0; "Volver al editor" recupera el borrador, el paso (Personalización) y el scroll sin aviso; Atrás del navegador también | ✅ |
+| 8.3.21 Nada se publica: la ficha real sigue con el nombre guardado; al entrar de nuevo al editor se recupera el borrador con aviso y se puede descartar con confirmación | ✅ |
+| 8.3.21 Alta: borrador con id temporal, foto primero; dos idas y vueltas a la vista previa (botón y Atrás) no lo agregan al catálogo; guardar crea exactamente uno (pausado); el acceso viejo `?nuevo=1` abre un alta limpia | ✅ + unit |
+| 8.3.21 Vista previa a 1024, 768 y 390: franja "Volver al editor" visible y sin desborde | ✅ emulado |
+| Borrador guardado roto o de otra versión: se ignora sin romper | unit |
+
+- **Pasos:** el estado sale de validar (`checkSteps`): errores bloquean (alt, nombre, precio, categoría, variantes), las medidas solo avisan.
+- **Borrador:** `velmar-ui:product-draft:editar:<slug>` o `:nuevo` en `sessionStorage`, solo mientras hay cambios; `velmar-ui:preview-return` marca que la vista previa se abrió desde el editor.
+
+Lote 5: capacidad y feriados, calendario editable y tablero de producción (`admin-polish-workshop.spec.ts`,
+`admin-workshop.spec.ts`, `tests/unit/admin-workshop-83.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.14 Modal con dos tarjetas: el foco arranca en la primera, Escape cierra y devuelve el foco al botón | ✅ |
+| 8.3.14 Bajar la capacidad a 2 avisa "El jue, 8 oct queda sobrecargado (3 de 2 pedidos)"; "Seguir editando" no guarda; "Guardar igual" guarda y los pedidos siguen en su fecha | ✅ + unit |
+| 8.3.14 Feriados de a 10: "Todos" da 35 en 4 páginas (1–10, 11–20 … 31–35), siguiente se apaga en la última; los cierres propios van en su pestaña | ✅ + unit |
+| 8.3.14 Cerrar el 14/10 avisa que VEL-000123 queda en un día cerrado; confirmado, el pedido no se mueve y el calendario lo marca para reprogramar; editar el motivo y quitar con confirmación (el aviso desaparece) | ✅ + unit |
+| 8.3.15 Tocar un día: ver entregas y entradas; crear (con validación), nota vinculada a un pedido, persistir al recargar, editar | ✅ + unit |
+| 8.3.15 Arrastrar una entrada la mueve; arrastrar un pedido a un sábado lo rechaza con el motivo; a un día válido pide confirmar (Cancelar no mueve, Mover sí, una sola vez) | ✅ + unit |
+| 8.3.15 Reprogramar sin arrastrar a un día completo pide confirmar la sobrecarga; la fecha nueva se ve en la ficha del pedido | ✅ |
+| 8.3.15 Teclado: Enter sobre un día abre su modal y Escape lo cierra | ✅ |
+| 8.3.16 "Mover etapa" lista solo etapas permitidas; contadores al día; volver a En máquina no descuenta insumos otra vez (cera 5000 → 3920 una sola vez) | ✅ + unit |
+| 8.3.16 Arrastrar a A fabricar se rechaza con "Un pedido en producción no vuelve a la cola."; a Terminación se acepta | ✅ |
+| 8.3.16 Tablero a 1440 y 1280 con menú fijo, 1024 con mouse, 768 y 390 táctil: cada etapa de 250 px o más, títulos en una línea, sin desborde de página; los atajos llevan al carril | ✅ emulado |
+| 8.3.10 Ayuda "i" del calendario y de producción, armada con las reglas del engine | ✅ + unit |
+| Datos guardados antes de 8.3 sin entradas del calendario (o rotas): quedan las de muestra y el resto no cambia | unit |
+
+- **Arrastrar con el dedo:** no está. En tablet y celular se reprograma desde la ficha de entrega y las etapas con "Mover etapa".
+
+Lote 6: misiones, Marketing por tarjetas, ruleta y premios (`admin-polish-marketing.spec.ts`,
+`tests/unit/admin-marketing-83.test.ts`; al día `admin-flows`, `gamification` y `shop-polish-wheel`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.23 "Nueva misión" con teclado abre el modal; la página no tiene campos; guardar vacío marca título y premio junto a cada campo | ✅ + unit |
+| 8.3.23 Escape no guarda y devuelve el foco; reabrir recupera el borrador con aviso; guardar crea exactamente una misión y el próximo alta arranca vacío | ✅ |
+| 8.3.23 La misión creada se ve en el Club de la tienda demo | ✅ (`admin-flows`) |
+| 8.3.24 Marketing con 6 tarjetas; "Cupones y ruleta" muestra solo sus tres tarjetas; cada subpágina con migas y "Volver a…"; Atrás y links directos andan | ✅ |
+| 8.3.24 Bandeja de salida como subpágina; el enlace viejo `?vista=enviados` lleva ahí; volver a Emails no muestra la bandeja debajo | ✅ |
+| 8.3.24 Editor de email a 1024: título en una línea y acciones debajo; "Ir a: Bloques" lleva y enfoca; los cambios sin guardar vuelven al reabrir y se descartan con confirmación; la vista previa sigue reemplazando las fichas | ✅ |
+| 8.3.25 Ruleta: vista previa arriba; gajo 1 elige "5% OFF" por ID con 26%; premio "$4.500 OFF" desde la plantilla (0 da error), elegido en el gajo 2 y guardado; el catálogo lo muestra en 1 gajo | ✅ + unit |
+| 8.3.25 Todos los pesos en 0 con la ruleta visible: probabilidad "—" y no se guarda; salir y volver recupera el borrador y se descarta | ✅ + unit |
+| 8.3.24/8.3.25 A 1024 con mouse, 768 y 390 táctil: entradas sin desborde, ruleta arriba, acciones del email debajo del título, modal de misión dentro de la pantalla | ✅ emulado |
+| Ruleta guardada antes de 8.3.25: el catálogo se arma desde los gajos sin cambiar IDs; el cupón del premio sale igual | unit |
+| Ruleta en la tienda, cupones ganados y checkout de 8.2 sin cambios | ✅ (`shop-polish-wheel`, `gamification`, `purchase-flow`) |
+
+Lote 7: Temáticas, oferta del Estudio y Contenido (`admin-polish-content.spec.ts`, `tests/unit/admin-content-83.test.ts`;
+al día `themes`, `admin-studio` y `shop-polish`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.26 Temáticas en automático no muestra "Temática fija"; en fijo aparece y "Hoy ve el cliente" muestra la fija con su aclaración; "Próxima por fecha" dice que en fijo no cambia sola; "Sin temática" vuelve a ocultarla; el botón "Probar temáticas" sigue | ✅ |
+| 8.3.26 A 1180 y 820 táctil y 375: sin desborde; el selector de modo mide 260 px o más; las dos tarjetas no se pisan (lado a lado o apiladas) | ✅ emulado |
+| 8.3.27 Cupón del Estudio en post, historia y carrusel con 30% OFF, $3.000 OFF, envío gratis, condición en dos líneas, códigos de 15 y 16 letras y titular largo: nada cortado ni fuera de la pieza; no pisa la columna de texto ni el precio; sobre la tarjeta solo apoya su borde | ✅ capturas + unit |
+| 8.3.27 Exportar PNG, las diapositivas del carrusel y el video siguen andando | ✅ (`admin-studio`) |
+| 8.3.28 Contenido con tres tarjetas; cada subpágina tiene solo su guardar y "Volver a Contenido"; Atrás anda | ✅ |
+| 8.3.28 Carrusel: elegir la 2 la muestra arriba (fondo y número de la tienda); editar el título se ve en la vista previa; salir y volver recupera el borrador | ✅ |
+| 8.3.28 Imagen: un .txt y una de 200 × 150 px se rechazan con su mensaje; una válida se ve en la vista previa; el encuadre mueve el punto visible; sin texto alternativo no se guarda | ✅ + unit |
+| 8.3.28 Guardar actualiza el carrusel de la tienda (imagen con su alt y título) y no cambia preguntas ni textos de inicio | ✅ |
+| 8.3.28 Agregar, subir y quitar no mezclan datos entre diapositivas; título de más de 60 caracteres marca la diapositiva y no se guarda | ✅ + unit |
+| 8.3.28 Almacenamiento lleno (simulado): aviso claro, lo guardado no cambia y el borrador sigue al recargar | ✅ |
+| 8.3.28 Vista previa a 1180, 820 y 375: entra entera, sin desborde, con título, bajada y botón dentro | ✅ emulado |
+| Diapositivas guardadas antes de 8.3.28: sin cambios; una imagen rota se descarta y queda la ilustración | unit |
+| Carrusel de la tienda: las flechas no pisan texto ni imagen (8.2.1) | ✅ (`shop-polish`) |
+
+Lote 8: Ajustes por tarjetas y QA integral (`admin-polish-settings.spec.ts`, `tests/unit/admin-settings-83.test.ts`; al
+día `admin-polish-details` y `cross-device`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.29 Ajustes con cuatro tarjetas; sin "Marca", "paleta" ni selectores de color en la entrada ni en las subpáginas; cada subpágina con un solo guardar y "Volver a Ajustes" | ✅ |
+| 8.3.29 WhatsApp "123" da error; el borrador sigue al salir, editar Medios de pago (60 % da error, 15 % se guarda) y volver; guardar el contacto no cambia el descuento y la entrada muestra los dos valores | ✅ + unit |
+| 8.3.29 Envíos: "76OO" se avisa; guardar cambia umbral y códigos del cadete sin tocar el envío nacional; descartar pide confirmación y vuelve a lo guardado | ✅ + unit |
+| 8.3.29/8.3.30 Datos de cobro guardados en Ajustes aparecen en el modal de Pagos (misma fuente); el modal sigue guardando y cancelando como antes | ✅ (`admin-polish-details`) |
+| 8.3.29 La tienda mantiene la paleta Velmar (`--brand-primary` `#3a4527`) y las temáticas siguen funcionando | ✅ (`themes`) |
+| 8.3.29 A 1180, 820 y 375: entrada y subpáginas sin desborde | ✅ emulado |
+| QA integral: 35 rutas del panel (incluidas las 13 subpáginas de 8.3) sin errores ni desborde en los equipos emulados de `cross-device` | ✅ emulado |
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
@@ -316,10 +468,10 @@ En cada pantalla de cada recorrido se controla que no haya scroll horizontal, er
 | Transiciones de pedido válidas/ inválidas (spec 5.2) y acciones del store | ✅ unit |
 | Importar Excel: columnas con otros nombres se reconocen, vista previa marca errores (centavos), importa, la categoría nueva abre en la tienda y se deshace con aviso | ✅ |
 | Importar CSV con `;` y montos con `$` actualiza precio y stock | ✅ |
-| Pedidos: pestañas por etapa, cambio de estado en lote (solo transiciones válidas), vista rápida y exportar `.xlsx` | ✅ |
+| Pedidos: filtro de etapa, cambio de estado en lote (solo transiciones válidas), ficha completa desde la fila, Atrás con el filtro puesto y exportar `.xlsx` | ✅ |
 | Stock: sumar en la tabla se refleja en la ficha de la tienda | ✅ |
 | ⌘K / Ctrl+K abre un pedido por código | ✅ |
-| Planilla (escritorio): validar al escribir, pegar celdas de Excel, Ctrl+Z / Ctrl+Y, guardar y ver en la tienda | ✅ |
+| Vista Excel de Productos y stock (escritorio, entrando por la ruta vieja de la Planilla): validar al escribir, pegar celdas de Excel, Ctrl+Z / Ctrl+Y, guardar y ver en la tienda | ✅ |
 | Lectura de celdas (montos, stock, sí/no, CSV), mapeo de columnas, plan de importación, orden, búsqueda, stock en lote, clientes y TSV | ✅ unit |
 | 21 rutas del panel (con calendario, producción, costos, insumos y ficha de cliente) abren directo y al refrescar | ✅ |
 | Calendario (escritorio): arrastrar un pedido a un feriado no se aplica; a un día hábil sí; a un día completo avisa "sobrecargado"; el .ics se descarga | ✅ |

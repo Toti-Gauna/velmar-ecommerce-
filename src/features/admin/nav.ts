@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { BadgePercent, Boxes, Calculator, CalendarDays, Clapperboard, ClipboardList, Factory, FileSpreadsheet, LayoutDashboard, Mail, LifeBuoy, PackageCheck, Palette, PartyPopper, Settings, Shapes, Sheet, Spool, Target, Users, Wallet } from "lucide-react";
+import { BadgePercent, Boxes, Calculator, CalendarDays, Clapperboard, ClipboardList, Factory, LayoutDashboard, Mail, LifeBuoy, Megaphone, Palette, PartyPopper, Settings, Shapes, Spool, Target, Users, Wallet } from "lucide-react";
 
 export const ADMIN_GROUPS = ["Ventas", "Taller", "Catálogo", "Marketing", "Ajustes"] as const;
 
@@ -30,11 +30,12 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin-demo/produccion/", label: "Cola de producción", short: "Producción", icon: Factory, group: "Taller" },
   { href: "/admin-demo/costos/", label: "Costos y margen", short: "Costos", icon: Calculator, group: "Taller" },
   { href: "/admin-demo/insumos/", label: "Insumos", short: "Insumos", icon: Spool, group: "Taller", badge: "materials" },
-  { href: "/admin-demo/productos/", label: "Productos", short: "Productos", icon: Boxes, group: "Catálogo", tab: true },
-  { href: "/admin-demo/stock/", label: "Stock", short: "Stock", icon: PackageCheck, group: "Catálogo", badge: "stock" },
-  { href: "/admin-demo/planilla/", label: "Planilla", short: "Planilla", icon: Sheet, group: "Catálogo" },
-  { href: "/admin-demo/importar/", label: "Importar desde Excel", short: "Importar", icon: FileSpreadsheet, group: "Catálogo" },
+  // 8.3.19: un solo módulo. Stock es su vista por variante, la Planilla es "Ver en formato Excel" e importar es una
+  // acción de la pantalla; las rutas anteriores siguen llevando acá.
+  { href: "/admin-demo/productos/", label: "Productos y stock", short: "Productos", icon: Boxes, group: "Catálogo", badge: "stock", tab: true },
   { href: "/admin-demo/categorias/", label: "Categorías y personalización", short: "Categorías", icon: Shapes, group: "Catálogo" },
+  // 8.3.24: entrada con una tarjeta por herramienta de Marketing; cada una sigue con su acceso propio.
+  { href: "/admin-demo/marketing/", label: "Resumen", short: "Marketing", icon: Megaphone, group: "Marketing" },
   { href: "/admin-demo/misiones/", label: "Misiones", short: "Misiones", icon: Target, group: "Marketing" },
   { href: "/admin-demo/emails/", label: "Emails automáticos", short: "Emails", icon: Mail, group: "Marketing" },
   { href: "/admin-demo/cupones/", label: "Cupones y ruleta", short: "Cupones", icon: BadgePercent, group: "Marketing" },
@@ -45,8 +46,12 @@ export const ADMIN_NAV: AdminNavItem[] = [
 ];
 
 
+/** Rutas sin entrada propia en el menú: se marcan como parte de otra sección. */
+const BELONGS_TO: [string, string][] = [["/admin-demo/importar", "/admin-demo/productos/"], ["/admin-demo/stock", "/admin-demo/productos/"], ["/admin-demo/planilla", "/admin-demo/productos/"]];
+
 export function isActive(pathname: string, href: string): boolean {
-  return href === "/admin-demo/" ? pathname === "/admin-demo/" || pathname === "/admin-demo" : pathname.startsWith(href);
+  const path = BELONGS_TO.find(([from]) => pathname.startsWith(from))?.[1] ?? pathname;
+  return href === "/admin-demo/" ? path === "/admin-demo/" || path === "/admin-demo" : path.startsWith(href);
 }
 
 export function currentSection(pathname: string): AdminNavItem {

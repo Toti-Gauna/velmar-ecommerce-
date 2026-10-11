@@ -23,6 +23,20 @@ describe("métricas del panel demo", () => {
     expect(s.week).toBeGreaterThan(0);
     expect(s.month).toBeGreaterThanOrEqual(s.week);
   });
+  it("8.3.1: barras, tabla y KPI salen del mismo cálculo y concilian", () => {
+    const s = salesSummary(orders, DEMO_TODAY);
+    // La suma de los 7 días es exactamente el KPI "Ventas últimos 7 días".
+    expect(s.days.reduce((t, d) => t + d.amount, 0)).toBe(s.week);
+    for (const d of s.days) {
+      // Cada día lista sus pedidos: cantidad y total coinciden con la barra.
+      expect(d.codes).toHaveLength(d.orders);
+      const total = d.codes.reduce((t, code) => t + orders.find((o) => o.code === code)!.total, 0);
+      expect(total).toBe(d.amount);
+    }
+    // Hay días sin ventas (para el estado vacío) y días con varios pedidos.
+    expect(s.days.some((d) => d.orders === 0)).toBe(true);
+    expect(s.days.some((d) => d.orders > 0)).toBe(true);
+  });
   it("ticket promedio, variación semanal y top productos", () => {
     const s = salesSummary(orders, DEMO_TODAY);
     expect(s.avgTicket).toBeGreaterThan(0);

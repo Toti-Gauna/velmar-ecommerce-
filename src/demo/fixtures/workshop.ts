@@ -72,6 +72,28 @@ export const AR_HOLIDAYS: Closure[] = [
   { date: "2027-12-25", name: "Navidad", kind: "feriado" },
 ];
 
+/**
+ * Entradas propias del calendario (Polish 8.3.15): tareas del taller y notas de un pedido, con su fecha. Los cierres
+ * no son entradas: viven en `closures`. De MUESTRA.
+ */
+export type CalendarEventKind = "tarea" | "pedido";
+
+export interface CalendarEvent {
+  id: string;
+  /** AAAA-MM-DD */
+  date: string;
+  title: string;
+  kind: CalendarEventKind;
+  notes?: string;
+  /** Pedido al que se refiere (solo "pedido"). */
+  orderCode?: string;
+}
+
+export const calendarEvents: CalendarEvent[] = [
+  { id: "ev-filamento", date: "2026-10-06", title: "Retirar filamento PLA en el proveedor", kind: "tarea", notes: "3 rollos negros y 2 blancos (de muestra)." },
+  { id: "ev-retiro-113", date: "2026-10-08", title: "Ana retira los souvenirs", kind: "pedido", orderCode: "VEL-000113", notes: "Avisarle por WhatsApp cuando estén listos." },
+];
+
 export const workshopSettings: WorkshopSettings = {
   dailyCapacity: 3,
   closedWeekdays: [0, 6],

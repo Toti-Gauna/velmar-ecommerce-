@@ -1,107 +1,124 @@
 "use client";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FileSpreadsheet, Plus, Sheet, TriangleAlert } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { Button, ButtonLink } from "@/components/atoms/Button";
-import { Switch } from "@/components/atoms/Switch";
+import { FileSpreadsheet, Plus, TriangleAlert } from "lucide-react";
+import { useEffect } from "react";
+import { ButtonLink } from "@/components/atoms/Button";
 import { EmptyState } from "@/components/molecules/EmptyState";
-import { DataTable } from "@/components/organisms/data-table/DataTable";
-import type { RowCardProps } from "@/components/organisms/data-table/types";
-import { DEFAULT_LOW_STOCK, lowStockRows, productStockState, productStockTotal, type StockState } from "@/demo/admin/stock";
+import { DataTable, toSheet } from "@/components/organisms/data-table/DataTable";
+import { applyDraft } from "@/demo/admin/sheet";
+import { productSheetSpec } from "@/demo/admin/sheet-specs";
+import { DEFAULT_LOW_STOCK, inventoryValue, lowStockRows, productStockState, stockRows, type StockOp, type StockRow } from "@/demo/admin/stock";
 import type { Product } from "@/demo/types";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
 import { AdminPageHeader } from "../AdminPageHeader";
-import { useDemoSave } from "../useDemoSave";
-import { StockChip } from "../table/StockChip";
 import { BulkButton, TabFilter } from "../table/TabFilter";
+import { TableExcel } from "../table/TableExcel";
 import { useExport } from "../table/useExport";
 import { useTableState } from "../table/useTableState";
-import { minPrice, ProductThumb, productColumns } from "./productColumns";
+import { useDemoSave } from "../useDemoSave";
+import { ProductCard, VariantCard } from "./catalogCards";
+import { productFilters, productSearch, variantColumns, variantFilters, variantSearch } from "./catalogTable";
+import { LowStockField } from "./LowStockField";
+import { productColumns } from "./productColumns";
 
-type StockTab = "all" | StockState | "paused";
-const select = "h-11 rounded-2xl border border-ink/12 bg-surface px-3 text-sm font-bold";
+type Mode = "productos" | "variantes";
+const FILTER_IDS = ["categoria", "stock", "visibilidad"];
+const editor = (slug: string) => `/admin-demo/productos/editar/?id=${slug}`;
+const NEW_PRODUCT = "/admin-demo/productos/editar/?nuevo=1";
+const totals = (rows: StockRow[]) => (
+  <>
+    <span className="text-muted">Unidades: <strong className="tabular-nums text-ink">{rows.reduce((s, r) => s + Math.max(0, r.stock), 0).toLocaleString("es-AR")}</strong></span>
+    <span className="text-muted">Valor del inventario: <strong className="tabular-nums text-ink">{formatARS(inventoryValue(rows))}</strong></span>
+  </>
+);
 
-/** Catálogo como tabla: filtros por categoría y stock, pausar o mover en lote, alertas de reposición y Excel. */
+/**
+ * Productos y stock (8.3.19): un solo módulo con vista por producto o por variante, los mismos filtros, alertas de
+ * reposición con umbral, edición de stock en la tabla, acciones en lote, importar y "Ver en formato Excel".
+ */
 export function ProductsTable() {
   const router = useRouter();
   const params = useSearchParams();
-  const { data, createProduct, toggleProductActive, setProductsActive, setProductsCategory } = useAdmin();
+  const { data, toggleProductActive, setProductsActive, setProductsCategory, setVariantStock, bulkStock, updateProducts } = useAdmin();
   const save = useDemoSave();
-  const onExport = useExport("productos");
+  const exportProducts = useExport("productos");
+  const exportStock = useExport("stock");
   const low = data.settings.lowStockThreshold ?? DEFAULT_LOW_STOCK;
-  const [category, setCategory] = useState("all");
-  const [tab, setTab] = useState<StockTab>("all");
-  const [moveTo, setMoveTo] = useState("");
-  const state = useTableState("products", { sort: { id: "name", dir: "asc" }, hidden: ["stockState"] });
-  const toggle = (p: Product) => save(p.active === false ? "Producto activado" : "Producto pausado", () => toggleProductActive(p.slug));
-  const create = () => { let slug = ""; save("Producto de ejemplo creado (pausado)", () => { slug = createProduct(); }); router.push(`/admin-demo/productos/editar/?id=${slug}`); };
-  // "Nuevo producto" desde el buscador ⌘K: se crea una sola vez y se abre el editor.
-  const created = useRef(false);
-  useEffect(() => {
-    if (params.get("nuevo") !== "1" || created.current) return;
-    created.current = true;
-    const slug = useAdmin.getState().createProduct();
-    router.replace(`/admin-demo/productos/editar/?id=${slug}`);
-  }, [params, router]);
-
-  const byCategory = data.products.filter((p) => category === "all" || p.categorySlug === category);
-  const matches = (p: Product, t: StockTab) => t === "all" || (t === "paused" ? p.active === false : productStockState(p, low) === t);
-  const rows = byCategory.filter((p) => matches(p, tab));
-  const reorder = lowStockRows(data.products, data.categories, low).length;
+  const mode: Mode = params.get("ver") === "variantes" ? "variantes" : "productos";
+  const products = useTableState("products", { sort: { id: "name", dir: "asc" }, hidden: ["stockState"], filterIds: FILTER_IDS });
+  const variants = useTableState("stock", { sort: { id: "product", dir: "asc" }, filterIds: FILTER_IDS });
   const cats = [...data.categories].sort((a, b) => a.sortOrder - b.sortOrder);
-  const Card = ({ row: p, selected, onToggle }: RowCardProps<Product>) => (
-    <div className={`flex flex-col gap-3 rounded-3xl bg-bg p-3 ring-1 ${selected ? "ring-primary" : "ring-ink/[0.06]"}`}>
-      <div className="flex items-start gap-3">
-        <input type="checkbox" checked={selected} onChange={onToggle} aria-label={`Seleccionar ${p.name}`} className="mt-1 h-5 w-5 shrink-0 accent-primary" />
-        <ProductThumb product={p} size="w-16" />
-        <span className="min-w-0 flex-1">
-          <span className="block font-bold leading-tight">{p.name}</span>
-          <span className="text-sm text-muted">{cats.find((c) => c.slug === p.categorySlug)?.name} · desde {formatARS(minPrice(p))}</span>
-          <span className="mt-1 block"><StockChip state={productStockState(p, low)} units={productStockTotal(p)} /></span>
-        </span>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Switch checked={p.active !== false} onChange={() => toggle(p)} label={p.active === false ? "Pausado" : "Visible en la tienda"} />
-        <Link href={`/admin-demo/productos/editar/?id=${p.slug}`} className="text-sm font-bold text-primary underline">Editar</Link>
-      </div>
-    </div>
-  );
+  const all = stockRows(data.products, data.categories, low);
+  const reorder = lowStockRows(data.products, data.categories, low).length;
+  const setMode = (m: Mode) => {
+    const url = new URLSearchParams(window.location.search);
+    if (m === "variantes") url.set("ver", m); else url.delete("ver");
+    url.delete("pagina");
+    window.history.replaceState(null, "", url.size ? `?${url}` : window.location.pathname);
+  };
+  const toggle = (p: Product) => save(p.active === false ? "Producto activado" : "Producto pausado", () => toggleProductActive(p.slug));
+  const setStock = (r: StockRow, stock: number) => save(`Stock de ${r.productName} · ${r.variantLabel}: ${stock < 0 ? "a pedido" : stock}`, () => setVariantStock(r.productSlug, r.variantId, stock));
+  const bulk = (list: StockRow[], op: StockOp, label: string, clear: () => void) => { save(label, () => bulkStock(list.map((r) => r.key), op, label)); clear(); };
+  // Enlaces viejos a "?nuevo=1" de la lista: el alta vive en el editor y no crea nada hasta guardar (8.3.21).
+  useEffect(() => { if (params.get("nuevo") === "1") router.replace(NEW_PRODUCT); }, [params, router]);
+
+  const vFilters = variantFilters(cats);
+  if (variants.view === "excel" || products.view === "excel") {
+    return (
+      <TableExcel id="catalog" title="Productos y stock" noun="variantes" state={variants} rows={all} filters={vFilters} searchText={variantSearch} searchLabel="Buscar producto o variante"
+        spec={productSheetSpec(cats)} summary={totals} onExport={(rows) => exportStock(toSheet(variantColumns(setStock), rows), "filtered")}
+        onSave={(dirty) => { const n = Object.keys(dirty).length; updateProducts(applyDraft(data.products, all, dirty), `Vista Excel: ${n} ${n === 1 ? "celda guardada" : "celdas guardadas"}`, "Catálogo"); return "Ya se ven en la tienda de este navegador."; }} />
+    );
+  }
+  const modeSwitch = <TabFilter label="Mostrar" value={mode} onChange={setMode} tabs={[{ id: "productos", label: "Productos", count: data.products.length }, { id: "variantes", label: "Variantes", count: all.length }]} />;
+  const empty = <EmptyState title="Sin resultados">Probá con otro nombre, categoría o filtro de stock, o tocá “Reiniciar”.</EmptyState>;
   return (
     <>
       <AdminPageHeader title="Productos y stock" actions={(
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <LowStockField value={low} />
           <ButtonLink href="/admin-demo/importar/" variant="secondary"><FileSpreadsheet size={17} aria-hidden="true" /> Importar Excel</ButtonLink>
-          <ButtonLink href="/admin-demo/planilla/" variant="secondary"><Sheet size={17} aria-hidden="true" /> Planilla</ButtonLink>
-          <Button onClick={create}><Plus size={18} aria-hidden="true" /> Nuevo producto</Button>
+          <ButtonLink href={NEW_PRODUCT}><Plus size={18} aria-hidden="true" /> Nuevo producto</ButtonLink>
         </div>
-      )}>Stock “a pedido” = sin límite. La tienda no maneja cupos de fabricación: eso lo decide Velmar.</AdminPageHeader>
+      )}>Catálogo y stock en un solo lugar. “A pedido” = sin límite: la tienda no maneja cupos de fabricación, eso lo decide Velmar.</AdminPageHeader>
       {reorder > 0 && (
-        <Link href="/admin-demo/stock/?vista=reponer" className="mb-4 flex items-center gap-3 rounded-2xl bg-warning-soft px-4 py-3 text-sm font-bold text-warning ring-1 ring-warning/30">
+        <button type="button" onClick={() => { setMode("variantes"); variants.setFilter("stock", "reponer"); }}
+          className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-warning-soft px-4 py-3 text-left text-sm font-bold text-warning ring-1 ring-warning/30">
           <TriangleAlert size={18} aria-hidden="true" /><span className="flex-1">{reorder} {reorder === 1 ? "variante necesita" : "variantes necesitan"} reposición (sin stock o con {low} o menos).</span><span className="underline">Ver stock</span>
-        </Link>
+        </button>
       )}
-      <div className="mb-4">
-        <TabFilter label="Filtrar por stock" value={tab} onChange={(t) => { setTab(t); state.setPage(1); }} tabs={([["all", "Todos"], ["low", "Stock bajo"], ["out", "Sin stock"], ["made-to-order", "A pedido"], ["paused", "Pausados"]] as [StockTab, string][]).map(([id, label]) => ({ id, label, count: byCategory.filter((p) => matches(p, id)).length }))} />
-      </div>
-      <DataTable caption="Productos" noun="productos" rows={rows} columns={productColumns(data.categories, low, toggle)} state={state} pageSize={10}
-        rowKey={(p) => p.slug} rowLabel={(p) => `Seleccionar ${p.name}`} searchText={(p) => `${p.name} ${p.slug} ${p.tags.join(" ")}`}
-        searchLabel="Buscar producto" searchPlaceholder="Comedero, velador…"
-        filters={<div className="flex flex-col gap-1 text-sm font-bold"><label htmlFor="products-category">Categoría</label><select id="products-category" value={category} onChange={(e) => { setCategory(e.target.value); state.setPage(1); }} className={select}><option value="all">Todas</option>{cats.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}</select></div>}
-        bulkActions={(list, clear) => (
-          <>
-            <BulkButton onClick={() => { save(`${list.length} productos visibles`, () => setProductsActive(list.map((p) => p.slug), true)); clear(); }}>Mostrar en la tienda</BulkButton>
-            <BulkButton onClick={() => { save(`${list.length} productos pausados`, () => setProductsActive(list.map((p) => p.slug), false)); clear(); }}>Pausar</BulkButton>
-            <select aria-label="Mover a la categoría" value={moveTo} onChange={(e) => { const to = e.target.value; if (!to) return; save(`${list.length} productos movidos`, () => setProductsCategory(list.map((p) => p.slug), to)); setMoveTo(""); clear(); }}
+      {mode === "productos" ? (
+        <DataTable caption="Productos" noun="productos" rows={data.products} columns={productColumns(data.categories, low, toggle)} state={products}
+          filters={productFilters(cats, low)} rowKey={(p) => p.slug} rowLabel={(p) => `Seleccionar ${p.name}`} searchText={productSearch}
+          searchLabel="Buscar producto" searchPlaceholder="Comedero, velador…" toolbarEnd={modeSwitch} rowHref={(p) => editor(p.slug)} onExport={exportProducts} onExcel={() => variants.setView("excel")}
+          renderCard={(c) => <ProductCard {...c} categories={data.categories} low={low} onVisible={toggle} />}
+          rowTone={(p) => (productStockState(p, low) === "out" && p.active !== false ? "danger" : productStockState(p, low) === "low" ? "warning" : undefined)}
+          footer={(list) => <p className="flex flex-wrap justify-end gap-x-6 gap-y-1 border-t border-line px-5 py-3 text-sm">{totals(stockRows(list, data.categories, low))}</p>}
+          bulkActions={(list, clear) => (
+            <>
+              <BulkButton onClick={() => { save(`${list.length} productos visibles`, () => setProductsActive(list.map((p) => p.slug), true)); clear(); }}>Mostrar en la tienda</BulkButton>
+              <BulkButton onClick={() => { save(`${list.length} productos pausados`, () => setProductsActive(list.map((p) => p.slug), false)); clear(); }}>Pausar</BulkButton>
+              <select aria-label="Mover a la categoría" value="" onChange={(e) => { const to = e.target.value; if (!to) return; save(`${list.length} productos movidos`, () => setProductsCategory(list.map((p) => p.slug), to)); clear(); }}
                 className="h-9 rounded-full bg-white/10 px-3 text-[13px] font-bold text-[#f6f1e8]">
                 <option value="">Mover a…</option>{cats.map((c) => <option key={c.slug} value={c.slug} className="text-ink">{c.name}</option>)}
-            </select>
-          </>
-        )}
-        onRowOpen={(p) => router.push(`/admin-demo/productos/editar/?id=${p.slug}`)} onExport={onExport} renderCard={Card}
-        rowTone={(p) => (productStockState(p, low) === "out" && p.active !== false ? "danger" : productStockState(p, low) === "low" ? "warning" : undefined)}
-        empty={<EmptyState title="Sin resultados">Probá con otro nombre, categoría o filtro de stock.</EmptyState>} />
+              </select>
+            </>
+          )} empty={empty} />
+      ) : (
+        <DataTable caption="Stock por variante" noun="variantes" rows={all} columns={variantColumns(setStock)} state={variants} filters={vFilters}
+          rowKey={(r) => r.key} rowLabel={(r) => `Seleccionar ${r.productName} · ${r.variantLabel}`} searchText={variantSearch}
+          searchLabel="Buscar producto o variante" searchPlaceholder="Vela, lavanda, comederos…" toolbarEnd={modeSwitch} rowHref={(r) => editor(r.productSlug)} onExport={exportStock} onExcel={() => variants.setView("excel")}
+          renderCard={(c) => <VariantCard {...c} setStock={setStock} />} rowTone={(r) => (r.state === "out" && r.active ? "danger" : r.state === "low" ? "warning" : undefined)}
+          footer={(list) => <p className="flex flex-wrap justify-end gap-x-6 gap-y-1 border-t border-line px-5 py-3 text-sm">{totals(list)}</p>}
+          bulkActions={(list, clear) => (
+            <>
+              {[5, 10].map((n) => <BulkButton key={n} onClick={() => bulk(list, { kind: "add", units: n }, `Se sumaron ${n} unidades`, clear)}>Sumar {n}</BulkButton>)}
+              <BulkButton onClick={() => bulk(list, { kind: "set", stock: -1 }, "Variantes a pedido", clear)}>Pasar a pedido</BulkButton>
+              <BulkButton tone="danger" onClick={() => bulk(list, { kind: "set", stock: 0 }, "Variantes sin stock", clear)}>Dejar en 0</BulkButton>
+            </>
+          )} empty={empty} />
+      )}
     </>
   );
 }

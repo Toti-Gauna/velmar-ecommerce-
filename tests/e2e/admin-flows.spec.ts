@@ -53,10 +53,11 @@ test("pagos manuales: aprobar y rechazar con motivo sin declararlo pago real", a
 
   await page.getByRole("button", { name: /Resueltos/ }).click();
   await expect(page.getByText("Motivo: El monto no coincide")).toBeVisible();
-  await expect(page.getByText("Auditoría de muestra")).toBeVisible();
-  await expect(page.getByText("Comprobante aprobado tras verificar el ingreso (simulado)")).toBeVisible();
+  // 8.3.8: sin "Auditoría de muestra"; el registro sigue en el historial del pedido.
+  await expect(page.getByText("Auditoría de muestra")).toHaveCount(0);
   await page.goto("admin-demo/pedidos/detalle/?codigo=VEL-000123");
   await expect(page.getByText("Pagado").first()).toBeVisible();
+  await expect(page.getByText(/Comprobante aprobado tras verificar el ingreso \(simulado\)/)).toBeVisible();
   await expect(page.getByText(/acreditad/i)).toHaveCount(0);
 });
 
@@ -83,7 +84,7 @@ test("un comprobante subido en la tienda queda en revisión en el panel, nunca p
 });
 
 test("cupón y misión creados en el panel funcionan en la tienda", async ({ page }) => {
-  await page.goto("admin-demo/cupones/");
+  await page.goto("admin-demo/cupones/lista/");
   await page.getByRole("button", { name: "Nuevo cupón" }).click();
   await page.getByLabel("Código").fill("FE");
   await page.getByRole("button", { name: "Crear cupón" }).click();
@@ -146,9 +147,10 @@ test("celular: menú hamburguesa del panel y paginado de pedidos", async ({ page
   await expect(page.getByRole("heading", { level: 1, name: "Pedidos" })).toBeVisible();
   await expect(menu).toBeHidden();
   const pages = page.getByRole("navigation", { name: "Páginas de pedidos" });
-  await expect(pages).toContainText("1–8 de");
+  await expect(pages).toContainText("1–10 de");
   await pages.getByRole("button", { name: "Página 2" }).click();
-  await expect(pages).toContainText("9–");
+  await expect(pages).toContainText("11–");
+  await expect(pages).toContainText("página 2 de 2");
   await page.getByLabel("Código o cliente").fill("VEL-000123");
   await expect(pages).toBeHidden();
   // Pestañas inferiores: acceso directo y "Más" abre el menú completo
@@ -158,30 +160,19 @@ test("celular: menú hamburguesa del panel y paginado de pedidos", async ({ page
   await expect(page.getByRole("dialog", { name: "Menú del panel" }).getByRole("link", { name: "Ajustes" })).toBeVisible();
 });
 
-test("guía de primera sesión: aparece una vez, avanza, retrocede y se puede volver a ver", async ({ page }) => {
-  await page.addInitScript(() => { if (!sessionStorage.getItem("tour-test")) { localStorage.removeItem("velmar-tour:admin"); sessionStorage.setItem("tour-test", "1"); } });
+test("8.3.11 sin guía de bienvenida: el panel abre directo, también la primera vez y después de reiniciar", async ({ page }) => {
+  // Aunque el navegador nunca haya visto el panel (sin preferencias guardadas), no aparece ningún recorrido.
+  await page.addInitScript(() => localStorage.removeItem("velmar-tour:admin"));
   await page.goto("admin-demo/");
-  const guide = page.getByRole("dialog", { name: "Bienvenido al panel de Velmar" });
-  await expect(guide).toBeVisible();
-  await guide.getByRole("button", { name: "Siguiente" }).click();
-  const nav = page.getByRole("dialog", { name: "Todas las secciones" });
-  await expect(nav).toBeVisible();
-  await nav.getByRole("button", { name: "Anterior" }).click();
-  await expect(guide).toBeVisible();
-  for (const title of ["Todas las secciones", "Cómo viene la semana", "Pedidos por estado", "Comprobantes por revisar", "Volver a empezar", "¡Listo!"]) {
-    await page.getByRole("dialog").last().getByRole("button", { name: "Siguiente" }).click();
-    await expect(page.getByRole("dialog", { name: title })).toBeVisible();
-  }
-  await page.getByRole("dialog", { name: "¡Listo!" }).getByRole("button", { name: "Empezar" }).click();
-  await expect(page.getByRole("dialog")).toHaveCount(0);
-  // No vuelve a aparecer sola
-  await page.reload();
   await expect(page.getByRole("heading", { level: 1, name: /Buen día/ })).toBeVisible();
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(1500);
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  // Se puede reabrir desde la barra superior
-  await page.getByRole("button", { name: "Ver guía del panel" }).click();
-  await expect(page.getByRole("dialog", { name: "Bienvenido al panel de Velmar" })).toBeVisible();
-  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: "Ver guía del panel" })).toHaveCount(0);
+  // La señal de demo sigue siempre a la vista.
+  await expect(page.getByText("Panel de demostración · datos ficticios")).toBeVisible();
+  page.once("dialog", (d) => d.accept());
+  await page.getByRole("button", { name: "Reiniciar demo" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: /Buen día/ })).toBeVisible();
+  await page.waitForTimeout(1500);
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });

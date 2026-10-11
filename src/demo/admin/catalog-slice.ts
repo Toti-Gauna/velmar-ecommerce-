@@ -26,7 +26,7 @@ export interface CatalogActions {
   setProductsActive: (slugs: string[], active: boolean) => void;
   setProductsCategory: (slugs: string[], categorySlug: string) => void;
   saveCategory: (category: Category) => void;
-  createCategory: (name: string) => string;
+  createCategory: (name: string, extra?: { description?: string; featured?: boolean }) => string;
 }
 
 function withoutPhoto(p: Product): Product {
@@ -70,13 +70,13 @@ export function createCatalogActions(set: Set): CatalogActions {
       products("Categoría cambiada en lote", `${slugs.length} productos`, (list) => list.map((p) => (slugs.includes(p.slug) ? { ...p, categorySlug } : p))),
     saveCategory: (category) =>
       set((s) => ({ data: { ...s.data, categories: s.data.categories.map((c) => (c.slug === category.slug ? category : c)) }, audit: log(s, "Categoría guardada", category.name) })),
-    createCategory: (name) => {
+    createCategory: (name, extra = {}) => {
       let slug = "";
       set((s) => {
         const base = slugify(name);
         slug = base;
         for (let n = 2; s.data.categories.some((c) => c.slug === slug); n++) slug = `${base}-${n}`;
-        const category: Category = { slug, name: name.trim(), description: "", art: "dachshund", featured: false, sortOrder: Math.max(0, ...s.data.categories.map((c) => c.sortOrder)) + 1 };
+        const category: Category = { slug, name: name.trim(), description: extra.description?.trim() ?? "", art: "dachshund", featured: !!extra.featured, sortOrder: Math.max(0, ...s.data.categories.map((c) => c.sortOrder)) + 1 };
         return { data: { ...s.data, categories: [...s.data.categories, category] }, audit: log(s, "Categoría creada", category.name) };
       });
       return slug;

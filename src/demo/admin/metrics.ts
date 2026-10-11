@@ -6,6 +6,8 @@ export interface DaySales {
   day: string;
   amount: number;
   orders: number;
+  /** Códigos de los pedidos que suman ese día (barras, tabla y detalle salen de acá: siempre coinciden). */
+  codes: string[];
 }
 
 /** Ventas de MUESTRA: pedidos pagados o posteriores, contados contra la fecha de referencia de la demo. */
@@ -14,8 +16,8 @@ export function salesSummary(orders: AdminOrder[], today: string) {
   const base = new Date(`${today}T12:00:00-03:00`).getTime();
   const days: DaySales[] = Array.from({ length: 7 }, (_, i) => {
     const day = toDayKey(new Date(base - (6 - i) * 86_400_000).toISOString());
-    const list = paid.filter((o) => toDayKey(o.createdAt) === day);
-    return { day, amount: list.reduce((s, o) => s + o.total, 0), orders: list.length };
+    const list = paid.filter((o) => toDayKey(o.createdAt) === day).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    return { day, amount: list.reduce((s, o) => s + o.total, 0), orders: list.length, codes: list.map((o) => o.code) };
   });
   const sumSince = (n: number) => {
     const from = toDayKey(new Date(base - (n - 1) * 86_400_000).toISOString());

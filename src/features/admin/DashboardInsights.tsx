@@ -46,11 +46,11 @@ export function ClubPerformance() {
   return (
     <section aria-labelledby="club" className="rounded-3xl bg-night p-5 text-[#f6f1e8]">
       <h2 id="club" className="font-display mb-4 text-2xl">Club Velmar <span className="font-sans text-sm text-[#cfc6b3]">(demo)</span></h2>
-      <ul className="flex flex-col gap-3">
+      <ul className="grid gap-3 sm:grid-cols-3">
         {rows.map(({ icon: Icon, label, value, note }) => (
           <li key={label} className="flex items-center gap-3 rounded-2xl bg-white/5 p-3">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-brass text-night"><Icon size={18} aria-hidden="true" /></span>
-            <span className="flex-1 text-sm"><span className="block font-bold">{label}</span><span className="text-xs text-[#cfc6b3]">{note}</span></span>
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brass text-night"><Icon size={18} aria-hidden="true" /></span>
+            <span className="min-w-0 flex-1 text-sm"><span className="block font-bold">{label}</span><span className="text-xs text-[#cfc6b3]">{note}</span></span>
             <span className="font-display text-3xl tabular-nums">{value}</span>
           </li>
         ))}

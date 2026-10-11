@@ -74,7 +74,7 @@ export function ImportWizard() {
           <p className="max-w-md text-sm text-muted">{lastImport?.summary}. Los productos nuevos ya están visibles; sumales fotos desde su ficha.</p>
           <div className="flex flex-wrap justify-center gap-2">
             <ButtonLink href="/admin-demo/productos/">Ver productos</ButtonLink>
-            <ButtonLink href="/admin-demo/planilla/" variant="secondary">Abrir la planilla</ButtonLink>
+            <ButtonLink href="/admin-demo/productos/?formato=excel" variant="secondary">Ver en formato Excel</ButtonLink>
             <UndoImportButton variant="ghost" onUndo={undo} />
           </div>
           <Link href="/categorias/" className="text-sm font-bold text-primary underline">Ver la tienda</Link>

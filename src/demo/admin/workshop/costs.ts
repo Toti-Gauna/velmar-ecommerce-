@@ -53,6 +53,7 @@ export function marginState(margin: number | null, target: number): MarginState 
 export interface CostRow {
   slug: string;
   name: string;
+  categorySlug: string;
   categoryName: string;
   /** Precio más bajo de venta ("desde"): el margen se mide en el caso menos favorable. */
   price: number;
@@ -72,7 +73,7 @@ export function costRows(products: Product[], categories: Category[], recipes: R
     const cost = recipe ? recipeCost(recipe, materials, settings) : null;
     const margin = cost ? marginPct(price, cost.total) : null;
     return {
-      slug: p.slug, name: p.name, categoryName: names.get(p.categorySlug) ?? p.categorySlug, price, cost, margin,
+      slug: p.slug, name: p.name, categorySlug: p.categorySlug, categoryName: names.get(p.categorySlug) ?? p.categorySlug, price, cost, margin,
       suggested: cost ? suggestedPrice(cost.total, settings.targetMarginPct) : null,
       profit: cost ? price - cost.total : null,
       state: marginState(margin, settings.targetMarginPct),

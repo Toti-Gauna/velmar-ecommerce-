@@ -7,6 +7,7 @@
 | `/categorias/` | Categorías con productos (las vacías no aparecen: "Tablas de madera") |
 | `/c/[slug]/` | Grilla con orden (relevancia, precio, nuevos), recordado en localStorage |
 | `/p/[slug]/` | **Ficha todo en uno**: galería con "Tu diseño" (vista previa en vivo) y el **stock debajo de la imagen**; una sola tarjeta para elegir opción/color, personalizar (texto, foto o referencia) y la **cantidad** (desplegable "Cantidad: 1 unidad ⌄ (N disponibles)"). Sin casilla: **agregar al carrito equivale a "Así lo quiero"** (queda explicado en la tarjeta y se guarda `approvedAt`). **¿Cuándo llega?** con el calendario del taller: plazo en días hábiles (sin feriados), y si los primeros días están completos en el panel, la primera fecha con lugar. Favoritos (corazón). En el celular, barra fija con corazón + "Agregar al carrito · total"; en escritorio también "Comprar ahora" |
+| `/vista-previa/?borrador=` | **Vista previa del panel (Polish 8.3.21).** La ficha de la tienda con el borrador del editor de producto, sin guardar ni publicar: no se puede comprar, regalar ni marcar favorito, no hay recomendaciones ni botones flotantes, y una franja fija lleva de vuelta ("Volver al editor" o "Volver a la creación"). No se indexa |
 | `/crear/` | Productos personalizables por tipo; cada uno abre su ficha. `/crear/[slug]/` se mantiene (enlaces viejos) y muestra la misma ficha todo en uno |
 | `/carrito/` | Envío gratis → productos → cupón ("Elegir de mis cupones" o código) → resumen y pago; abajo, misión y recomendaciones. En el celular, barra fija con total e "Ir a pagar". Al ir a pagar aparece la **ruleta** si todavía no se giró. Al agregar desde una ficha se abre el **drawer** |
 | `/checkout/` | Datos (invitado o cuenta demo) → entrega (retiro, cadete MdP por CP, nacional) → pago (Mercado Pago, transferencia, QR) → términos |
@@ -60,6 +61,13 @@
 
 ## Fase 6 · Estudio de contenido (pedido de Ignacio, 10/2026, fuera de la spec)
 - `/admin-demo/estudio/` (Marketing → Estudio de contenido): piezas para Instagram por fecha, exportables a imagen y video.
+- `/admin-demo/marketing/` (Marketing → Resumen, Polish 8.3.24): tarjetas a cada herramienta. Subpáginas con migas y
+  "Volver": `/admin-demo/cupones/lista/`, `/admin-demo/cupones/ruleta/`, `/admin-demo/cupones/premios/`,
+  `/admin-demo/misiones/simular/` y `/admin-demo/emails/enviados/` (antes `?vista=enviados`, que sigue llevando ahí).
+- `/admin-demo/ajustes/` (Polish 8.3.29): tarjetas a `/admin-demo/ajustes/contacto/`, `/admin-demo/ajustes/pagos/`,
+  `/admin-demo/ajustes/cobro/` y `/admin-demo/ajustes/envios/`, cada una con "Volver a Ajustes".
+- `/admin-demo/contenido/` (Polish 8.3.28): tarjetas a `/admin-demo/contenido/carrusel/` (vista previa e imagen propia),
+  `/admin-demo/contenido/textos/` y `/admin-demo/contenido/preguntas/`, cada una con "Volver a Contenido".
   Ver `docs/panel-demo.md`. Engine en `src/demo/admin/studio/`, dibujo en canvas en `src/features/admin/studio/render/`.
 
 ## Fase 5 · Temáticas y motion (pedido de Ignacio, 10/2026, fuera de la spec)
@@ -73,7 +81,7 @@
 ## Agregados a pedido de Ignacio (04-05/10/2026, fuera de la spec original)
 Ruleta de cupones, página y selector de "Mis cupones", buscador superpuesto con búsquedas recientes, "Comprar ahora",
 historias de producto en el inicio (ilustrativas, `src/demo/fixtures/stories.ts`), paginado del panel, favoritos,
-barra inferior, autoplay del carrusel, pantalla de carga de 5 s, guía del panel y confeti de compra. **Cambio a revisar en la
+barra inferior, autoplay del carrusel, pantalla de carga de 5 s y confeti de compra (la guía del panel se retiró en Polish 8.3.11). **Cambio a revisar en la
 spec:** la aprobación "Así lo quiero" ya no es una casilla; se confirma al agregar al carrito. Antes de llevarlos a
 producción hay que sumarlos a la especificación de Notion.
 
@@ -102,5 +110,5 @@ afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
 Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`, `:gifts`; y
-`velmar-tour:admin` para no repetir la guía del panel; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
+`velmar-ui:admin-sidebar` para recordar la barra lateral fija; `velmar-ui:sheet:*` en `sessionStorage` para el borrador de una vista Excel sin guardar; `velmar-ui:list:*` en `sessionStorage` para que "Volver" de una ficha lleve a la lista con sus filtros y página; `velmar-ui:product-draft:*` y `velmar-ui:preview-return` en `sessionStorage` para el borrador del editor de producto y su vista previa; `velmar-ui:mission-draft:*`, `velmar-ui:email-draft:*` y `velmar-ui:wheel-draft` en `sessionStorage` para los borradores de misión, plantilla de email y ruleta; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
 navegador. "Reiniciar demo" (banner y pie) borra todo.

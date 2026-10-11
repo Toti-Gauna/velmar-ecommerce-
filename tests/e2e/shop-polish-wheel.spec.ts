@@ -101,6 +101,6 @@ test("8.2.14 guardado y utilizado: un solo premio, un solo cupón y no se puede 
   await page.getByLabel("¿Tenés un código?").press("Enter");
   await expect(page.getByRole("alert").filter({ hasText: "límite de usos" })).toBeVisible();
   // Un solo cupón emitido para ese premio, con su uso contado.
-  await page.goto("admin-demo/cupones/");
+  await page.goto("admin-demo/cupones/lista/");
   await expect(page.getByText(code, { exact: true })).toHaveCount(1);
 });

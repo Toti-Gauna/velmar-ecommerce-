@@ -7,18 +7,21 @@ const day = (page: Page, d: string) => page.locator(`td[data-day="${d}"]`);
 test.describe("calendario en escritorio", () => {
   test.use({ viewport: { width: 1440, height: 1000 }, isMobile: false, hasTouch: false });
 
-  test("arrastrar un pedido: el feriado lo rechaza, otro día lo acepta y el .ics se descarga", async ({ page }) => {
+  test("arrastrar un pedido: el feriado lo rechaza, otro día lo acepta con confirmación y el .ics se descarga", async ({ page }) => {
     await page.goto("admin-demo/calendario/");
+    await page.mouse.move(1400, 300);
     const chip = page.getByRole("button", { name: /^VEL-000114,/ });
     await expect(day(page, "2026-10-07").getByRole("button", { name: /^VEL-000114,/ })).toBeVisible();
     await chip.dragTo(day(page, "2026-10-12"));
+    await expect(toast(page, /el taller no trabaja ese día/)).toBeVisible();
     await expect(day(page, "2026-10-07").getByRole("button", { name: /^VEL-000114,/ })).toBeVisible();
     await chip.dragTo(day(page, "2026-10-13"));
+    await page.getByRole("dialog", { name: "Mover VEL-000114" }).getByRole("button", { name: "Mover al mar, 13 oct" }).click();
     await expect(toast(page, /VEL-000114 pasa al mar, 13 oct/)).toBeVisible();
     await expect(day(page, "2026-10-13").getByRole("button", { name: /^VEL-000114,/ })).toBeVisible();
-    // Un día completo acepta el pedido pero avisa
+    // Un día completo no acepta el pedido arrastrado y dice por qué (sobrecargarlo es desde Reprogramar)
     await page.getByRole("button", { name: /^VEL-000122,/ }).dragTo(day(page, "2026-10-08"));
-    await expect(toast(page, /sobrecargado/)).toBeVisible();
+    await expect(toast(page, /completo \(3 de 3 pedidos\)/)).toBeVisible();
 
     const download = page.waitForEvent("download");
     await page.getByRole("button", { name: "Exportar a Google Calendar" }).click();
@@ -47,6 +50,7 @@ test("capacidad del taller: con días completos la tienda muestra la próxima fe
   await expect(page.getByText(/el taller ya está completo/)).toBeVisible();
   await page.goto("admin-demo/calendario/");
   await page.getByRole("button", { name: "Capacidad y feriados" }).click();
+  await page.getByRole("dialog", { name: "Capacidad y días del taller" }).getByRole("button", { name: /Capacidad y horarios/ }).click();
   const field = page.getByLabel("Pedidos que el taller termina por día");
   await field.fill("4");
   await field.press("Enter");
@@ -79,14 +83,17 @@ test("costos: la receta calcula el margen y el precio sugerido llega a la tienda
   const sheet = page.getByRole("dialog", { name: "Costo de Vela caniche" });
   await expect(sheet.getByText("52%")).toBeVisible();
   await sheet.getByRole("button", { name: /Usar precio sugerido/ }).click();
+  await expect(sheet.getByText(/Al guardar, el precio pasa a desde \$\s?11\.500/)).toBeVisible();
+  await sheet.getByRole("button", { name: "Guardar" }).click();
   await expect(toast(page, /desde \$\s?11\.500/)).toBeVisible();
   await page.goto("p/vela-caniche/");
   await expect(page.getByText(/\$\s?11\.500/).first()).toBeVisible();
 });
 
 test("ficha de cliente: mascota con cumpleaños genera un recordatorio y se guardan notas", async ({ page }) => {
-  await page.goto("admin-demo/usuarios/");
-  await expect(page.getByRole("region", { name: /Para escribirles/ }).getByText("Cumple de Ñoqui")).toBeVisible();
+  // 8.3.9: ya no hay bloque "Para escribirles"; queda el filtro "Para escribir" (el inicio enlaza a él).
+  await page.goto("admin-demo/usuarios/?escribir=7");
+  await expect(page.getByRole("region", { name: "Clientes" }).getByText("Diego Álvarez").first()).toBeVisible();
   await page.goto("admin-demo/usuarios/ficha/?email=vale.s@ejemplo.com");
   await expect(page.getByRole("heading", { level: 1, name: /Valentina Sosa/ })).toBeVisible();
   await page.getByLabel("Nombre").fill("Michi");

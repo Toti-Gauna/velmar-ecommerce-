@@ -2,10 +2,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createCatalogActions, type CatalogActions } from "@/demo/admin/catalog-slice";
+import { normalizeSlides } from "@/demo/admin/content-slides";
 import { createDataActions, type DataActions } from "@/demo/admin/data-slice";
 import { auditEntry, defaultAdminData, type AdminData } from "@/demo/admin/defaults";
 import { createOrdersActions, type OrdersActions } from "@/demo/admin/orders-slice";
 import { withCurrentCollarSpec } from "@/demo/admin/templates";
+import { withPrizeCatalog } from "@/demo/admin/wheel-prizes";
 import type { AdminClaim } from "@/demo/admin/types";
 import { createWorkshopActions, type WorkshopActions } from "@/demo/admin/workshop-slice";
 import { createEmailActions, type EmailActions } from "@/demo/admin/emails-slice";
@@ -51,7 +53,15 @@ export const useAdmin = create<AdminState>()(
       // collar siempre es la del código.
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<AdminData>;
-        return { ...current, ...p, data: withCurrentCollarSpec({ ...current.data, ...(p.data ?? {}) }), workshop: { ...current.workshop, ...(p.workshop ?? {}) }, emails: { ...current.emails, ...(p.emails ?? {}) } };
+        const workshop = { ...current.workshop, ...(p.workshop ?? {}) };
+        // Las entradas del calendario (8.3.15) llegaron después: si faltan o vienen rotas, quedan las de muestra.
+        if (!Array.isArray(workshop.events)) workshop.events = current.workshop.events;
+        const data = withCurrentCollarSpec({ ...current.data, ...(p.data ?? {}) });
+        // La ruleta guardada antes de 8.3.25 no tenía catálogo de premios: se completa con sus gajos, sin cambiar IDs.
+        data.wheel = withPrizeCatalog(data.wheel);
+        // Diapositivas (8.3.28): una imagen propia rota se descarta y queda la ilustración; una lista rota vuelve a la de muestra.
+        data.content = { ...current.data.content, ...data.content, slides: Array.isArray(data.content?.slides) ? normalizeSlides(data.content.slides) : current.data.content.slides };
+        return { ...current, ...p, data, workshop, emails: { ...current.emails, ...(p.emails ?? {}) } };
       },
       partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop, emails: s.emails }),
     },

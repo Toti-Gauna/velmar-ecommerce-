@@ -120,9 +120,12 @@ export interface RescheduleCheck {
   ok: boolean;
   error?: string;
   warnings: string[];
+  /** El día ya estaba completo: mover el pedido lo sobrecarga. */
+  overload?: boolean;
+  /** Por qué no se puede: para marcar el día mientras se arrastra. */
+  blocked?: "fixed" | "past" | "closed" | "full";
 }
 
-/** Valida mover un pedido a otro día: nunca a un día pasado ni cerrado; avisa si queda sobrecargado o antes del plazo. */
 /** Entregas pendientes (sin salir del taller) comprometidas entre dos días, ambos incluidos. */
 export function pendingDeliveries(orders: ScheduledOrder[], from: string, to: string): number {
   return orders.filter((o) => o.promisedDate && o.promisedDate >= from && o.promisedDate <= to && (CAPACITY_STATUSES.includes(o.status) || o.status === "READY")).length;
@@ -135,19 +138,30 @@ export function canReschedule(status: OrderStatus): boolean {
   return !FIXED_DATE_STATUSES.includes(status);
 }
 
+/** Valida mover un pedido a otro día: nunca a un día pasado ni cerrado; avisa si queda sobrecargado o antes del plazo. */
 export function checkReschedule(order: ScheduledOrder, day: string, today: string, orders: ScheduledOrder[], settings: WorkshopSettings): RescheduleCheck {
-  if (!canReschedule(order.status)) return { ok: false, error: "Este pedido ya salió del taller o está cerrado: su fecha no se reprograma.", warnings: [] };
-  if (day < today) return { ok: false, error: "No se puede comprometer una fecha que ya pasó.", warnings: [] };
+  if (!canReschedule(order.status)) return { ok: false, error: "Este pedido ya salió del taller o está cerrado: su fecha no se reprograma.", warnings: [], blocked: "fixed" };
+  if (day < today) return { ok: false, error: "No se puede comprometer una fecha que ya pasó.", warnings: [], blocked: "past" };
   const closed = closureFor(day, calendarOf(settings));
-  if (closed) return { ok: false, error: `${closed.reason}: el taller no trabaja ese día.`, warnings: [] };
+  if (closed) return { ok: false, error: `${closed.reason}: el taller no trabaja ese día.`, warnings: [], blocked: "closed" };
   const warnings: string[] = [];
   const taken = loadByDay(orders, order.code).get(day) ?? 0;
-  if (CAPACITY_STATUSES.includes(order.status) && taken >= settings.dailyCapacity) {
-    warnings.push(`Ese día ya tenía ${taken} de ${settings.dailyCapacity} pedidos: queda sobrecargado.`);
-  }
+  const overload = CAPACITY_STATUSES.includes(order.status) && taken >= settings.dailyCapacity && order.promisedDate !== day;
+  if (overload) warnings.push(`Ese día ya tenía ${taken} de ${settings.dailyCapacity} pedidos: queda sobrecargado.`);
   if (order.status !== "IN_PRODUCTION" && CAPACITY_STATUSES.includes(order.status)) {
     const lead = orderLeadDays(order.lines);
     if (day < addWorkdays(today, lead, calendarOf(settings))) warnings.push(`Queda antes del plazo de fabricación (${lead} ${lead === 1 ? "día hábil" : "días hábiles"}).`);
   }
-  return { ok: true, warnings };
+  return { ok: true, warnings, overload };
+}
+
+/**
+ * Soltar un pedido arrastrado (8.3.15): además de las reglas de `checkReschedule`, un día completo lo rechaza con el
+ * motivo. Sobrecargar un día queda para "Reprogramar", donde se confirma a propósito.
+ */
+export function checkDrop(order: ScheduledOrder, day: string, today: string, orders: ScheduledOrder[], settings: WorkshopSettings): RescheduleCheck {
+  const r = checkReschedule(order, day, today, orders, settings);
+  if (!r.ok || !r.overload) return r;
+  const taken = loadByDay(orders, order.code).get(day) ?? 0;
+  return { ok: false, error: `Ese día ya está completo (${taken} de ${settings.dailyCapacity} pedidos). Para sobrecargarlo, usá Reprogramar.`, warnings: [], blocked: "full" };
 }

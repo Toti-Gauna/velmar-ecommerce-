@@ -120,13 +120,26 @@ export interface ShippingZone {
   active?: boolean;
 }
 
+/** Imagen propia de una diapositiva (8.3.28): optimizada en el navegador, con su descripción y encuadre. */
+export interface SlideImage {
+  src: string;
+  alt: string;
+  /** Punto que queda a la vista, en % del ancho y del alto. */
+  x: number;
+  y: number;
+  /** Acercamiento, de 1 a 2. */
+  zoom: number;
+}
+
 export interface CarouselSlide {
   id: string;
   title: string;
   subtitle: string;
   ctaLabel: string;
   ctaHref: string;
+  /** Ilustración de la demo; se usa si no hay imagen propia. */
   art: ArtKey;
+  image?: SlideImage;
   active?: boolean;
 }
 
