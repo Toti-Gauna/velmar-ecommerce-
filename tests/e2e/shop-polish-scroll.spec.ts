@@ -16,18 +16,24 @@ test.beforeEach(async ({ page }) => {
   await visit(page, "");
 });
 
-/** Abre arriba de todo y el título queda debajo del header fijo (nada tapado). */
+/**
+ * Abre arriba de todo y el título queda debajo del header fijo (nada tapado). La URL cambia antes de que la página
+ * nueva termine de cargar (mientras tanto se ve el esqueleto de `loading.tsx`, sin título): se mide recién con el
+ * título de la página nueva a la vista, si no en un equipo lento se medía el esqueleto.
+ */
 async function opensAtTop(page: Page, url: RegExp) {
   await expect(page).toHaveURL(url);
+  await expect(page.locator("main h1").first()).toBeVisible();
   await expect.poll(() => page.evaluate(() => Math.round(scrollY))).toBe(0);
   await page.waitForTimeout(400);
   const { y, h1, header } = await page.evaluate(() => ({
     y: Math.round(scrollY),
-    h1: document.querySelector("main h1")?.getBoundingClientRect().top ?? 0,
+    h1: document.querySelector("main h1")?.getBoundingClientRect().top ?? null,
     header: document.querySelector("[data-shop-header]")?.getBoundingClientRect().bottom ?? 0,
   }));
   expect(y, "sigue arriba después de la transición").toBe(0);
-  expect(h1).toBeGreaterThanOrEqual(header - 1);
+  expect(h1, "la página nueva tiene su título").not.toBeNull();
+  expect(h1!).toBeGreaterThanOrEqual(header - 1);
 }
 
 const down = (page: Page, px: number) => page.evaluate((d) => window.scrollBy({ top: d, behavior: "instant" }), px);
