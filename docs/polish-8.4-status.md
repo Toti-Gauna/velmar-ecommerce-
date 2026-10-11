@@ -25,9 +25,9 @@ falta el equipo real) · **pendiente**.
 | 8.4.12 Íconos del encabezado agrupados | 5 | `organisms/Header` | hecho (emulado) | `polish-84-header.spec.ts` (1440: cápsula de preferencias, separador y acciones; 390 y 320: sin desborde) | — |
 | 8.4.13 Sin aviso de demo ni "Reiniciar demo" | 5 | `(shop)/layout` (sin `DemoBanner`), `Footer`, `AdminTopbar`, `stores/hydration` (sin `resetDemo`) | hecho | `polish-84-header.spec.ts`, `admin-flows.spec.ts`, `purchase-flow.spec.ts` | — |
 | 8.4.14 Cumpleaños de mascotas del cliente | 4 | `account/PetsSection`, `admin/data-slice` (`syncShopAccount`), `molecules/BirthdayPicker` | hecho (emulado) | `polish-84-account.spec.ts` (la mascota aparece en la ficha del cliente en el panel) | — |
-| 8.4.15 Transferir pedidos al cerrar un día | 6 | | pendiente | | |
+| 8.4.15 Transferir pedidos al cerrar un día | 6 | `calendar/TransferPanel`, `calendar/DayDialog`, `admin/workshop/transfer` (`planTransfer`, `upcomingWorkdays`) | hecho (emulado) | `polish-84-workshop.spec.ts` (próximos días, aviso de pedidos y de capacidad, domingo bloqueado, todos juntos o uno por uno, "Dejarlos para después"; 390 px), `workshop-84.test.ts` | — |
 | 8.4.16 Entrega comprometida en modal | 1 | `calendar/ScheduleDialog` (antes `ScheduleSheet`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado a 1440), `admin-polish-workshop.spec.ts`, `admin-workshop.spec.ts` | — |
-| 8.4.17 Botones de la cola de producción | 6 | | pendiente | | |
+| 8.4.17 Botones de la cola de producción | 6 | `production/ProductionCard` | hecho (emulado) | `polish-84-workshop.spec.ts` (1440, 1024, 390: mismo alto y de borde a borde de la tarjeta) | — |
 | 8.4.18 Costos alineados y explicados | 7 | | pendiente | | |
 | 8.4.19 Generador de emails con pasos | 8 | | pendiente | | |
 | 8.4.20 Bandeja de salida arriba y en modal | 1 y 8 | `emails/OutboxDialog` (antes `OutboxSheet`) | parcial | `polish-84-modals.spec.ts` (el email abre en modal centrado) | Tarjeta arriba de "Emails automáticos" (Lote 8) |
@@ -129,3 +129,18 @@ falta el equipo real) · **pendiente**.
   porque el panel no tiene login) y los avisos del checkout de que no se cobra nada. Para volver a los datos de muestra:
   ventana privada o borrar los datos del sitio. Esto deja sin efecto la regla "el aviso de demo ficticia permanece"
   para la tienda (registrado en `fuera-de-especificacion.md`).
+
+## Lote 6 · registro
+
+- **8.4.15** Al cerrar un día con entregas desde el modal del día ("Cerrar el taller este día" → "Cerrar igual"), el
+  mismo modal pregunta "¿Querés transferir los pedidos de este día a otro?". Propone los próximos 5 días con taller (sin
+  domingos, feriados ni cierres) con cuántos pedidos tienen, y deja elegir cualquier otra fecha; todos al mismo día o
+  uno por pedido. Avisa si el día elegido ya tiene pedidos, si se pasa de la capacidad ("Transferir igual") o si queda
+  antes del plazo de fabricación, y no deja elegir un día pasado o sin taller. Usa las mismas reglas que reprogramar un
+  pedido (`checkReschedule`). "Dejarlos para después" deja las entregas marcadas en el día cerrado, como antes. El cierre
+  desde "Capacidad y feriados" sigue igual (avisa y las deja marcadas para reprogramar).
+- **8.4.17** En cada tarjeta de la cola, el paso siguiente (botón principal) y "Mover etapa" tienen el mismo alto (40 px)
+  y van de borde a borde: lado a lado si la tarjeta es ancha, uno arriba del otro (el principal primero) si es angosta.
+- **Bug encontrado en el chequeo completo**: al abrir un modal, el foco iba a su primer campo 40 ms después; si en ese
+  momento ya se estaba escribiendo en otro campo, el foco saltaba y lo escrito terminaba en el primero (en la prueba de
+  Mis direcciones, "2600" quedó en el nombre). `Sheet` ya no mueve el foco si ya está adentro del modal.

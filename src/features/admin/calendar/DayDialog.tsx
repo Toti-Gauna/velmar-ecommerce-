@@ -15,8 +15,9 @@ import { EntryRow } from "./DayList";
 import type { Entry } from "./entries";
 import { EventForm } from "./EventForm";
 import { ImpactConfirm, InlineConfirm } from "./ImpactConfirm";
+import { TransferPanel } from "./TransferPanel";
 
-type Mode = { view: true } | { form: EventDraft; id?: string } | { remove: CalendarEvent } | { removeClosure: Closure } | { impact: ScheduleImpact; closure: Closure };
+type Mode = { view: true } | { form: EventDraft; id?: string } | { remove: CalendarEvent } | { removeClosure: Closure } | { impact: ScheduleImpact; closure: Closure } | { transfer: string[] };
 
 interface Props { day: string | null; eventId: string | null; today: string; entries: Entry[]; onClose: () => void; onReschedule: (code: string) => void }
 
@@ -80,7 +81,15 @@ function DayBody({ day, eventId, today, entries, onReschedule }: Omit<Props, "da
         </InlineConfirm>
       ) : "impact" in mode ? (
         <ImpactConfirm impact={mode.impact} action="Cerrar igual" onCancel={() => setMode({ view: true })}
-          onConfirm={() => { const c = mode.closure; save(`${formatDay(c.date)}: ${c.name}`, () => addClosure(c), "Las entregas de ese día quedaron marcadas para reprogramar."); setMode({ view: true }); }} />
+          onConfirm={() => {
+            const c = mode.closure;
+            save(`${formatDay(c.date)}: ${c.name}`, () => addClosure(c), "Las entregas de ese día quedaron marcadas para reprogramar.");
+            // 8.4.15: enseguida se ofrece pasarlas a otro día.
+            const codes = mode.impact.closed.filter((x) => x.day === c.date).map((x) => x.code);
+            setMode(codes.length ? { transfer: codes } : { view: true });
+          }} />
+      ) : "transfer" in mode ? (
+        <TransferPanel day={day} codes={mode.transfer} today={today} onDone={() => setMode({ view: true })} />
       ) : (
         <>
           {closed?.closure && (

@@ -45,7 +45,11 @@ export function Sheet({ open, onClose, title, side = "right", children, classNam
     if (!open) return;
     const previous = document.activeElement as HTMLElement | null;
     const unlock = lockScroll(() => layer.current);
-    const t = window.setTimeout(() => (panel.current?.querySelector<HTMLElement>("[data-autofocus]") ?? panel.current?.querySelector<HTMLElement>("button, a, input"))?.focus(), 40);
+    // Foco inicial, salvo que ya se haya tocado algo adentro (si no, lo que se escribía iba a parar a otro campo).
+    const t = window.setTimeout(() => {
+      if (panel.current?.contains(document.activeElement)) return;
+      (panel.current?.querySelector<HTMLElement>("[data-autofocus]") ?? panel.current?.querySelector<HTMLElement>("button, a, input"))?.focus();
+    }, 40);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeRef.current();
       if (e.key !== "Tab" || !panel.current) return;

@@ -41,7 +41,8 @@ los pedidos y usá la acción de arriba. Cada cambio avisa al cliente con el ema
 ### …saber cuándo puedo entregar
 **Calendario de entregas**: cada pedido está en su día. Los días completos y los feriados se marcan.
 - **Tocá un día** para ver sus entregas y anotar tareas o notas de un pedido (por ejemplo, "retirar filamento"). También
-  podés cerrar el taller ese día desde ahí.
+  podés cerrar el taller ese día desde ahí: si tenía entregas, te pregunta si querés pasarlas a otro día (te muestra
+  los próximos días con taller y cuántos pedidos tienen, y te avisa si se llena).
 - Para **mover** un pedido, arrastralo a otro día (compu): te pide confirmar antes de cambiar la fecha. Un día cerrado o
   completo no lo acepta y te dice por qué. Sin arrastrar, abrí su ficha y elegí "Primera fecha libre", el día hábil
   anterior o siguiente, u otra fecha; si el día está completo te pregunta si querés sobrecargarlo.
