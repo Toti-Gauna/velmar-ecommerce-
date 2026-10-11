@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { ContentAdmin } from "@/features/admin/ContentAdmin";
+import { ContentHub } from "@/features/admin/content/ContentHub";
 
 export const metadata: Metadata = { title: "Contenido" };
 
 export default function Page() {
-  return <ContentAdmin />;
+  return <ContentHub />;
 }

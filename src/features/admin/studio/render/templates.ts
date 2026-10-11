@@ -1,8 +1,10 @@
 import { beats, easeOutBack, easeOutExpo, productSlot, span } from "@/demo/admin/studio/timeline";
 import { formatARS } from "@/lib/money";
 import { drawBackdrop } from "./backdrop";
+import { postLayout, storyBadge } from "@/demo/admin/studio/offer";
+import { drawOfferBadge, offerBadge } from "./offer";
 import { DISPLAY, SANS, drawCard, drawLines, drawLogo, drawPill, fitLine, spaced, wrap } from "./paint";
-import { raster, sealSprite } from "./sprites";
+import { raster } from "./sprites";
 import type { StudioScene } from "./types";
 
 /** Encabezado: bajada de la fecha, titular y texto, con entrada en cascada. Devuelve el y final. */
@@ -20,38 +22,14 @@ function heading(ctx: CanvasRenderingContext2D, s: StudioScene, t: number, x: nu
   return end;
 }
 
-/** Sello de oferta circular que entra con rebote; si el cupón tiene mínimo, va escrito debajo (no se promete de más). */
-function offerSeal(ctx: CanvasRenderingContext2D, s: StudioScene, t: number, cx: number, cy: number, r: number) {
-  if (!s.offer || !s.showOffer) return;
-  const k = easeOutBack(span(t, beats(s.duration).offer, 0.7));
-  if (k <= 0) return;
-  const offer = s.offer;
-  const fontReady = typeof document !== "undefined" && document.fonts.check(`800 40px ${SANS}`);
-  const sprite = sealSprite(`${s.look.accent}|${s.look.accentInk}|${offer.label}|${offer.code}|${r}|${fontReady}`, r * 2 + 80, (c) => {
-    c.translate(r + 40, r + 40);
-    c.rotate(-0.12);
-    c.shadowColor = "rgba(0,0,0,0.35)"; c.shadowBlur = 30; c.shadowOffsetY = 12;
-    c.fillStyle = s.look.accent;
-    c.beginPath(); c.arc(0, 0, r, 0, Math.PI * 2); c.fill();
-    c.shadowColor = "transparent";
-    c.fillStyle = s.look.accentInk;
-    c.textAlign = "center"; c.textBaseline = "middle";
-    c.font = `800 ${r * 0.44}px ${SANS}`;
-    c.fillText(fitLine(c, offer.label.replace(" OFF", ""), r * 1.7), 0, -r * 0.16);
-    c.font = `800 ${r * 0.2}px ${SANS}`;
-    c.fillText(fitLine(c, offer.label.includes("OFF") ? `OFF · ${offer.code}` : offer.code, r * 1.6), 0, r * 0.3);
-  });
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.scale(k, k);
-  ctx.drawImage(sprite, -sprite.width / 2, -sprite.height / 2);
-  ctx.restore();
-  if (offer.condition) {
-    ctx.save();
-    ctx.globalAlpha *= Math.min(1, k);
-    drawPill(ctx, offer.condition, cx, cy + r + 18, { bg: "rgba(0,0,0,0.55)", ink: "#ffffff", size: Math.round(r * 0.2), align: "center", padX: 18 });
-    ctx.restore();
-  }
+/** Cartel de oferta de la temática (si hay cupón y está a la vista), con su tamaño para ubicarlo. */
+function badgeFor(s: StudioScene, u: number, maxInner: number) {
+  return s.offer && s.showOffer ? offerBadge(s.offer, s.look, u, maxInner) : null;
+}
+
+/** Entra con rebote en su momento de la animación. */
+function badgeIn(s: StudioScene, t: number) {
+  return easeOutBack(span(t, beats(s.duration).offer, 0.7));
 }
 
 /** Nombre (hasta 2 líneas) y precio (tachado si hay precio con cupón). */
@@ -105,13 +83,15 @@ function cta(ctx: CanvasRenderingContext2D, s: StudioScene, t: number, x: number
 }
 
 export function drawPost(ctx: CanvasRenderingContext2D, s: StudioScene, t: number) {
-  const { W, H } = s;
-  drawBackdrop(ctx, s.look, t, W, H);
-  heroArt(ctx, s, t, W * 0.7, H * 0.05, 210);
+  const { W } = s;
+  const badge = badgeFor(s, 0.9, 320);
+  const L = postLayout(W, badge, s.cast.length > 0);
+  drawBackdrop(ctx, s.look, t, W, s.H);
+  heroArt(ctx, s, t, L.hero.x, L.hero.y, L.hero.size);
   const slot = productSlot(t, s.duration, s.products.length);
   const e = easeOutExpo(slot.enter);
-  drawCard(ctx, s.products[slot.index]?.img ?? null, 560, 250 + (1 - e) * 80, 430, 538, { rotate: -3 + (1 - e) * 6, alpha: e });
-  offerSeal(ctx, s, t, 960, 280, 92);
+  drawCard(ctx, s.products[slot.index]?.img ?? null, L.card.x, L.card.y + (1 - e) * 80, L.card.w, L.card.h, { rotate: -3 + (1 - e) * 6, alpha: e });
+  if (badge && L.badge) drawOfferBadge(ctx, badge, L.badge.x, L.badge.y, badgeIn(s, t));
   heading(ctx, s, t, 80, 120, 450, 74);
   priceTag(ctx, s, slot.index, 80, 740, 40, 440, "left", easeOutExpo(span(t, beats(s.duration).product + 0.4, 0.8)));
   cta(ctx, s, t, W - 80, 920, 28, "right", 600);
@@ -130,7 +110,11 @@ export function drawStory(ctx: CanvasRenderingContext2D, s: StudioScene, t: numb
   // La tarjeta arranca debajo del texto real y se achica si el texto es largo (nombre y precio siempre a la vista).
   const top = Math.max(820, end + 50), bottom = 1400, ch = bottom - top, cw = Math.round(ch * 0.82);
   drawCard(ctx, s.products[slot.index]?.img ?? null, (W - cw) / 2 + (1 - e) * 120, top, cw, ch, { rotate: -2 + (1 - e) * 5, alpha: e });
-  offerSeal(ctx, s, t, (W + cw) / 2 - 10, top + 30, 100);
+  const badge = badgeFor(s, 1, 330);
+  if (badge) {
+    const b = storyBadge(W, { x: (W - cw) / 2, y: top, w: cw, h: ch }, badge);
+    drawOfferBadge(ctx, badge, b.x, b.y, badgeIn(s, t));
+  }
   priceTag(ctx, s, slot.index, W / 2, 1480, 50, 900, "center", e, 1);
   cta(ctx, s, t, W / 2, 1625, 32, "center", 900);
 }

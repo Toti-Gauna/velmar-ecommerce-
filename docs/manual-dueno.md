@@ -95,7 +95,8 @@ o si perdés plata. **"Usar precio sugerido"** cambia el precio en la tienda. **
 **Estudio de contenido**: elegí la fecha y te arma un **post, una historia y un carrusel** con el fondo de la temática y
 tus productos.
 1. Elegí hasta 3 productos o **subí una foto propia** (las fotos reales funcionan mejor que las ilustraciones).
-2. Editá los textos y elegí si va el precio o la oferta.
+2. Editá los textos y elegí si va el precio o la oferta. La oferta sale como un cupón con el descuento, el código y la
+   condición de compra del cupón de la temática (si cambiás el cupón, cambia la pieza).
 3. **Descargá la imagen (PNG)** o el **video de 6 a 15 segundos**, con música si querés. En el celular, **Compartir**
    lo manda a Fotos, Instagram o WhatsApp.
 4. Copiá el **texto sugerido** para el posteo; **"Otra idea"** te da otro gancho.
@@ -110,7 +111,12 @@ el pedido del panel figura como regalo para que lo envuelvas. En la demo el link
 código, en el navegador donde se compró.
 
 ### …cambiar lo que dice la tienda
-**Contenido**: carrusel del inicio (orden, textos y a dónde lleva), textos de inicio y preguntas frecuentes.
+**Contenido**: tres tarjetas, cada una con su página. **Carrusel**: arriba ves la diapositiva elegida tal como sale en el
+inicio; abajo elegís cuál editar, le cambiás los textos (el contador avisa si te pasás), a dónde lleva el botón y si se ve,
+y la ordenás o la quitás. Podés subir una **imagen propia**: JPG, PNG o WEBP, hasta 10 MB y de al menos 400 px de lado
+(se achica sola y, en esta demo, queda solo en tu navegador). Escribí qué muestra (texto alternativo) y acomodá el
+encuadre. Si el navegador se queda sin lugar, te avisa y no perdés lo que estabas editando. **Textos de inicio** y
+**Preguntas frecuentes** se guardan aparte: guardar una parte no toca las otras.
 **Ajustes**: colores, WhatsApp, medios de pago, descuento por transferencia, zonas de envío y envío gratis desde cierto
 monto. Los datos de pago de la demo son ficticios.
 

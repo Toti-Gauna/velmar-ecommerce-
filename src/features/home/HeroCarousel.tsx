@@ -3,18 +3,11 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 import { useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ProductArt } from "@/components/illustrations/ProductArt";
 import type { CarouselSlide } from "@/demo/types";
 import { cn } from "@/lib/cn";
 import { scrollBehavior } from "@/lib/scroll";
 import { useHydrated } from "@/stores/hydration";
-
-/** Fondos que rotan por diapositiva: noche, oliva (mezcla de noche y primario: oscuro en cualquier temática) y arcilla. */
-const TONES = [
-  { bg: "bg-night", eyebrow: "text-brass", glow: "rgb(210_173_105/0.28)" },
-  { bg: "bg-[color-mix(in_oklab,var(--c-night-2)_68%,var(--color-primary))]", eyebrow: "text-[#e9d9b4]", glow: "rgb(255_253_248/0.22)" },
-  { bg: "bg-[#6d3a26]", eyebrow: "text-[#f1cfa0]", glow: "rgb(241_207_160/0.26)" },
-];
+import { HeroSlideBody, heroSlideClass } from "./HeroSlide";
 
 const INTERVAL = 4000;
 
@@ -59,28 +52,11 @@ export function HeroCarousel({ slides, lead }: { slides: CarouselSlide[]; lead?:
         {lead && (
           <div role="group" aria-roledescription="diapositiva" aria-label={`1 de ${total}: ${lead.label}`} className="relative flex w-full shrink-0 snap-center">{lead.node}</div>
         )}
-        {slides.map((s, j) => {
-          const i = j + offset;
-          const tone = TONES[j % TONES.length]!;
-          return (
-            <Link key={s.id} href={s.ctaHref} role="group" aria-roledescription="diapositiva" aria-label={`${i + 1} de ${total}: ${s.title}`}
-              className={cn("group relative grid min-h-[19rem] w-full shrink-0 snap-center grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] overflow-hidden text-[#fffdf8] sm:min-h-[26rem] sm:grid-cols-[1.05fr_1fr]", tone.bg)}>
-              <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:repeating-linear-gradient(135deg,#fff_0_1px,transparent_1px_22px)]" />
-              <div className="relative z-10 flex flex-col justify-center py-8 pl-5 pr-1 sm:py-12 sm:pl-[var(--hero-safe)] sm:pr-6 lg:pr-8">
-                <p className={cn("eyebrow", tone.eyebrow)}>Velmar · {String(j + 1).padStart(2, "0")}</p>
-                <p className="font-display mt-2 text-[1.75rem] leading-[1.04] sm:mt-3 sm:text-5xl lg:text-6xl">{s.title}</p>
-                <p className="mt-2 line-clamp-2 max-w-md text-[13px] text-white/80 sm:mt-3 sm:line-clamp-none sm:text-lg">{s.subtitle}</p>
-                <span className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-[#fffdf8] px-4 py-2.5 text-[13px] font-bold sm:mt-6 sm:px-6 sm:py-3 sm:text-sm text-night shadow-[0_12px_30px_-14px_rgb(0_0_0/0.6)] transition-transform group-hover:translate-x-1">
-                  {s.ctaLabel} <ArrowRight size={16} aria-hidden="true" />
-                </span>
-              </div>
-              <div className="relative grid place-items-center py-8 pl-1 pr-5 sm:py-8 sm:pl-6 sm:pr-[var(--hero-safe)]">
-                <div aria-hidden="true" className="absolute inset-0 m-auto aspect-square w-[85%]" style={{ background: `radial-gradient(closest-side, ${tone.glow.replace(/_/g, " ")}, transparent)` }} />
-                <ProductArt art={s.art} label="" showBadge={false} className="relative aspect-square w-full max-w-[19rem] overflow-hidden rounded-[1.4rem] sm:rounded-[2rem] shadow-[0_40px_80px_-30px_rgb(0_0_0/0.65)] transition-transform duration-[1200ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.03] sm:max-w-[22rem]" />
-              </div>
-            </Link>
-          );
-        })}
+        {slides.map((s, j) => (
+          <Link key={s.id} href={s.ctaHref} role="group" aria-roledescription="diapositiva" aria-label={`${j + offset + 1} de ${total}: ${s.title}`} className={heroSlideClass(j)}>
+            <HeroSlideBody slide={s} index={j} />
+          </Link>
+        ))}
       </div>
       {total > 1 && (
         <>

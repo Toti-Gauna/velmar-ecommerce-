@@ -421,6 +421,25 @@ Lote 6: misiones, Marketing por tarjetas, ruleta y premios (`admin-polish-market
 | Ruleta guardada antes de 8.3.25: el catálogo se arma desde los gajos sin cambiar IDs; el cupón del premio sale igual | unit |
 | Ruleta en la tienda, cupones ganados y checkout de 8.2 sin cambios | ✅ (`shop-polish-wheel`, `gamification`, `purchase-flow`) |
 
+Lote 7: Temáticas, oferta del Estudio y Contenido (`admin-polish-content.spec.ts`, `tests/unit/admin-content-83.test.ts`;
+al día `themes`, `admin-studio` y `shop-polish`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.26 Temáticas en automático no muestra "Temática fija"; en fijo aparece y "Hoy ve el cliente" muestra la fija con su aclaración; "Próxima por fecha" dice que en fijo no cambia sola; "Sin temática" vuelve a ocultarla; el botón "Probar temáticas" sigue | ✅ |
+| 8.3.26 A 1180 y 820 táctil y 375: sin desborde; el selector de modo mide 260 px o más; las dos tarjetas no se pisan (lado a lado o apiladas) | ✅ emulado |
+| 8.3.27 Cupón del Estudio en post, historia y carrusel con 30% OFF, $3.000 OFF, envío gratis, condición en dos líneas, códigos de 15 y 16 letras y titular largo: nada cortado ni fuera de la pieza; no pisa la columna de texto ni el precio; sobre la tarjeta solo apoya su borde | ✅ capturas + unit |
+| 8.3.27 Exportar PNG, las diapositivas del carrusel y el video siguen andando | ✅ (`admin-studio`) |
+| 8.3.28 Contenido con tres tarjetas; cada subpágina tiene solo su guardar y "Volver a Contenido"; Atrás anda | ✅ |
+| 8.3.28 Carrusel: elegir la 2 la muestra arriba (fondo y número de la tienda); editar el título se ve en la vista previa; salir y volver recupera el borrador | ✅ |
+| 8.3.28 Imagen: un .txt y una de 200 × 150 px se rechazan con su mensaje; una válida se ve en la vista previa; el encuadre mueve el punto visible; sin texto alternativo no se guarda | ✅ + unit |
+| 8.3.28 Guardar actualiza el carrusel de la tienda (imagen con su alt y título) y no cambia preguntas ni textos de inicio | ✅ |
+| 8.3.28 Agregar, subir y quitar no mezclan datos entre diapositivas; título de más de 60 caracteres marca la diapositiva y no se guarda | ✅ + unit |
+| 8.3.28 Almacenamiento lleno (simulado): aviso claro, lo guardado no cambia y el borrador sigue al recargar | ✅ |
+| 8.3.28 Vista previa a 1180, 820 y 375: entra entera, sin desborde, con título, bajada y botón dentro | ✅ emulado |
+| Diapositivas guardadas antes de 8.3.28: sin cambios; una imagen rota se descarta y queda la ilustración | unit |
+| Carrusel de la tienda: las flechas no pisan texto ni imagen (8.2.1) | ✅ (`shop-polish`) |
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

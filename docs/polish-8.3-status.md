@@ -34,9 +34,9 @@ implementado) · **no verificable** (no se puede probar acá).
 | 8.3.23 Nueva misión en modal | 6 | `missions/MissionsAdmin`, `MissionDialog`, `missionDraft`, `mission-form.ts` | hecho (emulado) | `admin-polish-marketing.spec.ts`, `admin-flows.spec.ts`, `admin-marketing-83.test.ts` | — |
 | 8.3.24 Marketing por cards | 6 | `/admin-demo/marketing/`, `marketing/HubCard`, `SubpageHeader`, `coupons/*`, `missions/*`, `emails/EmailsAdmin`, `EmailOutbox`, `EmailEditor`, `useSessionDraft` | hecho (emulado) | `admin-polish-marketing.spec.ts` (1280, 1024 con mouse; 768, 390 táctil), `admin-emails.spec.ts` | Probar en iPad real |
 | 8.3.25 Ruleta arriba y premios | 6 | `coupons/WheelAdmin`, `PrizeDialog`, `PrizesAdmin`, `wheel-prizes.ts` | hecho (emulado) | `admin-polish-marketing.spec.ts`, `admin-marketing-83.test.ts`, `shop-polish-wheel.spec.ts`, `gamification.spec.ts` | — |
-| 8.3.26 Header de Temáticas | 7 | `ThemesAdmin`, `ThemeMode` | parcial | — | Revisar en tablet |
-| 8.3.27 Oferta en Estudio | 7 | `studio/render/templates.ts` | pendiente | — | — |
-| 8.3.28 Contenido por cards y carrusel | 7 | `ContentAdmin`, `SlidesEditor` | parcial | — | Cards, preview, subida de imagen |
+| 8.3.26 Header de Temáticas | 7 | `themes/ThemesAdmin`, `ThemeMode`, `marketing/SubpageHeader` | hecho (emulado) | `admin-polish-content.spec.ts` (1280 con mouse; 1180, 820 y 375 táctil), `themes.spec.ts` | Probar en iPad real (horizontal y vertical) |
+| 8.3.27 Oferta en Estudio | 7 | `studio/render/offer.ts`, `templates.ts`, `carousel.ts`, `demo/admin/studio/offer.ts` | hecho | `admin-content-83.test.ts` (ubicación sin tapar producto ni precio), `admin-studio.spec.ts` (exportación), capturas 1:1, 9:16 y 4:5 con porcentaje, monto fijo, envío gratis, código de 15 y 16 letras y textos largos | — |
+| 8.3.28 Contenido por cards y carrusel | 7 | `/admin-demo/contenido/` y subpáginas · `content/*`, `home/HeroSlide`, `content-slides.ts`, `SaveBar`, `savedInBrowser` | hecho (emulado) | `admin-polish-content.spec.ts` (imagen inválida, chica y válida, encuadre, texto largo, crear/ordenar/quitar, almacenamiento lleno), `admin-content-83.test.ts`, `shop-polish.spec.ts` (flechas del carrusel) | Probar la subida de foto desde la cámara de un iPhone real |
 | 8.3.29 Ajustes por cards; sin Marca | 8 | `SettingsAdmin`, `SettingsSections` | parcial | — | Cards y retirar Marca |
 | 8.3.30 Datos de cobro desde Pagos | 3 | `payments/CollectionEditor`, `CollectionDialog`, `CollectionSettings` | hecho | `admin-polish-details.spec.ts`, `admin-details-83.test.ts` | Ajustes por cards en el Lote 8 reutiliza este editor |
 
@@ -123,6 +123,11 @@ implementado) · **no verificable** (no se puede probar acá).
 - **Borrador:** vive en memoria y en `sessionStorage` (`velmar-ui:product-draft:<clave>`), solo mientras hay cambios; si se
   sale del editor sin guardar, al volver se recupera con aviso y opción de descartar (con confirmación). Un borrador roto o
   de otra versión se ignora. No se toca `localStorage` ni el formato de los datos guardados.
+- **Verificación:** lint ✅, tipos ✅, 233 unit ✅, build ✅, e2e 293/294. El que falló fue el recorrido D de
+  `shop-polish-journeys` a 1180 × 820 (clic en la miga de pan justo después de "Atrás": el router todavía terminaba la
+  navegación y el clic se perdía; no tiene que ver con este lote). Repetido 24/24 sin cambios; el test ahora espera la
+  URL del "Atrás" y reintenta el clic si se pierde, y la spec completa pasa 36/36. `admin-polish-content` pasó 16/16
+  en dos vueltas.
 - **Tiempo observado (automatizado):** ~3 h de implementación y verificación. No incluye la revisión de Ignacio.
 
 ## Lote 5 · registro
@@ -152,6 +157,11 @@ implementado) · **no verificable** (no se puede probar acá).
   una sola vez (ir y volver entre En máquina y Terminación no descuenta de nuevo).
 - **8.3.10 completo:** botón "i" en el calendario (qué ocupa lugar, completo, sobrecargado, atrasado, cerrado, entradas)
   y en producción (etapas y reglas), armados con las reglas del engine.
+- **Verificación:** lint ✅, tipos ✅, 233 unit ✅, build ✅, e2e 293/294. El que falló fue el recorrido D de
+  `shop-polish-journeys` a 1180 × 820 (clic en la miga de pan justo después de "Atrás": el router todavía terminaba la
+  navegación y el clic se perdía; no tiene que ver con este lote). Repetido 24/24 sin cambios; el test ahora espera la
+  URL del "Atrás" y reintenta el clic si se pierde, y la spec completa pasa 36/36. `admin-polish-content` pasó 16/16
+  en dos vueltas.
 - **Tiempo observado (automatizado):** ~3 h de implementación y verificación. No incluye la revisión de Ignacio.
 
 ## Lote 6 · registro
@@ -181,4 +191,41 @@ implementado) · **no verificable** (no se puede probar acá).
   de 1–90 días o con un gajo sin premio. Las ruletas guardadas antes arman su catálogo desde sus gajos, sin cambiar IDs;
   los cupones ya entregados no cambian.
 - **Tiempo observado (automatizado):** ~2 h 30 min de implementación y verificación. No incluye la revisión de Ignacio.
+
+## Lote 7 · registro
+
+- **Base:** commit del Lote 6 (`4277a5c`).
+- **Temáticas (8.3.26):** el encabezado usa el mismo de las subpáginas de Marketing (migas, "Volver a Marketing",
+  título y texto). "Cómo se elige" se acomoda por ancho del bloque: el selector de modo tiene un ancho mínimo legible
+  (sin cortar "Automática según la fecha") y las tarjetas "Hoy ve el cliente" / "Próxima por fecha" se apilan cuando no
+  entran. La temática fija solo aparece en modo fijo, así no se confunde con la que sale por fecha; cada modo trae una
+  línea que explica qué hace. "Próxima por fecha" aclara que en modo fijo no cambia sola. Estudio de contenido usa el
+  mismo encabezado. Modos, fechas, previews y el botón "Probar temáticas" no cambian.
+- **Oferta en el Estudio (8.3.27):** el sello circular (que cortaba el código con "…" y dejaba la condición en una
+  píldora diminuta, en el post incluso fuera de la pieza) pasa a un cupón: valor grande con "OFF" al lado, línea
+  punteada con muescas, "CÓDIGO" y el código, y la condición de compra en una franja propia. Sombra suave, giro leve y
+  colores de la temática. El texto se achica antes de cortarse y se acomoda en dos líneas parejas; solo un código de más
+  de ~18 letras (el máximo del formulario es 20) llevaría "…" en el post. En el post la tarjeta baja lo justo para que el
+  cupón solo se apoye en su borde y la decoración se corre a su izquierda; en la historia va al costado de la tarjeta;
+  en la última diapositiva del carrusel es el protagonista. Sin oferta, la pieza queda igual que antes. Todo sale del
+  cupón de la temática (`themeOffer`); la animación de entrada y la exportación no cambian.
+- **Contenido (8.3.28):** `/admin-demo/contenido/` muestra tres tarjetas (Carrusel, Textos de inicio, Preguntas
+  frecuentes) y cada una abre su página (`/contenido/carrusel/`, `/textos/`, `/preguntas/`) con migas, "Volver a
+  Contenido", borrador en la pestaña y barra de guardar/descartar. Guardar una no toca las otras.
+- **Carrusel:** vista previa arriba con la diapositiva elegida, usando la misma diapositiva del inicio (`HeroSlide`,
+  extraída del carrusel de la tienda) al ancho que tiene en la tienda y achicada para entrar entera. Debajo, lista
+  compacta y el editor de una diapositiva: imagen (ilustración de la demo o imagen propia), texto alternativo, encuadre
+  (horizontal, vertical y acercar), título, bajada y botón con contador, destino y visibilidad; subir, bajar, quitar y
+  agregar. La imagen propia se valida (JPG, PNG o WEBP, hasta 10 MB, al menos 400 px de lado), se achica a 900 px en
+  JPEG y se guarda solo en este navegador. Si el navegador no tiene lugar, se avisa y el borrador sigue en el editor
+  (lo guardado no cambia). Datos guardados antes: sin cambios; una imagen rota se descarta y queda la ilustración.
+- **Decisión:** la vista previa no tiene selector celular/computadora: muestra la diapositiva como la ve la tienda en
+  la pantalla actual (en celular, el diseño de celular). Los textos largos se marcan con contador y error al guardar en
+  vez de cortarse sin aviso.
+- **Verificación:** lint ✅, tipos ✅, 233 unit ✅, build ✅, e2e 293/294. El que falló fue el recorrido D de
+  `shop-polish-journeys` a 1180 × 820 (clic en la miga de pan justo después de "Atrás": el router todavía terminaba la
+  navegación y el clic se perdía; no tiene que ver con este lote). Repetido 24/24 sin cambios; el test ahora espera la
+  URL del "Atrás" y reintenta el clic si se pierde, y la spec completa pasa 36/36. `admin-polish-content` pasó 16/16
+  en dos vueltas.
+- **Tiempo observado (automatizado):** ~3 h de implementación y verificación. No incluye la revisión de Ignacio.
 

@@ -110,11 +110,11 @@ export function blobSprite(color: string): HTMLCanvasElement {
 
 const seals = new Map<string, HTMLCanvasElement>();
 
-/** Sello de oferta ya dibujado (con sombra), por colores y texto. */
-export function sealSprite(key: string, size: number, paint: (ctx: CanvasRenderingContext2D) => void): HTMLCanvasElement {
+/** Cartel de oferta ya dibujado (con sombra y giro), por colores, texto y tamaño. */
+export function sealSprite(key: string, w: number, h: number, paint: (ctx: CanvasRenderingContext2D) => void): HTMLCanvasElement {
   let c = seals.get(key);
   if (!c) {
-    c = canvas(size, size);
+    c = canvas(w, h);
     const ctx = ctx2d(c);
     if (ctx) paint(ctx);
     seals.set(key, c);
@@ -123,3 +123,10 @@ export function sealSprite(key: string, size: number, paint: (ctx: CanvasRenderi
   return c;
 }
 
+let measurer: CanvasRenderingContext2D | null | undefined;
+
+/** Contexto chico solo para medir texto antes de armar un mapa de bits. */
+export function measureCtx(): CanvasRenderingContext2D | null {
+  if (measurer === undefined) measurer = ctx2d(canvas(1, 1));
+  return measurer;
+}
