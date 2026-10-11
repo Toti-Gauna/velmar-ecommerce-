@@ -12,6 +12,7 @@ import type { AdminClaim } from "@/demo/admin/types";
 import { createWorkshopActions, type WorkshopActions } from "@/demo/admin/workshop-slice";
 import { createEmailActions, type EmailActions } from "@/demo/admin/emails-slice";
 import { setDemoData, type DemoData } from "@/demo/engine/source";
+import { LEGACY_TEXT_ZONES } from "@/demo/fixtures/templates";
 import { ADMIN_STORE_VERSION, demoStorage, STORAGE_PREFIX } from "./storage";
 
 export type AdminState = AdminData & OrdersActions & DataActions & CatalogActions & WorkshopActions & EmailActions & {
@@ -62,7 +63,10 @@ export const useAdmin = create<AdminState>()(
         // Diapositivas (8.3.28): una imagen propia rota se descarta y queda la ilustración; una lista rota vuelve a la de muestra.
         data.content = { ...current.data.content, ...data.content, slides: Array.isArray(data.content?.slides) ? normalizeSlides(data.content.slides) : current.data.content.slides };
         // Zonas de texto: las piezas nuevas (la vela, 8.4.1) toman la suya; las que se editaron en el panel quedan.
-        data.textZones = { ...current.data.textZones, ...(p.data?.textZones ?? {}) };
+        const saved = { ...(p.data?.textZones ?? {}) };
+        // La zona del comedero perro globo cambió con su ilustración (8.4.23): si nadie la editó, va la nueva.
+        for (const [art, z] of Object.entries(LEGACY_TEXT_ZONES)) if (JSON.stringify(saved[art]) === JSON.stringify(z)) delete saved[art];
+        data.textZones = { ...current.data.textZones, ...saved };
         return { ...current, ...p, data, workshop, emails: { ...current.emails, ...(p.emails ?? {}) } };
       },
       partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop, emails: s.emails }),

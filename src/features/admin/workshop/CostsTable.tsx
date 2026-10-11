@@ -11,12 +11,11 @@ import { formatARS } from "@/lib/money";
 import { cn } from "@/lib/cn";
 import { useAdmin } from "@/stores/admin";
 import { AdminPageHeader } from "../AdminPageHeader";
-import { CommitNumberField } from "../NumberField";
 import { specFromColumns, TableExcel } from "../table/TableExcel";
 import { useExport } from "../table/useExport";
 import { useTableState } from "../table/useTableState";
-import { useDemoSave } from "../useDemoSave";
-import { MARGIN_TONE, RecipeSheet } from "./RecipeSheet";
+import { CostsSummary } from "./CostsSummary";
+import { RecipeSheet } from "./RecipeSheet";
 
 const BADGE = { ok: "success", low: "warning", loss: "danger", missing: "neutral" } as const;
 export function MarginChip({ state, margin }: { state: MarginState; margin: number | null }) {
@@ -31,8 +30,6 @@ export function CostsTable() {
   const products = useAdmin((s) => s.data.products);
   const categories = useAdmin((s) => s.data.categories);
   const { materials, recipes, settings } = useAdmin((s) => s.workshop);
-  const saveWorkshopSettings = useAdmin((s) => s.saveWorkshopSettings);
-  const save = useDemoSave();
   const onExport = useExport("costos");
   const filters: FilterSpec<CostRow>[] = [
     { id: "margen", label: "Margen", help: marginHelp(settings.targetMarginPct), options: [{ value: "revisar", label: "Margen bajo o pérdida" }, { value: "ok", label: "Margen sano" }, { value: "sin-costo", label: "Sin costo cargado" }],
@@ -42,8 +39,6 @@ export function CostsTable() {
   const state = useTableState("costs", { sort: { id: "margin", dir: "asc" }, hidden: ["category", "materials", "time"], filterIds: filters.map((f) => f.id) });
   const [open, setOpen] = useState<string | null>(null);
   const all = costRows(products, categories, recipes, materials, settings);
-  const withCost = all.filter((r) => r.margin !== null);
-  const avg = withCost.length ? Math.round(withCost.reduce((s, r) => s + r.margin!, 0) / withCost.length) : null;
   const columns: Column<CostRow>[] = [
     { id: "name", header: "Producto", pinned: true, primary: true, cell: (r) => <span className="font-bold">{r.name}</span>, sortValue: (r) => r.name, exportValue: (r) => r.name },
     { id: "category", header: "Categoría", defaultHidden: true, cell: (r) => r.categoryName, sortValue: (r) => r.categoryName, exportValue: (r) => r.categoryName },
@@ -72,13 +67,7 @@ export function CostsTable() {
   return (
     <>
       <AdminPageHeader title="Costos y margen">Cuánto cuesta hacer cada producto (insumos + horas de máquina + trabajo a mano) y cuánto deja al precio actual. Tocá un producto para cargar o ajustar su receta.</AdminPageHeader>
-      <section aria-label="Valores del taller" className="mb-5 grid grid-cols-2 gap-3 rounded-[1.75rem] bg-surface p-4 shadow-[var(--shadow-card)] sm:grid-cols-3 lg:grid-cols-5">
-        <CommitNumberField id="c-machine" label="Hora de máquina" suffix="pesos" value={settings.machineHourCost} onCommit={(n) => save("Costo de la hora de máquina guardado", () => saveWorkshopSettings({ machineHourCost: n }))} hint="Luz, desgaste y repuestos" />
-        <CommitNumberField id="c-hand" label="Hora de trabajo a mano" suffix="pesos" value={settings.handHourCost} onCommit={(n) => save("Costo de la hora de trabajo guardado", () => saveWorkshopSettings({ handHourCost: n }))} />
-        <CommitNumberField id="c-target" label="Margen objetivo" suffix="%" max={90} value={settings.targetMarginPct} onCommit={(n) => save(`Margen objetivo: ${n}%`, () => saveWorkshopSettings({ targetMarginPct: n }))} />
-        <div className="rounded-2xl bg-bg p-3"><p className="text-xs font-bold text-muted">Margen promedio</p><p className={cn("text-2xl font-extrabold tabular-nums", avg !== null && avg < settings.targetMarginPct ? "text-warning" : "text-success")}>{avg === null ? "—" : `${avg}%`}</p></div>
-        <div className="rounded-2xl bg-bg p-3"><p className="text-xs font-bold text-muted">Para revisar</p><p className={cn("text-2xl font-extrabold tabular-nums", MARGIN_TONE.low)}>{all.filter(toReview).length}</p><p className="text-xs text-muted">{all.filter((r) => r.state === "missing").length} sin costo cargado</p></div>
-      </section>
+      <CostsSummary rows={all} />
       <DataTable caption="Costo y margen por producto" noun="productos" rows={all} columns={columns} state={state} {...table}
         rowKey={(r) => r.slug} rowLabel={(r) => `Seleccionar ${r.name}`} onRowOpen={(r) => setOpen(r.slug)} onExport={onExport} onExcel={() => state.setView("excel")} renderCard={Card} rowTone={(r) => (r.state === "loss" ? "danger" : r.state === "low" ? "warning" : undefined)}
         empty={<EmptyState title="Nada para mostrar">No hay productos en este filtro. Tocá “Reiniciar” para ver todos.</EmptyState>} />

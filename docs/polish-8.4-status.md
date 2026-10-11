@@ -28,13 +28,13 @@ falta el equipo real) · **pendiente**.
 | 8.4.15 Transferir pedidos al cerrar un día | 6 | `calendar/TransferPanel`, `calendar/DayDialog`, `admin/workshop/transfer` (`planTransfer`, `upcomingWorkdays`) | hecho (emulado) | `polish-84-workshop.spec.ts` (próximos días, aviso de pedidos y de capacidad, domingo bloqueado, todos juntos o uno por uno, "Dejarlos para después"; 390 px), `workshop-84.test.ts` | — |
 | 8.4.16 Entrega comprometida en modal | 1 | `calendar/ScheduleDialog` (antes `ScheduleSheet`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado a 1440), `admin-polish-workshop.spec.ts`, `admin-workshop.spec.ts` | — |
 | 8.4.17 Botones de la cola de producción | 6 | `production/ProductionCard` | hecho (emulado) | `polish-84-workshop.spec.ts` (1440, 1024, 390: mismo alto y de borde a borde de la tarjeta) | — |
-| 8.4.18 Costos alineados y explicados | 7 | | pendiente | | |
+| 8.4.18 Costos alineados y explicados | 7 | `workshop/CostsSummary`, `workshop/CostsTable` | hecho (emulado) | `polish-84-costs.spec.ts` (1440 y 1180: los tres campos a la misma altura con etiquetas de una línea; indicadores aparte; "Cómo se calcula" se recalcula con el margen objetivo y se guarda; 390 sin desborde) | — |
 | 8.4.19 Generador de emails con pasos | 8 | | pendiente | | |
 | 8.4.20 Bandeja de salida arriba y en modal | 1 y 8 | `emails/OutboxDialog` (antes `OutboxSheet`) | parcial | `polish-84-modals.spec.ts` (el email abre en modal centrado) | Tarjeta arriba de "Emails automáticos" (Lote 8) |
 | 8.4.21 Editor de Temáticas en modal | 1 | `themes/ThemeEditor`, `detail/EditDialog` (`saveLabel`) | hecho (emulado) | `polish-84-modals.spec.ts` (centrado, cerrar con cambios pide confirmar), `themes.spec.ts` | — |
 | 8.4.22 Tarjetas: medio de pago y Mi cuenta | 4 y 9 | `account/CardsSection` (Lote 4) | parcial | `polish-84-account.spec.ts` (validación, tarjeta de prueba; en el almacenamiento solo marca, últimos 4 y vencimiento), `account-84.test.ts` | Medio de pago en Ajustes y en el checkout (Lote 9) |
-| 8.4.23 Ilustración del comedero perro globo | 7 | | pendiente | | |
-| 8.4.24 Arrepentimiento en tablet y escritorio | 7 | | pendiente | | |
+| 8.4.23 Ilustración del comedero perro globo | 7 | `illustrations/pets` (`BowlDog`, `Balloon`), `fixtures/templates` (zona del texto en el plato), `stores/admin` (zona vieja sin pisar las editadas) | hecho (emulado) | `polish-84-costs.spec.ts`, `polish-84-product.spec.ts` (texto en relieve sobre el plato), capturas a 390 y 1440 | Comparar con la foto real del producto |
+| 8.4.24 Arrepentimiento en tablet y escritorio | 7 | `(shop)/arrepentimiento`, `legal/WithdrawalForm` | hecho (emulado) | `polish-84-costs.spec.ts` (1280 y 820: formulario y "Cómo funciona" lado a lado; 375: uno debajo del otro; se envía y da el código) | — |
 | 8.4.25 Pantalla de carga del link de regalo | 2 | `app/motion.css` (pausa de `stage-open`) | hecho (emulado) | `polish-84-splash.spec.ts` (los pétalos siguen animados con el escenario abierto), captura del Día de la Madre | Confirmar en el iPad real |
 | 8.4.26 Página oculta bajo la pantalla de carga | 2 | `organisms/Splash` (`splash-hold`), `app/splash.css`, `app/motion.css` (transiciones sin animación durante el splash) | hecho (emulado) | `polish-84-splash.spec.ts` (página oculta y transición sin animación mientras se ve; aparece al subir el telón) | Confirmar en el iPad real |
 | 8.4.27 Barra inferior sobre la transición | 2 | `app/motion.css` (capas `shop-header`, `shop-tabbar`, `shop-buybar`, botones flotantes) | hecho (emulado) | `polish-84-splash.spec.ts`, cuadro a cuadro de cupones → inicio a 390 px | Confirmar en el iPhone real |
@@ -144,3 +144,16 @@ falta el equipo real) · **pendiente**.
 - **Bug encontrado en el chequeo completo**: al abrir un modal, el foco iba a su primer campo 40 ms después; si en ese
   momento ya se estaba escribiendo en otro campo, el foco saltaba y lo escrito terminaba en el primero (en la prueba de
   Mis direcciones, "2600" quedó en el nombre). `Sheet` ya no mueve el foco si ya está adentro del modal.
+
+## Lote 7 · registro
+
+- **8.4.18** Los valores del taller (hora de máquina, hora a mano y margen objetivo) van en una fila, con etiquetas de
+  una línea y la unidad aparte ("$/h", "%"), así los tres campos quedan a la misma altura. El margen promedio y "Para
+  revisar" pasan a ser indicadores (sin campos). Debajo, "Cómo se calcula y para qué sirve": qué es el costo, la
+  ganancia y el margen (con un ejemplo), el precio sugerido (se recalcula con el margen objetivo) y "Para revisar".
+- **8.4.23** Nuevo dibujo del comedero: un perro de globos rosa brillante (cuatro patas, cola, cuello, cabeza con hocico
+  y orejas, nudos) con el plato con alimento sobre el lomo, como el producto real. El nombre va en relieve sobre el
+  plato. Una zona de texto guardada igual a la vieja se reemplaza por la nueva; si el dueño la había movido, se respeta.
+- **8.4.24** Arrepentimiento en tablet y escritorio: formulario ancho a la izquierda (dos columnas cuando hay lugar) y a
+  la derecha "Cómo funciona" en tres pasos más el plazo de 10 días corridos, con enlaces a términos y preguntas. En el
+  celular, uno debajo del otro.

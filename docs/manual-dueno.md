@@ -77,7 +77,8 @@ nada cambia hasta que tocás **Guardar cambios**.
 
 ### …saber si gano plata
 **Costos y margen**: cargá qué insumos usa cada producto y cuánto tardás. Te dice la ganancia y si el margen es bueno, bajo
-o si perdés plata. **"Usar precio sugerido"** cambia el precio en la tienda. **Insumos** te dice qué comprar y cuánto.
+o si perdés plata. **"Usar precio sugerido"** cambia el precio en la tienda. Abajo de los valores del taller, "Cómo se
+calcula y para qué sirve" te explica cada número con un ejemplo. **Insumos** te dice qué comprar y cuánto.
 
 ### …hacer una promoción
 **Marketing** (en el menú, "Resumen") te muestra todas las herramientas en tarjetas. Cada una abre su página y con

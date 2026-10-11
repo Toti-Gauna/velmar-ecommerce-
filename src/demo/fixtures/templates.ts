@@ -46,7 +46,8 @@ export interface TextZone {
 }
 
 export const textZones: Record<string, TextZone> = {
-  "bowl-dog": { x: 125, y: 252, w: 150, h: 36 },
+  // 8.4.23: el perro globo nuevo lleva el nombre en el frente del cuerpo.
+  "bowl-dog": { x: 150, y: 238, w: 150, h: 34 },
   collar: { x: 118, y: 273, w: 164, h: 38, cover: "#ffffff" },
   "bowl-wood": { x: 96, y: 203, w: 208, h: 28, cover: "tint" },
   "leash-hanger": { x: 84, y: 180, w: 232, h: 32, cover: "tint" },
@@ -60,11 +61,14 @@ export const textZones: Record<string, TextZone> = {
  * de acá ya no se tapan con un rectángulo: la ilustración deja el lugar del nombre libre.
  */
 export type TextFinish = "engraved" | "raised";
+
+/** Zonas por defecto de antes de 8.4: si los datos guardados tienen esa misma (sin tocar en el panel), toma la nueva. */
+export const LEGACY_TEXT_ZONES: Record<string, TextZone> = { "bowl-dog": { x: 125, y: 252, w: 150, h: 36 } };
 export const TEXT_FINISH: Record<string, { finish: TextFinish; curve: number }> = {
   "candle-bowl": { finish: "engraved", curve: 7 },
   "bowl-wood": { finish: "engraved", curve: 0 },
   "leash-hanger": { finish: "engraved", curve: 0 },
-  "bowl-dog": { finish: "raised", curve: 6 },
+  "bowl-dog": { finish: "raised", curve: 5 },
 };
 
 export const FONT_FAMILIES: Record<string, string> = {

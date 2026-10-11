@@ -27,7 +27,7 @@ export function WithdrawalForm() {
   const e = form.formState.errors;
   if (code) {
     return (
-      <div role="status" className="animate-fade-up flex flex-col gap-2 rounded-[var(--radius-card)] border-2 border-success/40 bg-success-soft p-5">
+      <div role="status" className="animate-fade-up flex flex-col gap-2 rounded-[var(--radius-card)] border-2 border-success/40 bg-success-soft p-5 sm:p-7">
         <p className="flex items-center gap-2 text-lg font-extrabold text-success"><CheckCircle2 aria-hidden="true" /> Solicitud registrada (demo)</p>
         <p>Tu código es <strong className="text-xl tracking-wide">{code}</strong>.</p>
         <p className="text-sm text-muted">En la tienda real te llega por email y Velmar la ve en el panel de reclamos. En esta demo no se envió nada: solo aparece en el panel demo de este navegador.</p>
@@ -39,20 +39,24 @@ export function WithdrawalForm() {
       const claimCode = demoClaimCode();
       addClaim({ code: claimCode, type: "WITHDRAWAL", orderCode: data.orderCode || undefined, name: data.name, email: data.email, message: data.message });
       setCode(claimCode);
-    })} className="flex flex-col gap-4 rounded-[var(--radius-card)] border border-line bg-surface p-5">
+    })} className="grid gap-4 rounded-[var(--radius-card)] border border-line bg-surface p-5 shadow-[var(--shadow-card)] sm:p-7 @min-[30rem]:grid-cols-2">
+      <h2 className="font-display text-2xl @min-[30rem]:col-span-2">Pedí revocar tu compra</h2>
       <Field id="w-order" label="Código de pedido (si lo tenés)" hint="Ej.: VEL-000123">
         <Input id="w-order" aria-describedby="w-order-hint" {...form.register("orderCode")} />
       </Field>
       <Field id="w-name" label="Nombre y apellido" error={e.name?.message}>
         <Input id="w-name" autoComplete="name" aria-invalid={Boolean(e.name)} aria-describedby={e.name ? "w-name-error" : undefined} {...form.register("name")} />
       </Field>
-      <Field id="w-email" label="Email" error={e.email?.message}>
+      <Field id="w-email" label="Email" error={e.email?.message} className="@min-[30rem]:col-span-2">
         <Input id="w-email" type="email" autoComplete="email" aria-invalid={Boolean(e.email)} aria-describedby={e.email ? "w-email-error" : undefined} {...form.register("email")} />
       </Field>
-      <Field id="w-msg" label="Motivo" error={e.message?.message}>
+      <Field id="w-msg" label="Motivo" error={e.message?.message} className="@min-[30rem]:col-span-2">
         <Textarea id="w-msg" aria-invalid={Boolean(e.message)} aria-describedby={e.message ? "w-msg-error" : undefined} {...form.register("message")} />
       </Field>
-      <Button type="submit" size="lg" className="self-start">Enviar solicitud (demo)</Button>
+      <div className="flex flex-wrap items-center gap-3 @min-[30rem]:col-span-2">
+        <Button type="submit" size="lg">Enviar solicitud (demo)</Button>
+        <p className="text-xs text-muted">Demo: no se envía nada; la solicitud aparece en el panel de este navegador.</p>
+      </div>
     </form>
   );
 }
