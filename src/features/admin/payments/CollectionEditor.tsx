@@ -6,34 +6,50 @@ import { SampleQr } from "@/components/molecules/SampleQr";
 import { collectionErrors, type CollectionKey } from "@/demo/admin/collection";
 import { fileToThumbnail } from "@/lib/image";
 import { PhotoInput } from "../../personalize/PhotoInput";
-import { useSettingsDraft } from "../SettingsSections";
+import { useSettingsDraft } from "../settings/useSettingsDraft";
+import { useSessionDraft } from "../useSessionDraft";
 
 type Key = CollectionKey;
+type Draft = Record<Key, string>;
+const isDraft = (x: unknown): x is Draft => { const d = x as Draft | null; return !!d && typeof d.alias === "string" && typeof d.cbu === "string" && typeof d.holder === "string"; };
 
 /**
- * Editor de datos de cobro (8.3.30): alias, CBU/CVU, titular y QR estático de muestra. Una sola fuente (los ajustes de
- * la demo), la usan Ajustes y el modal de Pagos. Guardar no aprueba pagos ni toca pedidos: cambia las instrucciones de
- * las compras nuevas del checkout. Cancelar no guarda nada.
+ * Datos de cobro (8.3.30): alias, CBU/CVU, titular y QR estático de muestra. Una sola fuente (los ajustes de la demo)
+ * para Ajustes → Datos de cobro y el modal de Pagos. Guardar no aprueba pagos ni toca pedidos: cambia las
+ * instrucciones de las compras nuevas del checkout. `draftKey`: borrador en la pestaña (Ajustes); sin él, cancelar
+ * olvida lo escrito (modal).
  */
-export function CollectionEditor({ onDone, onCancel }: { onDone?: () => void; onCancel?: () => void }) {
+export function useCollectionForm(draftKey = "") {
   const { settings, commit } = useSettingsDraft();
-  const [d, setD] = useState<Record<Key, string>>({ alias: settings.transferAlias, cbu: settings.transferCbu, holder: settings.transferHolder });
-  const [qr, setQr] = useState<string | null>(null);
+  const session = useSessionDraft<Draft>(draftKey, { alias: settings.transferAlias, cbu: settings.transferCbu, holder: settings.transferHolder }, isDraft);
   const [errors, setErrors] = useState<Partial<Record<Key, string>>>({});
-  const set = (k: Key, v: string) => { setD({ ...d, [k]: v }); setErrors({ ...errors, [k]: undefined }); };
+  return {
+    draft: session.draft, errors, dirty: session.dirty, restored: session.restored,
+    set: (k: Key, v: string) => { session.setDraft({ ...session.draft, [k]: v }); setErrors({ ...errors, [k]: undefined }); },
+    /** true si se guardó. */
+    submit: () => {
+      const d = session.draft;
+      const found = collectionErrors(d);
+      if (Object.keys(found).length) { setErrors(found); return false; }
+      commit("Datos de cobro de muestra guardados", { transferAlias: d.alias, transferCbu: d.cbu, transferHolder: d.holder.trim() });
+      return true;
+    },
+    discard: () => { session.reset(); setErrors({}); },
+  };
+}
+
+type CollectionForm = ReturnType<typeof useCollectionForm>;
+
+/** Campos de cobro y el QR de muestra (vista previa local, no se guarda). */
+export function CollectionFields({ form }: { form: CollectionForm }) {
+  const [qr, setQr] = useState<string | null>(null);
   const field = (k: Key, label: string, props: Partial<React.ComponentProps<"input">> = {}) => (
-    <Field id={`col-${k}`} label={label} error={errors[k]}>
-      <Input id={`col-${k}`} value={d[k]} onChange={(e) => set(k, props.inputMode === "numeric" ? e.target.value.replace(/\D/g, "") : e.target.value)} aria-invalid={!!errors[k]} aria-describedby={describedBy(`col-${k}`, errors[k])} {...props} />
+    <Field id={`col-${k}`} label={label} error={form.errors[k]}>
+      <Input id={`col-${k}`} value={form.draft[k]} onChange={(e) => form.set(k, props.inputMode === "numeric" ? e.target.value.replace(/\D/g, "") : e.target.value)} aria-invalid={!!form.errors[k]} aria-describedby={describedBy(`col-${k}`, form.errors[k])} {...props} />
     </Field>
   );
   return (
-    <form noValidate className="flex flex-col gap-4" onSubmit={(e) => {
-      e.preventDefault();
-      const found = collectionErrors(d);
-      if (Object.keys(found).length) { setErrors(found); return; }
-      commit("Datos de cobro de muestra guardados", { transferAlias: d.alias, transferCbu: d.cbu, transferHolder: d.holder.trim() });
-      onDone?.();
-    }}>
+    <>
       <p className="rounded-xl bg-warning-soft p-2.5 text-xs font-bold text-warning">Solo datos ficticios: se muestran en el checkout de este navegador como “datos de muestra”. No cargues datos bancarios reales.</p>
       <div className="grid gap-3 sm:grid-cols-3">
         {field("alias", "Alias", { autoComplete: "off" })}
@@ -53,6 +69,16 @@ export function CollectionEditor({ onDone, onCancel }: { onDone?: () => void; on
             onFile={async (f) => setQr(await fileToThumbnail(f, 400))} />
         </div>
       </div>
+    </>
+  );
+}
+
+/** Editor con su propio formulario (modal "Configurar datos de cobro" de Pagos). */
+export function CollectionEditor({ onDone, onCancel }: { onDone?: () => void; onCancel?: () => void }) {
+  const form = useCollectionForm();
+  return (
+    <form noValidate className="flex flex-col gap-4" onSubmit={(e) => { e.preventDefault(); if (form.submit()) onDone?.(); }}>
+      <CollectionFields form={form} />
       <div className="flex flex-wrap justify-end gap-2">
         {onCancel && <Button variant="ghost" onClick={onCancel}>Cancelar</Button>}
         <Button type="submit" size={onCancel ? "md" : "sm"} className={onCancel ? "" : "self-start"}>Guardar datos de cobro</Button>

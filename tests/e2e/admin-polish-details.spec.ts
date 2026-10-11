@@ -74,7 +74,7 @@ test.describe("escritorio con mouse", () => {
     // El filtro de la cola sigue igual y no se aprobó ningún pago.
     await expect(page.getByRole("button", { name: /Resueltos/ })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("button", { name: /Por revisar/ })).toContainText("2");
-    await page.goto("admin-demo/ajustes/");
+    await page.goto("admin-demo/ajustes/cobro/");
     await expect(page.getByLabel("Alias")).toHaveValue("velmar.taller.demo");
     await expect(page.getByLabel("CBU / CVU")).toHaveValue("0000003100000000000099");
     // Checkout demo con transferencia: muestra los datos nuevos.

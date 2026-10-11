@@ -440,6 +440,19 @@ al día `themes`, `admin-studio` y `shop-polish`).
 | Diapositivas guardadas antes de 8.3.28: sin cambios; una imagen rota se descarta y queda la ilustración | unit |
 | Carrusel de la tienda: las flechas no pisan texto ni imagen (8.2.1) | ✅ (`shop-polish`) |
 
+Lote 8: Ajustes por tarjetas y QA integral (`admin-polish-settings.spec.ts`, `tests/unit/admin-settings-83.test.ts`; al
+día `admin-polish-details` y `cross-device`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.29 Ajustes con cuatro tarjetas; sin "Marca", "paleta" ni selectores de color en la entrada ni en las subpáginas; cada subpágina con un solo guardar y "Volver a Ajustes" | ✅ |
+| 8.3.29 WhatsApp "123" da error; el borrador sigue al salir, editar Medios de pago (60 % da error, 15 % se guarda) y volver; guardar el contacto no cambia el descuento y la entrada muestra los dos valores | ✅ + unit |
+| 8.3.29 Envíos: "76OO" se avisa; guardar cambia umbral y códigos del cadete sin tocar el envío nacional; descartar pide confirmación y vuelve a lo guardado | ✅ + unit |
+| 8.3.29/8.3.30 Datos de cobro guardados en Ajustes aparecen en el modal de Pagos (misma fuente); el modal sigue guardando y cancelando como antes | ✅ (`admin-polish-details`) |
+| 8.3.29 La tienda mantiene la paleta Velmar (`--brand-primary` `#3a4527`) y las temáticas siguen funcionando | ✅ (`themes`) |
+| 8.3.29 A 1180, 820 y 375: entrada y subpáginas sin desborde | ✅ emulado |
+| QA integral: 35 rutas del panel (incluidas las 13 subpáginas de 8.3) sin errores ni desborde en los equipos emulados de `cross-device` | ✅ emulado |
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

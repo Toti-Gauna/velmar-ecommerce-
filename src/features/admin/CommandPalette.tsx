@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Boxes, ClipboardList, CornerDownLeft, Disc3, FileSpreadsheet, GalleryHorizontal, Inbox, MessageCircleQuestion, Plus, Store, UserRound } from "lucide-react";
+import { ArrowRight, Boxes, ClipboardList, CornerDownLeft, Disc3, FileSpreadsheet, GalleryHorizontal, Inbox, Landmark, MessageCircleQuestion, Plus, Store, Truck, UserRound } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Sheet } from "@/components/motion/Sheet";
 import { customerRows } from "@/demo/admin/customers";
@@ -32,6 +32,8 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     { id: "outbox", group: "Acciones", label: "Bandeja de salida de emails", icon: icon(Inbox), href: "/admin-demo/emails/enviados/", search: "emails enviados bandeja salida" },
     { id: "slides", group: "Acciones", label: "Carrusel del inicio", icon: icon(GalleryHorizontal), href: "/admin-demo/contenido/carrusel/", search: "carrusel diapositivas portada inicio banner imagen" },
     { id: "faqs", group: "Acciones", label: "Preguntas frecuentes", icon: icon(MessageCircleQuestion), href: "/admin-demo/contenido/preguntas/", search: "preguntas frecuentes ayuda faq" },
+    { id: "collection", group: "Acciones", label: "Datos de cobro de muestra", icon: icon(Landmark), href: "/admin-demo/ajustes/cobro/", search: "alias cbu cvu titular qr transferencia cobro ajustes" },
+    { id: "shipping", group: "Acciones", label: "Envíos y retiro", icon: icon(Truck), href: "/admin-demo/ajustes/envios/", search: "envio gratis zonas cadete retiro codigos postales ajustes" },
     { id: "shop", group: "Acciones", label: "Ver la tienda", icon: icon(Store), href: "/", search: "tienda sitio web" },
     ...orders.map((o) => ({ id: o.code, group: "Pedidos", label: `${o.code} · ${o.customer.name}`, hint: STATUS_LABEL[o.status], icon: icon(ClipboardList), href: `/admin-demo/pedidos/detalle/?codigo=${o.code}`, search: `${o.code} ${o.customer.name} ${o.customer.email}` })),
     ...products.map((p) => ({ id: p.slug, group: "Productos", label: p.name, hint: p.active === false ? "Pausado" : undefined, icon: icon(Boxes), href: `/admin-demo/productos/editar/?id=${p.slug}`, search: `${p.name} ${p.tags.join(" ")}` })),

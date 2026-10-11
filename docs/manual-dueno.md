@@ -117,8 +117,11 @@ y la ordenás o la quitás. Podés subir una **imagen propia**: JPG, PNG o WEBP,
 (se achica sola y, en esta demo, queda solo en tu navegador). Escribí qué muestra (texto alternativo) y acomodá el
 encuadre. Si el navegador se queda sin lugar, te avisa y no perdés lo que estabas editando. **Textos de inicio** y
 **Preguntas frecuentes** se guardan aparte: guardar una parte no toca las otras.
-**Ajustes**: colores, WhatsApp, medios de pago, descuento por transferencia, zonas de envío y envío gratis desde cierto
-monto. Los datos de pago de la demo son ficticios.
+**Ajustes**: cuatro tarjetas, cada una con su página: **Contacto y WhatsApp**, **Medios de pago** (cuáles se ofrecen,
+descuento por transferencia o QR y horas de reserva), **Datos de cobro** (alias, CBU/CVU y titular; en la demo, solo
+ficticios) y **Envíos y retiro** (envío gratis desde cierto monto, precio, plazo y códigos postales del cadete). Si salís
+sin guardar, al volver tus cambios siguen ahí; guardar una parte no cambia las otras. Los colores de la tienda son los de
+Velmar y cambian solos con cada temática.
 
 ### …escribirle a un cliente
 **Clientes** → tocá el cliente: compras, mascotas con cumpleaños, Club, notas y **recordatorios** con el mensaje listo

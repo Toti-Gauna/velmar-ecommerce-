@@ -49,6 +49,7 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Tablas de CRM (filtros, lotes, columnas, exportar `.xlsx`) y ⌘K; en Polish 8.3.4 pasan a la tabla común con "Más filtros", 10 por página, fila → ficha y filtros en la URL (la vista rápida lateral se retiró) | 1 · 8.3 | Paginado, filtros y exportación en el servidor | M | |
 | Importar desde Excel y Planilla editable; en Polish 8.3.4/8.3.19 la Planilla es "Ver en formato Excel" de cada tabla (edita solo Productos y stock, Insumos y Categorías) y deja de ser una entrada del menú | 1 · 8.3 | Validación en el servidor, auditoría y deshacer | M | |
 | Detalle de categoría (`/admin-demo/categorias/detalle/`) y alta en modal (8.3.22) | 8.3 | Endpoint de categorías | S | |
+| Imagen propia en las diapositivas del carrusel, con vista previa, encuadre y texto alternativo (8.3.28); en la demo se achica y queda en el navegador | 8.3 | Subida y optimización de imágenes en el servidor (almacenamiento de archivos) | M | |
 | Fichas completas de pago y de reclamo (`/admin-demo/pagos/detalle/`, `/admin-demo/reclamos/detalle/`), estado de pago y de producción por separado y "Volver" con filtros (8.3.5) | 8.3 | Mismos endpoints de pedidos y reclamos | S | |
 | Ayudas "i" de segmentos y estados con las reglas del engine (8.3.10) y filtro "Para escribir" en Clientes (8.3.9) | 8.3 | — (texto derivado de las reglas) | S | |
 | Editor de producto por pasos con la foto primero (8.3.20) y vista previa en la tienda con el borrador sin guardar (`/vista-previa/`, 8.3.21); el alta ya no crea un producto hasta guardar | 8.3 | Borrador del producto y vista previa con permiso de admin (no publicada, sin indexar) | M | |
@@ -56,7 +57,7 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Cola de producción (**excluida en la sección 18**), insumos y costos con margen | 2 | Insumos, recetas y trabajos de producción como modelos | L | |
 | Ficha de cliente con mascotas y recordatorios de cumpleaños (**excluido en la sección 18**) | 2 | Mascotas y recordatorios como modelos | M | |
 | Emails automáticos: editor por bloques con fichas de datos, activar o pausar cada uno, cumpleaños de mascota y bandeja (los emails de cada cambio de estado **ya están en la spec**, sección 9) | 3 | Plantillas editables en la base y disparadores por estado; el envío usa React Email + Nodemailer de la spec | L | |
-| Estudio de contenido para Instagram (post, historia, carrusel, PNG y video, texto sugerido) | 6 | Nada de servidor: se dibuja y graba en el navegador | M | |
+| Estudio de contenido para Instagram (post, historia, carrusel, PNG y video, texto sugerido); desde Polish 8.3.27 la oferta va en un cupón legible con valor, código y condición | 6 · 8.3 | Nada de servidor: se dibuja y graba en el navegador | M | |
 | Inicio del panel con variación, gráficos y rendimiento del club (**"embudo de métricas" excluido en la sección 18**) | previa | Consultas agregadas en el servidor | M | |
 | Buscador global y paginado (la guía de primera sesión se retiró en Polish 8.3.11) | previa, 1 | Nada de servidor (el paginado, en el servidor) | S | |
 

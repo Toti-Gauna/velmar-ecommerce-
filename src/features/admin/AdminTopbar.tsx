@@ -34,7 +34,7 @@ export function AdminTopbar({ onMenu, onSearch }: { onMenu: () => void; onSearch
           <Menu size={20} aria-hidden="true" />
         </button>
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <span className="hidden items-center gap-2 text-sm font-semibold text-muted lg:flex">Panel <ChevronRight size={14} aria-hidden="true" />{section.href !== "/admin-demo/" && <>{section.group} <ChevronRight size={14} aria-hidden="true" /></>}</span>
+          <span className="hidden items-center gap-2 text-sm font-semibold text-muted lg:flex">Panel <ChevronRight size={14} aria-hidden="true" />{section.href !== "/admin-demo/" && section.group !== section.label && <>{section.group} <ChevronRight size={14} aria-hidden="true" /></>}</span>
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-accent text-primary lg:hidden"><Icon size={16} aria-hidden="true" /></span>
           <span className="truncate text-[15px] font-bold lg:text-sm">{section.label}</span>
         </div>

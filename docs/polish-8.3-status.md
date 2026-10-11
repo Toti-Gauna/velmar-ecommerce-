@@ -37,8 +37,8 @@ implementado) · **no verificable** (no se puede probar acá).
 | 8.3.26 Header de Temáticas | 7 | `themes/ThemesAdmin`, `ThemeMode`, `marketing/SubpageHeader` | hecho (emulado) | `admin-polish-content.spec.ts` (1280 con mouse; 1180, 820 y 375 táctil), `themes.spec.ts` | Probar en iPad real (horizontal y vertical) |
 | 8.3.27 Oferta en Estudio | 7 | `studio/render/offer.ts`, `templates.ts`, `carousel.ts`, `demo/admin/studio/offer.ts` | hecho | `admin-content-83.test.ts` (ubicación sin tapar producto ni precio), `admin-studio.spec.ts` (exportación), capturas 1:1, 9:16 y 4:5 con porcentaje, monto fijo, envío gratis, código de 15 y 16 letras y textos largos | — |
 | 8.3.28 Contenido por cards y carrusel | 7 | `/admin-demo/contenido/` y subpáginas · `content/*`, `home/HeroSlide`, `content-slides.ts`, `SaveBar`, `savedInBrowser` | hecho (emulado) | `admin-polish-content.spec.ts` (imagen inválida, chica y válida, encuadre, texto largo, crear/ordenar/quitar, almacenamiento lleno), `admin-content-83.test.ts`, `shop-polish.spec.ts` (flechas del carrusel) | Probar la subida de foto desde la cámara de un iPhone real |
-| 8.3.29 Ajustes por cards; sin Marca | 8 | `SettingsAdmin`, `SettingsSections` | parcial | — | Cards y retirar Marca |
-| 8.3.30 Datos de cobro desde Pagos | 3 | `payments/CollectionEditor`, `CollectionDialog`, `CollectionSettings` | hecho | `admin-polish-details.spec.ts`, `admin-details-83.test.ts` | Ajustes por cards en el Lote 8 reutiliza este editor |
+| 8.3.29 Ajustes por cards; sin Marca | 8 | `/admin-demo/ajustes/` y subpáginas · `settings/*`, `settings-form.ts`, `payments/CollectionEditor` (sin `BrandSync` ni editor de marca) | hecho (emulado) | `admin-polish-settings.spec.ts` (1280 con mouse; 1180, 820 y 375 táctil), `admin-settings-83.test.ts`, `admin-polish-details.spec.ts`, `cross-device.spec.ts` | — |
+| 8.3.30 Datos de cobro desde Pagos | 3 | `payments/CollectionEditor`, `CollectionDialog`, `CollectionSettings` | hecho | `admin-polish-details.spec.ts`, `admin-details-83.test.ts`, `admin-polish-settings.spec.ts` | — |
 
 ## Lote 1 · registro
 
@@ -228,4 +228,35 @@ implementado) · **no verificable** (no se puede probar acá).
   URL del "Atrás" y reintenta el clic si se pierde, y la spec completa pasa 36/36. `admin-polish-content` pasó 16/16
   en dos vueltas.
 - **Tiempo observado (automatizado):** ~3 h de implementación y verificación. No incluye la revisión de Ignacio.
+
+## Lote 8 · registro
+
+- **Base:** commit del Lote 7 (`967b129`).
+- **Ajustes por tarjetas (8.3.29):** `/admin-demo/ajustes/` muestra cuatro tarjetas con su estado (Contacto y WhatsApp,
+  Medios de pago, Datos de cobro, Envíos y retiro) y cada una abre su página (`/ajustes/contacto/`, `/pagos/`,
+  `/cobro/`, `/envios/`) con migas, "Volver a Ajustes", borrador en la pestaña y barra de guardar/descartar. Guardar
+  una sección solo cambia sus campos. Reglas de antes (WhatsApp de 10 a 15 dígitos, al menos un medio, descuento hasta
+  50 %, reserva de 1 a 168 h); nuevo: un código postal mal escrito se avisa en vez de descartarse en silencio y el
+  plazo de cada forma de entrega no puede quedar vacío. Datos de cobro usa el mismo editor que el modal de Pagos
+  (ahora separado en campos + formulario: el modal sigue igual y cancelar no guarda).
+- **Sin Marca:** se retiró el bloque "Marca (paleta provisional)", sus selectores de color y la mención en el texto de
+  entrada. La tienda usa siempre la paleta de Velmar (`brand.ts`) y las temáticas siguen cambiándola en sus fechas.
+  Se quitó `BrandSync`, que aplicaba los colores guardados desde el panel: si alguien había probado otra paleta, ese
+  dato queda guardado pero ya no se aplica (migración no destructiva). Los emails usan el color de Velmar.
+- **Migas del encabezado:** en Ajustes ya no dice "Ajustes › Ajustes".
+- **QA integral:** el barrido de `cross-device` (rutas sin errores de consola ni desborde, señal de demo a la vista)
+  suma las 13 subpáginas nuevas de 8.3 (Marketing, Cupones, Misiones, Emails, Contenido y Ajustes). Matriz de los 30 IDs
+  revisada: todos en "hecho", la mayoría "(emulado)" porque se probaron con emulación, no en equipos reales.
+- **Verificación:** lint ✅, tipos ✅, 237 unit ✅, build ✅, e2e 301/301 ✅ (incluye `admin-polish-settings` y el barrido de
+  `cross-device` con las 35 rutas del panel en cuatro equipos emulados).
+- **Tiempo observado (automatizado):** ~1 h 30 min de implementación y verificación. No incluye la revisión de Ignacio.
+
+## Cierre de Polish 8.3
+
+- **30 de 30 IDs hechos**: 8 "hecho" y 22 "hecho (emulado)" (verificados con emulación de mouse y táctil, de 1440 a 320 px).
+- **Para probar en equipos reales antes de dar por cerrado en Notion:** iPad horizontal y vertical (riel, tablas,
+  Temáticas, calendario y tablero), iPhone (barra de guardar del editor con el teclado abierto, Atrás con gesto en la
+  vista previa, subir foto desde la cámara al carrusel) y Android de gama media (fluidez del tablero y del Estudio).
+- **Sin cambios de alcance:** sin backend, OAuth, SMTP, APIs externas ni cobros reales; datos ficticios y aviso de demo
+  en todas las pantallas.
 

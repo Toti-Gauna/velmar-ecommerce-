@@ -3,9 +3,9 @@ import { Check } from "lucide-react";
 import { LogoMark } from "@/components/atoms/Logo";
 import { ProductVisual } from "@/components/illustrations/ProductVisual";
 import type { RenderedBlock, RenderedEmail } from "@/demo/admin/emails/render";
+import { brand } from "@/config/brand";
 import { withBase } from "@/lib/base-path";
 import { cn } from "@/lib/cn";
-import { useDemoData } from "@/stores/admin";
 
 export const FROM = "Velmar <hola@velmar.demo>";
 
@@ -93,7 +93,8 @@ function Block({ block: b, primary }: { block: RenderedBlock; primary: string })
  * "mobile" lo muestra al ancho de un celular.
  */
 export function EmailPreview({ email, to, device = "desktop", className }: { email: RenderedEmail; to: string; device?: "desktop" | "mobile"; className?: string }) {
-  const primary = useDemoData((d) => d.settings.brandColors.primary);
+  // Color de la marca Velmar (8.3.29: sin editor de paleta; las temáticas no cambian los emails).
+  const primary = brand.colors.primary;
   return (
     <div className={cn("overflow-hidden rounded-[1.5rem] bg-[#ece6da] ring-1 ring-ink/10", className)}>
       <div className="border-b border-black/5 bg-[#fbf9f4] px-4 py-3 text-xs text-[#3b3a33]">

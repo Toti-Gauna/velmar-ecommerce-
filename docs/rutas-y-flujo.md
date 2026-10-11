@@ -64,6 +64,8 @@
 - `/admin-demo/marketing/` (Marketing → Resumen, Polish 8.3.24): tarjetas a cada herramienta. Subpáginas con migas y
   "Volver": `/admin-demo/cupones/lista/`, `/admin-demo/cupones/ruleta/`, `/admin-demo/cupones/premios/`,
   `/admin-demo/misiones/simular/` y `/admin-demo/emails/enviados/` (antes `?vista=enviados`, que sigue llevando ahí).
+- `/admin-demo/ajustes/` (Polish 8.3.29): tarjetas a `/admin-demo/ajustes/contacto/`, `/admin-demo/ajustes/pagos/`,
+  `/admin-demo/ajustes/cobro/` y `/admin-demo/ajustes/envios/`, cada una con "Volver a Ajustes".
 - `/admin-demo/contenido/` (Polish 8.3.28): tarjetas a `/admin-demo/contenido/carrusel/` (vista previa e imagen propia),
   `/admin-demo/contenido/textos/` y `/admin-demo/contenido/preguntas/`, cada una con "Volver a Contenido".
   Ver `docs/panel-demo.md`. Engine en `src/demo/admin/studio/`, dibujo en canvas en `src/features/admin/studio/render/`.
