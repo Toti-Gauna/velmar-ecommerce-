@@ -15,6 +15,7 @@ export function ThemeTryButton() {
   const hydrated = useHydrated();
   if (!hydrated || !show) return null;
   const bar = bottomBarFor(pathname);
+  if (bar === "preview") return null;
   const bottom = bar === "none" ? "bottom-5" : bar === "product" ? "bottom-[calc(6rem+env(safe-area-inset-bottom))] sm:bottom-6" : "bottom-[calc(5.5rem+env(safe-area-inset-bottom))] lg:bottom-6";
   return (
     <>

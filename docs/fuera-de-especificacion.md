@@ -51,6 +51,7 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 | Detalle de categoría (`/admin-demo/categorias/detalle/`) y alta en modal (8.3.22) | 8.3 | Endpoint de categorías | S | |
 | Fichas completas de pago y de reclamo (`/admin-demo/pagos/detalle/`, `/admin-demo/reclamos/detalle/`), estado de pago y de producción por separado y "Volver" con filtros (8.3.5) | 8.3 | Mismos endpoints de pedidos y reclamos | S | |
 | Ayudas "i" de segmentos y estados con las reglas del engine (8.3.10) y filtro "Para escribir" en Clientes (8.3.9) | 8.3 | — (texto derivado de las reglas) | S | |
+| Editor de producto por pasos con la foto primero (8.3.20) y vista previa en la tienda con el borrador sin guardar (`/vista-previa/`, 8.3.21); el alta ya no crea un producto hasta guardar | 8.3 | Borrador del producto y vista previa con permiso de admin (no publicada, sin indexar) | M | |
 | Calendario de entregas (capacidad por día, feriados, reprogramar, `.ics`); la spec solo prevé la fecha comprometida del pedido (**la capacidad está excluida en la sección 18**) | 2 | Capacidad, feriados y fechas comprometidas como datos | M | |
 | Cola de producción (**excluida en la sección 18**), insumos y costos con margen | 2 | Insumos, recetas y trabajos de producción como modelos | L | |
 | Ficha de cliente con mascotas y recordatorios de cumpleaños (**excluido en la sección 18**) | 2 | Mascotas y recordatorios como modelos | M | |

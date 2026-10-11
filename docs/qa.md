@@ -365,6 +365,24 @@ Lote 3: fichas completas, comprobantes, Clientes, modales y datos de cobro (`adm
 - **Volver:** cada tabla anota su URL por sección en `sessionStorage` (`velmar-ui:list:*`); sin nada anotado, vuelve a la lista limpia.
 - **Datos de cobro:** el checkout de las compras nuevas usa los datos guardados; los pedidos no guardan una copia, así que no se reescriben históricos.
 
+Lote 4: editor de producto por pasos y vista previa en la tienda (`admin-polish-editor.spec.ts`,
+`tests/unit/admin-editor-83.test.ts`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.20 Edición a 1440: foto y alt primero, pasos a la derecha; "Datos" completo y "Medidas" por completar según los datos; tocar "Variantes" lleva al bloque justo debajo de la barra del panel, lo marca como actual y enfoca su título; lo escrito sigue | ✅ + unit |
+| 8.3.20 Sin texto alternativo: guardar marca el error en su bloque, el paso en rojo y "Faltan datos en 1 paso" en la barra; al completarlo, el paso queda completo y guarda | ✅ + unit |
+| 8.3.20 Al final de la página la barra de guardado queda debajo del último bloque (no lo tapa) | ✅ |
+| 8.3.20 A 1024 con mouse, 768 y 390 táctil: pasos compactos arriba ("Paso N de 7"), el bloque elegido queda debajo de ellos, un campo enfocado no queda debajo de la barra ni de los pasos, sin desborde | ✅ emulado |
+| 8.3.21 Vista previa de una edición: muestra el nombre sin guardar, comprar y regalar apagados, carrito en 0; "Volver al editor" recupera el borrador, el paso (Personalización) y el scroll sin aviso; Atrás del navegador también | ✅ |
+| 8.3.21 Nada se publica: la ficha real sigue con el nombre guardado; al entrar de nuevo al editor se recupera el borrador con aviso y se puede descartar con confirmación | ✅ |
+| 8.3.21 Alta: borrador con id temporal, foto primero; dos idas y vueltas a la vista previa (botón y Atrás) no lo agregan al catálogo; guardar crea exactamente uno (pausado); el acceso viejo `?nuevo=1` abre un alta limpia | ✅ + unit |
+| 8.3.21 Vista previa a 1024, 768 y 390: franja "Volver al editor" visible y sin desborde | ✅ emulado |
+| Borrador guardado roto o de otra versión: se ignora sin romper | unit |
+
+- **Pasos:** el estado sale de validar (`checkSteps`): errores bloquean (alt, nombre, precio, categoría, variantes), las medidas solo avisan.
+- **Borrador:** `velmar-ui:product-draft:editar:<slug>` o `:nuevo` en `sessionStorage`, solo mientras hay cambios; `velmar-ui:preview-return` marca que la vista previa se abrió desde el editor.
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|

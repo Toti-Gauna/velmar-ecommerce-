@@ -25,7 +25,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const [active, setActive] = useState(0);
   const all: Item[] = [
     ...ADMIN_NAV.map((n) => ({ id: n.href, group: "Ir a", label: n.label, icon: <n.icon size={17} aria-hidden="true" />, href: n.href, search: `${n.label} ${n.group}` })),
-    { id: "new-product", group: "Acciones", label: "Nuevo producto", icon: icon(Plus), href: "/admin-demo/productos/?nuevo=1", search: "crear producto nuevo alta" },
+    { id: "new-product", group: "Acciones", label: "Nuevo producto", icon: icon(Plus), href: "/admin-demo/productos/editar/?nuevo=1", search: "crear producto nuevo alta" },
     { id: "import", group: "Acciones", label: "Importar categorías y stock desde Excel", icon: icon(FileSpreadsheet), href: "/admin-demo/importar/", search: "importar excel csv planilla subir" },
     { id: "sheet", group: "Acciones", label: "Productos y stock en formato Excel", icon: icon(FileSpreadsheet), href: "/admin-demo/productos/?formato=excel", search: "planilla excel grilla stock editar precios" },
     { id: "shop", group: "Acciones", label: "Ver la tienda", icon: icon(Store), href: "/", search: "tienda sitio web" },

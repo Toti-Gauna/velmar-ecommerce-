@@ -28,8 +28,8 @@ implementado) · **no verificable** (no se puede probar acá).
 | 8.3.17 Modales Costos e Insumos | 3 | `detail/EditDialog`, `RecipeSheet`, `MaterialDialog`, `edit-forms` | hecho (emulado) | `admin-polish-customers.spec.ts`, `admin-workshop.spec.ts`, `admin-details-83.test.ts` | — |
 | 8.3.18 Insumos con tabla universal | 2 | `MaterialsTable`, `materialSheetSpec` | hecho (emulado) | `admin-polish-catalog.spec.ts`, `admin-tables-83.test.ts` | — (la fila abre el modal de 8.3.17) |
 | 8.3.19 Productos y stock; sin Planilla | 2 | `nav.ts`, `ProductsTable`, `catalogTable`, `ModuleMoved` | hecho (emulado) | `admin-polish-tables.spec.ts`, `admin-crm.spec.ts`, `admin-routes.spec.ts` | — |
-| 8.3.20 Editor con imagen primero y stepper | 4 | `ProductEditor` | pendiente | — | — |
-| 8.3.21 Vista previa con regreso | 4 | `ProductEditor` | pendiente | — | — |
+| 8.3.20 Editor con imagen primero y stepper | 4 | `ProductEditor`, `products/EditorSections`, `EditorStepper`, `EditorBar`, `useEditorNav`, `product-steps` | hecho (emulado) | `admin-polish-editor.spec.ts` (1440, 1024 con mouse; 768, 390 táctil), `admin-editor-83.test.ts` | Probar en iPad e iPhone reales (teclado en pantalla con la barra fija) |
+| 8.3.21 Vista previa con regreso | 4 | `/vista-previa/` · `ProductPreview`, `ProductDetail` (`preview`), `products/editorDrafts` | hecho (emulado) | `admin-polish-editor.spec.ts`, `admin-editor-83.test.ts` | Probar Atrás con gesto en iPhone real |
 | 8.3.22 Categorías: tabla y modal | 2 | `categories/*` (tabla, modal, detalle) | hecho (emulado) | `admin-polish-catalog.spec.ts`, `admin-tables-83.test.ts` | — |
 | 8.3.23 Nueva misión en modal | 6 | `MissionsAdmin` | pendiente | — | — |
 | 8.3.24 Marketing por cards | 6 | `nav.ts`, `EmailEditor`, `CouponsAdmin` | parcial | Emails ya en tarjetas | Entrada por cards y subpáginas |
@@ -97,3 +97,30 @@ implementado) · **no verificable** (no se puede probar acá).
   cerrar con cambios pide confirmar. "Nuevo insumo" ya no crea uno vacío antes de guardar.
 - **Datos de cobro (8.3.30):** un editor (`CollectionEditor`) con una sola fuente, usado en Ajustes y en el modal de Pagos.
 - **Tiempo observado (automatizado):** ~2 h 30 min de implementación y verificación. No incluye la revisión de Ignacio.
+
+## Lote 4 · registro
+
+- **Base:** commit del Lote 3 (`41354f5`).
+- **Editor por pasos (8.3.20):** alta y edición usan los mismos bloques, en este orden: foto y texto alternativo, datos
+  generales, categoría/precio/plazo/visibilidad, variantes, medidas de envío, personalización y revisión. Nada del formulario
+  anterior se perdió. Los pasos van en una columna a la derecha cuando el editor tiene lugar (container query, desde ~900 px
+  de ancho útil) y en una fila compacta fija arriba en tablet y celular. El estado de cada paso sale de validar
+  (`product-steps.ts`), no de haberlo visitado: los errores se marcan después de intentar guardar; las medidas faltantes
+  avisan pero no bloquean. Tocar un paso lleva al bloque debajo de lo fijo y enfoca su título, sin guardar ni descartar.
+  La barra de guardado flota encima de las pestañas del celular y, al final, ocupa su propio lugar; lo fijo de arriba y de
+  abajo se mide y pasa a `scroll-padding`, así un campo enfocado con Tab no queda tapado.
+- **Texto alternativo obligatorio:** pasa a ser requisito para guardar (lo pide el bloque de foto). Todos los productos de
+  la demo ya tienen uno (el nombre), así que lo guardado antes de 8.3 sigue guardándose igual.
+- **Vista previa (8.3.21):** "Ver en tienda" guarda un borrador de la pestaña (campos, foto, variantes, personalización,
+  paso y scroll) y abre `/vista-previa/?borrador=…`, que usa la misma ficha de la tienda con ese borrador: sin comprar,
+  regalar ni favoritos, sin recomendaciones, sin WhatsApp ni "Probar temáticas", y una franja fija con "Volver al editor" o
+  "Volver a la creación". Volver usa Atrás cuando se llegó desde el editor (y Atrás del navegador hace lo mismo); si no,
+  navega al editor y al paso. La ruta no se indexa y no se agregó ningún endpoint.
+- **Alta sin productos fantasma:** "Nuevo producto" (y el atajo de ⌘K) abre `/admin-demo/productos/editar/?nuevo=1` con un
+  borrador de id temporal (`producto-nuevo-…`) que no existe en el catálogo hasta "Guardar" (antes se creaba un "Producto
+  nuevo de ejemplo" pausado al tocar el botón). Ir y volver de la vista previa no crea nada; guardar crea uno solo, pausado
+  salvo que se active.
+- **Borrador:** vive en memoria y en `sessionStorage` (`velmar-ui:product-draft:<clave>`), solo mientras hay cambios; si se
+  sale del editor sin guardar, al volver se recupera con aviso y opción de descartar (con confirmación). Un borrador roto o
+  de otra versión se ignora. No se toca `localStorage` ni el formato de los datos guardados.
+- **Tiempo observado (automatizado):** ~3 h de implementación y verificación. No incluye la revisión de Ignacio.

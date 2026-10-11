@@ -15,6 +15,7 @@ export function WhatsAppFab() {
   const page = pathname.startsWith("/checkout") ? "checkout" : pathname.startsWith("/crear") ? "crear" : undefined;
   // Sube por encima de la barra fija inferior que tenga la pantalla en el celular.
   const bar = bottomBarFor(pathname);
+  if (bar === "preview") return null;
   return (
     <a
       href={whatsappLink(whatsappMessage({ productName, page }))}

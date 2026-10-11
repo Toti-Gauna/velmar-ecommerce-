@@ -32,9 +32,13 @@ function stockNote(a: Availability): string {
   return a.kind === "in-stock" ? `(${a.units} disponibles)` : a.kind === "made-to-order" ? "Hecho a pedido" : "Sin stock";
 }
 
-/** Ficha todo en uno: galería con vista previa en vivo + una sola tarjeta para elegir opción, diseño y cantidad. */
-export function ProductDetail({ product: initial }: { product: Product }) {
-  const product = useDemoData((d) => d.products.find((p) => p.slug === initial.slug)) ?? initial;
+/**
+ * Ficha todo en uno: galería con vista previa en vivo + una sola tarjeta para elegir opción, diseño y cantidad.
+ * `preview` (8.3.21): muestra el borrador del panel tal cual, sin comprar ni favoritos.
+ */
+export function ProductDetail({ product: initial, preview = false }: { product: Product; preview?: boolean }) {
+  const stored = useDemoData((d) => d.products.find((p) => p.slug === initial.slug));
+  const product = preview ? initial : stored ?? initial;
   const settings = useDemoData((d) => d.settings);
   const sel = useVariantSelection(product);
   const [qty, setQty] = useState(1);
@@ -44,7 +48,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
   const max = Math.max(1, maxQuantity(sel.variant));
   const quantity = Math.min(qty, max);
   const inactive = product.active === false;
-  const canBuy = !inactive && isPurchasable(sel.variant, quantity);
+  const canBuy = !preview && !inactive && isPurchasable(sel.variant, quantity);
   const avail = availability(product, sel.variant);
   const { purchase, ready } = useProductPurchase(product, sel.variant, quantity, canBuy, draft);
   const [giftOpen, setGiftOpen] = useState(false);
@@ -67,7 +71,9 @@ export function ProductDetail({ product: initial }: { product: Product }) {
       <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="w-full max-sm:hidden"><ShoppingBag size={18} aria-hidden="true" />Agregar al carrito</Button>
       <Button size="lg" variant="dark" disabled={!canBuy} onClick={() => purchase("buy")} className="w-full"><Zap size={18} aria-hidden="true" className="text-brass" />Comprar ahora</Button>
       <Button size="lg" variant="secondary" disabled={!canBuy} onClick={openGift} className="w-full"><Gift size={18} aria-hidden="true" className="text-brass-ink" />Regalar ahora</Button>
-      <p className="text-center text-xs text-muted">Para regalar: le mandás un link o un código y lo abre a golpes, sin ver el precio.</p>
+      {preview
+        ? <p className="text-center text-xs font-bold text-warning">Vista previa: comprar y regalar están apagados.</p>
+        : <p className="text-center text-xs text-muted">Para regalar: le mandás un link o un código y lo abre a golpes, sin ver el precio.</p>}
     </div>
   );
 
@@ -78,7 +84,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
       <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
         <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
           <ProductGallery art={product.art} views={product.gallery} tint={sel.variant.colorHex} name={product.name} photoUrl={product.photoDataUrl} alt={product.imageAlt} live={live} />
-          {inactive ? (
+          {inactive && !preview ? (
             <p role="status" className="rounded-2xl bg-warning-soft p-3 text-sm font-bold text-warning">Este producto está pausado desde el panel demo y no se puede comprar.</p>
           ) : <StockMeter availability={avail} />}
         </div>
@@ -90,7 +96,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
               <p className="mt-3 text-lg text-muted">{product.short}</p>
               {product.soldCount > 0 && <p className="mt-2 text-sm font-semibold text-muted">+{product.soldCount} vendidos (muestra)</p>}
             </div>
-            <FavoriteButton slug={product.slug} name={product.name} className="mt-6 h-12 w-12 max-sm:hidden" />
+            {!preview && <FavoriteButton slug={product.slug} name={product.name} className="mt-6 h-12 w-12 max-sm:hidden" />}
           </div>
           <div className="flex flex-wrap items-end gap-x-4 gap-y-1">
             <span className="text-4xl font-extrabold tabular-nums tracking-tight"><span key={price} className="animate-num">{formatARS(price)}</span></span>
@@ -114,7 +120,7 @@ export function ProductDetail({ product: initial }: { product: Product }) {
         </div>
         <div className="lg:col-start-1"><ProductAccordions product={product} /></div>
       </div>
-      <div data-buy-bar className={cn(FLOATING_BAR, "z-30 sm:hidden")}>
+      <div data-buy-bar hidden={preview} className={cn(FLOATING_BAR, "z-30 sm:hidden")}>
         <FavoriteButton slug={product.slug} name={product.name} className="h-14 w-14 shrink-0" />
         <Button size="lg" disabled={!canBuy} onClick={() => purchase("cart")} className="flex-1 justify-between whitespace-nowrap px-5 text-[15px]">
           <span>Agregar al carrito</span>

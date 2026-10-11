@@ -45,8 +45,12 @@ los pedidos y usá la acción de arriba. Cada cambio avisa al cliente con el ema
 - La tienda usa este mismo calendario para decirle al cliente "llega el…".
 
 ### …cargar o cambiar un producto
-**Productos y stock** → **Nuevo producto** (queda pausado hasta que lo muestres) o tocá cualquier parte de la fila para editar
-nombre, descripción, precio, plazo, foto y variantes (color, tamaño, recargo y stock). Poné **−1 de stock** si lo hacés a pedido.
+**Productos y stock** → **Nuevo producto** o tocá cualquier parte de la fila para editar. El editor va por pasos: primero la
+foto y su descripción corta (texto alternativo), después nombre, precio, plazo, variantes (color, tamaño, recargo y stock),
+medidas y personalización. Los pasos de la derecha (arriba en el celular) te llevan a cada parte y se ponen en verde cuando
+están completos. **Ver en tienda** muestra cómo queda antes de guardar, sin publicarlo; "Volver al editor" te deja donde
+estabas. Un producto nuevo no existe hasta que tocás **Guardar** y queda pausado hasta que lo muestres. Poné **−1 de stock**
+si lo hacés a pedido.
 - **Pausar** lo oculta de la tienda sin borrarlo.
 - Arriba de la tabla elegís **Productos** o **Variantes**: en Variantes sumás o restás stock fila por fila. El aviso amarillo
   ("necesitan reposición") te lleva a las que hay que reponer.

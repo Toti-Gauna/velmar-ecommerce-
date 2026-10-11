@@ -1,8 +1,8 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FileSpreadsheet, Plus, TriangleAlert } from "lucide-react";
-import { useEffect, useRef } from "react";
-import { Button, ButtonLink } from "@/components/atoms/Button";
+import { useEffect } from "react";
+import { ButtonLink } from "@/components/atoms/Button";
 import { EmptyState } from "@/components/molecules/EmptyState";
 import { DataTable, toSheet } from "@/components/organisms/data-table/DataTable";
 import { applyDraft } from "@/demo/admin/sheet";
@@ -25,6 +25,7 @@ import { productColumns } from "./productColumns";
 type Mode = "productos" | "variantes";
 const FILTER_IDS = ["categoria", "stock", "visibilidad"];
 const editor = (slug: string) => `/admin-demo/productos/editar/?id=${slug}`;
+const NEW_PRODUCT = "/admin-demo/productos/editar/?nuevo=1";
 const totals = (rows: StockRow[]) => (
   <>
     <span className="text-muted">Unidades: <strong className="tabular-nums text-ink">{rows.reduce((s, r) => s + Math.max(0, r.stock), 0).toLocaleString("es-AR")}</strong></span>
@@ -39,7 +40,7 @@ const totals = (rows: StockRow[]) => (
 export function ProductsTable() {
   const router = useRouter();
   const params = useSearchParams();
-  const { data, createProduct, toggleProductActive, setProductsActive, setProductsCategory, setVariantStock, bulkStock, updateProducts } = useAdmin();
+  const { data, toggleProductActive, setProductsActive, setProductsCategory, setVariantStock, bulkStock, updateProducts } = useAdmin();
   const save = useDemoSave();
   const exportProducts = useExport("productos");
   const exportStock = useExport("stock");
@@ -59,14 +60,8 @@ export function ProductsTable() {
   const toggle = (p: Product) => save(p.active === false ? "Producto activado" : "Producto pausado", () => toggleProductActive(p.slug));
   const setStock = (r: StockRow, stock: number) => save(`Stock de ${r.productName} · ${r.variantLabel}: ${stock < 0 ? "a pedido" : stock}`, () => setVariantStock(r.productSlug, r.variantId, stock));
   const bulk = (list: StockRow[], op: StockOp, label: string, clear: () => void) => { save(label, () => bulkStock(list.map((r) => r.key), op, label)); clear(); };
-  const create = () => { let slug = ""; save("Producto de ejemplo creado (pausado)", () => { slug = createProduct(); }); router.push(editor(slug)); };
-  // "Nuevo producto" desde el buscador ⌘K: se crea una sola vez y se abre el editor.
-  const created = useRef(false);
-  useEffect(() => {
-    if (params.get("nuevo") !== "1" || created.current) return;
-    created.current = true;
-    router.replace(editor(useAdmin.getState().createProduct()));
-  }, [params, router]);
+  // Enlaces viejos a "?nuevo=1" de la lista: el alta vive en el editor y no crea nada hasta guardar (8.3.21).
+  useEffect(() => { if (params.get("nuevo") === "1") router.replace(NEW_PRODUCT); }, [params, router]);
 
   const vFilters = variantFilters(cats);
   if (variants.view === "excel" || products.view === "excel") {
@@ -84,7 +79,7 @@ export function ProductsTable() {
         <div className="flex flex-wrap items-center gap-2">
           <LowStockField value={low} />
           <ButtonLink href="/admin-demo/importar/" variant="secondary"><FileSpreadsheet size={17} aria-hidden="true" /> Importar Excel</ButtonLink>
-          <Button onClick={create}><Plus size={18} aria-hidden="true" /> Nuevo producto</Button>
+          <ButtonLink href={NEW_PRODUCT}><Plus size={18} aria-hidden="true" /> Nuevo producto</ButtonLink>
         </div>
       )}>Catálogo y stock en un solo lugar. “A pedido” = sin límite: la tienda no maneja cupos de fabricación, eso lo decide Velmar.</AdminPageHeader>
       {reorder > 0 && (

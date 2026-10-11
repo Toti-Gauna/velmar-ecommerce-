@@ -10,7 +10,6 @@ type Set = (fn: (s: AdminData) => Partial<AdminData>) => void;
 
 export interface DataActions {
   saveProduct: (product: Product) => void;
-  createProduct: () => string;
   toggleProductActive: (slug: string) => void;
   moveCategory: (slug: string, dir: -1 | 1) => void;
   toggleCategoryFeatured: (slug: string) => void;
@@ -46,17 +45,6 @@ export function createDataActions(set: Set): DataActions {
 
   return {
     saveProduct: (p) => edit("Producto guardado", p.name, (d) => ({ products: upsert(d.products, p, (x) => x.slug === p.slug) })),
-    createProduct: () => {
-      const slug = `producto-demo-${Date.now().toString(36)}`;
-      edit("Producto de ejemplo creado", slug, (d) => ({
-        products: [...d.products, {
-          slug, name: "Producto nuevo de ejemplo", short: "Descripción corta", description: "Descripción del producto.", categorySlug: d.categories[0]?.slug ?? "deco",
-          basePrice: 10000, art: "dachshund", gallery: ["front"], variants: [{ id: `${slug}-v1`, label: "Único", priceDelta: 0, stock: -1 }],
-          faqs: [], featured: false, isNew: true, soldCount: 0, tags: [], active: false, imageAlt: "Producto nuevo de ejemplo",
-        }],
-      }));
-      return slug;
-    },
     toggleProductActive: (slug) => edit("Producto activado/desactivado", slug, (d) => ({ products: d.products.map((p) => (p.slug === slug ? { ...p, active: p.active === false } : p)) })),
     moveCategory: (slug, dir) => edit("Orden de categorías", slug, (d) => {
       const sorted = [...d.categories].sort((a, b) => a.sortOrder - b.sortOrder);

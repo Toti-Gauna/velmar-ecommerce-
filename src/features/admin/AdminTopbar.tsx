@@ -24,7 +24,7 @@ export function AdminTopbar({ onMenu, onSearch }: { onMenu: () => void; onSearch
     router.push("/admin-demo/");
   };
   return (
-    <header className="sticky top-[env(safe-area-inset-top)] z-40 border-b border-line bg-bg">
+    <header data-admin-topbar className="sticky top-[env(safe-area-inset-top)] z-40 border-b border-line bg-bg">
       <p className="flex items-center gap-2 border-b border-dashed border-warning/50 bg-warning-soft px-4 py-1.5 text-[12px] font-bold text-warning lg:px-10">
         <FlaskConical size={14} aria-hidden="true" className="shrink-0" />
         <span>Panel de demostración · datos ficticios<span className="hidden font-semibold sm:inline"> · Sin login a propósito: no es seguro ni sirve como acceso real.</span></span>
