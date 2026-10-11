@@ -7,6 +7,8 @@
 | [rutas-y-flujo.md](rutas-y-flujo.md) | Rutas, flujo de compra de demo y datos de muestra |
 | [tono-visual.md](tono-visual.md) | Tokens, paleta y tipografía **provisionales**, motion y accesibilidad |
 | [qa.md](qa.md) | Checklist de verificación y riesgos conocidos |
+| [polish-8.4-status.md](polish-8.4-status.md) | Polish 8.4: estado por ítem, evidencia, mediciones de rendimiento y bugs encontrados |
+| [polish-8.4-qa-checklist.md](polish-8.4-qa-checklist.md) | Polish 8.4: checklist para probar en los equipos todo lo arreglado (8.4.1 a 8.4.28) |
 | [qa-dispositivos.md](qa-dispositivos.md) | QA cruzado: qué cubre la emulación (iPhone, Android, escritorio) y checklist para probar en teléfonos reales |
 | [investigacion.md](investigacion.md) | Instagram real de Velmar, competencia, configurador de collar y calendario comercial |
 | [guion-demo.md](guion-demo.md) | Guion de 10 minutos para la reunión con el cliente: del dolor (chats, Excel, entregas) a lo que enamora |

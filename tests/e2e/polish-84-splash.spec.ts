@@ -35,6 +35,8 @@ test.describe("con movimiento", () => {
   });
 
   test("8.4.26 mientras se ve la pantalla de carga la página queda oculta y ninguna transición se anima encima", async ({ page }) => {
+    // En tablet: en el celular la tienda no usa View Transitions (8.4.28).
+    await page.setViewportSize({ width: 820, height: 1180 });
     await page.goto("p/comedero-perro-globo/");
     expect(await splashOpen(page)).toBe(true);
     await expect(page.locator("html")).toHaveClass(/splash-hold/);
@@ -62,6 +64,8 @@ test.describe("con movimiento", () => {
   });
 
   test("8.4.27 al cambiar de sección, la barra inferior y el header van en su capa, encima de la página", async ({ page }) => {
+    // En tablet (la barra inferior está hasta 1024 px); en el celular el cambio va sin View Transitions (8.4.28).
+    await page.setViewportSize({ width: 820, height: 1180 });
     await page.goto("cupones/");
     await page.keyboard.press("Escape");
     const nav = page.locator("[data-shop-bottomnav]");

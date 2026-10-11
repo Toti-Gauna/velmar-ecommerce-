@@ -51,7 +51,8 @@ test("con movimiento reducido no queda ninguna animación corriendo en una temá
   await expect(page.locator(".season-backdrop .amb-field").first()).toBeHidden();
 });
 
-test("navegar entre páginas usa View Transitions y la imagen del producto vuela a la ficha", async ({ page }) => {
+test("navegar entre páginas usa View Transitions y la imagen del producto vuela a la ficha (desde tablet; 8.4.28)", async ({ page }) => {
+  await page.setViewportSize({ width: 820, height: 1180 });
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.addInitScript(() => {
     const w = window as unknown as { __vt: string[] };

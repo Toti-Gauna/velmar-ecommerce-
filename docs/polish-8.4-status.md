@@ -38,7 +38,7 @@ falta el equipo real) · **pendiente**.
 | 8.4.25 Pantalla de carga del link de regalo | 2 | `app/motion.css` (pausa de `stage-open`) | hecho (emulado) | `polish-84-splash.spec.ts` (los pétalos siguen animados con el escenario abierto), captura del Día de la Madre | Confirmar en el iPad real |
 | 8.4.26 Página oculta bajo la pantalla de carga | 2 | `organisms/Splash` (`splash-hold`), `app/splash.css`, `app/motion.css` (transiciones sin animación durante el splash) | hecho (emulado) | `polish-84-splash.spec.ts` (página oculta y transición sin animación mientras se ve; aparece al subir el telón) | Confirmar en el iPad real |
 | 8.4.27 Barra inferior sobre la transición | 2 | `app/motion.css` (capas `shop-header`, `shop-tabbar`, `shop-buybar`, botones flotantes) | hecho (emulado) | `polish-84-splash.spec.ts`, cuadro a cuadro de cupones → inicio a 390 px | Confirmar en el iPhone real |
-| 8.4.28 Rendimiento en mobile (≥ 50 fps) | 10 | | pendiente | Línea de base abajo | |
+| 8.4.28 Rendimiento en mobile (≥ 50 fps) | 10 | `app/seasons.css` (partículas en el celular), `app/globals.css` (collar y grano), `app/motion.css` (transiciones sin blur), `organisms/ShopBottomNav` (pastilla en CSS), `motion/pageMotion` (sin View Transitions en el celular), `ProductArt`/`ProductCard` (etiquetas sin desenfoque) | hecho (emulado) al desplazar y con la página quieta; parcial al cambiar de sección | Mediciones abajo (Chromium, 390×844 táctil, CPU 4×), `polish-84-perf.spec.ts` | Cambio de sección desde el inicio (41 fps) y desde la ficha; confirmar en celulares reales |
 
 ## Lote 1 · registro
 
@@ -185,3 +185,43 @@ falta el equipo real) · **pendiente**.
   prepagas" (Checkout Pro) pasa a llamarse **Mercado Pago**, para no tener dos opciones de tarjeta.
 - **Ajustes → Medios de pago** suma "Tarjetas de crédito y débito". Migración sin pérdida: a los ajustes guardados antes
   se les suma activa una sola vez (si el dueño la apaga, queda apagada); un medio desconocido se descarta.
+
+## Lote 10 · registro
+
+- **8.4.28** Medido en Chromium emulando un celular (390×844, táctil, CPU frenada 4×, temática del Día de la Madre).
+  "Antes" es el build del Lote 9 (con todo lo anterior de 8.4) y "después", el de este lote. Al desplazar y con la
+  página quieta: fps promedio. Al cambiar de sección con la barra inferior: mediana de 5 navegaciones.
+
+  | Página | Desplazar | Quieta | Cambiar de sección | Bloqueo al cargar |
+  |---|---|---|---|---|
+  | Inicio | 34,5 → **56,0** | 38,4 → **59,5** | 17,2 → **41,1** | 1,9 s → 1,5 s |
+  | Categorías | 59,4 → **60,0** | 60,0 → **59,7** | 50,4 → **54,3** | 0,9 s → 0,6 s |
+  | Colección | 59,9 → **59,9** | 59,7 → **60,0** | 34,3 → **48,0** | 0,8 s → 0,6 s |
+  | Producto | 59,7 → **60,0** | 59,7 → **60,0** | 20,5 → **25,5** ¹ | 1,2 s → 0,9 s |
+  | Cupones | 59,6 → **59,9** | 57,0 → **60,0** | 32,4 → **49,6** | 0,6 s → 0,7 s |
+  | Club | 59,4 → **59,7** | 60,0 → **60,0** | 33,1 → **47,9** | 0,9 s → 0,7 s |
+
+  ¹ La ficha no tiene barra inferior: la prueba toca "Todas las categorías" del pie (baja hasta el final y navega), un
+  recorrido poco común; da entre 20 y 46 según la corrida.
+  Qué se cambió y por qué (cada cosa medida antes de dejarla):
+  - **Partículas del fondo**: cada una se recalcula en cada cuadro en el hilo principal (con todas, el inicio no
+    pasaba de 38 fps quieto). En el celular queda una de cada tres en el fondo y una de cada cuatro en el banner.
+  - **Balanceo del collar**: cada dije tiene sombra con filtro y se repinta en cada cuadro. En el celular las tarjetas
+    no se balancean y la vista previa del personalizador, una vez.
+  - **Pastilla de la barra inferior**: con `layoutId` de motion, cada cambio de sección medía toda la página y animaba
+    con JS mientras se montaba la nueva. Ahora es una transición CSS (compositor), con el mismo deslizamiento.
+  - **Cambio de página en el celular sin View Transitions** (`motion/pageMotion`): la captura de la página que sale y
+    la que entra sumaba el trabajo más pesado justo al montar la nueva. Con la misma prueba, la mediana subió entre 8
+    y 15 fps y el peor cuadro bajó de 200–500 ms a 100–150 ms. La página entra con el fundido CSS de la plantilla.
+    Tablet y escritorio siguen con la transición (y con la capa de la barra y el header de 8.4.27).
+  - **Sin desenfoque** en las transiciones (`vt-in`, `vt-soften`) ni en las etiquetas de las tarjetas ("Imagen
+    ilustrativa", "Personalizable": eran unas 20 capas con `backdrop-filter` en el inicio); el grano de papel a
+    pantalla completa no se dibuja en el celular (a 3,5 % no se ve).
+  Lo que queda al cambiar de sección es el render de React y Next de la página nueva (y el layout que fuerzan el
+  "volver arriba" y el scroll del router): bajarlo más pide aligerar el inicio y la ficha (montar secciones de a poco).
+  Nada de esto se probó en un celular real: solo Chromium emulado.
+- **Bug encontrado (Lote 5)**: sin el aviso de demo arriba, el header se creía "pegado" desde el arranque (la cinta de
+  la temática aparece después de hidratar y lo baja sin scroll) y su fondo extendido hacia la franja de la hora tapaba
+  la cinta en el celular hasta que se scrolleaba. Ahora se recalcula también cuando cambia el alto de la página.
+- Textos que todavía decían "reiniciá la demo" (seis pantallas de "no encontrado") cambiados por "puede que se haya
+  hecho en otro navegador" o "que se hayan borrado los datos de este navegador".

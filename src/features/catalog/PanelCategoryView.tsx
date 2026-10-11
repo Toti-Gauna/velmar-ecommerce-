@@ -15,7 +15,7 @@ export function PanelCategoryView() {
   const category = useDemoData((d) => d.categories.find((c) => c.slug === slug));
   const count = useDemoData((d) => d.products.filter((p) => p.categorySlug === slug && p.active !== false).length);
   if (!hydrated) return <ListSkeleton rows={3} label="Cargando la categoría" />;
-  if (!category) return <EmptyState title="Categoría no encontrada en esta demo" action={<ButtonLink href="/categorias/">Ver categorías</ButtonLink>}>Puede que se haya reiniciado la demo o que se creó en otro navegador.</EmptyState>;
+  if (!category) return <EmptyState title="Categoría no encontrada en esta demo" action={<ButtonLink href="/categorias/">Ver categorías</ButtonLink>}>Puede que se hayan borrado los datos de este navegador o que se creó en otro.</EmptyState>;
   return (
     <>
       <PageHeader title={category.name} crumbs={[{ href: "/categorias/", label: "Categorías" }]}>{category.description}</PageHeader>

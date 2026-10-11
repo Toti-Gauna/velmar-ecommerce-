@@ -156,8 +156,13 @@ for (const [label, width, height, touch] of [["escritorio chico", 1024, 768, fal
       expect(await horizontalOverflow(page), route).toBeLessThanOrEqual(0);
     }
     await page.goto(base() + "admin-demo/cupones/ruleta/");
-    const preview = (await page.getByRole("region", { name: "Vista previa de la ruleta" }).boundingBox())!;
-    expect(preview.y + preview.height).toBeLessThanOrEqual((await page.getByRole("region", { name: "Visibilidad y vigencia" }).boundingBox())!.y);
+    // Las dos medidas juntas: con la página todavía acomodándose, dos lecturas separadas podían caer en momentos distintos.
+    await expect(page.getByRole("region", { name: "Visibilidad y vigencia" })).toBeVisible();
+    const [previewBottom, configTop] = await page.evaluate(() => [
+      document.querySelector('[aria-label="Vista previa de la ruleta"]')!.getBoundingClientRect().bottom,
+      document.querySelector('[aria-labelledby="w-config"]')!.getBoundingClientRect().top,
+    ]);
+    expect(previewBottom).toBeLessThanOrEqual(configTop);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     await page.goto(base() + "admin-demo/emails/editar/?id=tpl-order-created");
     const title = (await page.getByRole("heading", { level: 1 }).boundingBox())!;

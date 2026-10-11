@@ -49,7 +49,7 @@
 | Orgullo, 25 de Mayo, Día de la Bandera y 9 de Julio: pantalla de carga con su escena, paleta, banner y cinta | ✅ |
 | Día del Amigo y del Padre: los personajes aparecen en la escena y en el banner | ✅ |
 | Con movimiento reducido no queda ninguna animación CSS corriendo (personajes, fondo, partículas) | ✅ |
-| Navegar usa View Transitions y solo la tarjeta tocada lleva el nombre de la imagen que vuela a la ficha | ✅ |
+| Navegar usa View Transitions y solo la tarjeta tocada lleva el nombre de la imagen que vuela a la ficha (desde 8.4.28, en tablet y escritorio; en el celular la página entra con un fundido CSS) | ✅ |
 | La cantidad rueda sin duplicar el número (lector de pantalla y tests leen un solo valor); favoritos destella | ✅ |
 | Contraste AA de las paletas nuevas en claro y oscuro (texto, apagado, primario, dorado, acento) | ✅ unit |
 | Fechas: Orgullo el 7/11, 25 de Mayo, Padre hasta el 17/6, Bandera el 20/6, 9 de Julio; ninguna superposición en el año | ✅ unit |

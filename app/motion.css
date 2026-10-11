@@ -1,6 +1,6 @@
 /*
  * Motion de la tienda (Fase 5, VEL-54): transiciones entre páginas, la imagen que vuela de la tarjeta a la ficha
- * y microinteracciones. Solo transform/opacity/filter. Con "reducir movimiento" todo queda quieto.
+ * y microinteracciones. Solo transform/opacity (sin filtros en las transiciones, 8.4.28). Con "reducir movimiento" todo queda quieto.
  */
 
 /* ---------- Transiciones entre páginas (React <ViewTransition> en app/(shop)/template.tsx) ---------- */
@@ -9,7 +9,8 @@
 ::view-transition-old(.page-out) { animation: vt-out 160ms cubic-bezier(0.4, 0, 1, 1) both; }
 ::view-transition-new(.page-in) { animation: vt-in 380ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both; }
 @keyframes vt-out { to { opacity: 0; transform: translateY(-6px) scale(0.99); } }
-@keyframes vt-in { from { opacity: 0; transform: translateY(16px); filter: blur(4px); } }
+/* 8.4.28: sin desenfoque (un blur sobre la captura de toda la página es lo más caro de la transición en el celular). */
+@keyframes vt-in { from { opacity: 0; transform: translateY(16px); } }
 /* 8.4.27: el header, la barra inferior y los botones flotantes van en su propia capa, quieta y encima de la página que
    sale y entra. Sin esto quedaban en la captura de fondo y la página nueva se dibujaba por encima un momento (se veían
    las tarjetas tapando la barra de abajo). */
@@ -38,15 +39,16 @@
    No se cancelan con skipTransition: Next espera esas promesas y una cancelada termina en un error de la página. */
 html:not(.splash-done)::view-transition-group(*), html:not(.splash-done)::view-transition-image-pair(*),
 html:not(.splash-done)::view-transition-old(*), html:not(.splash-done)::view-transition-new(*) { animation: none !important; }
-/* Con View Transitions, la entrada por CSS de la plantilla duplicaría la animación. */
-@supports (view-transition-name: none) { .page-enter { animation: none; } }
+/* Con View Transitions, la entrada por CSS de la plantilla duplicaría la animación. En el celular no se usan (vt-off,
+   ver components/motion/pageMotion.ts) y la página entra con este fundido. */
+@supports (view-transition-name: none) { html:not(.vt-off) .page-enter { animation: none; } }
 
 /* La imagen del producto: de la tarjeta a la galería (relación de aspecto distinta, sin deformar). */
 .vt-hero { view-transition-name: product-hero; }
 ::view-transition-group(product-hero) { animation-duration: 520ms; animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); z-index: 5; }
 ::view-transition-old(product-hero), ::view-transition-new(product-hero) { height: 100%; object-fit: cover; overflow: clip; }
 ::view-transition-image-pair(product-hero) { animation-name: vt-soften; animation-duration: 520ms; }
-@keyframes vt-soften { 40% { filter: blur(2px); } }
+@keyframes vt-soften { 40% { opacity: 0.92; } }
 /* Sin pareja (se sale de la ficha o se llega desde otro link), la galería acompaña a la página en vez de quedar flotando. */
 ::view-transition-old(product-hero):only-child { animation: vt-out 160ms cubic-bezier(0.4, 0, 1, 1) both; }
 ::view-transition-new(product-hero):only-child { animation: vt-in 380ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both; }

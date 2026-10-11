@@ -29,7 +29,7 @@ export function PaymentDetail() {
   const code = useSearchParams().get("codigo") ?? "";
   const order = useAdmin((s) => s.orders.find((o) => o.code === code));
   const [collecting, setCollecting] = useState(false);
-  if (!order) return <EmptyState title="No encontramos ese pago" action={<ButtonLink href="/admin-demo/pagos/">Ver pagos</ButtonLink>}>Revisá el código o reiniciá la demo.</EmptyState>;
+  if (!order) return <EmptyState title="No encontramos ese pago" action={<ButtonLink href="/admin-demo/pagos/">Ver pagos</ButtonLink>}>Revisá el código: puede que el pedido se haya hecho en otro navegador.</EmptyState>;
   const proof = order.proof;
   const pay = paymentTrack(order);
   const history = order.log.filter((l) => PAYMENT_STEPS.includes(l.to) || (l.from && PAYMENT_STEPS.slice(0, 2).includes(l.from))).reverse();

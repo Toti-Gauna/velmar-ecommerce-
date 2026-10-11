@@ -33,7 +33,7 @@ export function OrderDetail() {
   const addNote = useAdmin((s) => s.addNote);
   const save = useDemoSave();
   const [note, setNote] = useState("");
-  if (!order) return <EmptyState title="Pedido no encontrado en la demo" action={<ButtonLink href="/admin-demo/pedidos/">Ver pedidos</ButtonLink>}>Revisá el código o reiniciá la demo.</EmptyState>;
+  if (!order) return <EmptyState title="Pedido no encontrado en la demo" action={<ButtonLink href="/admin-demo/pedidos/">Ver pedidos</ButtonLink>}>Revisá el código: puede que el pedido se haya hecho en otro navegador.</EmptyState>;
   const pay = paymentTrack(order);
   const ful = fulfillmentTrack(order);
   const step = nextStep(order);

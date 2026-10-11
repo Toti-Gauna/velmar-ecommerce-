@@ -1,5 +1,9 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { horizontalOverflow } from "./helpers";
+
+/** Fuerza una temática (la del día depende de la fecha en que corre la prueba). */
+const preview = (page: Page, id: string) =>
+  page.addInitScript((v) => localStorage.setItem("velmar-demo:theme-preview", JSON.stringify({ state: { previewId: v }, version: 0 })), id);
 
 /** Polish 8.4 · Lote 5: íconos del encabezado agrupados (8.4.12) y sin aviso de demo ni "Reiniciar demo" (8.4.13). */
 
@@ -58,4 +62,20 @@ test("8.4.13 el panel no tiene \"Reiniciar demo\" pero mantiene su aviso de demo
   await page.goto("admin-demo/");
   await expect(page.getByText("Panel de demostración · datos ficticios")).toBeVisible();
   await expect(page.getByRole("button", { name: "Reiniciar demo" })).toHaveCount(0);
+});
+
+test("8.4.13 sin el aviso de demo, la cinta de la temática se ve arriba del header (su fondo extendido no la tapa)", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await preview(page, "dia-de-la-madre");
+  await page.goto("");
+  await page.keyboard.press("Escape");
+  const ribbon = page.locator("[data-theme-ribbon]");
+  await expect(ribbon).toBeVisible();
+  const header = page.locator("[data-shop-header]");
+  await expect(header).not.toHaveClass(/bleed-top/);
+  const r = (await ribbon.boundingBox())!, h = (await header.boundingBox())!;
+  expect(h.y).toBeGreaterThanOrEqual(r.y + r.height - 1);
+  // Al bajar, el header queda pegado arriba y recién ahí extiende su fondo hacia la franja de la hora.
+  await page.evaluate(() => window.scrollTo(0, 600));
+  await expect(header).toHaveClass(/bleed-top/);
 });

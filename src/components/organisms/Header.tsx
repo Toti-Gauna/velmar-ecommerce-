@@ -37,7 +37,11 @@ export function Header() {
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    // La cinta de la temática aparece después de hidratar y baja el header sin que haya scroll: si no se recalcula, el
+    // header queda "pegado" desde el arranque y su fondo extendido tapa la cinta (se notó al sacar el aviso de demo, 8.4.13).
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(document.body);
+    return () => { window.removeEventListener("scroll", onScroll); ro.disconnect(); };
   }, []);
   const count = hydrated ? units : 0;
   // La bolsa se sacude solo cuando entra algo con la página ya cargada (no al recuperar el carrito guardado).

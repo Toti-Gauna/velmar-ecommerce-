@@ -52,7 +52,7 @@ export function ProductCard({ product, priority }: { product: ProductCardData; p
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           {product.deal && <span className="rounded-full px-2.5 py-1 text-[11px] font-extrabold shadow-sm" style={{ background: product.deal.bg, color: product.deal.ink }}>{product.deal.label}</span>}
           {product.isNew && <span className="rounded-full bg-night px-2.5 py-1 text-[11px] font-bold text-[#f6f1e8]">Nuevo</span>}
-          {product.personalizable && <span className="rounded-full bg-[#fffdf8]/90 px-2.5 py-1 text-[11px] font-bold text-[#1c2016] backdrop-blur">Personalizable</span>}
+          {product.personalizable && <span className="rounded-full bg-[#fffdf8]/95 px-2.5 py-1 text-[11px] font-bold text-[#1c2016]">Personalizable</span>}
         </div>
         {full && (
           <button type="button" onClick={() => quickAdd(full)} aria-label={product.personalizable ? `Personalizar ${product.name}` : `Agregar ${product.name} al carrito`}
