@@ -61,6 +61,9 @@
 
 ## Fase 6 · Estudio de contenido (pedido de Ignacio, 10/2026, fuera de la spec)
 - `/admin-demo/estudio/` (Marketing → Estudio de contenido): piezas para Instagram por fecha, exportables a imagen y video.
+- `/admin-demo/marketing/` (Marketing → Resumen, Polish 8.3.24): tarjetas a cada herramienta. Subpáginas con migas y
+  "Volver": `/admin-demo/cupones/lista/`, `/admin-demo/cupones/ruleta/`, `/admin-demo/cupones/premios/`,
+  `/admin-demo/misiones/simular/` y `/admin-demo/emails/enviados/` (antes `?vista=enviados`, que sigue llevando ahí).
   Ver `docs/panel-demo.md`. Engine en `src/demo/admin/studio/`, dibujo en canvas en `src/features/admin/studio/render/`.
 
 ## Fase 5 · Temáticas y motion (pedido de Ignacio, 10/2026, fuera de la spec)
@@ -103,5 +106,5 @@ afirma que un pago fue acreditado.
 
 ## Qué se guarda y dónde
 Solo `localStorage` del navegador (`velmar-demo:cart`, `:checkout`, `:account`, `:admin`, `:search`, `:favorites`, `:gifts`; y
-`velmar-ui:admin-sidebar` para recordar la barra lateral fija; `velmar-ui:sheet:*` en `sessionStorage` para el borrador de una vista Excel sin guardar; `velmar-ui:list:*` en `sessionStorage` para que "Volver" de una ficha lleve a la lista con sus filtros y página; `velmar-ui:product-draft:*` y `velmar-ui:preview-return` en `sessionStorage` para el borrador del editor de producto y su vista previa; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
+`velmar-ui:admin-sidebar` para recordar la barra lateral fija; `velmar-ui:sheet:*` en `sessionStorage` para el borrador de una vista Excel sin guardar; `velmar-ui:list:*` en `sessionStorage` para que "Volver" de una ficha lleve a la lista con sus filtros y página; `velmar-ui:product-draft:*` y `velmar-ui:preview-return` en `sessionStorage` para el borrador del editor de producto y su vista previa; `velmar-ui:mission-draft:*`, `velmar-ui:email-draft:*` y `velmar-ui:wheel-draft` en `sessionStorage` para los borradores de misión, plantilla de email y ruleta; `velmar-demo:tables` para el orden y las columnas de las tablas del panel) y `sessionStorage` para no repetir el confeti de un pedido. Las fotos se procesan con `URL.createObjectURL`/canvas; al carrito llega una miniatura JPEG generada en el
 navegador. "Reiniciar demo" (banner y pie) borra todo.

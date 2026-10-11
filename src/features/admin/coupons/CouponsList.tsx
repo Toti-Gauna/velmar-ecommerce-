@@ -10,17 +10,18 @@ import type { Coupon } from "@/demo/types";
 import { formatDate } from "@/lib/date";
 import { formatARS } from "@/lib/money";
 import { useAdmin } from "@/stores/admin";
-import { AdminPageHeader } from "./AdminPageHeader";
-import { usePaged } from "./usePaged";
-import { CouponForm } from "./CouponForm";
-import { useDemoSave } from "./useDemoSave";
-import { WheelAdmin } from "./WheelAdmin";
+import { CouponForm } from "../CouponForm";
+import { MARKETING, SubpageHeader } from "../marketing/SubpageHeader";
+import { usePaged } from "../usePaged";
+import { useDemoSave } from "../useDemoSave";
+import { COUPONS_SECTION } from "./CouponsHub";
 
 function valueLabel(c: Coupon): string {
   return c.type === "PERCENT" ? `${c.value}%` : c.type === "FIXED" ? formatARS(c.value) : "Envío gratis";
 }
 
-export function CouponsAdmin() {
+/** Cupones del carrito (8.3.24: subpágina de "Cupones y ruleta"). */
+export function CouponsList() {
   const coupons = useAdmin((s) => s.data.coupons);
   const saveCoupon = useAdmin((s) => s.saveCoupon);
   // Los más nuevos primero (los cupones ganados en la ruleta se agregan al final).
@@ -29,9 +30,8 @@ export function CouponsAdmin() {
   const [creating, setCreating] = useState(false);
   return (
     <>
-      <AdminPageHeader title="Cupones" actions={<Button onClick={() => setCreating(true)}><Plus size={18} aria-hidden="true" /> Nuevo cupón</Button>}>
-        Los cupones creados acá funcionan en el carrito de la tienda demo de este navegador. Usos simulados.
-      </AdminPageHeader>
+      <SubpageHeader trail={[MARKETING, COUPONS_SECTION]} back={COUPONS_SECTION} title="Cupones" actions={<Button onClick={() => setCreating(true)}><Plus size={18} aria-hidden="true" /> Nuevo cupón</Button>}
+        intro="Los cupones creados acá funcionan en el carrito de la tienda demo de este navegador. Usos simulados." />
       {creating && <div className="mb-4"><CouponForm onDone={() => setCreating(false)} /></div>}
       <ul className="grid gap-3 md:grid-cols-2">
         {paged.items.map((c) => {
@@ -62,10 +62,6 @@ export function CouponsAdmin() {
         })}
       </ul>
       <Pagination {...paged} noun="cupones" onPage={paged.setPage} />
-      <section aria-labelledby="ruleta-admin" className="mt-10">
-        <h2 id="ruleta-admin" className="font-display mb-4 text-3xl">Ruleta de cupones</h2>
-        <WheelAdmin />
-      </section>
     </>
   );
 }

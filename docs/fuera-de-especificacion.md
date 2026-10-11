@@ -26,7 +26,7 @@ La sección 18 de la especificación ("Fuera de alcance", marcada 💡 fuera del
 
 | Agregado | Fase | En producción necesita | Tamaño | Decisión |
 |---|---|---|---|---|
-| Ruleta de cupones (física, con gajos, sonido y confeti; desde la Fase 8 a pantalla completa con cupón de la festividad; desde Polish 8.2 el premio conserva su estado: ganado, guardado, aplicado, quitado o usado) | previa, 4, 8 y Polish 8.2 | Sorteo ponderado y cupón `RULETA…` de un uso, con vencimiento y un giro por cuenta, decididos en el servidor | M | |
+| Ruleta de cupones (física, con gajos, sonido y confeti; desde la Fase 8 a pantalla completa con cupón de la festividad; desde Polish 8.2 el premio conserva su estado: ganado, guardado, aplicado, quitado o usado; desde Polish 8.3.25 un catálogo de premios con plantillas que se elige en cada gajo) | previa, 4, 8 y Polish 8.2/8.3 | Sorteo ponderado y cupón `RULETA…` de un uso, con vencimiento y un giro por cuenta, decididos en el servidor | M | |
 | Mis cupones (pantalla y selector en el carrito) | previa | Cupones por cuenta, estados (vencido, mínimo, solo con cuenta) | S | |
 | Buscador superpuesto con recientes y lo más buscado (la búsqueda tolerante a errores **ya está en la spec**) | previa | Búsqueda en Postgres (spec); recientes por dispositivo | S | |
 | Favoritos y su pantalla | previa | Tabla de favoritos por cuenta (hoy por navegador) | S | |

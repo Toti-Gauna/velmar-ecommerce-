@@ -84,7 +84,7 @@ test("un comprobante subido en la tienda queda en revisión en el panel, nunca p
 });
 
 test("cupón y misión creados en el panel funcionan en la tienda", async ({ page }) => {
-  await page.goto("admin-demo/cupones/");
+  await page.goto("admin-demo/cupones/lista/");
   await page.getByRole("button", { name: "Nuevo cupón" }).click();
   await page.getByLabel("Código").fill("FE");
   await page.getByRole("button", { name: "Crear cupón" }).click();

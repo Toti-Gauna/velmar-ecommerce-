@@ -6,6 +6,7 @@ import { createDataActions, type DataActions } from "@/demo/admin/data-slice";
 import { auditEntry, defaultAdminData, type AdminData } from "@/demo/admin/defaults";
 import { createOrdersActions, type OrdersActions } from "@/demo/admin/orders-slice";
 import { withCurrentCollarSpec } from "@/demo/admin/templates";
+import { withPrizeCatalog } from "@/demo/admin/wheel-prizes";
 import type { AdminClaim } from "@/demo/admin/types";
 import { createWorkshopActions, type WorkshopActions } from "@/demo/admin/workshop-slice";
 import { createEmailActions, type EmailActions } from "@/demo/admin/emails-slice";
@@ -54,7 +55,10 @@ export const useAdmin = create<AdminState>()(
         const workshop = { ...current.workshop, ...(p.workshop ?? {}) };
         // Las entradas del calendario (8.3.15) llegaron después: si faltan o vienen rotas, quedan las de muestra.
         if (!Array.isArray(workshop.events)) workshop.events = current.workshop.events;
-        return { ...current, ...p, data: withCurrentCollarSpec({ ...current.data, ...(p.data ?? {}) }), workshop, emails: { ...current.emails, ...(p.emails ?? {}) } };
+        const data = withCurrentCollarSpec({ ...current.data, ...(p.data ?? {}) });
+        // La ruleta guardada antes de 8.3.25 no tenía catálogo de premios: se completa con sus gajos, sin cambiar IDs.
+        data.wheel = withPrizeCatalog(data.wheel);
+        return { ...current, ...p, data, workshop, emails: { ...current.emails, ...(p.emails ?? {}) } };
       },
       partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop, emails: s.emails }),
     },

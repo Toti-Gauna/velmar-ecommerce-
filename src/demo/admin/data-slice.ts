@@ -1,7 +1,7 @@
 import type { DemoData } from "../engine/source";
 import type { DemoSettings } from "../fixtures/commerce";
 import type { TextZone } from "../fixtures/templates";
-import type { WheelConfig } from "../fixtures/wheel";
+import type { WheelConfig, WheelPrize } from "../fixtures/wheel";
 import type { CarouselSlide, Coupon, Faq, Mission, PersonalizationTemplate, Product, SeasonalTheme, ShippingZone, ThemeSettings } from "../types";
 import { auditEntry, type AdminData } from "./defaults";
 import type { ClaimStatus } from "./types";
@@ -20,6 +20,8 @@ export interface DataActions {
   saveMission: (mission: Mission) => void;
   saveCoupon: (coupon: Coupon, previousCode?: string) => void;
   saveWheel: (wheel: WheelConfig) => void;
+  /** Suma un premio al catálogo de la ruleta (8.3.25); queda disponible para elegir en los gajos. */
+  addWheelPrize: (prize: WheelPrize) => void;
   addPrizeCoupon: (coupon: Coupon) => void;
   /** Un pedido confirmado usó el cupón: suma un uso (el de la ruleta queda "utilizado"). */
   redeemCoupon: (code: string) => void;
@@ -61,6 +63,7 @@ export function createDataActions(set: Set): DataActions {
     saveMission: (m) => edit("Misión guardada", m.title, (d) => ({ missions: upsert(d.missions, m, (x) => x.id === m.id) })),
     saveCoupon: (c, prev) => edit("Cupón guardado", c.code, (d) => ({ coupons: upsert(d.coupons, c, (x) => x.code === (prev ?? c.code)) })),
     saveWheel: (wheel) => edit("Ruleta de cupones actualizada", "Ruleta", () => ({ wheel })),
+    addWheelPrize: (prize) => edit(`Premio de la ruleta creado: ${prize.name}`, prize.id, (d) => ({ wheel: { ...d.wheel, prizes: [...(d.wheel.prizes ?? []), prize] } })),
     addPrizeCoupon: (c) => edit("Premio de ruleta emitido", c.code, (d) => ({ coupons: [...d.coupons.filter((x) => x.code !== c.code), c] })),
     redeemCoupon: (code) => edit("Cupón usado en un pedido", code, (d) => ({ coupons: d.coupons.map((c) => (c.code === code ? { ...c, usedCount: (c.usedCount ?? 0) + 1 } : c)) })),
     saveSettings: (patch) => edit("Ajustes guardados", Object.keys(patch).join(", "), (d) => ({ settings: { ...d.settings, ...patch } })),

@@ -79,8 +79,14 @@ nada cambia hasta que tocás **Guardar cambios**.
 o si perdés plata. **"Usar precio sugerido"** cambia el precio en la tienda. **Insumos** te dice qué comprar y cuánto.
 
 ### …hacer una promoción
-- **Cupones**: porcentaje, monto o envío gratis, con mínimo, vencimiento y cantidad de usos.
-- **Ruleta**: los premios y qué tan probable es cada uno (el panel muestra el porcentaje resultante).
+**Marketing** (en el menú, "Resumen") te muestra todas las herramientas en tarjetas. Cada una abre su página y con
+"Volver" elegís otra.
+- **Cupones y ruleta** → **Cupones**: porcentaje, monto o envío gratis, con mínimo, vencimiento y cantidad de usos.
+- **Cupones y ruleta** → **Configuración de ruleta**: arriba ves cómo queda; abajo elegís el premio de cada gajo de una
+  lista y su peso (el panel muestra el porcentaje resultante). **Premios disponibles** (o "Agregar premio") suma un
+  premio nuevo desde una plantilla: porcentaje, monto fijo, envío gratis, grabado gratis o un producto de regalo.
+- **Misiones y premios** → **Nueva misión** abre una ventana con todo lo que hay que completar. Si la cerrás sin
+  guardar, lo escrito te espera la próxima vez.
 - **Temáticas**: fechas como Día de la Madre o Navidad cambian solas los colores, el banner y la oferta de la tienda.
   Podés ajustar fechas, titular, cupón y productos en oferta, o dejar una fija. Las fechas que cambian cada año (Día de
   la Madre, Pascuas, Orgullo) revisalas una vez al año.

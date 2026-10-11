@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Boxes, ClipboardList, CornerDownLeft, FileSpreadsheet, Plus, Store, UserRound } from "lucide-react";
+import { ArrowRight, Boxes, ClipboardList, CornerDownLeft, Disc3, FileSpreadsheet, Inbox, Plus, Store, UserRound } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Sheet } from "@/components/motion/Sheet";
 import { customerRows } from "@/demo/admin/customers";
@@ -28,6 +28,8 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     { id: "new-product", group: "Acciones", label: "Nuevo producto", icon: icon(Plus), href: "/admin-demo/productos/editar/?nuevo=1", search: "crear producto nuevo alta" },
     { id: "import", group: "Acciones", label: "Importar categorías y stock desde Excel", icon: icon(FileSpreadsheet), href: "/admin-demo/importar/", search: "importar excel csv planilla subir" },
     { id: "sheet", group: "Acciones", label: "Productos y stock en formato Excel", icon: icon(FileSpreadsheet), href: "/admin-demo/productos/?formato=excel", search: "planilla excel grilla stock editar precios" },
+    { id: "wheel", group: "Acciones", label: "Configuración de la ruleta", icon: icon(Disc3), href: "/admin-demo/cupones/ruleta/", search: "ruleta premios pesos gajos cupones" },
+    { id: "outbox", group: "Acciones", label: "Bandeja de salida de emails", icon: icon(Inbox), href: "/admin-demo/emails/enviados/", search: "emails enviados bandeja salida" },
     { id: "shop", group: "Acciones", label: "Ver la tienda", icon: icon(Store), href: "/", search: "tienda sitio web" },
     ...orders.map((o) => ({ id: o.code, group: "Pedidos", label: `${o.code} · ${o.customer.name}`, hint: STATUS_LABEL[o.status], icon: icon(ClipboardList), href: `/admin-demo/pedidos/detalle/?codigo=${o.code}`, search: `${o.code} ${o.customer.name} ${o.customer.email}` })),
     ...products.map((p) => ({ id: p.slug, group: "Productos", label: p.name, hint: p.active === false ? "Pausado" : undefined, icon: icon(Boxes), href: `/admin-demo/productos/editar/?id=${p.slug}`, search: `${p.name} ${p.tags.join(" ")}` })),

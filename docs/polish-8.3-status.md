@@ -31,9 +31,9 @@ implementado) · **no verificable** (no se puede probar acá).
 | 8.3.20 Editor con imagen primero y stepper | 4 | `ProductEditor`, `products/EditorSections`, `EditorStepper`, `EditorBar`, `useEditorNav`, `product-steps` | hecho (emulado) | `admin-polish-editor.spec.ts` (1440, 1024 con mouse; 768, 390 táctil), `admin-editor-83.test.ts` | Probar en iPad e iPhone reales (teclado en pantalla con la barra fija) |
 | 8.3.21 Vista previa con regreso | 4 | `/vista-previa/` · `ProductPreview`, `ProductDetail` (`preview`), `products/editorDrafts` | hecho (emulado) | `admin-polish-editor.spec.ts`, `admin-editor-83.test.ts` | Probar Atrás con gesto en iPhone real |
 | 8.3.22 Categorías: tabla y modal | 2 | `categories/*` (tabla, modal, detalle) | hecho (emulado) | `admin-polish-catalog.spec.ts`, `admin-tables-83.test.ts` | — |
-| 8.3.23 Nueva misión en modal | 6 | `MissionsAdmin` | pendiente | — | — |
-| 8.3.24 Marketing por cards | 6 | `nav.ts`, `EmailEditor`, `CouponsAdmin` | parcial | Emails ya en tarjetas | Entrada por cards y subpáginas |
-| 8.3.25 Ruleta arriba y premios | 6 | `WheelAdmin` | parcial | Arriba solo en el celular | Select por ID, plantillas |
+| 8.3.23 Nueva misión en modal | 6 | `missions/MissionsAdmin`, `MissionDialog`, `missionDraft`, `mission-form.ts` | hecho (emulado) | `admin-polish-marketing.spec.ts`, `admin-flows.spec.ts`, `admin-marketing-83.test.ts` | — |
+| 8.3.24 Marketing por cards | 6 | `/admin-demo/marketing/`, `marketing/HubCard`, `SubpageHeader`, `coupons/*`, `missions/*`, `emails/EmailsAdmin`, `EmailOutbox`, `EmailEditor`, `useSessionDraft` | hecho (emulado) | `admin-polish-marketing.spec.ts` (1280, 1024 con mouse; 768, 390 táctil), `admin-emails.spec.ts` | Probar en iPad real |
+| 8.3.25 Ruleta arriba y premios | 6 | `coupons/WheelAdmin`, `PrizeDialog`, `PrizesAdmin`, `wheel-prizes.ts` | hecho (emulado) | `admin-polish-marketing.spec.ts`, `admin-marketing-83.test.ts`, `shop-polish-wheel.spec.ts`, `gamification.spec.ts` | — |
 | 8.3.26 Header de Temáticas | 7 | `ThemesAdmin`, `ThemeMode` | parcial | — | Revisar en tablet |
 | 8.3.27 Oferta en Estudio | 7 | `studio/render/templates.ts` | pendiente | — | — |
 | 8.3.28 Contenido por cards y carrusel | 7 | `ContentAdmin`, `SlidesEditor` | parcial | — | Cards, preview, subida de imagen |
@@ -153,4 +153,32 @@ implementado) · **no verificable** (no se puede probar acá).
 - **8.3.10 completo:** botón "i" en el calendario (qué ocupa lugar, completo, sobrecargado, atrasado, cerrado, entradas)
   y en producción (etapas y reglas), armados con las reglas del engine.
 - **Tiempo observado (automatizado):** ~3 h de implementación y verificación. No incluye la revisión de Ignacio.
+
+## Lote 6 · registro
+
+- **Base:** commit del Lote 5 (`841af7b`).
+- **Nueva misión en modal (8.3.23):** "Nueva misión" y "Editar" abren un modal centrado con los mismos campos (título,
+  premio, tipo, umbral, descripción, encadenar, activa) y una frase de qué se completa y qué produce guardar. Los
+  errores van junto a cada campo con las mismas reglas de antes (`mission-form.ts`). Cerrar, Escape o Cancelar no guardan
+  y el borrador queda en la pestaña: al reabrir se recupera con aviso ("Empezar de nuevo" lo descarta); guardar lo
+  borra. La misión nueva tiene su ID desde que se abre el modal, así que guardar crea una sola.
+- **Marketing por tarjetas (8.3.24):** entrada nueva `/admin-demo/marketing/` ("Resumen" en el menú) con una tarjeta por
+  herramienta del grupo; las entradas del menú siguen. "Cupones y ruleta" pasa a tres tarjetas con su subpágina:
+  Cupones (`/cupones/lista/`), Configuración de ruleta (`/cupones/ruleta/`) y Premios disponibles (`/cupones/premios/`).
+  Misiones muestra sus tarjetas y el simulador pasa a `/misiones/simular/`. Emails muestra una tarjeta por plantilla
+  (abre su editor) y la bandeja pasa a `/emails/enviados/` (el enlace viejo `?vista=enviados` lleva ahí). Cada subpágina
+  tiene migas de pan y "Volver a [sección]". En el editor de email el título usa todo el ancho, las acciones van en su
+  propia fila y hay accesos a cada parte (asunto, fichas, bloques, vista previa) sin cortar el flujo. Los cambios sin
+  guardar del editor de email y de la ruleta quedan en la pestaña al salir y volver, con aviso y "Descartar cambios"
+  (con confirmación).
+- **Decisión:** las tarjetas de entrada se armaron con los módulos que ya existen (no se inventaron secciones). En
+  Misiones y Emails la lista principal sigue a la vista y solo la tarea aparte (simular, bandeja) pasó a otra página.
+- **Ruleta y premios (8.3.25):** la vista previa va arriba y centrada en todos los tamaños; debajo, visibilidad,
+  vigencia y los gajos. Cada gajo elige su premio de una lista del catálogo (ID estable), con la condición a la vista;
+  ya no hay texto libre. "Agregar premio" abre un modal con las plantillas que el engine ya convierte en cupón
+  (porcentaje, monto fijo, envío gratis, grabado gratis y producto de regalo, que se descuentan como monto fijo); el
+  premio queda en el catálogo y se puede elegir. No se guarda una ruleta visible sin peso positivo, con vigencia fuera
+  de 1–90 días o con un gajo sin premio. Las ruletas guardadas antes arman su catálogo desde sus gajos, sin cambiar IDs;
+  los cupones ya entregados no cambian.
+- **Tiempo observado (automatizado):** ~2 h 30 min de implementación y verificación. No incluye la revisión de Ignacio.
 

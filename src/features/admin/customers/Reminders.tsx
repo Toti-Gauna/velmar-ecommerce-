@@ -34,7 +34,7 @@ export function ReminderList({ reminders }: { reminders: Reminder[] }) {
   const push = useToasts((s) => s.push);
   const send = (r: Reminder) => {
     const result = r.petId ? sendPet(r.email, r.name, r.petId, r.date.slice(0, 4)) : "off";
-    if (result === "sent") push({ tone: "success", title: "Email de cumpleaños en la bandeja de salida", description: "En producción sale solo el día del cumpleaños. La demo no envía nada.", action: { label: "Ver la bandeja", href: "/admin-demo/emails/?vista=enviados" } });
+    if (result === "sent") push({ tone: "success", title: "Email de cumpleaños en la bandeja de salida", description: "En producción sale solo el día del cumpleaños. La demo no envía nada.", action: { label: "Ver la bandeja", href: "/admin-demo/emails/enviados/" } });
     else if (result === "already") push({ tone: "info", title: "Ya salió este año", description: "El email de este cumpleaños ya está en la bandeja de salida." });
     else push({ tone: "error", title: "No se pudo armar el email", description: "Revisá que el email de cumpleaños esté activo en Emails automáticos." });
   };

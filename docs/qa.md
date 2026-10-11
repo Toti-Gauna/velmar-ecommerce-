@@ -404,6 +404,23 @@ Lote 5: capacidad y feriados, calendario editable y tablero de producción (`adm
 
 - **Arrastrar con el dedo:** no está. En tablet y celular se reprograma desde la ficha de entrega y las etapas con "Mover etapa".
 
+Lote 6: misiones, Marketing por tarjetas, ruleta y premios (`admin-polish-marketing.spec.ts`,
+`tests/unit/admin-marketing-83.test.ts`; al día `admin-flows`, `gamification` y `shop-polish-wheel`).
+
+| Verificación | Estado |
+|---|---|
+| 8.3.23 "Nueva misión" con teclado abre el modal; la página no tiene campos; guardar vacío marca título y premio junto a cada campo | ✅ + unit |
+| 8.3.23 Escape no guarda y devuelve el foco; reabrir recupera el borrador con aviso; guardar crea exactamente una misión y el próximo alta arranca vacío | ✅ |
+| 8.3.23 La misión creada se ve en el Club de la tienda demo | ✅ (`admin-flows`) |
+| 8.3.24 Marketing con 6 tarjetas; "Cupones y ruleta" muestra solo sus tres tarjetas; cada subpágina con migas y "Volver a…"; Atrás y links directos andan | ✅ |
+| 8.3.24 Bandeja de salida como subpágina; el enlace viejo `?vista=enviados` lleva ahí; volver a Emails no muestra la bandeja debajo | ✅ |
+| 8.3.24 Editor de email a 1024: título en una línea y acciones debajo; "Ir a: Bloques" lleva y enfoca; los cambios sin guardar vuelven al reabrir y se descartan con confirmación; la vista previa sigue reemplazando las fichas | ✅ |
+| 8.3.25 Ruleta: vista previa arriba; gajo 1 elige "5% OFF" por ID con 26%; premio "$4.500 OFF" desde la plantilla (0 da error), elegido en el gajo 2 y guardado; el catálogo lo muestra en 1 gajo | ✅ + unit |
+| 8.3.25 Todos los pesos en 0 con la ruleta visible: probabilidad "—" y no se guarda; salir y volver recupera el borrador y se descarta | ✅ + unit |
+| 8.3.24/8.3.25 A 1024 con mouse, 768 y 390 táctil: entradas sin desborde, ruleta arriba, acciones del email debajo del título, modal de misión dentro de la pantalla | ✅ emulado |
+| Ruleta guardada antes de 8.3.25: el catálogo se arma desde los gajos sin cambiar IDs; el cupón del premio sale igual | unit |
+| Ruleta en la tienda, cupones ganados y checkout de 8.2 sin cambios | ✅ (`shop-polish-wheel`, `gamification`, `purchase-flow`) |
+
 ## Panel demo (`tests/e2e/admin-*.spec.ts`, `tests/unit/admin*.test.ts`)
 | Verificación | Estado |
 |---|---|
