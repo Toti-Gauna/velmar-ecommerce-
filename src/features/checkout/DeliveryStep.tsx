@@ -1,9 +1,8 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Bike, Store, Truck } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/atoms/Button";
 import { Field, Input } from "@/components/atoms/Field";
 import { OptionCard } from "@/components/atoms/OptionCard";
 import { isLocalPostalCode } from "@/demo/engine/shipping";
@@ -12,6 +11,7 @@ import type { FulfillmentType } from "@/demo/types";
 import { formatARS } from "@/lib/money";
 import { useCheckout } from "@/stores/checkout";
 import { addressSchema, type AddressInput } from "./schemas";
+import { STEP_FORM, StepNav } from "./StepNav";
 
 const ICONS = { PICKUP: Store, LOCAL_DELIVERY: Bike, SHIPPING: Truck };
 const FIELDS: { name: keyof AddressInput; label: string; auto: string; mode?: "numeric" }[] = [
@@ -22,7 +22,7 @@ const FIELDS: { name: keyof AddressInput; label: string; auto: string; mode?: "n
   { name: "province", label: "Provincia", auto: "address-level1" },
 ];
 
-export function DeliveryStep({ onNext, onBack, freeShipping }: { onNext: () => void; onBack: () => void; freeShipping: boolean }) {
+export function DeliveryStep({ onNext, onBack, freeShipping, before }: { onNext: () => void; onBack: () => void; freeShipping: boolean; before?: ReactNode }) {
   const { fulfillment, address, patch } = useCheckout();
   const [choice, setChoice] = useState<FulfillmentType | null>(fulfillment);
   const [missing, setMissing] = useState(false);
@@ -41,7 +41,8 @@ export function DeliveryStep({ onNext, onBack, freeShipping }: { onNext: () => v
   };
 
   return (
-    <form noValidate onSubmit={choice && choice !== "PICKUP" ? form.handleSubmit(submit) : (e) => { e.preventDefault(); submit(); }} className="flex flex-col gap-5">
+    <>
+    <form id={STEP_FORM} noValidate onSubmit={choice && choice !== "PICKUP" ? form.handleSubmit(submit) : (e) => { e.preventDefault(); submit(); }} className="flex flex-col gap-5">
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-1 font-bold">¿Cómo lo recibís?</legend>
         {zones.map((z) => {
@@ -65,10 +66,9 @@ export function DeliveryStep({ onNext, onBack, freeShipping }: { onNext: () => v
           ))}
         </fieldset>
       )}
-      <div className="flex gap-3">
-        <Button variant="secondary" onClick={onBack}>Atrás</Button>
-        <Button type="submit">Continuar al pago</Button>
-      </div>
     </form>
+    {before}
+    <StepNav onBack={onBack} next="Continuar al pago" />
+    </>
   );
 }

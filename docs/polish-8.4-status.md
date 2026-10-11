@@ -11,11 +11,11 @@ falta el equipo real) · **pendiente**.
 
 | ID | Lote | Ruta / componente | Estado | Evidencia | Pendiente |
 |---|---|---|---|---|---|
-| 8.4.1 Nombre grabado/impreso premium | 3 | | pendiente | | |
-| 8.4.2 Migas fijas con la galería | 3 | | pendiente | | |
+| 8.4.1 Nombre grabado/impreso premium | 3 | `organisms/TextPreview` (`NameMark`), `fixtures/templates` (`TEXT_FINISH`, zona de la vela), `illustrations/*` (`blank`), `stores/admin` (zonas nuevas sin pisar las editadas) | hecho (emulado) | `polish-84-product.spec.ts` (los 4 productos con texto, sin rectángulo ni nombre de muestra; la vela en el carrito), capturas | — |
+| 8.4.2 Migas fijas con la galería | 3 | `product/ProductDetail` (`crumbs`), `/p/[slug]` | hecho (emulado) | `polish-84-product.spec.ts` (1440: después de bajar 700 px siguen arriba de la galería) | — |
 | 8.4.3 Sin pantalla de carga al ir al checkout | 2 | `organisms/Splash` (`splashScript`), `themes/reloadWithTheme` | hecho | `polish-84-splash.spec.ts` (entrar y recargar la muestran; una carga completa desde adentro no; "Ver en la tienda" la pide) | — |
-| 8.4.4 Paso Datos sin carrito | 3 | | pendiente | | |
-| 8.4.5 Pago y resumen arriba de los botones | 3 | | pendiente | | |
+| 8.4.4 Paso Datos sin carrito | 3 | `checkout/CheckoutView` | hecho (emulado) | `polish-84-product.spec.ts` (1180, 820, 390), `shop-polish-checkout.spec.ts` | — |
+| 8.4.5 Cupón y resumen arriba de los botones | 3 | `checkout/StepNav` (botones fuera del formulario, `form=`), pasos de Entrega, Pago y Confirmar | hecho (emulado) | `polish-84-product.spec.ts` (orden opciones → cupón → resumen → Atrás/Siguiente en cada paso; el botón de afuera envía el paso) | — |
 | 8.4.6 Direcciones en Mi cuenta y checkout | 4 | | pendiente | | |
 | 8.4.7 Volver a Mis pedidos | 4 | | pendiente | | |
 | 8.4.8 Abrir regalo sin textos de fondo | 2 | `gifts/GiftExperience`, `motion/ImmersiveStage` (`instant`) | hecho (emulado) | `polish-84-splash.spec.ts` (fondo oscuro sin fundido; la página de atrás no se dibuja) | Confirmar en el iPhone real |
@@ -89,3 +89,16 @@ falta el equipo real) · **pendiente**.
   mientras está abierto. Al salir: desde Mis regalos vuelve a la cuenta (reemplaza la página, Atrás no lo reabre); por
   link o código queda "Tu regalo de…" con "Ver mi regalo" (lo de adentro, sin volver a golpearlo) o, si no se abrió,
   la invitación a abrirlo.
+
+## Lote 3 · registro
+
+- **8.4.1** (para todos los productos con texto, decisión de Ignacio) Antes, la vela no tenía zona de texto y caía en un
+  rectángulo blanco en el medio; el resto tapaba el nombre de muestra con un rectángulo del color de la pieza. Ahora la
+  ilustración deja libre el lugar del nombre (`blank`) y el texto se dibuja como parte del producto: grabado láser
+  hundido (vela, comedero de madera, colgador) o letras impresas en relieve (comedero perro globo), siguiendo la curva del
+  frente. La vela tiene su zona en el frente del cuenco y su nombre de muestra también grabado. Las zonas que el dueño
+  editó en el panel se conservan; las nuevas se suman al cargar datos guardados antes de 8.4.
+- **8.4.2** Las migas se pasan a la ficha y van arriba de la galería, dentro de la columna fija en escritorio.
+- **8.4.4 / 8.4.5** (revierte 8.2.9, pedido de Ignacio) En "Datos" no se ven el carrito ni el total. Desde "Entrega",
+  el orden es: opciones del paso, cupón, resumen y recién después Atrás/Siguiente. Los botones quedaron afuera del
+  formulario del paso (el cupón es su propio formulario y no puede ir anidado) y lo envían con `form="checkout-paso"`.

@@ -76,23 +76,27 @@ export function CheckoutView() {
     router.push("/checkout/confirmacion/");
   };
 
-  return (
-    // Una columna: las opciones del paso, sus botones Atrás/Siguiente (en el lugar y orden de siempre) y debajo el
-    // resumen con el total, que se actualiza al cambiar entrega, cupón o medio de pago (8.2.9).
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
-      <StepIndicator steps={STEPS} current={step} />
-      <h2 ref={heading} tabIndex={-1} className="text-xl font-extrabold focus:outline-none">{STEPS[step]}</h2>
-      <div key={step} className="animate-fade-up">
-        {step === 0 && <ContactStep onNext={() => setStep(1)} />}
-        {step === 1 && <DeliveryStep onNext={() => setStep(2)} onBack={() => setStep(0)} freeShipping={missingForFreeShipping(quote.subtotal) === 0} />}
-        {step === 2 && <PaymentStep onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <ConfirmStep onBack={() => setStep(2)} onConfirm={confirm} onEdit={setStep} />}
-      </div>
+  // 8.4.4: en "Datos" no se muestran el carrito ni el total. 8.4.5: desde "Entrega", el cupón y el resumen van antes
+  // de Atrás/Siguiente (cada paso pone sus botones debajo de esto).
+  const before = (
+    <>
       {/* El cupón se puede quitar o cambiar hasta confirmar; quitar el de la ruleta lo deja guardado (8.2.14). */}
       <section aria-label="Cupón del pedido" className="rounded-3xl bg-surface p-4 shadow-[var(--shadow-card)] sm:p-5">
         <CouponForm subtotal={quote.subtotal} isRegistered={isRegistered} check={couponCheck} where="checkout" />
       </section>
       <CheckoutSummary quote={quote} />
+    </>
+  );
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
+      <StepIndicator steps={STEPS} current={step} />
+      <h2 ref={heading} tabIndex={-1} className="text-xl font-extrabold focus:outline-none">{STEPS[step]}</h2>
+      <div key={step} className="animate-fade-up flex flex-col gap-5">
+        {step === 0 && <ContactStep onNext={() => setStep(1)} />}
+        {step === 1 && <DeliveryStep onNext={() => setStep(2)} onBack={() => setStep(0)} freeShipping={missingForFreeShipping(quote.subtotal) === 0} before={before} />}
+        {step === 2 && <PaymentStep onNext={() => setStep(3)} onBack={() => setStep(1)} before={before} />}
+        {step === 3 && <ConfirmStep onBack={() => setStep(2)} onConfirm={confirm} onEdit={setStep} before={before} />}
+      </div>
     </div>
   );
 }

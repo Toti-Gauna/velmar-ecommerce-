@@ -1,11 +1,11 @@
 "use client";
 import { Building2, CreditCard, QrCode } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/atoms/Button";
+import { useState, type ReactNode } from "react";
 import { OptionCard } from "@/components/atoms/OptionCard";
 import { useDemoData } from "@/stores/admin";
 import type { PaymentMethod } from "@/demo/types";
 import { useCheckout } from "@/stores/checkout";
+import { STEP_FORM, StepNav } from "./StepNav";
 
 const METHODS: { value: PaymentMethod; title: string; description: string; icon: typeof CreditCard; aside?: "discount" | "provider" }[] = [
   // Las tarjetas se cobran con Mercado Pago (Checkout Pro, simulado en la demo): mismo medio de pago, nombrado como lo busca el cliente.
@@ -14,13 +14,14 @@ const METHODS: { value: PaymentMethod; title: string; description: string; icon:
   { value: "QR_MANUAL", title: "QR", description: "Escaneás el QR de Velmar con tu billetera, subís el comprobante y Velmar confirma el ingreso.", icon: QrCode, aside: "discount" },
 ];
 
-export function PaymentStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+export function PaymentStep({ onNext, onBack, before }: { onNext: () => void; onBack: () => void; before?: ReactNode }) {
   const method = useCheckout((s) => s.paymentMethod);
   const patch = useCheckout((s) => s.patch);
   const [missing, setMissing] = useState(false);
   const { enabledMethods, transferDiscountPct } = useDemoData((d) => d.settings);
   return (
-    <form noValidate onSubmit={(e) => { e.preventDefault(); if (!method) return setMissing(true); onNext(); }} className="flex flex-col gap-5">
+    <>
+    <form id={STEP_FORM} noValidate onSubmit={(e) => { e.preventDefault(); if (!method) return setMissing(true); onNext(); }} className="flex flex-col gap-5">
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-1 font-bold">¿Cómo querés pagar?</legend>
         {METHODS.filter((m) => enabledMethods.includes(m.value)).map((m) => (
@@ -33,10 +34,9 @@ export function PaymentStep({ onNext, onBack }: { onNext: () => void; onBack: ()
       <p className="rounded-2xl border border-dashed border-warning bg-warning-soft p-3 text-sm text-warning">
         <strong>Demo:</strong> ningún medio cobra de verdad. Vas a ver pantallas de muestra; no se piden datos de tarjeta ni se redirige a Mercado Pago.
       </p>
-      <div className="flex gap-3">
-        <Button variant="secondary" onClick={onBack}>Atrás</Button>
-        <Button type="submit">Revisar pedido</Button>
-      </div>
     </form>
+    {before}
+    <StepNav onBack={onBack} next="Revisar pedido" />
+    </>
   );
 }

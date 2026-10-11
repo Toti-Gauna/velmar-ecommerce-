@@ -4,7 +4,8 @@ import { BowlDog, BowlWood, Collar, LeashHanger } from "./pets";
 import { CandleBowl, CandleTin, LabelGuide, NfcPlate, NfcSocial } from "./crafts";
 import { CandlePoodle, Dachshund, Diffuser, FigurePair, HomeSpray, LampPainted, LampPhoto, MdpSign } from "./home";
 
-type ArtComponent = (props: { tint?: string }) => React.JSX.Element;
+/** `blank`: sin el nombre de muestra dibujado en la pieza (lo pone encima la vista previa del texto, 8.4.1). */
+type ArtComponent = (props: { tint?: string; blank?: boolean }) => React.JSX.Element;
 
 const ART: Record<ArtKey, ArtComponent> = {
   "bowl-dog": BowlDog, "bowl-wood": BowlWood, collar: Collar, "nfc-plate": NfcPlate, "nfc-social": NfcSocial,
@@ -63,10 +64,12 @@ export interface ProductArtProps {
   label: string;
   className?: string;
   showBadge?: boolean;
+  /** Sin el nombre de muestra (la vista previa del texto lo dibuja en su lugar). */
+  blank?: boolean;
 }
 
 /** Imagen ilustrativa de producto (placeholder vectorial hasta tener fotos reales de Velmar). */
-export function ProductArt({ art, view = "front", tint, label, className, showBadge = true }: ProductArtProps) {
+export function ProductArt({ art, view = "front", tint, label, className, showBadge = true, blank }: ProductArtProps) {
   const Art = ART[art];
   const transform = view === "detail" ? "translate(-140 -120) scale(1.7)" : view === "context" ? "translate(40 40) scale(0.8)" : undefined;
   return (
@@ -74,7 +77,7 @@ export function ProductArt({ art, view = "front", tint, label, className, showBa
       <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`${label} (imagen ilustrativa)`} className="block h-full w-full">
         {view === "context" ? <ContextScene /> : <Studio view={view} />}
         <g transform={transform}>
-          <Art tint={tint} />
+          <Art tint={tint} blank={blank} />
         </g>
       </svg>
       {showBadge && (

@@ -20,7 +20,7 @@ export function BowlDog({ tint = "#e88aa0" }: { tint?: string }) {
   );
 }
 
-export function BowlWood({ tint = "#d8b98c" }: { tint?: string }) {
+export function BowlWood({ tint = "#d8b98c", blank }: { tint?: string; blank?: boolean }) {
   const dark = shade(tint, -0.25);
   return (
     <g>
@@ -34,7 +34,7 @@ export function BowlWood({ tint = "#d8b98c" }: { tint?: string }) {
           <ellipse cx={cx} cy="190" rx="40" ry="11" fill="#e4e8eb" />
         </g>
       ))}
-      <text x="200" y="224" textAnchor="middle" fontSize="18" fontWeight="700" fill={dark} fontFamily="Georgia, serif">TOBY</text>
+      {!blank && <text x="200" y="224" textAnchor="middle" fontSize="18" fontWeight="700" fill={dark} fontFamily="Georgia, serif">TOBY</text>}
     </g>
   );
 }

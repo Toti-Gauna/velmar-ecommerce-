@@ -16,7 +16,7 @@ import { useAdmin } from "@/stores/admin";
 import { DetailHeader, TrackChip } from "../detail/DetailHeader";
 import { Panel } from "../detail/Panel";
 import { useDemoSave } from "../useDemoSave";
-import { BirthdayPicker, birthdayText } from "./BirthdayPicker";
+import { BirthdayPicker, birthdayText } from "@/components/molecules/BirthdayPicker";
 import { ClubCard } from "./ClubCard";
 import { PetsCard } from "./PetsCard";
 import { ReminderList } from "./Reminders";

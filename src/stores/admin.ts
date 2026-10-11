@@ -61,6 +61,8 @@ export const useAdmin = create<AdminState>()(
         data.wheel = withPrizeCatalog(data.wheel);
         // Diapositivas (8.3.28): una imagen propia rota se descarta y queda la ilustración; una lista rota vuelve a la de muestra.
         data.content = { ...current.data.content, ...data.content, slides: Array.isArray(data.content?.slides) ? normalizeSlides(data.content.slides) : current.data.content.slides };
+        // Zonas de texto: las piezas nuevas (la vela, 8.4.1) toman la suya; las que se editaron en el panel quedan.
+        data.textZones = { ...current.data.textZones, ...(p.data?.textZones ?? {}) };
         return { ...current, ...p, data, workshop, emails: { ...current.emails, ...(p.emails ?? {}) } };
       },
       partialize: (s) => ({ data: s.data, orders: s.orders, users: s.users, claims: s.claims, audit: s.audit, lastImport: s.lastImport, workshop: s.workshop, emails: s.emails }),
